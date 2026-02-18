@@ -32,7 +32,7 @@ public:
 
 	GrainPlatform platform() const override
 	{
-		return GrainPlatform::Pal_Internal;
+		return GrainPlatform::Alpha;
 	}
 
 	ExecutionBox executionBox() const override

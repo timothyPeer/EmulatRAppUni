@@ -47,7 +47,7 @@ public:
 
 	inline GrainPlatform platform() const override
 	{
-		return GrainPlatform::Pal_Internal;
+		return GrainPlatform::Alpha;
 	}
 
 	// Set the execution box

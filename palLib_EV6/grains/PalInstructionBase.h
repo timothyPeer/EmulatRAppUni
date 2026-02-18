@@ -69,7 +69,7 @@ public:
 
 	GrainPlatform platform() const override
 	{
-		return GrainPlatform::NONE;
+		return GrainPlatform::Alpha;
 	}
 
 

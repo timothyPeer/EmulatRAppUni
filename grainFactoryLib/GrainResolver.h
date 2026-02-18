@@ -53,7 +53,7 @@ public:
 
 		// Determine lookup platform
 		const GrainPlatform lookupPlatform = isHwInternal
-			? GrainPlatform::Pal_Internal
+			? GrainPlatform::Alpha
 			: m_overridePlatform;
 
 		// Look up the grain in registry

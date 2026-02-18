@@ -51,7 +51,7 @@ public:
 	AXP_FLATTEN
 		GrainPlatform platform() const override
 	{
-		return GrainPlatform::Pal_Internal;  // <- Fixed capitalization
+		return GrainPlatform::Alpha;  // <- Fixed capitalization
 	}
 
 	// ========================================================================

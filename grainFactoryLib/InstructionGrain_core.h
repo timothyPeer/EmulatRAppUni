@@ -30,10 +30,7 @@ enum class GrainType : quint8 {
 // Grain Platform - PAL/OS variant identification
 // ============================================================================
 enum class GrainPlatform : quint8 {
-	NONE = 0,        // Platform-independent (default)
-	Alpha = 1,       // Generic Alpha AXP
-	VMS = 2,         // OpenVMS Alpha
-	Unix = 3,        // Digital UNIX / Tru64
-	NT = 4,          // Windows NT Alpha
-	Pal_Internal = 5 // Hardware internal (PAL19, PAL1B, PAL1D, PAL1E, PAL1F)
+	
+	Alpha = 0x01,       // Generic Alpha AXP
+
 };

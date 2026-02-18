@@ -45,7 +45,7 @@ struct InstructionGrain
     virtual GrainType grainType() const = 0;
     virtual void execute(PipelineSlot& slot) const noexcept = 0;
 
-    virtual GrainPlatform platform() const noexcept { return GrainPlatform::NONE; }
+    virtual GrainPlatform platform() const noexcept { return GrainPlatform::Alpha; }
 
     AXP_HOT AXP_ALWAYS_INLINE bool hasFlag(GrainFlags f) const noexcept {
         return (flags & static_cast<quint8>(f)) != 0;

@@ -88,48 +88,23 @@ public:
     {
         quint32 key = makeGrainKey(opcode, func, platform);
 
-        // Add at the top of your grain lookup function, before the actual lookup
-#ifdef _DEBUG
-        {
-            static bool dumped = false;
-            if (!dumped)
-            {
-                dumped = true;
-                qDebug() << "=== PAL HW Grain Registration Check ===";
-                const quint8 palOpcodes[] = { 0x19, 0x1B, 0x1D, 0x1E, 0x1F };
-                for (quint8 opc : palOpcodes)
-                {
-                    quint32 key = (static_cast<quint32>(opc) << 24) | func;
-                    auto it = m_table.find(key);
-                    if (it != m_table.end())
-                    {
-                        qDebug() << QString("  FOUND: opcode=0x%1 key=0x%2 -> %3")
-                            .arg(opc, 2, 16, QChar('0'))
-                            .arg(key, 8, 16, QChar('0'))
-                            .arg(it.value()->mnemonic());
-                    }
-                    else
-                    {
-                        qDebug() << QString("  MISSING: opcode=0x%1 key=0x%2")
-                            .arg(opc, 2, 16, QChar('0'))
-                            .arg(key, 8, 16, QChar('0'));
-                    }
-                }
-                qDebug() << "========================================";
-            }
-        }
-#else
+        // PAL HW opcodes: single grain handles all function codes
+        if (opcode >= 0x19 && opcode <= 0x1F && opcode != 0x1A)
+            func = 0;
 
+        if (opcode == 0x1D)
+            qDebug() << "break";
 
         auto it = m_table.find(key);
         if (it != m_table.end()) {
             return it.value();
         }
 
-#endif
+
+
         // Fallback: Try NONE platform
-        if (platform != GrainPlatform::NONE) {
-            return lookup(opcode, func, GrainPlatform::NONE);
+        if (platform != GrainPlatform::Alpha) {
+            return lookup(opcode, func, GrainPlatform::Alpha);
         }
 
         return nullptr;

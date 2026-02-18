@@ -784,7 +784,7 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase8_PALInfrastructure() cons
 		// ====================================================================
 		INFO_LOG("Configuring GrainResolver...");
 		GrainResolver& grainResolver = global_GrainResolver();
-		grainResolver.setPlatform(GrainPlatform::VMS);
+		grainResolver.setPlatform(GrainPlatform::Alpha);
 		phase.logDetail("GrainResolver configured for OpenVMS");
 		phase.logConfig("Platform", "VMS");
 

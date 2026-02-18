@@ -138,7 +138,7 @@ class alignas(16) PalService final
 
 	// Platform
 
-	GrainPlatform m_palVariant{ GrainPlatform::VMS };
+	GrainPlatform m_palVariant{ GrainPlatform::Alpha };
 public:
 	PalService(const PalService&)            = delete;
 	PalService& operator=(const PalService&) = delete;
@@ -5474,7 +5474,7 @@ public:
 
 		m_iprGlobalMaster->h->setIPL_Unsynced(claimed.ipl);
 
-		if (m_palVariant == GrainPlatform::VMS) {
+		if (m_palVariant == GrainPlatform::Alpha) {
 			const quint64 entryPA = m_iprGlobalMaster->x->scbb + (claimed.vector & 0xFFFF);
 			quint64 handlerPC = 0, handlerParam = 0;
 			if (m_guestMemory->read64(entryPA, handlerPC) != MEM_STATUS::Ok)

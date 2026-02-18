@@ -454,6 +454,7 @@ private:
     QMap<GrainType, QVector<GrainInfo>> m_grainsByType;
     QVector<DuplicateReport> m_duplicates;
     QVector<GapReport> m_gaps;
+    QSet<InstructionGrain*> seen; // stores makeGrainKey results
 
     // Statistics
     int m_totalGrains{ 0 };
@@ -494,6 +495,7 @@ inline void GrainArchitectureDump::collectGrains() noexcept
 {
     auto& registry = InstructionGrainRegistry::instance();
 
+    seen.clear();
     // Iterate through all possible opcodes (0x00 - 0x3F)
     for (quint16 opcode = 0; opcode <= 0x3F; ++opcode)
     {
@@ -503,19 +505,19 @@ inline void GrainArchitectureDump::collectGrains() noexcept
         {
             auto* grain = registry.lookup(static_cast<quint8>(opcode), func,
                 GrainPlatform::Alpha);
-            if (grain)
-            {
-                GrainInfo info;
-                info.opcode = static_cast<quint8>(opcode);
-                info.functionCode = func;
-                info.mnemonic = grain->mnemonic();
-                info.grainType = grain->grainType();
-                info.grainTypeName = grainTypeToString(info.grainType);
-                info.grain = grain;
+            if (!grain || seen.contains(grain))
+                break;
+            seen.insert(grain);
 
-                m_grains.append(info);
-                m_grainsByOpcode[QString("%1").arg(opcode, 2, 16, QChar('0'))].append(info);
-            }
+            GrainInfo info;
+            info.opcode = static_cast<quint8>(opcode);
+            info.functionCode = func;
+            info.mnemonic = grain->mnemonic();
+            info.grainType = grain->grainType();
+            info.grainTypeName = grainTypeToString(info.grainType);
+            info.grain = grain;
+            m_grains.append(info);
+            m_grainsByOpcode[QString("%1").arg(opcode, 2, 16, QChar('0'))].append(info);
         }
     }
 
