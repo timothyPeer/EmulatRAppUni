@@ -1,0 +1,78 @@
+			switch (iprIndex) {
+
+			// ?? Process context (HWPCB) ??
+		
+			
+			case IPR_MFPR_FEN:      
+			case IPR_MTPR_DATFX:     
+     
+			case IPR_KSP_WRITE:       m_iprGlobalMaster->h->ksp = value; break;
+
+			case IPR_EXC_ADDR:  m_iprGlobalMaster->h->exc_addr = value; break;
+
+			// ?? System registers (PalIPR) ??
+			case IPR_PAL_BASE:  m_iprGlobalMaster->x->pal_base = value; break;
+			case IPR_MFPR_PCBB:      m_iprGlobalMaster->x->pcbb = value; break;
+
+			case IPR_MFPR_SCBB:     
+			case IPR_VPTB:     
+			case IPR_VIRBND:
+			case IPR_SYSPTBR:   
+			case IPR_EXC_SUM:   m_iprGlobalMaster->x->exc_sum = value; break;
+			case IPR_I_CTL:     m_iprGlobalMaster->x->i_ctl = value; break;
+			case IPR_VA_CTL:    m_iprGlobalMaster->x->va_ctl = value; break;
+			case IPR_DC_CTL:    m_iprGlobalMaster->x->dc_ctl = value; break;
+			case IPR_PERFMON:   
+
+			// ?? Run-loop ??
+			case IPR_CC:        m_iprGlobalMaster->r->cc = value; break;
+
+			// ?? Write-only triggers (no storage, immediate action) ??
+			case IPR_HW_INT_CLR:
+				m_irqController->processHW_INT_CLR(m_cpuId, value);
+				break;
+
+			case IPR_DTB_IA:
+				m_spam->invalidateAll(m_cpuId, Realm::D);
+				break;
+			case IPR_DTB_IAP:
+				m_spam->invalidateAllProcess(m_cpuId, Realm::D);
+				break;
+			case IPR_DTB_IS:
+				m_spam->invalidateSingle(m_cpuId, Realm::D, value);
+				break;
+			case IPR_ITB_IA:
+				m_spam->invalidateAll(m_cpuId, Realm::I);
+				break;
+			case IPR_ITB_IAP:
+				m_spam->invalidateAllProcess(m_cpuId, Realm::I);
+				break;
+			case IPR_ITB_IS:
+				m_spam->invalidateSingle(m_cpuId, Realm::I, value);
+				break;
+
+			// ?? TLB staging (stored, committed by write buffer flush) ??
+			case IPR_DTB_TAG:
+				m_iprGlobalMaster->x->dtb_tag = value;
+				m_iprGlobalMaster->x->bufferedWriteTLB();
+				break;
+			case IPR_DTB_PTE:
+				m_iprGlobalMaster->x->dtb_pte = value;
+				m_iprGlobalMaster->x->bufferedWriteTLB();
+				break;
+			case IPR_ITB_TAG:
+				m_iprGlobalMaster->x->itb_tag = value;
+				m_iprGlobalMaster->x->bufferedWriteTLB();
+				break;
+			case IPR_ITB_PTE:
+				m_iprGlobalMaster->x->itb_pte = value;
+				m_iprGlobalMaster->x->bufferedWriteTLB();
+				break;
+
+			// ?? Read-only (writes ignored) ??
+			case IPR_ISUM:
+				break;  // Computed, no storage
+
+			default:
+				break;
+			}

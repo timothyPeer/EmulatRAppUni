@@ -1,0 +1,88 @@
+# CMakeLists.txt for Refactored Logging System
+
+cmake_minimum_required(VERSION 3.16)
+project(LoggingSystem)
+
+# Find Qt components
+find_package(Qt6 REQUIRED COMPONENTS Core Network)
+
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Enable Qt MOC processing
+set(CMAKE_AUTOMOC ON)
+
+# Header files
+set(LOGGING_HEADERS
+    LoggingSystem_core.h
+    LoggingMacros.h
+    LogMessage.h
+    ILogBackend.h
+    DiskLogBackend.h
+    ConsoleLogBackend.h
+    NetworkLogBackend.h
+    LogWriter.h
+    LoggingSystem.h
+    LockFreeRingBuffer_impl.h
+    LogEntry.h
+)
+
+# Source files
+set(LOGGING_SOURCES
+    LogMessage.cpp
+    DiskLogBackend.cpp
+    ConsoleLogBackend.cpp
+    NetworkLogBackend.cpp
+    LogWriter.cpp
+    LoggingSystem.cpp
+)
+
+# Create static library for the logging system
+add_library(LoggingSystem STATIC
+    ${LOGGING_HEADERS}
+    ${LOGGING_SOURCES}
+)
+
+# Link Qt libraries
+target_link_libraries(LoggingSystem
+    Qt6::Core
+    Qt6::Network
+)
+
+# Set include directories
+target_include_directories(LoggingSystem PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../coreLib  # For Axp_Attributes_core.h and LoggingSystem_core.h
+)
+
+# Compiler-specific settings
+if(MSVC)
+    target_compile_definitions(LoggingSystem PRIVATE _CRT_SECURE_NO_WARNINGS)
+    target_compile_options(LoggingSystem PRIVATE /W4)
+else()
+    target_compile_options(LoggingSystem PRIVATE -Wall -Wextra -pedantic)
+endif()
+
+# Add debug definitions
+target_compile_definitions(LoggingSystem PRIVATE
+    $<$<CONFIG:Debug>:_DEBUG>
+)
+
+# Example usage target (optional)
+add_executable(LoggingExample
+    example_usage.cpp  # You would create this file to demonstrate usage
+)
+
+target_link_libraries(LoggingExample LoggingSystem)
+
+# Install targets
+install(TARGETS LoggingSystem
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+install(FILES ${LOGGING_HEADERS}
+    DESTINATION include/LoggingSystem
+)

@@ -1,0 +1,12 @@
+#ifndef PIPELINELIB_GLOBAL_H
+#define PIPELINELIB_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(PIPELINELIB_LIBRARY)
+#define PIPELINELIB_EXPORT Q_DECL_EXPORT
+#else
+#define PIPELINELIB_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // PIPELINELIB_GLOBAL_H

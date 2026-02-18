@@ -1,0 +1,69 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(mmioLib LANGUAGES CXX)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+find_package(Qt6 REQUIRED COMPONENTS Core)
+
+# ====================================================================
+# mmioLib SHARED LIBRARY
+# ====================================================================
+add_library(mmioLib SHARED
+    mmioLib_global.h
+    mmiolib.cpp
+    mmiolib.h
+    global_mmioManager.h
+    helperLibrary_mmioLib.h
+    IDeviceEmulator.h
+    mmio_DegradedDevices.h
+    mmio_DeviceCatalog.cpp
+    mmio_DeviceCatalog.h
+    mmio_deviceTemplate.h
+    mmio_DMACoherencyManager.h
+    mmio_helper.h
+    mmio_Manager.h
+    mmio_PlatformTemplates.h
+    ScsiControllerKzpba.h
+    global_mmioManager_impl.h
+    mmio_Manager_impl.h
+    MMIO_Attribute.h
+)
+
+# ====================================================================
+# PUBLIC include directories
+# ====================================================================
+target_include_directories(mmioLib
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/..
+)
+
+# ====================================================================
+# Link libraries - coreLib FIRST for LoggingSystem MOC symbols
+# ====================================================================
+target_link_libraries(mmioLib
+    PUBLIC
+        coreLib
+        Qt6::Core
+)
+
+# ====================================================================
+# Compile definitions
+# ====================================================================
+target_compile_definitions(mmioLib PRIVATE MMIOLIB_LIBRARY)
+
+# ====================================================================
+# Windows-specific MOC symbol handling
+# ====================================================================
+if(WIN32)
+    # Ensure proper symbol visibility for Qt MOC symbols
+    set_target_properties(mmioLib PROPERTIES
+        LINK_FLAGS "/FORCE:MULTIPLE"  # Allow multiple symbol definitions temporarily
+    )
+endif()

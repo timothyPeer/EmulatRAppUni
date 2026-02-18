@@ -1,0 +1,7 @@
+#ifndef MEMORYEXECUTIONCONTEXT_IMPL_H
+#define MEMORYEXECUTIONCONTEXT_IMPL_H
+
+#include "MemoryExecutionContext.h"
+
+
+#endif // MEMORYEXECUTIONCONTEXT_IMPL_H

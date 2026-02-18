@@ -1,0 +1,240 @@
+# CLIPPER.BIN STRUCTURE ANALYSIS
+# ASA Emulator (c) 2025 Timothy Peer / eNVy Systems, Inc.
+
+## FILE INFORMATION
+
+- **Filename**: clipper.bin
+- **Size**: 2,097,152 bytes (2 MB = 0x200000)
+- **Type**: Alpha SRM Console Firmware
+- **Platform**: AlphaServer DS20 (Clipper)
+- **Load Address**: 0x20000000 (512 MB)
+
+---
+
+## MEMORY LAYOUT (After Loading at 0x20000000)
+
+```
+Offset in File | Physical Address  | Size    | Contents
+---------------|-------------------|---------|----------------------------------
+0x000000       | 0x20000000        | 12 bytes| Entry stub (requires R3 setup)
+0x000010       | 0x20000010        | ~8 KB   | Zeros (padding)
+0x002000       | 0x20002000        | 24 KB   | HWRPB structure (EMBEDDED!)
+0x008000       | 0x20008000        | ~32 KB  | More HWRPB tables/data
+0x010000       | 0x20010000        | ~1.9 MB | Main SRM console code <- REAL ENTRY!
+```
+
+---
+
+## ENTRY STUB ANALYSIS (Offset 0x0000)
+
+**Disassembly:**
+```
+0x20000000:  0x45c3f87f    LDAH  R14, -1921(R3)
+                           R14 = R3 + (-1921 << 16)
+
+0x20000004:  0x5cd811b7    JSR   R6, (R24), 0x1811b7
+                           Jump subroutine
+
+0x20000008:  0x00004fbf    CALL_PAL 0x4fbf
+```
+
+**CRITICAL**: This entry stub **REQUIRES R3 to be set by PALcode!**
+
+**Expected PALcode behavior:**
+1. PALcode initializes CPU
+2. PALcode sets `R3 = 0x20000000` (SRM base address)
+3. PALcode jumps to `0x20000000`
+4. Entry stub calculates real address using R3
+5. SRM jumps to main console code
+
+**Problem**: We don't have separate PALcode! The firmware expects to be called FROM PALcode.
+
+---
+
+## HWRPB STRUCTURE (Offset 0x2000)
+
+**Found at offset 0x2000 within clipper.bin!**
+
+```
+Field              | Offset | Value           | Notes
+-------------------|--------|-----------------|--------------------------------
+physicalBase       | 0x00   | 0x0000000000002000 | <- WRONG when loaded at 0x20000000!
+signature          | 0x08   | "HWRPB"         | ✓ Valid magic
+revision           | 0x10   | 14              | HWRPB version 14
+size               | 0x18   | 0x6000 (24 KB)  | HWRPB + tables
+primaryCPU         | 0x20   | 0               | CPU 0 is bootstrap
+pageSize           | 0x28   | 8192 (0x2000)   | 8 KB pages
+paSize             | 0x30   | 44              | 44-bit physical addresses
+asnMax             | 0x38   | 255             | Max ASN value
+```
+
+**CRITICAL BUG**: The embedded HWRPB has `physicalBase = 0x2000`, but when loaded at 0x20000000, the HWRPB is actually at **0x20002000**!
+
+**This field MUST be patched after loading:**
+```cpp
+// After loading clipper.bin to 0x20000000:
+quint64* hwrpbBase = (quint64*)(srmFirmware->buffer + 0x2000);
+*hwrpbBase = 0x20002000;  // Patch physicalBase field!
+```
+
+---
+
+## MAIN SRM CODE (Offset 0x10000)
+
+**Location in memory**: 0x20010000
+
+**This is where the REAL SRM console code starts!**
+
+**First 16 instructions are valid Alpha code** (not entry stub).
+
+**Recommended entry point**: 0x20010000 (skip entry stub entirely)
+
+---
+
+## BOOT OPTIONS
+
+### **Option 1: Skip Entry Stub (RECOMMENDED)**
+
+**Set PC directly to main code:**
+```cpp
+m_pc = 0x20010000;  // Main SRM code, bypass entry stub
+```
+
+**Pros:**
+- Simple, no PALcode emulation needed
+- Directly executes SRM console
+- No register setup required
+
+**Cons:**
+- Skips whatever initialization the entry stub does
+- May miss some setup code
+
+---
+
+### **Option 2: Emulate PALcode Setup**
+
+**Set R3 and execute entry stub:**
+```cpp
+// Set R3 to SRM base (PALcode convention)
+cpu0->setRegister(3, 0x20000000);
+
+// Set PC to entry stub
+m_pc = 0x20000000;
+
+// Start execution
+```
+
+**Pros:**
+- More authentic Alpha boot sequence
+- Executes all firmware initialization
+
+**Cons:**
+- Requires setting R3 before starting CPU
+- Entry stub may expect other PALcode setup
+
+---
+
+## HWRPB PATCHING REQUIREMENT
+
+**After loading clipper.bin, YOU MUST PATCH THE HWRPB:**
+
+```cpp
+bool loadSRMFirmware() {
+    // Load clipper.bin to 0x20000000
+    loadFirmwareToAddress("clipper.bin", 0x20000000);
+
+    // ========================================================================
+    // CRITICAL: Patch embedded HWRPB physicalBase field
+    // ========================================================================
+    quint8* firmwareBuffer = getFirmwareBuffer();
+    quint64* hwrpbPhysicalBase = reinterpret_cast<quint64*>(firmwareBuffer + 0x2000);
+
+    // Change from 0x2000 to 0x20002000
+    *hwrpbPhysicalBase = 0x20002000ULL;
+
+    DEBUG_LOG("Patched HWRPB physicalBase: 0x2000 -> 0x20002000");
+
+    return true;
+}
+```
+
+---
+
+## RECOMMENDED BOOT SEQUENCE
+
+1. **Phase 4**: Create memory regions (PAL, HWRPB, SRM, RAM)
+2. **Phase 4.5**: Initialize HWRPB at 0x2000 (separate from firmware HWRPB!)
+3. **Phase 5**: Load clipper.bin to 0x20000000
+4. **Phase 5.1**: **PATCH embedded HWRPB at 0x20002000**
+5. **Phase 14**: Set PC = 0x20010000 (main code)
+6. **Phase 14**: Start CPU
+
+**Alternative**: Set PC = 0x20000000 AND R3 = 0x20000000 (emulate PALcode)
+
+---
+
+## MEMORY MAP SUMMARY
+
+```
+Address Range          | Size   | Contents
+-----------------------|--------|----------------------------------------
+0x0000000000000000     | 64 KB  | PAL region (AlphaMemorySystem)
+0x0000000000002000     | 16 KB  | OUR HWRPB (AlphaMemorySystem) <- For OS
+0x0000000020000000     | 2 MB   | SRM firmware (SRMFirmwareRegion)
+  ├─ 0x20000000        | 12 B   | Entry stub
+  ├─ 0x20002000        | 24 KB  | Embedded HWRPB <- For SRM itself
+  └─ 0x20010000        | ~2 MB  | Main console code <- ENTRY POINT!
+0x0000000080000000     | 32 GB  | RAM (SafeMemory)
+```
+
+---
+
+## CRITICAL ACTION ITEMS
+
+1. ✅ **Load clipper.bin to 0x20000000**
+2. ❌ **PATCH embedded HWRPB at offset 0x2000** (NOT YET DONE!)
+3. ❌ **Set m_srmEntryPoint = 0x20010000** (Main code, not entry stub)
+4. ❌ **OR: Set m_srmEntryPoint = 0x20000000 AND R3 = 0x20000000**
+
+---
+
+## FILES TO UPDATE
+
+**1. loadSRMFirmware() - Add HWRPB patching:**
+```cpp
+// After loading firmware buffer
+quint64* hwrpbBase = reinterpret_cast<quint64*>(buffer + 0x2000);
+*hwrpbBase = 0x20002000;  // Patch physicalBase
+```
+
+**2. CPU Initialization - Set entry point:**
+```cpp
+// Option A: Direct to main code
+m_pc = 0x20010000;
+
+// Option B: Entry stub with R3 setup
+setRegister(3, 0x20000000);
+m_pc = 0x20000000;
+```
+
+**3. HWRPB Initialization - Two HWRPBs needed:**
+- 0x0000000000002000: For OS (separate initialization)
+- 0x0000000020002000: Embedded in firmware (patched after load)
+
+---
+
+## CONCLUSION
+
+**clipper.bin is NOT a standalone firmware!**
+
+It expects:
+- PALcode to set R3 = firmware base
+- HWRPB physicalBase to be patched after loading
+- Main entry at offset 0x10000 (0x20010000 when loaded)
+
+**RECOMMENDED APPROACH:**
+- Skip entry stub, jump directly to 0x20010000
+- Patch embedded HWRPB after loading
+- Keep separate HWRPB at 0x2000 for OS use
+
+**Tomorrow: Add HWRPB patching + set correct entry point!** 🎯

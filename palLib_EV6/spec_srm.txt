@@ -1,0 +1,303 @@
+
+QSettings Configuration: 
+[System]
+MemorySizeGB=32						// Memory in GigaBytes			
+/*
++200 PROCESSOR SERIAL NUMBER3,4
+Full DEC STD serial number for this processor module. This octaword field contains a
+10-character ASCII serial number determined at the time of manufacture; see COMPAQ
+STD 12 for format information.
+
+two Helper functions: 	setProcessorSerial_Active(QString) and QString getProcessorSerial_Active()
+*/
+
+hw-Serial-Number=AX122312341243134	
+
+Coherency-Cache=2048
+; Support for EV4/EV5/EV6
+Platform-Ev=6
+PTE-PageSize=8192
+; Number of I/O Threads (QThreading)
+ThreadCount=4
+; Number of AlphaCPUs
+Processor-Count=4
+; DS10[0]       // Tsunami chipset, 2 GB RAM max
+; DS20[1]       // Tsunami chipset, 2 GB RAM max
+; ES40[2]       // Clipper chipset, 64 GB RAM max
+; ES45[3]       // Clipper chipset, 64 GB RAM max
+; GS80[4]       // Wildfire chipset, 128 GB RAM max
+; GS160[5]      // Wildfire chipset, 256 GB RAM max
+; GS320[6]      // Wildfire chipset, 512 GB RAM max
+system_type_q8=2 
+; =============================================
+; Session Logging
+; =============================================
+[Session]
+fName=c:\asa\es40_instance.log
+logLevel=0
+Method=append
+logFileName=somelog.log
+updateMethod=append
+
+
+1. Scope and Goals
+
+Objective:
+Boot a Digital Alpha system firmware image (SRM) inside an emulator and reliably reach the interactive SRM console prompt:
+
+>>>
+
+Non-Goals (Explicitly Out of Scope):
+
+Booting OpenVMS, Tru64, or Linux kernels
+
+ARC/AlphaBIOS support
+
+Firmware update utilities (flash writers)
+
+NT firmware path
+
+This specification targets SRM console execution only, sufficient for:
+
+Device discovery
+
+Console commands (SHOW, SET, BOOT, TEST)
+
+Firmware-level PAL services
+
+Console I/O (serial)
+
+2. Firmware Model Assumptions
+2.1 SRM Identity
+
+The firmware being loaded is SRM Console Firmware, as shipped by Digital / Compaq for Alpha systems.
+
+Key characteristics:
+
+Runs entirely in PAL mode
+
+Owns early CPU, MMU, and interrupt state
+
+Exposes the >>> console loop
+
+Uses CALL_PAL heavily for internal services
+
+This corresponds to the “SRM FW” column in Alpha firmware release matrices 
+
+ALPHA_V53_FW_UPD
+
+.
+
+3. Required Emulator Subsystems (Hard Requirements)
+3.1 CPU Reset State (Architectural Contract)
+
+On reset, the emulator must establish:
+
+Element			Required State
+- PC			PAL reset vector
+- Mode			PAL mode
+- Interrupts	Disabled
+- MMU			Disabled (or identity-mapped)
+- FP		Disabled
+- Registers		Architecturally reset
+- HWPCB			Allocated and valid
+- ASN			0
+
+Critical:
+PC bit 0 must indicate PAL mode, and PAL shadow registers must be active.
+
+3.2 PALcode Entry Infrastructure
+
+SRM relies on precise PAL entry semantics.
+
+You must support:
+
+PAL Entry		Purpose
+- RESET			Initial firmware entry
+- MCHK			Machine check
+- ITB/DTB MISS	Firmware-handled TLB fills
+- CALL_PAL		Primary internal dispatch
+
+Implementation requirements:
+
+- Correct PAL vector computation   - We have resolvePalEntry_PC_inl.h - resolves PAL Vector for named and CALL_PAL
+- PC redirection via PAL vector base - TODO Clarity Needed
+- Preservation of continuation PC	 - TODO clarity needed
+- Correct HWPCB save/restore behavior - Done. 
+
+3.3 Memory Map (Minimal SRM-Viable)
+
+SRM does not require full platform memory maps, but does require:
+
+Region	Purpose
+- Low RAM			Firmware BSS / heap - TODO what is the memory range used by PALCode?
+- PALcode region	SRM executable image - TODO - clarity needed what this represents.
+- I/O space			Console devices		- TODO
+- Stack				Per-CPU	PAL stack - Done. Global HWPCB - indexed by CPU
+
+Identity mapping is acceptable initially, provided virtual accesses behave consistently.
+
+4. Firmware Image Loading
+4.1 Firmware Image Format
+
+SRM firmware images are typically:
+
+- Raw binary blobs
+- System-specific builds
+- Loaded as memory-resident PALcode
+
+Examples include:
+- AS500_V6_9.SYS
+- Platform-specific SRM ROM images
+
+The emulator must:
+
+Load the image verbatim
+- Place it at the expected physical address - TODO we need a function which reads from the SRM image and loads into (Guest,Safe, AlphaSystem) memory.
+-- We should create a constexpr that contains this address of this entry.
+- Set PC to the SRM reset entry	- TODO - Is does this occur in the PAL_RESET execute function. It seems reasonable.
+
+4.2 No Flash Emulation Required
+
+For boot-to-console:
+
+- Firmware does not need to be writable
+- Flash update utilities are out of scope
+- ROM may be emulated as read-only memory
+
+5. PAL Execution Model (Critical)
+5.1 CALL_PAL Semantics
+
+- SRM is effectively a PAL application.
+
+Your model must ensure:
+- CALL_PAL instructions do not retire like normal instructions
+- Architectural side effects occur inside PAL context
+- Results are committed immediately (not via pipeline writeback)
+- Continuation PC points to the CALL_PAL instruction on exceptions 
+
+This aligns with your current MBox-centric PAL execution design.
+
+5.2 Required PAL Services (Minimum Set)
+
+SRM will invoke at least:
+
+Category			Examples
+CPU state			MFPR / MTPR
+TLB					TBIS, TBIA
+Interrupt control	IPL, AST
+Console	I/O			Firmware internal
+Time				RPCC			- TODO we need to check support of this instruction function. 
+Cache				CFLUSH, DRAINA
+
+Stub implementations are acceptable initially, provided:
+
+- They do not fault
+- They return architecturally valid values
+
+6. Console I/O (Mandatory)
+6.1 Serial Console
+
+ SRM expects a working console device. (We need to create an interface to Putty - raw IO interface. 
+ -> notes: devices are stored in the deviceLib subproject
+ 
+	[UART/OPA[0]]
+	name=OPA0
+	iface=[Qt]Network
+	iface_port=1234
+	application=putty -load opa0
+
+ )
+
+Minimum requirement:
+- One serial port
+- Polled I/O
+- Byte-granular TX/RX
+
+SRM will:
+- decode the system type from the INI: 
+system_type_q8=2
+- Print banner text
+ " EmulatR - Alpha (AlphaServer ES40 6/667), Version 1.0 (Build 4)"
+ " (C) 2025 Timothy Peer / eNVy Systems, Inc.
+ " All rights reserved."
+
+
+
+- Accept line-oriented input
+- Run an interactive command loop
+
+If console I/O fails, SRM will appear to hang even if execution is correct.
+
+7. Interrupt and Exception Handling
+
+SRM requires:
+
+- precise synchronous exception delivery
+- Deferred asynchronous interrupts
+- Correct vector selection per exception class
+
+However:
+
+- External devices may be stubbed
+- Timer interrupts may be disabled
+- Only console-related interrupts must function -- TODO define what a console-related interrupt is.
+
+8. Boot Completion Criteria
+
+The emulator is considered SRM-boot complete when:
+- Firmware banner text is emitted  6.1 - - Print banner text
+- System inventory is performed (even if empty)
+-- we should have an system inventory iterator. 
+
+The main console loop is entered
+
+The >>> prompt is printed
+
+Console accepts input without fault
+
+Example observable output:
+
+Digital AlphaServer SRM Console V6.9
+>>>
+
+9. Validation Checklist
+
+You can validate SRM readiness by confirming:
+
+ PC enters PAL reset vector
+
+ CALL_PAL dispatch works
+
+ No unexpected machine checks
+
+ Console text prints
+
+ Prompt appears
+
+ SHOW VERSION executes without crash
+
+ Emulator remains stable at idle
+
+10. Design Alignment With Your Emulator
+
+This specification fits cleanly with:
+
+Your PAL-in-MBox execution model
+
+Sharded SMP-safe structures
+
+HWPCB-centric PC control
+
+Dedicated PAL dispatcher library
+
+No requirement for ARC or NT paths
+
+In other words: you are already architecturally aligned—SRM boot is primarily a matter of completeness, not redesign.
+
+11. Authoritative Reference
+
+Alpha Systems Firmware Update Overview (V5.3) – Digital Equipment Corporation
+
+
+ALPHA_V53_FW_UPD

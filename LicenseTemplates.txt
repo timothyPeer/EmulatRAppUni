@@ -1,0 +1,76 @@
+License Block
+
+// ============================================================================
+// LICENSE: eNVy Systems Non-Commercial License v1.1
+// ============================================================================
+// Everyone is permitted to use, copy, modify, and distribute this software
+// for personal, educational, and non-commercial purposes. Commercial use
+// requires a separate commercial license from eNVy Systems, Inc.
+//
+// NON-COMMERCIAL: Use, copy, modify, distribute freely
+// COMMERCIAL: Prohibited without separate license
+// Licensing: peert@envysys.com | https://envysys.com
+//
+// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+// See full license: LICENSE.txt in project root
+// ============================================================================
+
+Standard Header (All Files)
+
+// ============================================================================
+// PipelineSlot.h - Cache-Optimized Pipeline Slot Structure
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Assistance: Claude (Anthropic AI) / ChatGPT (OpenAI)
+//
+// Description:
+//   Cache-optimized pipeline slot structure for Alpha 21264 (EV6)
+//   instruction execution. Implements 6-stage pipeline state tracking
+//   with hot/cold data separation for optimal memory performance.
+//   Aligned to 64-byte cache lines for maximum throughput.
+//
+// Architecture: Alpha AXP 21264 (EV6) - 6-stage superscalar pipeline
+// Performance: 64-byte alignment, 2-3 cache lines per access (optimized)
+//
+// COMMERCIAL USE PROHIBITED - Contact peert@envysys.com for licensing
+// Contact: Timothy Peer | peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+//
+// References:
+//   [1996] Digital Semiconductor - Alpha 21064 and Alpha 21064A
+//          Microprocessors, Digital Equipment Corporation
+//   [1996] Alpha 21164 Microprocessor Hardware Reference Manual,
+//          Digital Equipment Corporation
+//   [1998] Alpha 21164 Microprocessor Data Sheet,
+//          Digital Equipment Corporation
+//   [1998] Alpha Architecture Reference Manual, Third Edition,
+//          Digital Press
+//   [1998] Alpha 21164 Microprocessor Hardware Reference Manual,
+//          Compaq Computer Corporation (December 1998)
+//   [1999] Alpha 21264 Microprocessor Data Sheet,
+//          Compaq Computer Corporation
+// ============================================================================
+
+#ifndef PIPELINE_SLOT_H
+#define PIPELINE_SLOT_H
+
+Standard Header
+
+// ============================================================================
+// [Filename] - [Brief Description]
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================

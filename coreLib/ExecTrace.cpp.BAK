@@ -1,0 +1,1166 @@
+// ============================================================================
+// ExecTrace.cpp - CPU Execution Trace Implementation
+// ============================================================================
+
+#include "ExecTrace.h"
+#include "ExecTraceMacros.h"
+#include "../configLib/global_EmulatorSettings.h"
+#include <QFile>
+#include <QFileInfo>
+#include <QDir>
+#include <QThread>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QTextStream>
+#include <QDateTime>
+#include <atomic>
+#include <array>
+#include <QHash>
+
+#include "grainFactoryLib/DecodedInstruction_inl.h"
+#include "machineLib/PipeLineSlot.h"
+
+// ============================================================================
+// Binary Record Formats
+// ============================================================================
+
+#pragma pack(push, 1)
+
+// Record header (common to all record types)
+struct RecordHeader {
+    uint8_t recordType;     // Record type enum
+    uint8_t cpuId;          // CPU that generated this record
+    uint16_t reserved;      // Padding
+    uint64_t timestamp;     // Cycle count or timestamp
+};
+
+// Instruction commit record
+struct CommitRecordBinary {
+    RecordHeader header;
+    uint64_t pc;
+    uint32_t instrWord;
+    uint8_t writeCount;
+    uint8_t flags;          // Branch taken, PAL mode, etc.
+    uint16_t reserved;
+    // Followed by writeCount WriteEntry structs
+};
+
+// Extended commit record with grain information
+struct CommitRecordWithGrain {
+    RecordHeader header;
+    uint64_t pc;
+    uint32_t instrWord;
+    uint8_t writeCount;
+    uint8_t flags;          // Branch taken, PAL mode, etc.
+
+    // NEW: Grain information
+    uint8_t opcode;         // 0x00-0x3F
+    uint16_t functionCode;  // Function code
+    uint8_t grainType;      // GrainType enum
+    bool grainFound;        // Was grain lookup successful?
+    char mnemonic[12];      // Instruction mnemonic (e.g., "ADDQ")
+    char grainTypeName[16];   // NEW: e.g., "IntArith", "MemLoad"
+    uint16_t reserved;
+    // Followed by writeCount WriteEntry structs
+};
+
+// Interrupt record
+struct InterruptRecord {
+    RecordHeader header;
+    uint64_t fromPC;        // PC at point of interruption
+    uint64_t vector;        // PAL entry vector (destination)
+    uint8_t  interruptType; // HW_INT, AST, CLK, etc.
+    uint8_t  ipl;           // IPL at time of interrupt
+    uint16_t reserved;
+};
+
+
+// IPI send record
+struct IpiSendRecord {
+    RecordHeader header;
+    uint32_t dstMask;
+    uint16_t reason;
+    uint16_t reserved;
+    uint64_t ipiSeq;
+};
+
+// IPI receive record
+struct IpiRecvRecord {
+    RecordHeader header;
+    uint16_t srcCpu;
+    uint16_t reason;
+    uint32_t reserved;
+    uint64_t ipiSeq;
+};
+
+// TLB invalidate record
+struct TlbInvalidateRecord {
+    RecordHeader header;
+    uint16_t op;
+    uint16_t reserved;
+    uint32_t asn;
+    uint64_t va;
+};
+
+// Marker record
+struct MarkerRecord {
+    RecordHeader header;
+    uint32_t markerId;
+    uint32_t reserved;
+    uint64_t arg0;
+    uint64_t arg1;
+    uint64_t arg2;
+};
+
+#pragma pack(pop)
+
+
+
+// ============================================================================
+// Per-CPU Ring Buffer
+// ============================================================================
+
+class CpuRingBuffer {
+public:
+    CpuRingBuffer(uint16_t cpuId, uint32_t capacity)
+        : m_cpuId(cpuId)
+        , m_capacity(capacity)
+        , m_writeIndex(0)
+        , m_readIndex(0)
+    {
+        m_buffer.resize(capacity * MAX_RECORD_SIZE);
+    }
+
+    bool write(const void* data, size_t size) noexcept {
+        if (size > MAX_RECORD_SIZE) return false;
+
+        uint32_t nextWrite = (m_writeIndex + 1) % m_capacity;
+        if (nextWrite == m_readIndex) {
+            // Ring full - overwrite oldest
+            m_readIndex = (m_readIndex + 1) % m_capacity;
+        }
+
+        size_t offset = m_writeIndex * MAX_RECORD_SIZE;
+        std::memcpy(m_buffer.data() + offset, data, size);
+
+        m_writeIndex = nextWrite;
+        return true;
+    }
+
+    bool read(void* data, size_t maxSize) noexcept {
+        if (m_readIndex == m_writeIndex) {
+            return false; // Empty
+        }
+
+        size_t offset = m_readIndex * MAX_RECORD_SIZE;
+        size_t size = std::min(maxSize, MAX_RECORD_SIZE);
+        std::memcpy(data, m_buffer.data() + offset, size);
+
+        m_readIndex = (m_readIndex + 1) % m_capacity;
+        return true;
+    }
+
+    bool isEmpty() const noexcept {
+        return m_readIndex == m_writeIndex;
+    }
+
+    uint16_t cpuId() const noexcept { return m_cpuId; }
+
+private:
+    static constexpr size_t MAX_RECORD_SIZE = 512;
+
+    uint16_t m_cpuId;
+    uint32_t m_capacity;
+    std::atomic<uint32_t> m_writeIndex;
+    std::atomic<uint32_t> m_readIndex;
+    std::vector<uint8_t> m_buffer;
+};
+
+// ============================================================================
+// ExecTrace Static Implementation
+// ============================================================================
+class ExecTrace::Impl {
+public:
+    // Configuration
+    static inline bool s_initialized{ false };
+    static inline bool s_enabled{ false };
+    static inline QString s_mode;
+    static inline uint32_t s_cpuMask{ 0 };
+    static inline uint16_t s_maxCpus{ 16 };
+    static inline QString s_outputDir;
+
+    // Per-CPU ring buffers
+    static inline std::array<CpuRingBuffer*, 16> s_cpuRings{};
+
+    // Per-CPU trace files and streams
+    static inline std::array<QFile*, 16> s_traceFiles{};
+    static inline std::array<QTextStream*, 16> s_csvStreams{};
+    static inline std::array<quint64, 16> s_sequenceCounters{};
+    static inline QTextStream* getStream(quint16 cpuId);
+
+    // Writer thread
+    static inline class ExecTraceWriter* s_writerThread{ nullptr };
+
+    // Format and flush settings
+    static inline bool s_immediateFlush{ false };
+    static inline QString s_traceFilePattern;
+    static inline QString s_format{ "csv" };  //  ADD inline and default value
+
+    // Assembly output (NEW)
+    static inline QHash<uint16_t, QTextStream*> s_asmStreams;  //  ADD inline
+    static inline QHash<uint16_t, QFile*> s_asmFiles;          //  ADD inline
+
+    // Thread safety
+    static inline QMutex s_initMutex;
+};
+
+// ============================================================================
+// Writer Thread (Async File I/O) - NOW AFTER IMPL
+// ============================================================================
+
+class ExecTraceWriter : public QThread {
+public:
+    ExecTraceWriter() : m_running(false) {}
+
+    void run() override {
+        m_running = true;
+        qDebug() << "ExecTrace writer thread started";
+
+        while (m_running) {
+            // Drain all CPU ring buffers
+            drainAllRings();
+
+            // Sleep for flush interval
+            QThread::msleep(50); // 50ms flush interval
+        }
+        
+        qDebug() << "ExecTrace writer thread stopped";
+    }
+
+    void stop() {
+        m_running = false;
+        wait();
+        
+        // Final flush
+        drainAllRings();
+        
+        // Close files
+        for (int i = 0; i < 16; ++i) {
+            if (ExecTrace::Impl::s_traceFiles[i]) {
+                ExecTrace::Impl::s_traceFiles[i]->flush();
+            }
+        }
+    }
+
+private:
+    void drainAllRings() {
+        for (int cpu = 0; cpu < 16; ++cpu) {
+            auto* ring = ExecTrace::Impl::s_cpuRings[cpu];
+            auto* file = ExecTrace::Impl::s_traceFiles[cpu];
+            
+            if (!ring || !file || !file->isOpen()) continue;
+            
+            QTextStream out(file);
+            
+            // Drain all available records
+            uint8_t buffer[512];
+            while (ring->read(buffer, sizeof(buffer))) {
+                // Parse binary record
+                RecordHeader* hdr = reinterpret_cast<RecordHeader*>(buffer);
+                
+                if (hdr->recordType == RECORD_COMMIT) {
+                    CommitRecordBinary* rec = reinterpret_cast<CommitRecordBinary*>(buffer);
+                    
+                    // Write as CSV: SEQ,PC,OPCODE,INSTR
+                    quint8 opcode = (rec->instrWord >> 26) & 0x3F;
+                    quint64 seq = ExecTrace::Impl::s_sequenceCounters[cpu]++;
+                    
+                    out << seq << ","
+                        << "0x" << QString::number(rec->pc, 16).toUpper().rightJustified(16, '0') << ","
+                        << "0x" << QString::number(opcode, 16).toUpper().rightJustified(2, '0') << ","
+                        << "0x" << QString::number(rec->instrWord, 16).toUpper().rightJustified(8, '0') << "\n";
+                }
+                else if (hdr->recordType == RECORD_INTERRUPT) {
+                    InterruptRecord* rec = reinterpret_cast<InterruptRecord*>(buffer);
+                    quint64 seq = ExecTrace::Impl::s_sequenceCounters[cpu]++;
+                    out << seq << ","
+                        << "INTERRUPT,"
+                        << hx64(rec->fromPC) << ","
+                        << hx64(rec->vector) << ","
+                        << static_cast<int>(rec->interruptType) << ","
+                        << "IPL=" << static_cast<int>(rec->ipl) << "\n";
+                }
+
+            }
+            ExecTrace::Impl::s_immediateFlush = global_EmulatorSettings().podData.execTrace.immediateFlush;
+
+            out.flush();
+        }
+    }
+
+    std::atomic<bool> m_running;
+};
+
+// ============================================================================
+// ExecTrace Public API Implementation
+// ============================================================================
+
+bool ExecTrace::initialize(const QString& format) noexcept
+{
+    QMutexLocker lock(&Impl::s_initMutex);
+
+    if (Impl::s_initialized) {
+        qDebug() << "ExecTrace: Already initialized";
+        return true;
+    }
+
+    qDebug() << "ExecTrace initializing with format:" << Impl::s_format;
+    Impl::s_format = format.toLower();
+
+    // Load configuration
+    auto& settings = global_EmulatorSettings();
+
+    Impl::s_enabled = settings.podData.execTrace.execTraceEnabled;
+
+    if (!Impl::s_enabled) {
+        qDebug() << "ExecTrace: Disabled in configuration";
+        Impl::s_initialized = true;
+        return true;
+    }
+
+    Impl::s_mode = settings.podData.execTrace.execTraceMode;
+    Impl::s_cpuMask = settings.podData.execTrace.cpuMask;
+    Impl::s_immediateFlush = settings.podData.execTrace.immediateFlush;    //  NEW!
+    Impl::s_format = settings.podData.execTrace.traceFormat;                //  NEW!
+    Impl::s_traceFilePattern = settings.podData.execTrace.traceFilePattern;
+    Impl::s_outputDir = settings.podData.execTrace.traceOutputDir;
+
+    QDir dir;
+    if (!dir.exists(Impl::s_outputDir)) {
+        if (!dir.mkpath(Impl::s_outputDir)) {
+            qWarning() << "Failed to create ExecTrace output directory:" << Impl::s_outputDir;
+            return false;
+        }
+        qDebug() << "Created ExecTrace output directory:" << Impl::s_outputDir;
+    }
+
+    // Initialize per-CPU sequence counters
+    for (int i = 0; i < Impl::s_maxCpus; ++i) {
+        Impl::s_sequenceCounters[i] = 0;
+    }
+
+    qDebug() << "ExecTrace: CPU Mask:" << QString::number(Impl::s_cpuMask, 16);
+    qDebug() << "ExecTrace: Format:" << Impl::s_format;
+    qDebug() << "ExecTrace: Immediate Flush:" << (Impl::s_immediateFlush ? "ON" : "OFF");
+
+    // Create per-CPU ring buffers AND trace files
+    uint32_t ringSize = settings.podData.execTrace.traceRingRecordsPerCpu;
+
+    for (int i = 0; i < Impl::s_maxCpus; ++i) {
+        if (!(Impl::s_cpuMask & (1U << i))) {
+            continue;  // Skip CPUs not in mask
+        }
+
+        // Create ring buffer (only if not immediate flush)
+        if (!Impl::s_immediateFlush) {
+            Impl::s_cpuRings[i] = new CpuRingBuffer(i, ringSize);
+            qDebug() << "ExecTrace: Created ring buffer for CPU" << i;
+        }
+
+        // Create trace file
+        QString filename = Impl::s_traceFilePattern;
+        filename.replace("{cpu}", QString::number(i));
+
+        Impl::s_traceFiles[i] = new QFile(filename);
+        if (Impl::s_traceFiles[i]->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+            qDebug() << "ExecTrace: Opened trace file:" << filename;
+
+            //  Create CSV stream for this CPU
+            if (Impl::s_format == "csv") {
+                Impl::s_csvStreams[i] = new QTextStream(Impl::s_traceFiles[i]);
+
+                // Write CSV header
+                *Impl::s_csvStreams[i] << "# Alpha AXP Execution Trace - CPU " << i << "\n";
+                *Impl::s_csvStreams[i] << "# Generated: " << QDateTime::currentDateTime().toString(Qt::ISODate) << "\n";
+                *Impl::s_csvStreams[i] << "# Format: SEQ,PC,OPCODE,FUNC,INSTR,MNEMONIC,GRAIN_TYPE,FOUND\n";
+                *Impl::s_csvStreams[i] << "#\n";
+                Impl::s_csvStreams[i]->flush();
+            }
+            else {
+                // Binary format - write simpler header
+                QTextStream out(Impl::s_traceFiles[i]);
+                out << "# ASA Emulator Execution Trace\n";
+                out << "# Generated: " << QDateTime::currentDateTime().toString(Qt::ISODate) << "\n";
+                out << "# CPU: " << i << "\n";
+                out << "# Format: SEQ,PC,OPCODE,INSTR\n";
+                out << "#\n";
+                out.flush();
+            }
+        }
+        else {
+            qWarning() << "ExecTrace: Failed to open file:" << filename;
+            delete Impl::s_traceFiles[i];
+            Impl::s_traceFiles[i] = nullptr;
+        }
+    }
+
+    // Start writer thread (only if continuous mode AND buffered)
+    if (Impl::s_mode == "continuous" && !Impl::s_immediateFlush) {
+        Impl::s_writerThread = new ExecTraceWriter();
+        Impl::s_writerThread->start();
+        qDebug() << "ExecTrace: Started writer thread (continuous mode)";
+    }
+    else if (Impl::s_immediateFlush) {
+        qDebug() << "ExecTrace: Immediate flush mode - writer thread disabled";
+    }
+
+
+    // Create assembly output files if format includes "asm"
+    if (Impl::s_format == "asm" || Impl::s_format == "both") {
+        for (uint16_t cpu = 0; cpu < Impl::s_maxCpus; ++cpu) {
+            if (!(Impl::s_cpuMask & (1U << cpu))) continue;
+
+            QString asmPath = QString("%1/trace_cpu%2.asm")
+                .arg(Impl::s_outputDir)
+                .arg(cpu);
+
+            QFile* asmFile = new QFile(asmPath);
+            if (!asmFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
+                qWarning() << "Failed to open assembly trace file:" << asmPath;
+                delete asmFile;
+                continue;
+            }
+
+            QTextStream* asmStream = new QTextStream(asmFile);
+            // asmStream->setCodec("UTF-8");
+
+            Impl::s_asmFiles[cpu] = asmFile;
+            Impl::s_asmStreams[cpu] = asmStream;
+
+            // Write assembly file header
+            *asmStream << "; Alpha AXP Assembly Trace - CPU " << cpu << "\n";
+            *asmStream << "; Format: ADDRESS: HEXCODE  MNEMONIC OPERANDS\n";
+            *asmStream << ";\n";
+            asmStream->flush();
+        }
+    }
+
+    Impl::s_initialized = true;
+
+    qDebug() << "ExecTrace: Initialized successfully";
+    qDebug() << "  Mode:       " << Impl::s_mode;
+    qDebug() << "  CPU Mask:   0x" << QString::number(Impl::s_cpuMask, 16);
+    qDebug() << "  Format:     " << Impl::s_format;
+
+    return true;
+}
+
+void ExecTrace::shutdown() noexcept
+{
+    QMutexLocker lock(&Impl::s_initMutex);
+
+    if (!Impl::s_initialized) return;
+
+    // Stop writer thread
+    if (Impl::s_writerThread) {
+        Impl::s_writerThread->stop();
+        delete Impl::s_writerThread;
+        Impl::s_writerThread = nullptr;
+    }
+
+    // Close per-CPU streams and files
+    for (int i = 0; i < Impl::s_maxCpus; ++i) {
+        // Close CSV stream
+        if (Impl::s_csvStreams[i]) {
+            Impl::s_csvStreams[i]->flush();
+            delete Impl::s_csvStreams[i];
+            Impl::s_csvStreams[i] = nullptr;
+        }
+
+        // Close file
+        if (Impl::s_traceFiles[i]) {
+            if (Impl::s_traceFiles[i]->isOpen()) {
+                Impl::s_traceFiles[i]->close();
+            }
+            delete Impl::s_traceFiles[i];
+            Impl::s_traceFiles[i] = nullptr;
+
+            qDebug() << "ExecTrace: CPU" << i << "traced" << Impl::s_sequenceCounters[i] << "instructions";
+        }
+
+        // Delete ring buffer
+        if (Impl::s_cpuRings[i]) {
+            delete Impl::s_cpuRings[i];
+            Impl::s_cpuRings[i] = nullptr;
+        }
+    }
+
+    // Close assembly streams
+    for (auto it = Impl::s_asmStreams.begin(); it != Impl::s_asmStreams.end(); ++it) {
+        delete it.value();
+    }
+    Impl::s_asmStreams.clear();
+
+    for (auto it = Impl::s_asmFiles.begin(); it != Impl::s_asmFiles.end(); ++it) {
+        it.value()->close();
+        delete it.value();
+    }
+    Impl::s_asmFiles.clear();
+
+    Impl::s_initialized = false;
+    qDebug() << "ExecTrace: Shutdown complete";
+}
+
+// In ExecTrace.cpp
+
+
+// ============================================================================
+// PipelineSlot additions  add these fields to your PipelineSlot struct
+// ============================================================================
+//
+// struct PipelineSlot {
+//     ...existing fields...
+//
+//     // PC Path Tracing fields (populated during EX/MEM stages)
+//     uint64_t nextPC;            // actual next PC after this instruction retires
+//     uint64_t predictedPC;       // branch predictor's target (if branch/jump)
+//     uint64_t linkValue;         // value written to Ra for BSR/JSR (return addr)
+//     uint64_t jumpTarget;        // actual resolved target for JSR/JMP/RET
+//     uint64_t branchTestValue;   // register value tested for conditional branches
+//     uint32_t cycle;             // cycle number when instruction was fetched
+//     uint32_t retireCycle;       // cycle number when instruction retired (WB)
+//
+//     enum class PCReason : uint8_t {
+//         Sequential = 0,         // PC + 4
+//         Fallthrough,            // branch not taken, PC + 4
+//         BranchTaken,            // conditional branch taken
+//         BSR,                    // subroutine branch (unconditional)
+//         BR,                     // unconditional branch
+//         JSR,                    // jump to subroutine via register
+//         RET,                    // return via register
+//         JMP,                    // jump via register
+//         JSR_COROUTINE,          // coroutine jump
+//         PALEntry,               // entered PAL mode
+//         PALExit,                // exited PAL mode
+//         Mispredict,             // pipeline flush, redirect
+//         Exception,              // exception taken
+//     } pcReason;
+//
+//     bool mispredict;            // true if pipeline was flushed
+// };
+//
+// ============================================================================
+
+// Alpha AXP register names (DEC convention)
+static const char* regName(quint8 reg) {
+    static const char* names[] = {
+        "r0",  "r1",  "r2",  "r3",  "r4",  "r5",  "r6",  "r7",
+        "r8",  "r9",  "r10", "r11", "r12", "r13", "r14", "r15",
+        "r16", "r17", "r18", "r19", "r20", "r21", "r22", "r23",
+        "r24", "r25", "r26", "r27", "r28", "r29", "r30", "r31"
+    };
+    return names[reg & 0x1F];
+}
+
+// DEC symbolic aliases for annotation
+static const char* regAlias(quint8 reg) {
+    switch (reg) {
+    case 26: return "RA";
+    case 27: return "PV";
+    case 28: return "AT";
+    case 29: return "GP";
+    case 30: return "SP";
+    case 31: return "zero";
+    default: return nullptr;
+    }
+}
+
+
+
+
+// Reason tag string for PC path
+static const char* pcReasonTag(PipelineSlot::PCReason reason) {
+    switch (reason) {
+    case PipelineSlot::PCReason::Sequential:     return "sequential";
+    case PipelineSlot::PCReason::Fallthrough:     return "not-taken";
+    case PipelineSlot::PCReason::BranchTaken:     return "taken";
+    case PipelineSlot::PCReason::BSR:             return "bsr";
+    case PipelineSlot::PCReason::BR:              return "br";
+    case PipelineSlot::PCReason::JSR:             return "jsr";
+    case PipelineSlot::PCReason::RET:             return "ret";
+    case PipelineSlot::PCReason::JMP:             return "jmp";
+    case PipelineSlot::PCReason::JSR_COROUTINE:   return "jsr-co";
+    case PipelineSlot::PCReason::PALEntry:        return "pal-entry";
+    case PipelineSlot::PCReason::PALExit:         return "pal-exit";
+    case PipelineSlot::PCReason::Mispredict:      return "mispredict";
+    case PipelineSlot::PCReason::Exception:       return "exception";
+    default:                                      return "???";
+    }
+}
+
+void ExecTrace::formatDECAssembly(
+    QTextStream* stream,
+    uint64_t pc,
+    uint32_t raw,
+    const char* mnemonic,
+    const PipelineSlot& slot) noexcept
+{
+    quint8 opcode = (raw >> 26) & 0x3F;
+    quint8 ra = (raw >> 21) & 0x1F;
+    quint8 rb = (raw >> 16) & 0x1F;
+    quint8 rc = raw & 0x1F;
+
+    // =====================================================================
+    // PART 1: DEC Assembly — address, hex, mnemonic, operands
+    // =====================================================================
+
+    // Cycle and PC
+    QString line = QString("[%1] %2: %3  ")
+        .arg(slot.cycle, 5, 10, QChar('0'))
+        .arg(pc, 16, 16, QChar('0'))
+        .arg(raw, 8, 16, QChar('0'));
+
+    // Mnemonic (left-justified, 8 chars)
+    QString mne = QString(mnemonic ? mnemonic : "???").toUpper();
+    line += mne.leftJustified(8, ' ');
+
+    // Operand + idiom comment
+    QString operands;
+    QString idiom;    // pseudo-op annotation
+
+
+    bool isMem = isMemoryFormat(slot.di) ||
+        (opcode >= 0x08 && opcode <= 0x0F) ||
+        (opcode >= 0x20 && opcode <= 0x2F);
+
+    if (opcode == 0x00) {
+        // ==================== CALL_PAL ====================
+        quint32 func = raw & 0x03FFFFFF;
+        operands = QString("0x%1").arg(func, 0, 16);
+        switch (func) {
+        case 0x0000: idiom = "HALT";    break;
+        case 0x0080: idiom = "BPT";     break;
+        case 0x0083: idiom = "CALLSYS"; break;
+        case 0x0086: idiom = "IMB";     break;
+        case 0x009E: idiom = "RDUNIQ";  break;
+        case 0x009F: idiom = "WRUNIQ";  break;
+        case 0x00AA: idiom = "GENTRAP"; break;
+        default: break;
+        }
+    }
+    else if (isMem) {
+        // ==================== MEMORY FORMAT ====================
+        qint16 disp = static_cast<qint16>(raw & 0xFFFF);
+        operands = QString("%1, %2(%3)")
+            .arg(regName(ra))
+            .arg(disp)
+            .arg(regName(rb));
+
+        if (opcode == 0x09) {
+            idiom = QString("disp<<16 = 0x%1")
+                .arg(static_cast<quint32>(static_cast<quint16>(disp)) << 16, 0, 16);
+        }
+    }
+    else if (isOperateFormat(slot.di)) {
+        // ==================== OPERATE FORMAT ====================
+        if (raw & 0x1000) {
+            quint8 lit = (raw >> 13) & 0xFF;
+            operands = QString("%1, #0x%2, %3")
+                .arg(regName(ra))
+                .arg(lit, 0, 16)
+                .arg(regName(rc));
+        }
+        else {
+            operands = QString("%1, %2, %3")
+                .arg(regName(ra))
+                .arg(regName(rb))
+                .arg(regName(rc));
+        }
+
+        // Idiom detection
+        if (ra == 31 && rb == 31 && rc != 31) {
+            idiom = QString("CLR %1").arg(regName(rc));
+        }
+        else if (rb == 31 && ra != 31 && rc != 31 &&
+            (mne == "ADDQ" || mne == "BIS")) {
+            idiom = QString("MOV %1, %2").arg(regName(ra)).arg(regName(rc));
+        }
+        else if (ra == 31 && rc != 31 && mne == "ADDQ") {
+            if (raw & 0x1000) {
+                quint8 lit = (raw >> 13) & 0xFF;
+                idiom = QString("LDI %1, #0x%2").arg(regName(rc)).arg(lit, 0, 16);
+            }
+            else {
+                idiom = QString("MOV %1, %2").arg(regName(rb)).arg(regName(rc));
+            }
+        }
+    }
+    else if (isBranchFormat(slot.di)) {
+        // ==================== BRANCH FORMAT ====================
+        qint32 disp21 = static_cast<qint32>(raw << 11) >> 9;
+        quint64 target = pc + 4 + disp21;
+        operands = QString("%1, 0x%2")
+            .arg(regName(ra))
+            .arg(target, 16, 16, QChar('0'));
+
+        if (opcode == 0x34 && disp21 == 0) {
+            idiom = QString("%1 <- PC+4 (PIC base)").arg(regName(ra));
+        }
+    }
+    else if (isJumpFormat(slot.di)) {
+        // ==================== JUMP FORMAT ====================
+        quint8 jumpType = (raw >> 14) & 0x3;
+        quint16 hint = raw & 0x3FFF;
+
+        // Override mnemonic with specific jump subtype
+        switch (jumpType) {
+        case 0: mne = "JMP"; break;
+        case 1: mne = "JSR"; break;
+        case 2: mne = "RET"; break;
+        case 3: mne = "JSR_CO"; break;
+        }
+        // Rebuild prefix with corrected mnemonic
+        line = QString("[%1] %2: %3  ")
+            .arg(slot.cycle, 5, 10, QChar('0'))
+            .arg(pc, 16, 16, QChar('0'))
+            .arg(raw, 8, 16, QChar('0'));
+        line += mne.leftJustified(8, ' ');
+
+        operands = QString("%1, (%2)")
+            .arg(regName(ra))
+            .arg(regName(rb));
+        if (hint != 0) {
+            operands += QString(", 0x%1").arg(hint, 0, 16);
+        }
+
+        if (jumpType == 2 && ra == 31 && rb == 26) {
+            idiom = "return";
+        }
+    }
+    else {
+        operands = QString("??? (opcode=0x%1)").arg(opcode, 2, 16, QChar('0'));
+    }
+
+    line += operands;
+
+    // =====================================================================
+    // PART 2: PC Path  next PC, reason, register context for branches
+    // =====================================================================
+
+    QString pcPath;
+
+    // Build the path annotation based on reason
+    switch (slot.pcReason) {
+
+    case PipelineSlot::PCReason::Sequential:
+    case PipelineSlot::PCReason::Fallthrough:
+        pcPath = QString("| next: %1  [%2]")
+            .arg(slot.nextPC, 16, 16, QChar('0'))
+            .arg(pcReasonTag(slot.pcReason));
+        break;
+
+    case PipelineSlot::PCReason::BranchTaken:
+        // Show tested register value for conditional branches
+        pcPath = QString("| next: %1  [%2] %3=%4")
+            .arg(slot.nextPC, 16, 16, QChar('0'))
+            .arg(pcReasonTag(slot.pcReason))
+            .arg(regName(ra))
+            .arg(slot.branchTestValue, 0, 16);
+        break;
+
+    case PipelineSlot::PCReason::BSR:
+    case PipelineSlot::PCReason::BR:
+        pcPath = QString("| next: %1  [%2] %3<-%4")
+            .arg(slot.nextPC, 16, 16, QChar('0'))
+            .arg(pcReasonTag(slot.pcReason))
+            .arg(regName(ra))
+            .arg(slot.linkValue, 16, 16, QChar('0'));
+        break;
+
+    case PipelineSlot::PCReason::JSR:
+    case PipelineSlot::PCReason::JMP:
+    case PipelineSlot::PCReason::JSR_COROUTINE:
+        pcPath = QString("| next: %1  [%2 %3=0x%4] %5<-0x%6")
+            .arg(slot.nextPC, 16, 16, QChar('0'))
+            .arg(pcReasonTag(slot.pcReason))
+            .arg(regName(rb))
+            .arg(slot.jumpTarget, 0, 16)
+            .arg(regName(ra))
+            .arg(slot.linkValue, 0, 16);
+        break;
+
+    case PipelineSlot::PCReason::RET:
+        pcPath = QString("| next: %1  [%2 %3=0x%4]")
+            .arg(slot.nextPC, 16, 16, QChar('0'))
+            .arg(pcReasonTag(slot.pcReason))
+            .arg(regName(rb))
+            .arg(slot.jumpTarget, 0, 16);
+        break;
+
+    case PipelineSlot::PCReason::PALEntry:
+        pcPath = QString("| next: %1  [pal-entry func=0x%2]")
+            .arg(slot.nextPC, 16, 16, QChar('0'))
+            .arg(raw & 0x03FFFFFF, 0, 16);
+        break;
+
+    case PipelineSlot::PCReason::PALExit:
+        pcPath = QString("| next: %1  [pal-exit]")
+            .arg(slot.nextPC, 16, 16, QChar('0'));
+        break;
+
+    case PipelineSlot::PCReason::Mispredict:
+        pcPath = QString("| next: %1  [MISPREDICT predicted=0x%2 actual=0x%3] ***FLUSH***")
+            .arg(slot.nextPC, 16, 16, QChar('0'))
+            .arg(slot.predictedPC, 0, 16)
+            .arg(slot.nextPC, 0, 16);
+        break;
+
+    case PipelineSlot::PCReason::Exception:
+        pcPath = QString("| next: %1  [EXCEPTION]")
+            .arg(slot.nextPC, 16, 16, QChar('0'));
+        break;
+
+    default:
+        pcPath = QString("| next: %1")
+            .arg(slot.nextPC, 16, 16, QChar('0'));
+        break;
+    }
+
+    // =====================================================================
+    // PART 3: Assemble final line
+    // =====================================================================
+
+    // Pad operands column to fixed width before PC path
+    while (line.length() < 62) {
+        line += ' ';
+    }
+    line += pcPath;
+
+    // Append idiom as trailing comment if present
+    if (!idiom.isEmpty()) {
+        line += QString("  ; %1").arg(idiom);
+    }
+
+    // Mispredict banner — make it impossible to miss
+    if (slot.mispredict) {
+        *stream << "; *** PIPELINE FLUSH — MISPREDICT ***\n";
+    }
+
+    *stream << line << "\n";
+}
+
+ void ExecTrace::setFormat(const QString& format) noexcept
+{
+    Impl::s_format = format.toLower();
+    qDebug() << "ExecTrace format set to:" << Impl::s_format;
+}
+ QString ExecTrace::getFormat() noexcept
+{
+    return Impl::s_format;
+}
+
+void ExecTrace::recordCommit(uint16_t cpuId, uint64_t pc, uint32_t instrWord) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (cpuId >= Impl::s_maxCpus) return;
+    if (!(Impl::s_cpuMask & (1U << cpuId))) return;
+
+    auto* ring = Impl::s_cpuRings[cpuId];
+    if (!ring) return;
+
+    CommitRecordBinary rec{};
+    rec.header.recordType = RECORD_COMMIT;
+    rec.header.cpuId = cpuId;
+    rec.header.timestamp = 0;
+    rec.pc = pc;
+    rec.instrWord = instrWord;
+    rec.writeCount = 0;
+    rec.flags = 0;
+
+    ring->write(&rec, sizeof(rec));
+}
+
+void ExecTrace::recordCommitWithWrites(uint16_t cpuId, uint64_t pc, uint32_t instrWord,
+                                       const WriteEntry* writes, uint8_t writeCount) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (cpuId >= Impl::s_maxCpus) return;
+    if (!(Impl::s_cpuMask & (1U << cpuId))) return;
+
+    auto* ring = Impl::s_cpuRings[cpuId];
+    if (!ring) return;
+
+    uint8_t buffer[512];
+    CommitRecordBinary* rec = reinterpret_cast<CommitRecordBinary*>(buffer);
+
+    rec->header.recordType = RECORD_COMMIT;
+    rec->header.cpuId = cpuId;
+    rec->header.timestamp = 0;
+    rec->pc = pc;
+    rec->instrWord = instrWord;
+    rec->writeCount = writeCount;
+    rec->flags = 0;
+
+    std::memcpy(buffer + sizeof(CommitRecordBinary), writes, writeCount * sizeof(WriteEntry));
+
+    size_t totalSize = sizeof(CommitRecordBinary) + writeCount * sizeof(WriteEntry);
+    ring->write(buffer, totalSize);
+}
+void ExecTrace::recordCommitWithGrain(
+    uint16_t cpuId,
+    uint64_t pc,
+    uint32_t instrWord,
+    uint8_t opcode,
+    uint16_t functionCode,
+    const char* mnemonic,
+    const char* grainTypeName,
+    uint8_t grainType,
+    bool grainFound,
+    const PipelineSlot* slot) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (cpuId >= Impl::s_maxCpus) return;
+    if (!(Impl::s_cpuMask & (1U << cpuId))) return;
+
+    // CSV output
+    if (Impl::s_format == "csv" || Impl::s_format == "both") {
+        QTextStream* csvStream = Impl::s_csvStreams[cpuId];
+        if (csvStream && Impl::s_immediateFlush) {
+            quint64 seq = Impl::s_sequenceCounters[cpuId]++;
+            *csvStream
+                << seq << ","
+                << "0x" << QString::number(pc, 16).rightJustified(16, '0') << ","
+                << "0x" << QString::number(opcode, 16).rightJustified(2, '0') << ","
+                << "0x" << QString::number(functionCode, 16).rightJustified(4, '0') << ","
+                << "0x" << QString::number(instrWord, 16).rightJustified(8, '0') << ","
+                << (mnemonic ? mnemonic : "UNKNOWN") << ","
+                << (grainTypeName ? grainTypeName : "UNKNOWN") << ","
+                << static_cast<int>(grainType) << ","
+                << (grainFound ? "1" : "0") << "\n";
+            csvStream->flush();
+        }
+    }
+
+    // Assembly output
+    if ((Impl::s_format == "asm" || Impl::s_format == "both") && slot) {
+        recordCommitAsAssembly(cpuId, pc, instrWord, mnemonic, *slot);
+    }
+}
+
+
+void ExecTrace::recordCommitAsAssembly(
+    uint16_t cpuId,
+    uint64_t pc,
+    uint32_t instrWord,
+    const char* mnemonic,
+    const PipelineSlot& slot) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (cpuId >= Impl::s_maxCpus) return;
+    if (!(Impl::s_cpuMask & (1U << cpuId))) return;
+
+    QTextStream* stream = Impl::s_asmStreams.value(cpuId, nullptr);
+    if (!stream) return;
+
+    formatDECAssembly(stream, pc, instrWord, mnemonic, slot);
+
+    if (Impl::s_immediateFlush) {
+        stream->flush();
+    }
+}
+
+void ExecTrace::recordIpiSend(uint16_t srcCpu, uint32_t dstMask, uint16_t reason,
+                              uint64_t ipiSeq) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (srcCpu >= Impl::s_maxCpus) return;
+    if (!(Impl::s_cpuMask & (1U << srcCpu))) return;
+
+    auto* ring = Impl::s_cpuRings[srcCpu];
+    if (!ring) return;
+
+    IpiSendRecord rec{};
+    rec.header.recordType = RECORD_IPI_SEND;
+    rec.header.cpuId = srcCpu;
+    rec.header.timestamp = 0;
+    rec.dstMask = dstMask;
+    rec.reason = reason;
+    rec.ipiSeq = ipiSeq;
+
+    ring->write(&rec, sizeof(rec));
+}
+
+void ExecTrace::recordIpiRecv(uint16_t dstCpu, uint16_t srcCpu, uint16_t reason,
+                              uint64_t ipiSeq) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (dstCpu >= Impl::s_maxCpus) return;
+    if (!(Impl::s_cpuMask & (1U << dstCpu))) return;
+
+    auto* ring = Impl::s_cpuRings[dstCpu];
+    if (!ring) return;
+
+    IpiRecvRecord rec{};
+    rec.header.recordType = RECORD_IPI_RECV;
+    rec.header.cpuId = dstCpu;
+    rec.header.timestamp = 0;
+    rec.srcCpu = srcCpu;
+    rec.reason = reason;
+    rec.ipiSeq = ipiSeq;
+
+    ring->write(&rec, sizeof(rec));
+}
+
+void ExecTrace::recordTlbInvalidate(uint16_t cpuId, uint16_t op, uint64_t va,
+                                    uint32_t asn) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (cpuId >= Impl::s_maxCpus) return;
+    if (!(Impl::s_cpuMask & (1U << cpuId))) return;
+
+    auto* ring = Impl::s_cpuRings[cpuId];
+    if (!ring) return;
+
+    TlbInvalidateRecord rec{};
+    rec.header.recordType = RECORD_TLB_INV;
+    rec.header.cpuId = cpuId;
+    rec.header.timestamp = 0;
+    rec.op = op;
+    rec.asn = asn;
+    rec.va = va;
+
+    ring->write(&rec, sizeof(rec));
+}
+
+void ExecTrace::trigger(uint16_t cpuId, TriggerReason reason) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (cpuId >= Impl::s_maxCpus) return;
+
+    qDebug() << "ExecTrace: Trigger on CPU" << cpuId << "reason" << static_cast<int>(reason);
+}
+
+void ExecTrace::recordMarker(uint16_t cpuId, uint32_t markerId,
+                             uint64_t arg0, uint64_t arg1, uint64_t arg2) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (cpuId >= Impl::s_maxCpus) return;
+    if (!(Impl::s_cpuMask & (1U << cpuId))) return;
+
+    auto* ring = Impl::s_cpuRings[cpuId];
+    if (!ring) return;
+
+    MarkerRecord rec{};
+    rec.header.recordType = RECORD_MARKER;
+    rec.header.cpuId = cpuId;
+    rec.header.timestamp = 0;
+    rec.markerId = markerId;
+    rec.arg0 = arg0;
+    rec.arg1 = arg1;
+    rec.arg2 = arg2;
+
+    ring->write(&rec, sizeof(rec));
+}
+
+bool ExecTrace::isEnabled() noexcept
+{
+    return Impl::s_enabled;
+}
+
+bool ExecTrace::isEnabledForCpu(uint16_t cpuId) noexcept
+{
+    return Impl::s_enabled &&
+           (cpuId < Impl::s_maxCpus) &&
+           (Impl::s_cpuMask & (1U << cpuId));
+}
+
+// ============================================================================
+// TIER 4: IPR Read / Write
+// ============================================================================
+
+void ExecTrace::recordIPRRead(quint16 cpuId, quint16 iprIndex,
+    quint64 value) noexcept
+{
+    if (!isEnabledForCpu(cpuId)) return;
+
+    auto* stream = Impl::getStream(cpuId);
+    if (!stream) return;
+
+    // IPR_READ|cpu=0|ipr=0x0010|val=0x...
+    *stream << "IPR_READ|cpu=" << cpuId
+        << "|ipr=" << hx16(iprIndex)
+        << "|val=" << hx64(value)
+        << "\n";
+}
+
+void ExecTrace::recordIPRWrite(quint16 cpuId, quint16 iprIndex,
+    quint64 newValue, quint64 oldValue) noexcept
+{
+    if (!isEnabledForCpu(cpuId)) return;
+
+    auto* stream = Impl::getStream(cpuId);
+    if (!stream) return;
+
+    // IPR_WRITE|cpu=0|ipr=0x0010|new=0x...|old=0x...
+    *stream << "IPR_WRITE|cpu=" << cpuId
+        << "|ipr=" << hx16(iprIndex)
+        << "|new=" << hx64(newValue)
+        << "|old=" << hx64(oldValue)
+        << "\n";
+}
+
+void ExecTrace::recordInterrupt(uint16_t cpuId, uint64_t fromPC,
+    uint64_t vector, uint8_t interruptType,
+    uint8_t ipl) noexcept
+{
+    if (!Impl::s_enabled) return;
+    if (cpuId >= Impl::s_maxCpus) return;
+    if (!(Impl::s_cpuMask & (1U << cpuId))) return;
+
+    // CSV output
+    if ((Impl::s_format == "csv" || Impl::s_format == "both") && Impl::s_immediateFlush) {
+        QTextStream* csvStream = Impl::s_csvStreams[cpuId];
+        if (csvStream) {
+            quint64 seq = Impl::s_sequenceCounters[cpuId]++;
+            *csvStream
+                << seq << ","
+                << "INTERRUPT,"
+                << hx64(fromPC) << ","
+                << hx64(vector) << ","
+                << static_cast<int>(interruptType) << ","
+                << "IPL=" << static_cast<int>(ipl) << "\n";
+            csvStream->flush();
+        }
+    }
+
+    // Assembly output
+    if (Impl::s_format == "asm" || Impl::s_format == "both") {
+        QTextStream* stream = Impl::s_asmStreams.value(cpuId, nullptr);
+        if (stream) {
+            *stream << "; *** INTERRUPT *** from="
+                << hx64(fromPC)
+                << " vector=" << hx64(vector)
+                << " type=" << static_cast<int>(interruptType)
+                << " ipl=" << static_cast<int>(ipl)
+                << "\n";
+            if (Impl::s_immediateFlush) stream->flush();
+        }
+    }
+
+    // Ring buffer (buffered mode)
+    if (!Impl::s_immediateFlush) {
+        auto* ring = Impl::s_cpuRings[cpuId];
+        if (!ring) return;
+
+        InterruptRecord rec{};
+        rec.header.recordType = RECORD_INTERRUPT;
+        rec.header.cpuId = static_cast<uint8_t>(cpuId);
+        rec.header.timestamp = 0;
+        rec.fromPC = fromPC;
+        rec.vector = vector;
+        rec.interruptType = interruptType;
+        rec.ipl = ipl;
+
+        ring->write(&rec, sizeof(rec));
+    }
+}

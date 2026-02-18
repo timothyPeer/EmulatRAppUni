@@ -1,0 +1,12 @@
+#ifndef SCSICORELIB_GLOBAL_H
+#define SCSICORELIB_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(SCSICORELIB_LIBRARY)
+#define SCSICORELIB_EXPORT Q_DECL_EXPORT
+#else
+#define SCSICORELIB_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // SCSICORELIB_GLOBAL_H

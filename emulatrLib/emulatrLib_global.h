@@ -1,0 +1,12 @@
+#ifndef EMULATRLIB_GLOBAL_H
+#define EMULATRLIB_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(EMULATRLIB_LIBRARY)
+#define EMULATRLIB_EXPORT Q_DECL_EXPORT
+#else
+#define EMULATRLIB_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // EMULATRLIB_GLOBAL_H

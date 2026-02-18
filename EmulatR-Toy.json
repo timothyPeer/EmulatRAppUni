@@ -1,0 +1,15 @@
+{
+  "environment_variables": {
+    "bootdef_dev": "dka0",
+    "boot_osflags": "0,0",
+    "console": "serial"
+  },
+  "device_aliases": {
+    "dka0": {"controller": "PKA0", "target": 0, "lun": 0},
+    "ewa0": {"pci_slot": "0/1/0"}
+  },
+  "time": {
+    "offset_seconds": -3600,
+    "last_set_timestamp": "2026-01-04T17:30:27Z"
+  }
+}

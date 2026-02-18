@@ -1,0 +1,1323 @@
+// ============================================================================
+// CBox.h - Alpha CPU Cache Box (Header-Only)
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+// 
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+// 
+// Description:
+//   Alpha CPU CBox (Cache/Control Box) - Pipeline coordination and memory
+//   management. Handles write buffer management, memory barriers, branch
+//   prediction, and MMIO coordination.
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+#ifndef CBOX_H
+#define CBOX_H
+
+#include <QtGlobal>
+#include "BranchPredictor.h"
+#include "../coreLib/WriteBufferEntry.h"
+#include "../coreLib/Axp_Attributes_core.h"
+#include "../coreLib/LoggingMacros.h"
+#include "../coreLib/MemoryBarrierKind_enum.h"
+#include "../coreLib/types_core.h"
+#include "../memoryLib/WriteBufferManager.h"
+#include "../memoryLib/global_GuestMemory.h"
+#include "../mmioLib/global_mmioManager.h"
+#include "coreLib/alpha_int_byteops_inl.h"
+#include "machineLib/PipeLineSlot.h"
+#include "memoryLib/global_MemoryBarrierCoordinator.h"
+
+// Forward declarations
+class GuestMemory;
+class MMIOManager;
+struct PipelineSlot;
+
+// NO INCLUDE of ExecutionCoordinator.h!
+
+// ============================================================================
+// CBox State Machine
+// ============================================================================
+
+enum class CBoxState : quint8
+{
+    RUNNING,       ///< Normal execution
+    SERIALIZING,   ///< Memory barrier in progress
+    HALTED         ///< Terminal state
+};
+
+// ============================================================================
+// CBox - Cache Box (Header-Only Implementation)
+// ============================================================================
+
+class CBox final
+{
+public:
+    // ====================================================================
+    // Construction
+    // ====================================================================
+
+    explicit CBox(CPUIdType cpuId) noexcept
+        : m_branchPredictor()
+          , m_cpuId(cpuId)
+          , m_state(CBoxState::RUNNING)
+          , m_hwpcb(&globalHWPCBController(cpuId))
+          , m_guestMemory(&global_GuestMemory())
+          , m_mmioManager(&global_MMIOManager())
+          , m_writeBuffer(nullptr)
+        , m_barrierCoordinator(&global_MemoryBarrierCoordinator())
+    {
+        DEBUG_LOG(QString("CBox: Initialized for CPU %1").arg(cpuId));
+    }
+
+    // Disable copy/move
+    CBox(const CBox&)                    = delete;
+    auto operator=(const CBox&) -> CBox& = delete;
+
+   
+
+    
+
+    CBox(CBox&&)                    = delete;
+    auto operator=(CBox&&) -> CBox& = delete;
+
+    // ====================================================================
+    // Write Buffer Management (CRITICAL - Called by ExecutionCoordinator)
+    // ====================================================================
+
+    /**
+     * @brief Drain write buffers to memory
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto drainWriteBuffers(PipelineSlot* slot = nullptr) noexcept -> void
+    {
+        if (!m_writeBuffer)
+        {
+            return;
+        }
+
+        quint32 pendingCount = m_writeBuffer->getPendingWriteCount(m_cpuId);
+
+        if (pendingCount == 0)
+        {
+            DEBUG_LOG(QString("CPU %1: Write buffer already empty").arg(m_cpuId));
+            return;
+        }
+
+        DEBUG_LOG(QString("CPU %1: Draining %2 write buffer entries")
+            .arg(m_cpuId).arg(pendingCount));
+
+        // Drain using WriteBufferManager's callback interface
+        m_writeBuffer->drainCPU(m_cpuId, [this](const WriteBufferEntry& entry)
+        {
+            commitWriteToMemory(entry);
+        });
+
+        DEBUG_LOG(QString("CPU %1: Write buffer drained").arg(m_cpuId));
+
+        if (slot)
+        {
+            slot->serialized = true;
+        }
+    }
+
+    /**
+     * @brief Check if write buffer has pending writes
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto hasPendingWrites() const noexcept -> bool
+    {
+        if (!m_writeBuffer)
+        {
+            return false;
+        }
+        return m_writeBuffer->getPendingWriteCount(m_cpuId) > 0;
+    }
+
+    /**
+     * @brief Get pending write count
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto getPendingWriteCount() const noexcept -> quint32
+    {
+        if (!m_writeBuffer)
+        {
+            return 0;
+        }
+        return m_writeBuffer->getPendingWriteCount(m_cpuId);
+    }
+
+    /**
+     * @brief Check if write buffer is empty
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto isWriteBufferEmpty() const noexcept -> bool
+    {
+        return getPendingWriteCount() == 0;
+    }
+
+    /**
+     * @brief Add write to buffer
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto addWriteBufferEntry(
+        quint64 physAddr,
+        quint64 data,
+        quint8  size,
+        quint64 timestamp) noexcept -> bool
+    {
+        if (!m_writeBuffer)
+        {
+            // No write buffer - write directly
+            WriteBufferEntry entry;
+            entry.address    = physAddr;
+            entry.bufferData = data;
+            entry.bufferSize = size;
+            entry.timestamp  = timestamp;
+            entry.valid      = true;
+            entry.mmio       = false;  // Caller should set if MMIO
+
+            commitWriteToMemory(entry);
+            return true;
+        }
+
+        // Use WriteBufferManager's addEntry interface
+        return m_writeBuffer->addEntry(m_cpuId, physAddr, data, size, timestamp, false);
+    }
+
+
+    /**
+     * @brief Check if MMIO operations are pending
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto hasPendingMMIO() const noexcept -> bool
+    {
+        // Check if any pending writes are to MMIO regions
+        if (!m_writeBuffer || !m_mmioManager)
+        {
+            return false;
+        }
+
+        // Would need to inspect write buffer for MMIO addresses
+        // Simplified: assume no pending MMIO if write buffer empty
+        return false;
+    }
+
+    /**
+      * @brief Request memory barrier coordination
+      *
+      * This is the hook where CBox connects to ExecutionCoordinator
+      * for global SMP memory barrier coordination.
+      *
+      * @param slot Pipeline slot
+      * @param kind Barrier type (FULL, WRITE_ONLY, etc.)
+      */
+    AXP_HOT AXP_ALWAYS_INLINE auto RequestMemoryBarrier(PipelineSlot& slot, MemoryBarrierKind kind) const noexcept -> void
+    {
+        Q_UNUSED(slot)
+
+        DEBUG_LOG(QString("CPU %1: Requesting memory barrier type=%2")
+            .arg(m_cpuId)
+            .arg(static_cast<int>(kind)));
+
+        // Forward to global ExecutionCoordinator for SMP coordination
+        // ExecutionCoordinator will:
+        // 1. Initiate global barrier state
+        // 2. Send IPIs to all other CPUs
+        // 3. Wait for all CPUs to acknowledge
+
+        // Use callback pattern to avoid circular dependency
+        if (m_memoryBarrierCallback)
+        {
+            m_memoryBarrierCallback(m_cpuId, kind);
+        }
+        else
+        {
+            WARN_LOG(QString("CPU %1: No memory barrier callback registered!").arg(m_cpuId));
+        }
+    }
+
+    // ====================================================================
+    // Branch Predictor Access (FIXED METHOD NAMES)
+    // ====================================================================
+
+    AXP_HOT AXP_ALWAYS_INLINE auto getBranchPredictor() noexcept -> BranchPredictor&
+    {
+        return m_branchPredictor;
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto getBranchPredictor() const noexcept -> const BranchPredictor&
+    {
+        return m_branchPredictor;
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto setBranchPredictionStrategy(BranchStrategy strategy) noexcept -> void
+    {
+        m_branchPredictor.setStrategy(strategy);
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto getBranchPredictionStrategy() const noexcept -> BranchStrategy
+    {
+        return m_branchPredictor.getStrategy();
+    }
+
+
+    AXP_HOT AXP_ALWAYS_INLINE void issueMemoryBarrier(
+        MemoryBarrierKind kind,
+        quint16 activeCpuCount = 1) noexcept
+    {
+        // Step 1: LOCAL � drain this CPU's write buffer
+        drainWriteBuffers();
+
+        // Step 2: GLOBAL � coordinate with other CPUs (only if SMP)
+        if (activeCpuCount > 1 && kind == MemoryBarrierKind::PAL)
+        {
+            if (m_barrierCoordinator->initiateGlobalMemoryBarrier(m_cpuId, activeCpuCount))
+            {
+                m_barrierCoordinator->waitForBarrierAcknowledge(m_cpuId);
+            }
+        }
+
+        m_state = CBoxState::RUNNING;
+    }
+    /**
+  * @brief Commit write buffer entry to memory
+  * Called by drainWriteBuffers() callback
+  */
+    AXP_HOT AXP_ALWAYS_INLINE auto commitWriteToMemory(const WriteBufferEntry& entry) noexcept -> void
+    {
+        if (!entry.valid)
+        {
+            return;
+        }
+
+        DEBUG_LOG(QString("CPU %1: Committing write PA=0x%2 size=%3 data=0x%4")
+            .arg(m_cpuId)
+            .arg(entry.address, 16, 16, QChar('0'))
+            .arg(entry.bufferSize)
+            .arg(entry.bufferData, 16, 16, QChar('0')));
+
+        MEM_STATUS status{};
+
+        switch (entry.bufferSize)
+        {
+        case 1:
+            status = m_guestMemory->write8(entry.address,
+                                           static_cast<quint8>(entry.bufferData));
+            break;
+
+        case 2:
+            status = m_guestMemory->write16(entry.address,
+                                            static_cast<quint16>(entry.bufferData));
+            break;
+
+        case 4:
+            status = m_guestMemory->write32(entry.address,
+                                            static_cast<quint32>(entry.bufferData));
+            break;
+
+        case 8:
+            status = m_guestMemory->write64(entry.address, entry.bufferData);
+            break;
+
+        default:
+            ERROR_LOG(QString("CPU %1: INVALID write size %2 at PA=0x%3 - NOT A POWER OF 2 OR OUT OF RANGE")
+                .arg(m_cpuId)
+                .arg(entry.bufferSize)
+                .arg(entry.address, 16, 16, QChar('0')));
+            return;
+        }
+
+        if (status != MEM_STATUS::Ok)
+        {
+            WARN_LOG(QString("CPU %1: Write FAILED PA=0x%2 size=%3 status=%4")
+                .arg(m_cpuId)
+                .arg(entry.address, 16, 16, QChar('0'))
+                .arg(entry.bufferSize)
+                .arg(static_cast<int>(status)));
+        }
+
+        if (entry.mmio && m_mmioManager)
+        {
+            markMMIOComplete(entry.address, entry.bufferSize);
+        }
+    }
+
+    /**
+     * @brief Mark MMIO write as complete
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto markMMIOComplete(quint64 physAddr, quint8 size) noexcept -> void
+    {
+        Q_UNUSED(physAddr)
+        Q_UNUSED(size)
+        // MMIO completion notification would go here
+    }
+
+
+    // ====================================================================
+    // Memory Barrier Operations (CRITICAL)
+    // ====================================================================
+
+    /**
+     * @brief Execute MB (Memory Barrier) instruction
+     *
+     * Alpha MB semantics:
+     * 1. Drain local write buffer
+     * 2. Initiate global memory barrier
+     * 3. Wait for all CPUs to drain their buffers
+     * 4. Ensure all prior writes visible to all CPUs
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeMB(PipelineSlot& slot) noexcept -> void
+    {
+        DEBUG_LOG(QString("CPU %1: Executing MB (Memory Barrier)").arg(m_cpuId));
+
+        // 1. Drain local write buffer FIRST
+        drainWriteBuffers(&slot);
+
+        // 2. Request global memory barrier coordination
+        //    ExecutionCoordinator will:
+        //    - Initiate global barrier
+        //    - Send IPIs to all other CPUs
+        //    - Wait for all acknowledgments
+        RequestMemoryBarrier(slot, MemoryBarrierKind::MB);
+
+        DEBUG_LOG(QString("CPU %1: MB completed").arg(m_cpuId));
+    }
+
+    /**
+     * @brief Execute WMB (Write Memory Barrier) instruction
+     *
+     * Alpha WMB semantics:
+     * 1. Drain local write buffer only
+     * 2. NO global coordination (lighter than MB)
+     * 3. Ensures writes complete in order
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeWMB(PipelineSlot& slot) noexcept -> void
+    {
+        DEBUG_LOG(QString("CPU %1: Executing WMB (Write Memory Barrier)").arg(m_cpuId));
+
+        // WMB only drains local buffer, no global coordination
+        drainWriteBuffers(&slot);
+
+        slot.serialized = true;
+
+        DEBUG_LOG(QString("CPU %1: WMB completed").arg(m_cpuId));
+    }
+
+    /**
+     * @brief Execute TRAPB (Trap Barrier) instruction
+     *
+     * Alpha TRAPB semantics:
+     * 1. Ensure all prior instructions complete
+     * 2. Ensure all prior exceptions resolved
+     * 3. Stall pipeline until prior ops finish
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeTRAPB(PipelineSlot& slot) noexcept -> void
+    {
+        DEBUG_LOG(QString("CPU %1: Executing TRAPB (Trap Barrier)").arg(m_cpuId));
+
+        // TRAPB ensures instruction completion, not memory ordering
+        // Still drain write buffer to ensure memory ops complete
+        drainWriteBuffers(&slot);
+
+        slot.serialized   = true;
+        slot.mustComplete = true;
+
+        DEBUG_LOG(QString("CPU %1: TRAPB completed").arg(m_cpuId));
+    }
+
+
+    /**
+     * @brief Set memory barrier callback (called by ExecutionCoordinator)
+     */
+    using MemoryBarrierCallback = std::function<void(CPUIdType, MemoryBarrierKind)>;
+
+    AXP_HOT AXP_ALWAYS_INLINE auto setMemoryBarrierCallback(MemoryBarrierCallback callback) noexcept -> void
+    {
+        m_memoryBarrierCallback = callback;
+    }
+
+    // ====================================================================
+    // CPU Halt Support
+    // ====================================================================
+
+    AXP_HOT AXP_ALWAYS_INLINE auto halt(
+        PipelineSlot& slot,
+        quint32       haltCode,
+        bool          bNotifyHalt) noexcept -> void
+    {
+        Q_UNUSED(slot)
+
+        DEBUG_LOG(QString("CPU %1: HALT requested (code=0x%2)")
+            .arg(m_cpuId)
+            .arg(haltCode, 8, 16, QChar('0')));
+
+        // Drain write buffer before halting
+        drainWriteBuffers();
+
+        m_state = CBoxState::HALTED;
+
+        if (bNotifyHalt && m_haltCallback)
+        {
+            m_haltCallback(m_cpuId, haltCode);
+        }
+    }
+
+    /**
+     * @brief Set halt callback (called by ExecutionCoordinator)
+     */
+    using HaltCallback = std::function<void(CPUIdType, quint32)>;
+
+    AXP_HOT AXP_ALWAYS_INLINE auto setHaltCallback(HaltCallback callback) noexcept -> void
+    {
+        m_haltCallback = callback;
+    }
+
+
+    /**
+     * @brief Clear branch history
+     * Used during context switches or when branch predictor needs reset
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto clearBranchHistory() noexcept -> void
+    {
+        m_branchPredictor.clear();  //  Use clear(), not clearHistory()
+    }
+
+    /**
+     * @brief Reset entire branch predictor
+     * More aggressive than clearBranchHistory() - same effect in current implementation
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto clearBranchPredictor() noexcept -> void
+    {
+        m_branchPredictor.clear();  //  Use clear(), not reset()
+    }
+
+    /**
+     * @brief Flush branch predictor on pipeline flush
+     * @param clearHistory If true, clear all branch history
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto flushBranchPredictorOnPipelineFlush(bool clearHistory) noexcept -> void
+    {
+        if (clearHistory)
+        {
+            m_branchPredictor.clear();  //  FIXED
+        }
+    }
+
+    /**
+     * @brief Evict cache line (placeholder)
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto evictCacheLine(quint64 va) noexcept -> void
+    {
+        Q_UNUSED(va)
+        // Cache eviction logic would go here
+    }
+
+    // ====================================================================
+    // Branch Prediction Operations
+    // ====================================================================
+
+    /**
+     * @brief Predict branch outcome
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto predictBranch(quint64 pc, qint32 displacement) const noexcept -> bool
+    {
+        return m_branchPredictor.predict(pc, displacement);
+    }
+
+    /**
+     * @brief Update branch predictor with actual outcome
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto updatePrediction(quint64 pc, bool taken, quint64 target) noexcept -> void
+    {
+        m_branchPredictor.update(pc, taken, target);
+    }
+
+
+    /**
+     * @brief Get predicted branch target from history
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto getPredictedBranchTarget(quint64 pc, qint32 displacement) const noexcept -> quint64
+    {
+        return m_branchPredictor.getPredictedTarget(pc, displacement);
+    }
+
+
+    // ====================================================================
+    // Subsystem Binding (Called by ExecutionCoordinator)
+    // ====================================================================
+
+    AXP_HOT AXP_ALWAYS_INLINE auto bindWriteBufferManager(WriteBufferManager* wbm) noexcept -> void
+    {
+        m_writeBuffer = wbm;
+        DEBUG_LOG(QString("CPU %1: Write buffer manager bound").arg(m_cpuId));
+    }
+
+    // ====================================================================
+    // State Query
+    // ====================================================================
+
+    AXP_HOT AXP_ALWAYS_INLINE auto getState() const noexcept -> CBoxState
+    {
+        return m_state;
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto isHalted() const noexcept -> bool
+    {
+        return m_state == CBoxState::HALTED;
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto getCpuId() const noexcept -> CPUIdType
+    {
+        return m_cpuId;
+    }
+
+
+    // CBOX Grain Implementations
+
+    // ====================================================================
+    // Branch Instruction Execution
+    // ====================================================================
+
+    /**
+     * @brief Execute BR (Branch unconditional)
+     * Opcode 0x30 - Always branches
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBR(PipelineSlot& slot) noexcept -> void
+    {
+        const qint32  displacement = extractBranchDisplacement(slot.di.rawBits());
+        const quint64 targetPC = calculateBranchTarget(slot.di.pc, displacement);
+
+        // Save return address if Ra != 31
+        if (slot.di.ra != 31)
+        {
+            slot.payLoad = slot.di.pc + 4;
+            slot.needsWriteback = true;
+            slot.writeRa = true;
+        }
+
+        
+        // Set authoritative result
+        slot.branchTaken = true;
+        slot.branchTarget = targetPC;
+
+        // Compare BEFORE updating predictor!
+        const bool predicted = slot.predictionTaken;  // CHECK DIRECTION TOO!
+        const quint64 predictedTarget = slot.predictionTarget;
+        const bool mispredicted = !predicted || (predictedTarget != targetPC);
+        //                        check if predicted NOT TAKEN!
+
+        // Update predictor with actual result
+        m_branchPredictor.update(slot.di.pc, true, targetPC);
+
+        // Flush and redirect if needed
+        if (mispredicted) {
+            m_hwpcb->pc = targetPC;  // Direct write is fine for hot path
+            slot.flushPipeline = true;
+        }
+
+        slot.jumpTarget = 0;               // not register-indirect, n/a for branches
+        slot.linkValue  = (slot.di.ra != 31) ? (slot.di.pc + 4) : 0;
+        slot.nextPC     = targetPC;         // execution continues at branch target
+        slot.pcReason   = PipelineSlot::PCReason::BR;
+        debugBranch("executeBR", slot, true, targetPC, predictedTarget);
+
+        DEBUG_LOG(QString("CPU %1: BR PC=0x%2 -> target=0x%3 %4")
+            .arg(m_cpuId)
+            .arg(slot.di.pc, 16, 16, QChar('0'))
+            .arg(targetPC, 16, 16, QChar('0'))
+            .arg(mispredicted ? "MISPREDICT" : "CORRECT"));
+
+  
+    }
+
+    /**
+     * @brief Execute BSR (Branch to Subroutine)
+     * Opcode 0x34 - Unconditional branch with return address
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBSR(PipelineSlot& slot) noexcept -> void
+    {
+        // BSR - Branch to Subroutine (unconditional)
+        // Always taken, always saves return address
+
+        // Calculate target
+        const quint32 raw          = slot.di.rawBits();
+        const qint32  displacement = extractBranchDisplacement(raw);
+        const quint64 targetPC     = calculateBranchTarget(slot.di.pc, displacement);
+        const quint64 returnAddr   = slot.di.pc + 4;
+
+        quint32 raw2 = slot.di.rawBits();
+
+        // TEST THE FUNCTION RIGHT HERE2
+        qint32 displacement2 = extractBranchDisplacement(raw2);
+
+
+        // Manual verification
+        quint32 manual = raw2 & 0x1FFFFF;
+
+        quint64 targetPC2   = slot.di.pc + 4 + (static_cast<qint64>(displacement2) << 2);
+        quint64 returnAddr2 = slot.di.pc + 4;
+
+        // ================================================================
+        // BRANCH OUTCOME (for misprediction detection in stage_EX)
+        // ================================================================
+       
+
+
+        // ================================================================
+        // RETURN ADDRESS (written to RA register)
+        // ================================================================
+        if (slot.di.ra != 31)
+        {
+            slot.payLoad        = returnAddr;
+            slot.needsWriteback = true;
+            slot.writeRa        = true;
+            slot.branchTaken = true;       // BSR is always taken
+            slot.branchTarget = targetPC;  // Actual target
+        }
+
+        // ================================================================
+        // MISPREDICTION HANDLING
+        // ================================================================
+        // If prediction was wrong, stage_EX will flush pipeline
+        // and redirect PC. Don't do it here - let stage_EX handle it!
+
+        // Update branch predictor (train for next time)
+        m_branchPredictor.update(slot.di.pc, true, targetPC);
+
+        DEBUG_LOG(QString("CPU %1: BSR PC=0x%2 -> target=0x%3 (return=0x%4)")
+            .arg(m_cpuId)
+            .arg(slot.di.pc, 16, 16, QChar('0'))
+            .arg(targetPC, 16, 16, QChar('0'))
+            .arg(returnAddr, 16, 16, QChar('0')));
+
+        slot.jumpTarget = 0;
+        slot.linkValue = returnAddr;
+        slot.nextPC = targetPC;
+        slot.pcReason = PipelineSlot::PCReason::BSR;
+
+        debugBranch("executeBSR", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+
+
+    }
+
+    /**
+     * @brief Execute BEQ (Branch if Equal to zero)
+     * Opcode 0x39 - Branch if Ra == 0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBEQ(PipelineSlot& slot) noexcept -> void
+    {
+        // Read register value
+        const qint64 raValue   = static_cast<qint64>(slot.ra_value);
+        const bool   condition = (raValue == 0);
+
+        executeBranchCommon(slot, condition, "BEQ");
+        debugBranch("executeBEQ", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute BNE (Branch if Not Equal to zero)
+     * Opcode 0x3D - Branch if Ra != 0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBNE(PipelineSlot& slot) noexcept -> void
+    {
+        const qint64 raValue   = static_cast<qint64>(slot.ra_value);
+        const bool   condition = (raValue != 0);
+
+        executeBranchCommon(slot, condition, "BNE");
+        debugBranch("executeBNE", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute BLT (Branch if Less Than zero)
+     * Opcode 0x3A - Branch if Ra < 0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBLT(PipelineSlot& slot) noexcept -> void
+    {
+        const qint64 raValue   = static_cast<qint64>(slot.ra_value);
+        const bool   condition = (raValue < 0);
+
+        executeBranchCommon(slot, condition, "BLT");
+        debugBranch("executeBLT", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute BLE (Branch if Less or Equal to zero)
+     * Opcode 0x3B - Branch if Ra <= 0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBLE(PipelineSlot& slot) noexcept -> void
+    {
+        const qint64 raValue   = static_cast<qint64>(slot.ra_value);
+        const bool   condition = (raValue <= 0);
+
+        executeBranchCommon(slot, condition, "BLE");
+        debugBranch("executeBLE", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute BGT (Branch if Greater Than zero)
+     * Opcode 0x3F - Branch if Ra > 0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBGT(PipelineSlot& slot) noexcept -> void
+    {
+        const qint64 raValue   = static_cast<qint64>(slot.ra_value);
+        const bool   condition = (raValue > 0);
+
+        executeBranchCommon(slot, condition, "BGT");
+        debugBranch("executeBGT", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute BGE (Branch if Greater or Equal to zero)
+     * Opcode 0x3E - Branch if Ra >= 0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBGE(PipelineSlot& slot) noexcept -> void
+    {
+        const qint64 raValue   = static_cast<qint64>(slot.ra_value);
+        const bool   condition = (raValue >= 0);
+
+        executeBranchCommon(slot, condition, "BGE");
+        debugBranch("executeBGE", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute BLBC (Branch if Low Bit Clear)
+     * Opcode 0x38 - Branch if Ra[0] == 0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBLBC(PipelineSlot& slot) noexcept -> void
+    {
+        const bool condition = (slot.ra_value & 0x1) == 0;
+
+        executeBranchCommon(slot, condition, "BLBC");
+        debugBranch("executeBLBC", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute BLBS (Branch if Low Bit Set)
+     * Opcode 0x3C - Branch if Ra[0] == 1
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBLBS(PipelineSlot& slot) noexcept -> void
+    {
+        const bool condition = (slot.ra_value & 0x1) != 0;
+
+        executeBranchCommon(slot, condition, "BLBS");
+        debugBranch("executeBLBS", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute FBEQ (FP Branch if Equal to zero)
+     * Opcode 0x31 - Branch if Fa == 0.0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeFBEQ(PipelineSlot& slot) noexcept -> void
+    {
+        // Interpret as IEEE 754 double
+        const double faValue   = *reinterpret_cast<const double*>(&slot.ra_value);
+        const bool   condition = (faValue == 0.0);
+
+        executeBranchCommon(slot, condition, "FBEQ");
+        debugBranch("executeFBEQ", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute FBNE (FP Branch if Not Equal to zero)
+     * Opcode 0x35 - Branch if Fa != 0.0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeFBNE(PipelineSlot& slot) noexcept -> void
+    {
+        const double faValue   = *reinterpret_cast<const double*>(&slot.ra_value);
+        const bool   condition = (faValue != 0.0);
+
+        executeBranchCommon(slot, condition, "FBNE");
+        debugBranch("executeFBNE", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute FBLT (FP Branch if Less Than zero)
+     * Opcode 0x32 - Branch if Fa < 0.0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeFBLT(PipelineSlot& slot) noexcept -> void
+    {
+        const double faValue   = *reinterpret_cast<const double*>(&slot.ra_value);
+        const bool   condition = (faValue < 0.0);
+
+        executeBranchCommon(slot, condition, "FBLT");
+        debugBranch("executeFBLT", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+    }
+
+    /**
+     * @brief Execute FBLE (FP Branch if Less or Equal to zero)
+     * Opcode 0x33 - Branch if Fa <= 0.0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeFBLE(PipelineSlot& slot) noexcept -> void
+    {
+        const double faValue   = *reinterpret_cast<const double*>(&slot.ra_value);
+        const bool   condition = (faValue <= 0.0);
+
+        executeBranchCommon(slot, condition, "FBLE");
+        debugBranch("executeFBLE", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+
+    }
+
+    /**
+     * @brief Execute FBGT (FP Branch if Greater Than zero)
+     * Opcode 0x37 - Branch if Fa > 0.0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeFBGT(PipelineSlot& slot) noexcept -> void
+    {
+        const double faValue   = *reinterpret_cast<const double*>(&slot.ra_value);
+        const bool   condition = (faValue > 0.0);
+
+        executeBranchCommon(slot, condition, "FBGT");
+        debugBranch("executeFBGT", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+
+    }
+
+    /**
+     * @brief Execute FBGE (FP Branch if Greater or Equal to zero)
+     * Opcode 0x36 - Branch if Fa >= 0.0
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeFBGE(PipelineSlot& slot) noexcept -> void
+    {
+        const double faValue   = *reinterpret_cast<const double*>(&slot.ra_value);
+        const bool   condition = (faValue >= 0.0);
+
+        executeBranchCommon(slot, condition, "FBGE");
+        debugBranch("executeFBGE", slot, slot.branchTaken, slot.branchTarget, slot.predictionTarget);
+
+    }
+
+    /**
+     * @brief Execute FETCH (Prefetch Data)
+     * (TODO defined 'Data' is this successive PC + 4 values, TLB or MMIO?)
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeFETCH(PipelineSlot& slot) noexcept -> void
+    {
+        // NOOP - TODO
+    }
+
+    /**
+     * @brief Execute FETCH_M (Prefetch Data, Modify Intent)
+     * (TODO defined 'Data' is this successive PC + 4 values, TLB or MMIO?)
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeFETCH_M(PipelineSlot& slot) noexcept -> void
+    {
+        // NOOP - TODO
+    }
+
+    
+
+    //
+    // Alpha AXP: PCC (Processor Cycle Counter) and RPCC implementation support.
+    //
+    // ASA refs (Alpha AXP System Reference Manual, Version 6, 1994):
+    //  - PCC register definition: PCC = {PCC_OFF[63:32], PCC_CNT[31:0]}
+    //  - RPCC writes Ra with PCC, no exceptions
+    //  - PCC_CNT increments once per N cycles (N in [1..16]), implementation-dependent
+    //
+    // Defines a per-CPU PCC model and provides a fast RPCC read path.
+    //
+    // NOTE:
+    //  - PCC_OFF is OS-defined; you can store PCC and allow PAL/MTPR hooks to modify it.
+
+    // ReSharper disable once CppMemberFunctionMayBeStatic
+    AXP_HOT AXP_ALWAYS_INLINE auto executeRPCC(const PipelineSlot& slot) noexcept -> void
+    {
+        // RPCC format: RPCC Ra
+        const quint8 ra = slot.di.ra;
+
+        auto& iprHot = globalIPRHot64(slot.cpuId);
+
+        // sysCC_now is your existing system cycle counter
+        const quint64 sysCC_now = iprHot.cc;
+
+        // pccState is the new per-CPU PCC register state you add
+        quint64 pccValue = pccRead64(iprHot.pccState, sysCC_now);
+
+        slot.writeIntReg(ra, pccValue);
+
+        // No exceptions, no flags.
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto executeECB(PipelineSlot& slot) noexcept -> void
+    {
+        // ECB is a memory-format style effective-address operation.
+        // No registers are written by ECB in the typical model.
+
+        // Base register (Rb)
+        const quint64 rb = slot.readIntReg(slot.di.rb);
+
+        // Displacement: use your decoded field name (examples: slot.di.disp, slot.di.memDisp, slot.di.displacement).
+        // Adjust this one line to your actual DecodedInstruction layout.
+        const qint64 disp = alpha_byteops::sext16_to_64(static_cast<qint16>(extractMemDisp(slot.di.rawBits())));
+
+        const quint64 va = static_cast<quint64>(static_cast<qint64>(rb) + disp);
+
+        // Cache line size policy:
+        // EV6-class systems commonly use 64-byte lines; keep configurable if you later model other parts.
+        constexpr quint64 kLineSize = 64ull;
+        const quint64     vaLine    = alpha_byteops::alignDown(va, kLineSize);
+
+        // Route to CBox cache hook.
+        // Choose the accessor that matches your design:
+        //  - slot.cbox.evictCacheLine(vaLine);
+        //  - global_CBox(slot.cpuId).evictCacheLine(vaLine);
+        //  - m_ctx.getCBox(slot.cpuId).evictCacheLine(vaLine);
+        //
+        // The CBoxBase.h you shared includes:
+        //   AXP_HOT AXP_ALWAYS_INLINE void evictCacheLine(quint64 va) noexcept
+        //
+        // Replace the line below with your actual access path.
+        slot.m_cBox->evictCacheLine(vaLine);
+
+        // No traps, no flags, no architectural state changes.
+        Q_UNUSED(vaLine);
+    }
+
+    // ASCII / header-only
+    //
+    // Alpha AXP: EXCB (Exception Barrier) - memory format
+    //
+    // Emulator model:
+    //  - No registers written.
+    //  - Establish an "exception boundary" for the pipeline and/or memory system.
+    //  - Typical responsibilities in an emulator:
+    //      * ensure any deferred exceptions are materialized in-order,
+    //      * flush/retire relevant pipeline state,
+    //      * prevent speculative state from crossing the barrier,
+    //      * optionally coordinate write buffer / ordering model.
+    //
+    // NOTE:
+    //  - The instruction is commonly modeled as "no-op" unless you implement a real pipeline model.
+    //  - In your design, routing to CBox is appropriate: CBox owns ordering / barrier / exception boundary logic.
+
+    AXP_HOT AXP_ALWAYS_INLINE auto executeEXCB(PipelineSlot& slot) noexcept -> void
+    {
+        // TODO - NOOP 
+        // Defensive: if CBox not wired, treat as NOOP for functional correctness.
+    }
+
+    // ============================================================================
+    // Jump/Call/Return Operations (Opcode 0x1A)
+    // ============================================================================
+
+    AXP_HOT AXP_ALWAYS_INLINE auto executeJMP(PipelineSlot& slot) noexcept -> BoxResult
+    {
+        // JMP Ra, (Rb), hint
+        // Target = Rb & ~3 (clear low 2 bits for alignment)
+        // Ra gets PC+4 (return address) but is often R31 (discard)
+
+        quint64 Rb = slot.di.rb;
+        quint64 Ra = slot.di.ra;
+
+        // Read target address from Rb
+        quint64 rb_val = slot.readIntReg(slot.di.rb);
+        quint64 target = rb_val & ~0x3ULL;  // Force quadword alignment
+
+
+        // Update branch predictor
+        updatePrediction(slot.di.pc, true, target);
+
+
+
+        if (Ra != 31)
+        {  // R31 writes are discarded
+            slot.payLoad        = slot.di.pc + 4;
+            slot.needsWriteback = true;
+        }
+
+        
+        slot.jumpTarget = target;           // aligned jump destination (rb_val & ~3)
+        slot.linkValue  = (slot.di.ra != 31) ? (slot.di.pc + 4) : 0;  // link if Ra used
+        slot.nextPC     = target;           // execution continues at target
+        slot.pcReason   = PipelineSlot::PCReason::JMP;
+
+
+        debugJump("executeJMP", slot, slot.di.rb, rb_val, target, slot.predictionTarget);
+
+
+        // Return redirect
+        BoxResult result;
+        result.redirect   = true;
+        result.redirectPC = target;
+        slot.branchTaken = true;      // Authoritative JMP
+        slot.branchTarget = target;   // Authoritative JMP
+        return result.advance();
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto executeJSR(PipelineSlot& slot) noexcept -> void
+    {
+        // JSR Ra, (Rb), hint
+        // Jump to Subroutine:
+        // - Target = Rb & ~3 (force quadword alignment)
+        // - Ra gets PC+4 (return address)
+        // - Hint field used for branch prediction
+
+        // ================================================================
+        // 1. Read target address from Rb
+        // ================================================================
+        const quint64 rb_val = slot.readIntReg(slot.di.rb);
+        const quint64 target = rb_val & ~0x3ULL;  // Force quadword alignment (clear low 2 bits)
+
+        // ================================================================
+        // 2. Calculate return address
+        // ================================================================
+        const quint64 returnAddr = slot.di.pc + 4;
+
+
+
+        // ================================================================
+        // 3. BRANCH OUTCOME (for misprediction detection in stage_EX)
+        // ================================================================
+        slot.branchTaken = true;       // JSR is always taken
+        slot.branchTarget = target;    // Actual target from register
+
+        // ================================================================
+        // 4. RETURN ADDRESS (written to Ra register)
+        // ================================================================
+        if (slot.di.ra != 31) {  // R31 writes are discarded
+            slot.payLoad = returnAddr;
+            slot.needsWriteback = true;
+            slot.writeRa = true;
+
+            slot.branchTaken = true;
+            slot.branchTarget = (rb_val & ~0x3ULL);
+           debugLog(QString("JSR will write R%1 <- 0x%2 (return addr)")
+                .arg(slot.di.ra)
+                .arg(returnAddr, 16, 16, QChar('0')));
+     
+        }
+        else {
+            debugLog("JSR return address discarded (Ra = R31)");
+        }
+
+        // ================================================================
+        // 5. UPDATE PREDICTOR (train for next time)
+        // Note: Return address predictor (RAS) may be updated here too
+        // ================================================================
+        m_branchPredictor.update(slot.di.pc, true, target);
+
+        // ================================================================
+        // IMPORTANT: Don't redirect PC here!
+        // Let stage_EX handle misprediction detection and PC update
+        // Pipeline will flush automatically if mispredicted
+        // ================================================================
+
+        DEBUG_LOG(QString("CPU %1: JSR PC=0x%2 -> target=0x%3 (return=0x%4, Ra=R%5)")
+            .arg(m_cpuId)
+            .arg(slot.di.pc, 16, 16, QChar('0'))
+            .arg(target, 16, 16, QChar('0'))
+            .arg(returnAddr, 16, 16, QChar('0'))
+            .arg(slot.di.ra));
+        slot.jumpTarget = target;           // address being jumped to (rb_val & ~3)
+        slot.linkValue = returnAddr;       // PC+4, saved in Ra
+        slot.nextPC = target;           // execution continues at target
+        slot.pcReason = PipelineSlot::PCReason::JSR;
+
+        // ================================================================
+        // DEBUG: Show jump details
+        // ================================================================
+
+        debugJump("executeJSR", slot, slot.di.rb, rb_val, target, slot.predictionTarget);
+
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto executeRET(PipelineSlot& slot) noexcept -> void
+    {
+        // RET Ra, (Rb), hint
+        // Return from subroutine:
+        // - Target = Rb & ~3 (typically Rb = R26, the return address)
+        // - Ra is usually R31 (no writeback)
+        // - Pops from return address stack predictor
+
+        const quint64 rb_val = slot.readIntReg(slot.di.rb);
+        const quint64 target = rb_val & ~0x3ULL;
+
+       
+
+        slot.branchTaken = true;
+        slot.branchTarget = target;
+
+        // RET typically doesn't write (Ra = R31)
+        if (slot.di.ra != 31) {
+            slot.payLoad = slot.di.pc + 4;
+            slot.needsWriteback = true;
+            slot.writeRa = true;
+
+
+            debugLog(QString("RET unusual: writing R%1 (not R31)")
+                .arg(slot.di.ra));
+            slot.jumpTarget = target;
+        }
+
+        // Update predictor (may pop return address stack)
+        m_branchPredictor.update(slot.di.pc, true, target);
+
+        DEBUG_LOG(QString("CPU %1: RET PC=0x%2 -> target=0x%3 (Rb=R%4)")
+            .arg(m_cpuId)
+            .arg(slot.di.pc, 16, 16, QChar('0'))
+            .arg(target, 16, 16, QChar('0'))
+            .arg(slot.di.rb));
+        slot.jumpTarget = rb_val;
+        slot.linkValue = target;
+        slot.nextPC = rb_val;
+        debugJump("executeRET", slot, slot.di.rb, rb_val, target, slot.predictionTarget);
+    }
+
+
+    AXP_HOT AXP_ALWAYS_INLINE auto executeJSR_COROUTINE(PipelineSlot& slot) noexcept -> void
+    {
+        // JSR_COROUTINE Ra, (Rb), hint
+        // Same as JSR but optimized for coroutine switches
+        // (different hint interpretation for branch predictor)
+
+        const quint64 rb_val = slot.readIntReg(slot.di.rb);
+        const quint64 target = rb_val & ~0x3ULL;
+        const quint64 returnAddr = slot.di.pc + 4;
+
+       
+        slot.branchTaken = true;
+        slot.branchTarget = target;
+
+        if (slot.di.ra != 31) {
+            slot.payLoad = returnAddr;
+            slot.needsWriteback = true;
+            slot.writeRa = true;
+
+            debugLog(QString("JSR_COROUTINE will write R%1 <- 0x%2")
+                .arg(slot.di.ra)
+                .arg(returnAddr, 16, 16, QChar('0')));
+        }
+
+        // Note: Coroutine hint handling may differ in predictor
+        m_branchPredictor.update(slot.di.pc, true, target);
+
+        DEBUG_LOG(QString("CPU %1: JSR_COROUTINE PC=0x%2 -> target=0x%3 (Ra=R%4)")
+            .arg(m_cpuId)
+            .arg(slot.di.pc, 16, 16, QChar('0'))
+            .arg(target, 16, 16, QChar('0'))
+            .arg(slot.di.ra));
+
+         slot.jumpTarget = target;
+        slot.linkValue  = (slot.di.ra != 31) ? returnAddr : 0;
+        slot.nextPC     = target;
+        slot.pcReason   = PipelineSlot::PCReason::JSR_COROUTINE;
+
+        debugJump("executeJSR_COROUTINE", slot, slot.di.rb, rb_val, target, slot.predictionTarget);
+
+    }
+
+private:
+    // ====================================================================
+    // Branch Helpers
+    // ====================================================================
+
+    /**
+     * @brief Common conditional branch logic
+     * Handles prediction, misprediction detection, and PC update
+     */
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBranchCommon(
+        PipelineSlot& slot,
+        bool          condition,
+        const char* mnemonic) noexcept -> void
+    {
+        // Extract displacement and calculate target
+        const qint32  displacement = extractBranchDisplacement(slot.di.rawBits());
+        const quint64 targetPC = calculateBranchTarget(slot.di.pc, displacement);
+        const quint64 fallThroughPC = slot.di.pc + 4;
+
+        // Actual outcome
+        const bool    taken = condition;
+        const quint64 actualPC = taken ? targetPC : fallThroughPC;
+
+        // ========================================
+        // SET SLOT STATE (CRITICAL!)
+        // ========================================
+        slot.branchTaken = taken;        // 
+        slot.branchTarget = targetPC;    // 
+        // ========================================
+
+        // Check if prediction was correct
+        const bool predicted = slot.predictionTaken;
+        const bool mispredicted = (predicted != taken);
+
+        // Update branch predictor with actual outcome
+        m_branchPredictor.update(slot.di.pc, taken, targetPC);
+
+        if (mispredicted)
+        {
+            // Misprediction - flush pipeline and set correct PC
+            setPC_Active(m_cpuId, actualPC);
+            slot.flushPipeline = true;
+            DEBUG_LOG(QString("CPU %1: %2 MISPREDICT PC=0x%3 pred=%4 actual=%5 -> PC=0x%6")
+                .arg(m_cpuId)
+                .arg(mnemonic)
+                .arg(slot.di.pc, 16, 16, QChar('0'))
+                .arg(predicted ? "taken" : "not-taken")
+                .arg(taken ? "taken" : "not-taken")
+                .arg(actualPC, 16, 16, QChar('0')));
+        }
+        else
+        {
+            // Prediction correct
+            DEBUG_LOG(QString("CPU %1: %2 CORRECT PC=0x%3 %4 -> PC=0x%5")
+                .arg(m_cpuId)
+                .arg(mnemonic)
+                .arg(slot.di.pc, 16, 16, QChar('0'))
+                .arg(taken ? "taken" : "not-taken")
+                .arg(actualPC, 16, 16, QChar('0')));
+        }
+
+      
+           slot.branchTestValue = slot.ra_value;   // the VALUE that was tested
+           slot.jumpTarget      = 0;               // not register-indirect
+           slot.linkValue       = 0;               // conditional branches don't write link
+           slot.nextPC          = actualPC;        // either targetPC or fallThroughPC
+           slot.pcReason        = taken
+                                  ? PipelineSlot::PCReason::BranchTaken
+                                  : PipelineSlot::PCReason::Fallthrough;
+
+    }
+
+
+    /**
+     * @brief Extract branch displacement from instruction
+     * Bits [20:0] contain signed 21-bit displacement
+     */
+    /**
+    * @brief Calculate branch target from PC and displacement
+    */
+    AXP_HOT AXP_ALWAYS_INLINE auto calculateBranchTarget(quint64 pc, qint32 displacement) const noexcept -> quint64
+    {
+        return m_branchPredictor.calculateBranchTarget(pc, displacement);
+    }
+
+
+    // ====================================================================
+    // Branch Operations (Existing - Can be expanded)
+    // ====================================================================
+
+    // Branch execution methods would go here...
+    // (executeBEQ, executeBNE, etc. - omitted for brevity)
+    // These delegate to branch predictor and calculate targets
+
+private:
+    // ====================================================================
+    // Member Data
+    // ====================================================================
+
+    BranchPredictor m_branchPredictor;
+    CPUIdType       m_cpuId;
+    CBoxState       m_state;
+    HWPCB* m_hwpcb{ nullptr };  // Injected in the CTOR
+    // Subsystem references (non-owning)
+    GuestMemory*        m_guestMemory;
+    MMIOManager*        m_mmioManager;
+    WriteBufferManager* m_writeBuffer;
+    MemoryBarrierCoordinator* m_barrierCoordinator;
+    // Callbacks to ExecutionCoordinator (avoid circular dependency)
+    MemoryBarrierCallback m_memoryBarrierCallback;
+    HaltCallback          m_haltCallback;
+};
+
+#endif // CBOX_H

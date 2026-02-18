@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Visual Studio 14 2015 Win64",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "CMAKE_PREFIX_PATH",
+          "value": "Z:/Qt/6.9.1/msvc2022_64",
+          "type": "STRING"
+        }
+      ],
+      "inheritEnvironments": [],
+      "intelliSenseMode": "windows-msvc-x64"
+    }
+  ]
+}

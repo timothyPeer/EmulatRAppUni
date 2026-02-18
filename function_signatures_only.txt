@@ -1,0 +1,1299 @@
+* inline quint8 cpuId()
+* inline void setAsn(ASNType asn_) noexcept
+* inline void setPfn(PFNType pfn_) noexcept
+*DeviceClass deviceClass()
+*inline PTECache& globalPTECache() noexcept
+: hoseId(id)
+: m_cpuCount(0)
+: m_cpuCount(cpuCount)
+: m_cpuId(cpuId)
+: m_ispam(cpuCount)
+: m_numCpus(MAX_CPUS)
+: m_numCpus(numCpus)
+: overflow(false)
+: rawCode(0)
+: type(Type::NONE)
+AXP_FLATTEN BranchPredictor& getBranchPredictor() noexcept
+AXP_FLATTEN FpcrRegister& getFPCRRegister() noexcept
+AXP_FLATTEN FpcrRegister& getFPCRegister() noexcept
+AXP_FLATTEN IPRBank& globalIPRBank() noexcept
+AXP_FLATTEN bool extractLBit(quint32 raw) noexcept
+AXP_FLATTEN bool fpcrLT() noexcept
+AXP_FLATTEN bool getActivePalModeStatus(CPUIdType cpuId) noexcept
+AXP_FLATTEN bool hasAllSem(quint64 m, InstrSemantics mask) noexcept
+AXP_FLATTEN bool hasAnySem(quint64 m, InstrSemantics mask) noexcept
+AXP_FLATTEN bool hasSem(quint64 m, InstrSemantics s) noexcept
+AXP_FLATTEN bool hasStagedDTBUpdate()
+AXP_FLATTEN inline MemSize getMemSize(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline bool isBranchFormat(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline bool isLoad(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline bool isMemoryFormat(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline bool isStore(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline quint32 getRaw(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline quint64 addFast(quint64 a, quint64 b) noexcept
+AXP_FLATTEN inline quint8 extractLiteral(quint32 raw) noexcept
+AXP_FLATTEN inline quint8 getOpcodeFromPacked(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline quint8 getRA(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline quint8 getRB(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline quint8 getRC(const DecodedInstruction& di) noexcept
+AXP_FLATTEN inline void setMemSize(DecodedInstruction& di, MemSize sz) noexcept
+AXP_FLATTEN inline void setRaw(DecodedInstruction& di, quint32 raw) noexcept
+AXP_FLATTEN quint16 extractFunction(quint32 raw) noexcept
+AXP_FLATTEN quint64 getFPCRRaw() noexcept
+AXP_FLATTEN quint8 extractRA(quint32 raw) noexcept
+AXP_FLATTEN quint8 extractRB(quint32 raw) noexcept
+AXP_FLATTEN quint8 extractRC(quint32 raw) noexcept
+AXP_FLATTEN static quint8 extractOpcode(quint32 raw) noexcept
+AXP_FLATTEN void Halt() noexcept
+AXP_FLATTEN void addMultiSem(quint64& m, InstrSemantics s1, InstrSemantics s2) noexcept
+AXP_FLATTEN void addMultiSem(quint64& m, InstrSemantics s1, InstrSemantics s2, InstrSemantics s3) noexcept
+AXP_FLATTEN void addSem(quint64& m, InstrSemantics s) noexcept
+AXP_FLATTEN void advancePC(quint64 pc, quint64 offset = 4)
+AXP_FLATTEN void clearSem(quint64& m, InstrSemantics s) noexcept
+AXP_FLATTEN void clearStagedDTBUpdate()
+AXP_FLATTEN void clearStagedDTBUpdate() noexcept
+AXP_FLATTEN void clearStagedITBUpdate()
+AXP_FLATTEN void clearStagedITBUpdate() noexcept
+AXP_FLATTEN void enterPal() noexcept
+AXP_FLATTEN void execute(DecodedInstruction& di, quint64 resultInt) noexcept
+AXP_FLATTEN void executeBGE(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeBGT(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeBLBC(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeBLBS(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeBLE(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeBLT(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeBNE(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeFBGE(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeFBGT(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeFBLE(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeFBLT(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeFBNE(AlphaProcessorContext& ctx, PipelineSlot& slot) noexcept
+AXP_FLATTEN void executeMskBL(const DecodedInstruction& di) noexcept
+AXP_FLATTEN void exitPal() noexcept
+AXP_FLATTEN void final_stage_before_exit(CPUIdType cpuId, quint64 pc) noexcept
+AXP_FLATTEN void invalidateIGrainCache() noexcept
+AXP_FLATTEN void reset() noexcept
+AXP_FLATTEN void setActivePalModeStatus(CPUIdType cpuId, bool bStatus) noexcept
+AXP_FLATTEN void setActive_PalShadowBank0(quint8 idx, quint8 value) noexcept
+AXP_FLATTEN void setActive_PalShadowBank1(quint8 idx, quint8 value) noexcept
+AXP_FLATTEN void setBranchFormat() noexcept
+AXP_FLATTEN void setCanDualIssue() noexcept
+AXP_FLATTEN void setKernelStackPointer(quint64 sp) noexcept
+AXP_FLATTEN void setMemoryFormat() noexcept
+AXP_FLATTEN void setNeedsStall() noexcept
+AXP_FLATTEN void setOperateFormat() noexcept
+AXP_FLATTEN void setPALcodeFormat() noexcept
+AXP_FLATTEN void setPC(quint64 pc)
+AXP_FLATTEN void setSem(quint64& m, InstrSemantics s, bool enable) noexcept
+AXP_FLATTEN void stageDTB0PTE(quint64 rawPte) noexcept
+AXP_FLATTEN void stageDTB1PTE(quint64 rawPte) noexcept
+AXP_FLATTEN void stageDTBPTE(quint64 rawPte) noexcept
+AXP_FLATTEN void stageDTBTag(const Ev6TLBTag& tag) noexcept
+AXP_FLATTEN void stageDTBUpdate(const Ev6TLBTag& tag, const AlphaPTE& pte) noexcept
+AXP_FLATTEN void stageITBPTE(quint64 rawPte) noexcept
+AXP_FLATTEN void stageITBUpdate(const Ev6TLBTag& tag, const AlphaPTE& pte) noexcept
+AXP_FLATTEN void stepPipeLine() noexcept
+AXP_FLATTEN void syncMemoryBarrier() noexcept
+AXP_FLATTEN void toggleSem(quint64& m, InstrSemantics s) noexcept
+AXP_FLATTEN void writeFpReg(quint8 index, quint64 value)
+AXP_FLATTEN void writeIntReg(quint8 index, quint64 value)
+AlphaCPU* alphaCPU()
+CBox* getCBox() noexcept
+DualDTBStatistics()
+EBox* getEBox() noexcept
+Entry* find(const Tag& tag, ASNType asn) noexcept
+Entry* find(const Tag& tag, quint8 asn) noexcept
+Ev6SPAMShardManager& spam() noexcept
+FBox* getFBox() noexcept
+IPRStorage()
+IPRStorage_Cold()
+IPRStorage_Hot()
+ISpamEntry* find(const ISpamTag& tag) noexcept
+MBox* getMBox() noexcept
+PalVectorId resolveDTBMiss(const AlphaProcessorContext& ctx, const PendingEvent& ev)
+PlatformTemplate loadDS10Template()
+PlatformTemplate loadDS20Template()
+PlatformTemplate loadES40Template()
+PlatformTemplate loadES40_4CPU_Template()
+PlatformTemplate loadGXTemplate()
+QString& getMessage()
+RegisterBankFP& registerFpBank()
+RegisterBankInteger& registerIntBank()
+SafeMemory* backingStore()
+SafeMemory* safeMemory() noexcept
+TLBEntry* findLRUEntry(std::vector<TLBEntry>& tlb)
+TLBEntry* lookupDTBDual(quint64 va, quint8 currentASN)
+TimerHolder()
+bool fetch(DecodedInstruction& di)
+bool getSoftwareCompletion()
+bool hasPayload(const DevicePayload& payload)
+bool hasReservation()
+bool initialize(quint64 sizeBytes)
+bool insert(Entry e) noexcept
+bool insert(const Entry& entry) noexcept
+bool insert(const ISpamEntry& entry) noexcept
+bool insert(const KeyType& key, const DecodedInstruction& decoded) noexcept
+bool invalidateMatching(const Tag& tag, ASNType asn) noexcept
+bool isPalFormat(const DecodedInstruction& di) noexcept
+bool isPrecise()
+bool isRoot()
+bool isValid(quint16 cpuId)
+bool lookupPTE(VAType va, AlphaPTE& pteOut)
+bool onVARead(CPUIdType cpuId, quint64* outValue)
+bool reserve(quint16 cpuId, quint64 pa)
+bool tryClaimSlot(unsigned& idx) noexcept
+bool tryClaimSlot(unsigned& slot) noexcept
+bool tryDequeue(MessageType& type, quint32& p1, quint32& p2, quint64& p3) noexcept
+bool tryEnqueue(MessageType type, quint32 p1, quint32 p2, quint64 p3 = 0) noexcept
+bool tryStoreConditional(quint16 cpuId, quint64 pa)
+catch(...)
+catch(const DTBMissException& e)
+catch(const std::exception& ex)
+const DecodedInstruction* find(const KeyType& key) noexcept
+const DecodedInstruction* lookup(const KeyType& key) noexcept
+constexpr IPRDescriptorBase(const char* name_, ...)
+constexpr bool isPalShadowGroup0Reg(quint8 regNum) noexcept
+constexpr bool isPalShadowGroup1Reg(quint8 regNum) noexcept
+constexpr quint16 palVectorOffset(PalVectorId vec)
+constexpr quint64 palVectorAddress(quint64 palBase, PalVectorId vec)
+constexpr quint8 palShadowGroup0Index(quint8 regNum) noexcept
+constexpr quint8 palShadowGroup1Index(quint8 regNum) noexcept
+constexpr void insert(quint64 value) noexcept
+constexpr void markLocked() noexcept
+constexpr void setAsm(bool asmFlag) noexcept
+constexpr void setPfn(PFNType pfnValue) noexcept
+constexpr void setReadPermissions(bool kre, bool ere, bool sre, bool ure) noexcept
+constexpr void setReadPermissions(bool kre, bool ure) noexcept
+constexpr void setWritePermissions(bool kwe, bool ewe, bool swe, bool uwe) noexcept
+constexpr void setWritePermissions(bool kwe, bool uwe) noexcept
+constexpr void unlock() noexcept
+else if constexpr(OpCount == OperandCount::Special)
+else if constexpr(OpCount == OperandCount::Unary)
+else if(excSum & MEMORY_ERROR)
+else if(excSum & PROCESSOR_ERROR)
+else if(func >= 0x80 && func <= 0xBF)
+else if(newAstLevel < oldAstLevel)
+else if(opFunc == 0x01)
+else if(opFunc == 0x02)
+else if(opFunc == 0x21)
+else if(opFunc == 0x22)
+else if(result / a != b)
+explicit PolicySelector(ReplacementPolicyType t)
+for(;;)
+for(CacheLine* line : m_lines)
+for(auto& entry : m_dtb)
+for(auto& entry : m_dtb1)
+for(auto& entry : m_regions)
+for(auto& entry : tlb)
+for(auto& ipr : m_perCpu)
+for(auto& irqState : m_irqStates)
+for(auto& res : m_reservations)
+for(auto& s : m_slots)
+for(auto& vec : m_grainMap)
+for(auto* g : vec)
+for(const Aperture& aperture : mmioApertures)
+for(const BarTemplate& bar : bars)
+for(const IrqTemplate& irq : irqs)
+for(const auto& entry : m_dtb1)
+for(const auto& entry : m_entries)
+for(const auto& entry : m_regions)
+for(const auto& range : m_sortedRanges)
+for(const auto& res : m_reservations)
+for(int asn = 0; asn < 256; ++asn)
+for(int b = 0; b < B; ++b)
+for(int c = 0; c < cpuCount; ++c)
+for(int c = 0; c < m_cpuCount; ++c)
+for(int cpu = 0; cpu < cpuCount; ++cpu)
+for(int cpu = 0; cpu < m_cpuCount; ++cpu)
+for(int i = 0; i < 4; ++i)
+for(int i = 0; i < 6; ++i)
+for(int i = 0; i < 8; ++i)
+for(int i = 0; i < 8; i++)
+for(int i = 0; i < BHT_SIZE; ++i)
+for(int i = 0; i < MAX_CPUS; ++i)
+for(int i = 0; i < WRITE_BUFFER_SIZE; i++)
+for(int i = 0; i < cpuCount; ++i)
+for(int i = 0; i < inst.m_cpuCount; ++i)
+for(int i = 0; i < m_associativity; ++i)
+for(int i = 0; i < m_cpuCount; ++i)
+for(int ipl = 0; ipl < NUM_IPL_LEVELS; ++ipl)
+for(int j = 0; j < BHT_WAYS; ++j)
+for(int level = 1; level <= 15; ++level)
+for(int r = 0; r < kRealmCount; ++r)
+for(int r = 0; r < rCount; ++r)
+for(int s = 0; s < sCount; ++s)
+for(int s = 0; s < sizeSlots; ++s)
+for(int way = 0; way < BHT_WAYS; ++way)
+for(qint32 cpuId = 0; cpuId < m_numCpus; ++cpuId)
+for(qint32 cpuId = 1; cpuId < m_numCpus; ++cpuId)
+for(qsizetype i = 0; i < m_associativity; ++i)
+for(quint16 cpuId = 0; cpuId < m_numCpus; ++cpuId)
+for(quint16 i = 0; i < m_numCpus; ++i)
+for(quint64 addr = startAligned; addr < endAligned; addr += lineSize)
+for(quint64 g = startGranule; g <= endGranule; g += QUADWORD_SIZE)
+for(quint64 level = newLevel + 1; level <= oldLevel; ++level)
+for(quint64 linePA = startLine; linePA < endLine; linePA += CACHE_LINE_SIZE)
+for(quint64 p = start; p < end; p += lineSize)
+for(quint8 ipl = 0; ipl < NUM_IPL_LEVELS; ++ipl)
+for(uintptr_t p = start; p < end; p += 64)
+for(unsigned a = 0; a < MaxASN; ++a)
+for(unsigned asn = 0; asn < MAX_ASN; ++asn)
+for(unsigned b = 0; b < BucketCount; ++b)
+for(unsigned i = 0; i < AssocWays; ++i)
+for(unsigned i = 0; i < Buckets; ++i)
+for(unsigned i = 0; i < Ways; ++i)
+for(unsigned i = 1; i < AssocWays; ++i)
+for(unsigned way = 0; way < AssocWays; ++way)
+grainPlatform grainPlatform()
+if constexpr(OpCount == OperandCount::Binary)
+if(!allowed)
+if(!argCpu)
+if(!cacheSet)
+if(!cpuState)
+if(!dst || len == 0)
+if(!entry || entry->entryPC == 0xDEADBEEFDEADBEEF)
+if(!entry)
+if(!entry->handlersSet)
+if(!entry.valid)
+if(!handlers.onRead || !handlers.onWrite)
+if(!hasRes)
+if(!hit)
+if(!it->shareable || !shareable)
+if(!m_pendingFetch.valid)
+if(!m_ref[m_hand])
+if(!newFPE)
+if(!res.valid || res.granule != granule)
+if(!res.valid || res.pa != alignedPa)
+if(!res.valid)
+if(!resMgr)
+if(!s1.valid || s1.stalled)
+if(!s2.valid)
+if(!src || len == 0)
+if(!variant.suppressInexact)
+if(!variant.suppressUnderflow)
+if(Config::useSSE2 && !Config::forceFallback)
+if(a != 0 && b != 0)
+if(a < 0.0)
+if(a < b)
+if(anyInvalidated)
+if(b != 0 && result / b != a)
+if(b == 0.0)
+if(bPalMode)
+if(bank1)
+if(bar.size == 0)
+if(branchTaken)
+if(bucketBudgetPerASN > 0 && ++sweptBuckets >= bucketBudgetPerASN)
+if(buffer == nullptr)
+if(callback)
+if(condition)
+if(cpu)
+if(cpuCount > 0 && MAX_CPUS > 0)
+if(cpuId < inst.m_cpuCount && inst.m_spam[cpuId])
+if(cpuId >= m_numCpus)
+if(currentMode != 0)
+if(currentMode == 0 && targetMode != 0)
+if(currentMode == 0)
+if(dataSize == 0)
+if(desc.attrs.stronglyOrdered)
+if(desc.basePA + desc.size < desc.basePA)
+if(desc.deviceUid != deviceUid)
+if(desc.size == 0)
+if(dev)
+if(deviceClass == mmio_DeviceClass::SCSI_DISK || deviceClass == mmio_DeviceClass::SCSI_TAPE)
+if(di.grain != nullptr)
+if(di.grain == nullptr)
+if(di1.rc != 31)
+if(di1.rc == di2.ra || di1.rc == di2.rb)
+if(di1.rc == di2.rc && di1.rc != 31)
+if(di2.rc != 31)
+if(dtb0 || dtb1)
+if(dtb0)
+if(dtb1)
+if(e->accessCount < 255)
+if(e->tag == tag)
+if(enabled && cpu.currentIPL < lowestIPL)
+if(endPA < pa)
+if(entries[i].accessCount < minCount)
+if(entries[i].key == key)
+if(entries[i].tag.pa == pa)
+if(entries[i].tag.pc == pc)
+if(entry != nullptr && entry->valid && entry->targetPC != 0)
+if(entry != nullptr && entry->valid)
+if(entry && entry->entryPC != 0xDEADBEEFDEADBEEF)
+if(entry->accessCount < 255)
+if(entry->desc.attrs.regEndian != mmio_Endianness::LITTLE)
+if(entry->flags & PalVectorEntry::MODIFIES_IPL)
+if(entry->orderLock)
+if(entry.asm_field == 1 || entry.asn == currentASN)
+if(entry.handlersSet && entry.handlers.onFence)
+if(entry.handlersSet && entry.handlers.onReset)
+if(entry.lastUsed < oldestTime)
+if(entry.orderLock)
+if(entry.valid && entry.asn == asn && entry.asm_field == 0)
+if(entry.valid && entry.pc == pc)
+if(entry.valid && entry.vpn == vpn)
+if(entry0)
+if(errorMsg)
+if(errorType & CORRECTABLE_ERROR)
+if(ev.exceptionClass == ExceptionClass::MACHINE_CHECK)
+if(ev.faultVA != 0)
+if(excSum & HARDWARE_ERROR)
+if(exceptions & FE_INEXACT)
+if(exceptions & FE_UNDERFLOW)
+if(faultPC == 0)
+if(faultVA != 0)
+if(fpcrLocal & AlphaFPCR::EXC_MASK)
+if(fpe)
+if(fpeOnReset)
+if(func <= 0x3F)
+if(hit)
+if(inPalMissHandler)
+if(inPalMode)
+if(index >= 0 && index < 6)
+if(insertBank0)
+if(insertBank1)
+if(invalidateBank0)
+if(invalidateBank1)
+if(iprs.astrr > 0)
+if(irq.defaultIRQIpl > 31)
+if(irqLevel > currentIPL)
+if(irqState.hoseId != hoseId)
+if(irqState.masked)
+if(irqState.triggerMode != IRQTrigger::LEVEL)
+if(irqState.triggerMode == IRQTrigger::EDGE)
+if(irqState.triggerMode == IRQTrigger::LEVEL)
+if(isFloat)
+if(isPhysical)
+if(isWrite)
+if(it->asserted || it->pending)
+if(it->handlersSet && it->handlers.onFence)
+if(it->orderLock)
+if(it->shareable)
+if(itb1)
+if(kind == palCore_FenceKind::RMB || kind == palCore_FenceKind::MB)
+if(kind == palCore_FenceKind::WMB || kind == palCore_FenceKind::MB)
+if(level < 1 || level > 15)
+if(line)
+if(m_branchHistoryTable[i][j].valid)
+if(m_busy && m_cyclesRemaining > 0)
+if(m_ctx)
+if(m_currentPlatform == grainPlatform::Linux)
+if(m_currentPlatform == grainPlatform::Tru64)
+if(m_cyclesRemaining == 0)
+if(m_frequency[i] < minFreq)
+if(m_iBox)
+if(m_interruptHook)
+if(m_iprs->va_ctl & VA_CTL_FORM_MASK)
+if(m_l3)
+if(m_nextLevel)
+if(m_onInvalidated)
+if(m_policy == ReplacementPolicy::LFU)
+if(m_reservations[cpuId].valid)
+if(m_strategy != BranchStrategy::HistoryTable)
+if(m_strategy == BranchStrategy::HistoryTable)
+if(m_writeBuffer[i].valid)
+if(mask != 0)
+if(match)
+if(memType != MemoryType::RAM && memType != MemoryType::ROM)
+if(missLevel == 2)
+if(newASN == oldASN)
+if(newAsn != oldAsn)
+if(newAstLevel > oldAstLevel)
+if(newBase < range.limitPA && range.basePA < newLimit)
+if(newIPL < oldIPL)
+if(newIPL <= 2 && oldIPL > 2)
+if(newIPL > 7)
+if(newVal >= 0xFF00)
+if(nextWrite == rIdx)
+if(numCpus <= 0 || numCpus > MAX_CPUS)
+if(numCpus == 0 || numCpus > MAX_CPUS)
+if(offset % attrs.minAlignment != 0)
+if(offset + width > desc.size)
+if(offset > dataSize || size > dataSize || offset + size > dataSize)
+if(ok)
+if(oldAddr != newAddr)
+if(oldCM != newCM)
+if(oldIPL == newIPL)
+if(oldOffset < 0x10000ULL)
+if(oldSum != excSum)
+if(oldSum != newSum)
+if(opFunc == 0x00)
+if(opFunc == 0x20)
+if(opcode < 0x30 || opcode > 0x3F)
+if(orderLocker)
+if(pa + len < pa)
+if(pa + len > ramBase + ramActualSize)
+if(pa < ramBase)
+if(pa >= mmioBase && pa < mmioBase + mmioSize)
+if(pa >= mmioBase)
+if(pa >= ramBase + ramActualSize)
+if(paddr % 2 != 0)
+if(paddr % 4 != 0)
+if(paddr % 8 != 0)
+if(paddr + 1 >= m_sizeBytes)
+if(paddr + 3 >= m_sizeBytes)
+if(paddr + 7 >= m_sizeBytes)
+if(paddr >= m_sizeBytes)
+if(pageShift < 13 || pageShift >= 64)
+if(palBase > 0x100000000ULL)
+if(palEnd > physicalMemoryLimit)
+if(palStart < 0x1000ULL)
+if(pendingIPL != 0)
+if(pfn != 0)
+if(platform != GrainPlatform::NONE)
+if(ppce)
+if(predictedTaken)
+if(r > best)
+if(rIdx == wIdx)
+if(realm == Realm::I)
+if(regEndian == mmio_Endianness::LITTLE)
+if(res.valid && res.granule == granule)
+if(res.valid)
+if(result < a)
+if(result == TranslationResult::Success)
+if(result)
+if(s.di.rc != 31)
+if(s.execUnit == ExecUnit::FBOX)
+if(s.faultPending)
+if(s.grain != nullptr)
+if(shareable)
+if(size == 0)
+if(sizeBytes > MAX_RAM_SIZE)
+if(st != SafeMemory::Status::Ok)
+if(status != MMIOStatus::OK)
+if(success)
+if(swiPending != 0)
+if(tag.vpn == 0)
+if(taken)
+if(targetASN == 0xFFu)
+if(targetCPU == -1)
+if(tlbRealm == TLBRealm::ITB)
+if(tr != TranslationResult::Ok)
+if(unordered)
+if(used == FULL_MASK)
+if(v.roundingMode != FpRoundingMode::UseFPCR)
+if(v0 == v1)
+if(va_ctl & 0x4)
+if(variant.maskExceptions)
+if(wb)
+inline ASNType getASN_Active(CPUIdType cpuId) noexcept
+inline AddressClass classifyVA(VAType va, VAType va_ctl) noexcept
+inline ArithmeticTrapKind buildArithmeticTrap(bool inv, bool dze, bool ovf, bool unf, bool ine, bool iov = false)
+inline Bucket& bucket(quint8 cpuId, Realm realm, quint8 sizeClass, unsigned idx) noexcept
+inline DecodeCache<PaKey>& paDecodeCache() noexcept
+inline DecodeCache<PcKey>& pcDecodeCache() noexcept
+inline EV6Encoding::Box inferBox(quint8 sel)
+inline EV6Encoding::Pipe inferPipe(quint8 sel)
+inline Ev6SPAMShardManager& globalSPAM() noexcept
+inline Ev6SPAMShardManager& globalSPAM(CPUIdType cpuId) noexcept
+inline ExecutionBox ExecutionBox_Grain()
+inline FpcrRegister get(CPUIdType cpuId) noexcept
+inline GrainResolver& global_GrainResolver()
+inline HWPCB& getHWPCB_Active(CPUIdType cpuId) noexcept
+inline HWPCB& getHWPCB_Context(CPUIdType cpuId, quint32 contextIndex) noexcept
+inline HWPCB& getHWPCB_Snapshot(CPUIdType cpuId) noexcept
+inline PermissionDetail readPermissionFault(quint8 mode)
+inline PermissionDetail writePermissionFault(quint8 mode)
+inline QString PrivilegeLevelToString(PrivilegeLevel plevel) noexcept
+inline QString formatIPIMessage(const IPIQueue::Message& msg)
+inline QString formatIRQMessage(quint32 vector, quint8 ipl)
+inline QString privilegeLevelName(PrivilegeLevel priv)
+inline QVector<PalVectorEntry>& rawEntries() noexcept
+inline QVector<QVector<HWPCB>>& rawArray()
+inline ReservationManager& global_ReservationManager()
+inline SafeMemory& Global_SafeMemory()
+inline ScsiBus* bus() noexcept
+inline Status store(quint64 paddr, quint8 size, quint64 value) noexcept
+inline Status store16(quint64 paddr, quint16 value)
+inline Status store32(quint64 paddr, quint32 value)
+inline Status store64(quint64 paddr, quint64 value)
+inline Status store8(quint64 paddr, quint8 value)
+inline TLB_BANK selectTLBBank(quint64 va) noexcept
+inline TrapCode translateStatusToTrap(SafeMemory::Status st) noexcept
+inline TrapCode translationResultToTrap(TranslationResult result)
+inline bool alwaysAllowed(const CPUStateIPRInterface* cpu)
+inline bool anyException(CPUIdType cpuId) noexcept
+inline bool canKernelRead(quint8 perms)
+inline bool canSeeInterrupt(CPUStateIPRInterface& cpuState, quint8 irqIpl)
+inline bool canUserExec(quint8 perms)
+inline bool canUserRead(quint8 perms)
+inline bool canUserWrite(quint8 perms)
+inline bool checkFPTrap(CPUIdType cpuId) noexcept
+inline bool cmpEqL(u64 a, u64 b) noexcept
+inline bool cmpEqQ(u64 a, u64 b) noexcept
+inline bool cmpLeL(u64 a, u64 b) noexcept
+inline bool cmpLeQ(u64 a, u64 b) noexcept
+inline bool cmpLtL(u64 a, u64 b) noexcept
+inline bool cmpLtQ(u64 a, u64 b) noexcept
+inline bool getBHE(quint64 iccsr) noexcept
+inline bool getBPE(quint64 iccsr) noexcept
+inline bool getFPE(quint64 iccsr) noexcept
+inline bool getHWE(quint64 iccsr) noexcept
+inline bool getICPERR(quint64 iccsr) noexcept
+inline bool getICtlSDE0(CPUIdType cpuId) noexcept
+inline bool getICtlSDE1(CPUIdType cpuId) noexcept
+inline bool hasArithmeticException(ArithmeticTrapKind kind, ArithmeticTrapKind flag)
+inline bool hasKind(NodeKindFlags flags, NodeKindFlags test)
+inline bool hasPermission(quint8 perms, AccessType type, PrivilegeLevel level)
+inline bool hasSideEffects(const DecodedInstruction& di) noexcept
+inline bool isBarrier(const DecodedInstruction& di) noexcept
+inline bool isBitEndian(VAType va_ctl) noexcept
+inline bool isCanonicalUserVA(quint64 va) noexcept
+inline bool isKernelVA(VAType va, quint64 va_ctl) noexcept
+inline bool isLLSC(const DecodedInstruction& di) noexcept
+inline bool isLoadLocked(const DecodedInstruction& di) noexcept
+inline bool isNegL(u64 v) noexcept
+inline bool isNegQ(u64 v) noexcept
+inline bool isReserved(quint32 vec)
+inline bool isSet() noexcept
+inline bool isStoreConditional(const DecodedInstruction& di) noexcept
+inline bool isTrappingVariant(quint8 opcode, quint16 function) noexcept
+inline bool isUserVA(VAType va, quint64 va_ctl) noexcept
+inline bool isVA43(VAType va_ctl) noexcept
+inline bool isVA48(VAType va_ctl) noexcept
+inline bool isValidASN(ASNType asn) noexcept
+inline bool isValidAddressInASN(VAType va, ASNType asn) noexcept
+inline bool isZeroL(u64 v) noexcept
+inline bool isZeroQ(u64 v) noexcept
+inline bool pal() noexcept
+inline bool palModeRequired(const CPUStateIPRInterface* cpuState)
+inline bool readBlock(quint64 physicalAddr, void* buffer, qsizetype size)
+inline bool resCheckSC(ReservationManager* resMgr, quint16 cpuId, quint64 pa)
+inline bool resReserve(ReservationManager* resMgr, quint16 cpuId, quint64 pa)
+inline bool setReservation(quint16 cpuId, quint64 pa)
+inline bool shouldTrap(CPUIdType cpuId) noexcept
+inline bool signBitL(u64 v) noexcept
+inline bool signBitQ(u64 v) noexcept
+inline bool writeBlock(quint64 physicalAddr, const void* buffer, qsizetype size)
+inline const AsnGenTable* globalASNEpochs() noexcept
+inline const HWPCB& getHWPCB_Active_Const(CPUIdType cpuId) noexcept
+inline const char* boxName(EV6Encoding::Box b)
+inline const char* getBitName(unsigned bitIndex)
+inline const char* ipiMessageTypeName(IPIQueue::MessageType type)
+inline const char* modeToString(quint8 mode)
+inline const char* pipeName(EV6Encoding::Pipe p)
+inline constexpr Realm toSPAMRealm(TLBRealm realm) noexcept
+inline constexpr bool canReadKernel(PermMask pm) noexcept
+inline constexpr bool canReadUser(PermMask pm) noexcept
+inline constexpr bool canWriteKernel(PermMask pm) noexcept
+inline constexpr bool canWriteUser(PermMask pm) noexcept
+inline constexpr bool ere(PermMask pm) noexcept
+inline constexpr bool ewe(PermMask pm) noexcept
+inline constexpr bool isBank0VA(quint64 va) noexcept
+inline constexpr bool isBank1VA(quint64 va) noexcept
+inline constexpr bool kre(PermMask pm) noexcept
+inline constexpr bool kwe(PermMask pm) noexcept
+inline constexpr bool sre(PermMask pm) noexcept
+inline constexpr bool swe(PermMask pm) noexcept
+inline constexpr bool ure(PermMask pm) noexcept
+inline constexpr bool uwe(PermMask pm) noexcept
+inline constexpr quint8 dtbBankForVA(quint64 va) noexcept
+inline int getCPUCount() noexcept
+inline mmio_AllocationResult mmio_deviceMap(mmio_Reason rsn)
+inline qint32 addL(qint32 a, qint32 b, IntStatus& status) noexcept
+inline qint32 mulL(qint32 a, qint32 b, IntStatus& status) noexcept
+inline qint32 subL(qint32 a, qint32 b, IntStatus& status) noexcept
+inline qint64 addQ(qint64 a, qint64 b, IntStatus& status) noexcept
+inline qint64 mulQ(qint64 a, qint64 b, IntStatus& status) noexcept
+inline qint64 sraQ(qint64 v, int s) noexcept
+inline qint64 subQ(qint64 a, qint64 b, IntStatus& status) noexcept
+inline quint16 extractSelector(quint32 instructionWord)
+inline quint16 get() noexcept
+inline quint32 invalidateASN(ASNType asn) noexcept
+inline quint64 addQU(quint64 a, quint64 b, IntStatus& status) noexcept
+inline quint64 andQ(quint64 a, quint64 b) noexcept
+inline quint64 computeVA_FORM(VAType va, VAType va_ctl, quint64 vptb) noexcept
+inline quint64 executeMF_FPCR(CPUIdType cpuId) noexcept
+inline quint64 extractOffset(VAType va) noexcept
+inline quint64 extractVPN(VAType va, VAType va_ctl) noexcept
+inline quint64 getASTER_Active(CPUIdType cpuId) noexcept
+inline quint64 getASTRR() noexcept
+inline quint64 getASTRR_Active(CPUIdType cpuId) noexcept
+inline quint64 getASTSR() noexcept
+inline quint64 getASTSR_Active(CPUIdType cpuId) noexcept
+inline quint64 getActiveExc_Addr(int cpuId) noexcept
+inline quint64 getESP_Active(CPUIdType cpuId) noexcept
+inline quint64 getExceptionSummary(CPUIdType cpuId) noexcept
+inline quint64 getFEN_Active(int cpuId) noexcept
+inline quint64 getFPE_Active(int cpuId) noexcept
+inline quint64 getHWPCBExc_Addr() noexcept
+inline quint64 getKSP_Active(CPUIdType cpuId) noexcept
+inline quint64 getKSP_Active(int cpuId) noexcept
+inline quint64 getPALScratch_Active(int cpuId, int index) noexcept
+inline quint64 getPCTX_Active(CPUIdType cpuId) noexcept
+inline quint64 getPC_Active(CPUIdType cpuId) noexcept
+inline quint64 getPPCE_Active(int cpuId) noexcept
+inline quint64 getPS_Active(CPUIdType cpuId) noexcept
+inline quint64 getPTBR_Active(CPUIdType cpuId) noexcept
+inline quint64 getRaw(CPUIdType cpuId) noexcept
+inline quint64 getSSP_Active(CPUIdType cpuId) noexcept
+inline quint64 getSavedPC_Active(int cpuId) noexcept
+inline quint64 getSavedPS_Active(int cpuId) noexcept
+inline quint64 getUNQ_Active(int cpuId) noexcept
+inline quint64 getUSP_Active(CPUIdType cpuId) noexcept
+inline quint64 getUSP_Active(int cpuId) noexcept
+inline quint64 getVA_Fault(int cpuId) noexcept
+inline quint64 mulQU(quint64 a, quint64 b, IntStatus& status) noexcept
+inline quint64 notQ(quint64 a) noexcept
+inline quint64 orQ(quint64 a, quint64 b) noexcept
+inline quint64 setBHE(quint64 iccsr, bool enable) noexcept
+inline quint64 setBPE(quint64 iccsr, bool enable) noexcept
+inline quint64 setFPE(quint64 iccsr, bool enable) noexcept
+inline quint64 setHWE(quint64 iccsr, bool enable) noexcept
+inline quint64 setPC0(quint64 iccsr, quint8 value) noexcept
+inline quint64 setPC1(quint64 iccsr, quint8 value) noexcept
+inline quint64 signExtend16(quint16 value)
+inline quint64 signExtend21(quint32 value)
+inline quint64 signExtend32(quint32 value)
+inline quint64 signExtend8(quint8 value)
+inline quint64 sllQ(quint64 v, int s) noexcept
+inline quint64 srlQ(quint64 v, int s) noexcept
+inline quint64 subQU(quint64 a, quint64 b, IntStatus& status) noexcept
+inline quint64 tagToVA(const Ev6TLBTag& tag) noexcept
+inline quint64 xorQ(quint64 a, quint64 b) noexcept
+inline quint64& asn()
+inline quint64& biu_addr()
+inline quint64& c_data()
+inline quint64& cc()
+inline quint64& dc_ctl()
+inline quint64& exc_addr()
+inline quint64& fpcr()
+inline quint64& i_ctl()
+inline quint64& iccsr()
+inline quint64& m_ctl()
+inline quint64& mces()
+inline quint64& ptbr()
+inline quint64& sl_rcv()
+inline quint64& va()
+inline quint64* pal_temp()
+inline quint8 currentMode(CPUStateIPRInterface& cpuState) noexcept
+inline quint8 getCM_Active(CPUIdType cpuId) noexcept
+inline quint8 getDTB0ASID_Active(CPUIdType cpuId) noexcept
+inline quint8 getDTB1ASID_Active(CPUIdType cpuId) noexcept
+inline quint8 getPC0(quint64 iccsr) noexcept
+inline quint8 getPC1(quint64 iccsr) noexcept
+inline quint8 ipl(CPUStateIPRInterface& cpuState)
+inline quint8* data()
+inline s64 asL(u64 v) noexcept
+inline s64 asQ(u64 v) noexcept
+inline s64 sext32(u32 v) noexcept
+inline s64 sext32(u64 v) noexcept
+inline std::string toStdString(const QString& s)
+inline std::string toStdString(const char* s)
+inline std::string toStdString(const std::string& s)
+inline u64 logicalAnd(u64 a, u64 b) noexcept
+inline u64 logicalNand(u64 a, u64 b) noexcept
+inline u64 logicalNor(u64 a, u64 b) noexcept
+inline u64 logicalOr(u64 a, u64 b) noexcept
+inline u64 logicalXor(u64 a, u64 b) noexcept
+inline uint countTrailingZeros64(quint64 x)
+inline void adjustInstructionFetchOnException(quint64) noexcept
+inline void adjustPipeline(VAType va) noexcept
+inline void attemptErrorRecovery(quint64, quint64) noexcept
+inline void beginWrite() noexcept
+inline void clear()
+inline void clear() noexcept
+inline void clearASTSR(CPUIdType cpuId AlphaInstructionGrain* grain, quint8 deliveredLevel) noexcept
+inline void clearAllFaults() noexcept
+inline void clearAllReservationForCpu(quint16 cpuId)
+inline void clearFlag(FpFlag f) noexcept
+inline void clearInterruptEligibilityDirty(CPUIdType cpudId)
+inline void clearPendingIPL(CPUIRQState& st, quint8 ipl) noexcept
+inline void clearReservation(quint16 cpuId, quint64 pa)
+inline void context_restore(int cpuId)
+inline void context_save(int cpuId)
+inline void endWrite() noexcept
+inline void evaluateExceptionSummary(quint64) noexcept
+inline void evaluatePendingASTs(CPUStateIPRInterface* cpuState)
+inline void executeMT_FPCR(CPUIdType cpuId, quint64 value) noexcept
+inline void executePALRetsys_iface(CPUStateIPRInterface* cpuState)
+inline void executePALSwpipl_iface(CPUStateIPRInterface* cpuState)
+inline void executeSWPCTX(CPUStateIPRInterface* cpuState)
+inline void fill(quint64 address, quint64 size, quint8 value)
+inline void flushBranchPredictorByASN(ASNType asn)
+inline void flushFPPipeline() noexcept
+inline void flushICache()
+inline void flushICacheByASN(ASNType asn)
+inline void flushIPrefetchQueue_inl(AlphaCPU& cpuState) noexcept
+inline void flushPendingTraps(bool bFlush) noexcept
+inline void flushPrefetchLine(AlphaCPU& cpuState, quint64 va) noexcept
+inline void generateExceptionInterrupt(quint64) noexcept
+inline void handleArithmetic()
+inline void handleCallPal_00()
+inline void handleCallPal_01()
+inline void handleCallPal_02()
+inline void handleCallPal_03()
+inline void handleCallPal_04()
+inline void handleCallPal_05()
+inline void handleCallPal_06()
+inline void handleCallPal_07()
+inline void handleCallPal_08()
+inline void handleCallPal_09()
+inline void handleCallPal_0A()
+inline void handleCallPal_0B()
+inline void handleCallPal_0C()
+inline void handleCallPal_0D()
+inline void handleCallPal_0E()
+inline void handleCallPal_0F()
+inline void handleCallPal_10()
+inline void handleCallPal_11()
+inline void handleCallPal_12()
+inline void handleCallPal_13()
+inline void handleCallPal_14()
+inline void handleCallPal_15()
+inline void handleCallPal_16()
+inline void handleCallPal_17()
+inline void handleCallPal_18()
+inline void handleCallPal_19()
+inline void handleCallPal_1A()
+inline void handleCallPal_1B()
+inline void handleCallPal_1C()
+inline void handleCallPal_1D()
+inline void handleCallPal_1E()
+inline void handleCallPal_1F()
+inline void handleCallPal_20()
+inline void handleCallPal_21()
+inline void handleCallPal_22()
+inline void handleCallPal_23()
+inline void handleCallPal_24()
+inline void handleCallPal_25()
+inline void handleCallPal_26()
+inline void handleCallPal_27()
+inline void handleCallPal_28()
+inline void handleCallPal_29()
+inline void handleCallPal_2A()
+inline void handleCallPal_2B()
+inline void handleCallPal_2C()
+inline void handleCallPal_2D()
+inline void handleCallPal_2E()
+inline void handleCallPal_2F()
+inline void handleCallPal_30()
+inline void handleCallPal_31()
+inline void handleCallPal_32()
+inline void handleCallPal_33()
+inline void handleCallPal_34()
+inline void handleCallPal_35()
+inline void handleCallPal_36()
+inline void handleCallPal_37()
+inline void handleCallPal_38()
+inline void handleCallPal_39()
+inline void handleCallPal_3A()
+inline void handleCallPal_3B()
+inline void handleCallPal_3C()
+inline void handleCallPal_3D()
+inline void handleCallPal_3E()
+inline void handleCallPal_3F()
+inline void handleCallPal_40()
+inline void handleCallPal_41()
+inline void handleCallPal_42()
+inline void handleCallPal_43()
+inline void handleCallPal_44()
+inline void handleCallPal_45()
+inline void handleCallPal_46()
+inline void handleCallPal_47()
+inline void handleCallPal_48()
+inline void handleCallPal_49()
+inline void handleCallPal_4A()
+inline void handleCallPal_4B()
+inline void handleCallPal_4C()
+inline void handleCallPal_4D()
+inline void handleCallPal_4E()
+inline void handleCallPal_4F()
+inline void handleCallPal_50()
+inline void handleCallPal_51()
+inline void handleCallPal_52()
+inline void handleCallPal_53()
+inline void handleCallPal_54()
+inline void handleCallPal_55()
+inline void handleCallPal_56()
+inline void handleCallPal_57()
+inline void handleCallPal_58()
+inline void handleCallPal_59()
+inline void handleCallPal_5A()
+inline void handleCallPal_5B()
+inline void handleCallPal_5C()
+inline void handleCallPal_5D()
+inline void handleCallPal_5E()
+inline void handleCallPal_5F()
+inline void handleCallPal_60()
+inline void handleCallPal_61()
+inline void handleCallPal_62()
+inline void handleCallPal_63()
+inline void handleCallPal_64()
+inline void handleCallPal_65()
+inline void handleCallPal_66()
+inline void handleCallPal_67()
+inline void handleCallPal_68()
+inline void handleCallPal_69()
+inline void handleCallPal_6A()
+inline void handleCallPal_6B()
+inline void handleCallPal_6C()
+inline void handleCallPal_6D()
+inline void handleCallPal_6E()
+inline void handleCallPal_6F()
+inline void handleCallPal_70()
+inline void handleCallPal_71()
+inline void handleCallPal_72()
+inline void handleCallPal_73()
+inline void handleCallPal_74()
+inline void handleCallPal_75()
+inline void handleCallPal_76()
+inline void handleCallPal_77()
+inline void handleCallPal_78()
+inline void handleCallPal_79()
+inline void handleCallPal_7A()
+inline void handleCallPal_7B()
+inline void handleCallPal_7C()
+inline void handleCallPal_7D()
+inline void handleCallPal_7E()
+inline void handleCallPal_7F()
+inline void handleFen()
+inline void handleInterrupt()
+inline void handleInvalidPTE(CPUIdType cpuId, VAType va, AlphaPTE pte) noexcept
+inline void handleItbAcv()
+inline void handleItbMiss()
+inline void handleMachineCheck()
+inline void handleMemoryManagementFault(AlphaCPU* cpuState, qint64 faultAddress, quint8 faultType, quint8 accesstype) noexcept
+inline void handleOpcDec()
+inline void handleReset()
+inline void handleTranslationFault(CPUStateIPRInterface* cpuState)
+inline void handleVirtualAddressFault(AlphaCPU &cpuState, quint64 newValue) noexcept
+inline void iccsr_setBHE(bool enable)
+inline void iccsr_setBPE(bool enable)
+inline void iccsr_setFPE(bool enable)
+inline void iccsr_setHWE(bool enable)
+inline void iccsr_setPC0(quint8 value)
+inline void incrementPerfCounter(AlphaCPU& argCpu, PerfEvent eventType)
+inline void initializeGlobalPTE(int cpuCount) noexcept
+inline void invalidateASN(ASNType asn) noexcept
+inline void invalidateASN(CPUIdType cpuId, ASNType asn) noexcept
+inline void invalidateRange(quint64 pa, quint64 size)
+inline void logExceptionSummaryChange(quint64, quint64) noexcept
+inline void lowerIPL(CPUStateIPRInterface& cpuState, quint8 newIpl) noexcept
+inline void modify(CPUIdType cpuId, F&& modifier) noexcept
+inline void notifyExceptionAddressChanged(quint64, quint64) noexcept
+inline void notifyHalt() noexcept
+inline void onASTENChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onASTSRChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onAstModeChanged(AlphaCPU* cpuState)
+inline void onCMChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onDTB0_ASN_FLUSHWrite(CPUStateIPRInterface* cpu, quint64 oldValue, quint64 newValue)
+inline void onDTB0_FLUSHWrite(CPUStateIPRInterface* cpu, quint64 oldValue, quint64 newValue)
+inline void onDTB1_ASN_FLUSHWrite(CPUStateIPRInterface* cpu, quint64 oldValue, quint64 newValue)
+inline void onDTB1_FLUSHWrite(CPUStateIPRInterface* cpu, quint64 oldValue, quint64 newValue)
+inline void onDTB_PTEChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onDTB_TAGChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onESPChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onIPLChanged(CPUIdType cpuId, quint8 oldIPL, quint8 newIPL) noexcept
+inline void onITB_IAChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onKSPChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onMM_STATChanged(AlphaCPU *argCpu, quint64 oldValue, quint64 newValue) noexcept
+inline void onPCRChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onSIRRChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onSSPChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void onTBIA(AlphaCPU *argCpu) noexcept
+inline void onTBIAP(AlphaCPU *argCpu) noexcept
+inline void onTBIA_ALL(AlphaCPU *argCpu) noexcept
+inline void onTBIS(AlphaCPU *argCpu) noexcept
+inline void onTBISD(AlphaCPU *argCpu) noexcept
+inline void onUSPChanged(AlphaCPU *argCpu, quint8 oldValue, quint8 newValue) noexcept
+inline void prewarmTLB(quint16 cpuId, Realm realm, quint8 sizeClass, quint64 va) noexcept
+inline void raise(FpFlag f) noexcept
+inline void raiseIPL(CPUStateIPRInterface& cpuState, quint8 newIPL) noexcept
+inline void raiseInvalidOperation(CPUIdType cpuId) noexcept
+inline void raiseMachineCheck(PAType pa, bool isRead) noexcept
+inline void raiseOpcodeFault(CPUIdType cpuId, OpcodeFaultKind faultKind) noexcept
+inline void raisePageFault(CPUIdType cpuid, VAType va, PTEType pte) noexcept
+inline void raiseTrap(AlphaCPU* cpuState, TrapCode trapCode, MemoryFaultInfo fault) noexcept
+inline void resConflictWrite(ReservationManager* resMgr, quint64 pa)
+inline void reset() noexcept
+inline void resetPALcodeState(AlphaCPU* argCpu, quint64 newValue) noexcept
+inline void restoreContextFromSnapshot(CPUIdType cpuId) noexcept
+inline void restoreFromPCB(CPUStateIPRInterface& cpuState) noexcept
+inline void savetoPCB(CPUStateIPRInterface& cpuState) noexcept
+inline void seedEmulatrRandom()
+inline void servicePendingEvent(CPUStateIPRInterface* cpuState)
+inline void set(CPUIdType cpuId, const FpcrRegister& fpcr) noexcept
+inline void set(quint16 id) noexcept
+inline void setASN(ASNType value) noexcept
+inline void setASN_Active(CPUIdType cpuId, ASNType asn) noexcept
+inline void setASTER(quint64 value)
+inline void setASTER_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setASTRR(quint64 rawValue)
+inline void setASTRR_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setASTSR(quint64 rawValue)
+inline void setASTSR_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setActiveExc_Addr(int cpuId, quint64 value) noexcept
+inline void setBus(ScsiBus* b) noexcept
+inline void setCM(const quint64 cm_)
+inline void setCM_Active(CPUIdType cpuId, quint8 cm) noexcept
+inline void setCPUFamily(CPUFamily fam) noexcept
+inline void setContextSnapshot(CPUIdType cpuId) noexcept
+inline void setCurrentASN(quint64 value) noexcept
+inline void setDTB0ASID(quint8 v) noexcept
+inline void setDTB0ASID_Active(CPUIdType cpuId, quint8 v) noexcept
+inline void setDTB1ASID(quint8 v) noexcept
+inline void setDTB1ASID_Active(CPUIdType cpuId, quint8 v) noexcept
+inline void setDtb_Tag_Asn(quint8 asn) noexcept
+inline void setDtb_Tag_Bank(quint8 bank_) noexcept
+inline void setDtb_Tag_Gh(quint8 gh) noexcept
+inline void setDtb_Tag_Raw(quint64 tag) noexcept
+inline void setDtb_Tag_Vpn(quint64 vpn) noexcept
+inline void setESP(quint64 value) noexcept
+inline void setESP_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setESP_Active(int cpuId, quint64 esp) noexcept
+inline void setEnteredPALContext(bool value) noexcept
+inline void setFEN(quint64 value) noexcept
+inline void setFEN_Active(int cpuId, quint64 value) noexcept
+inline void setFPCR_RoundingMode(quint8 rm) noexcept
+inline void setFPE(quint64 value) noexcept
+inline void setFPE_Active(int cpuId, quint64 value) noexcept
+inline void setFlag(FpFlag f, bool v = true) noexcept
+inline void setFpcr(quint64 fpcr_) noexcept
+inline void setGlobalPointer(quint64 v) noexcept
+inline void setHWPCBExc_Addr(quint64 value) noexcept
+inline void setICtlSDE0(CPUIdType cpuId, bool enable) noexcept
+inline void setICtlSDE1(CPUIdType cpuId, bool enable) noexcept
+inline void setInterruptEligibilityDirty(bool bValue) noexcept
+inline void setItb_Tag_Asn(ASNType tag) noexcept
+inline void setItb_Tag_Va(VAType tag) noexcept
+inline void setKSP(quint64 value) noexcept
+inline void setKSP_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setKSP_Active(int cpuId, quint64 ksp) noexcept
+inline void setMM_STAT(quint64 rawValue) noexcept
+inline void setModePrivilege(Mode_Privilege mp)
+inline void setName(const QString& name) noexcept
+inline void setPALScratch_Active(int cpuId, int index, quint64 value) noexcept
+inline void setPC(quint64 value) noexcept
+inline void setPCTX(const quint64 pctx_)
+inline void setPCTX_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setPC_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setPPCE(quint64 ppce_)
+inline void setPPCE_Active(int cpuId, quint64 value) noexcept
+inline void setPS(quint64 value) noexcept
+inline void setPS_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setPTBR(quint64 value) noexcept
+inline void setPTBR_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setPrefetchDistance(AlphaCPU & cpuState, quint8 bPrefetchDist)
+inline void setPrefetchEnable(AlphaCPU & cpuState, bool bPrefetch=true)
+inline void setProcessorPerformanceCounterEnable(CPUStateIPRInterface* cpuState, quint8 value) noexcept
+inline void setRaw(CPUIdType cpuId, quint64 value) noexcept
+inline void setRaw(u64 v) noexcept
+inline void setReturnAddress(quint64 v) noexcept
+inline void setRoundingMode(RoundingMode rm) noexcept
+inline void setRoundingModeAndClearFaults(CPUIdType cpuId, quint8 mode) noexcept
+inline void setSSP(quint64 value) noexcept
+inline void setSSP_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setSSP_Active(int cpuId, quint64 ssp) noexcept
+inline void setSavedPC(quint64 value) noexcept
+inline void setSavedPC_Active(int cpuId, quint64 value) noexcept
+inline void setSavedPS(quint64 value) noexcept
+inline void setSavedPS_Active(int cpuId, quint64 value) noexcept
+inline void setSoftwareDetectEnabled(bool v) noexcept
+inline void setSpeculativeLoads(AlphaCPU& cpuState, bool bSpecLoads)
+inline void setStrategy(BranchStrategy strategy) noexcept
+inline void setTargetId(quint8 tid) noexcept
+inline void setUNQ(quint64 value) noexcept
+inline void setUNQ_Active(int cpuId, quint64 value) noexcept
+inline void setUSP(quint64 value) noexcept
+inline void setUSP_Active(CPUIdType cpuId, quint64 value) noexcept
+inline void setUSP_Active(int cpuId, quint64 usp) noexcept
+inline void setVA(quint64 va) noexcept
+inline void setVAPTB(quint64 ptbr) noexcept
+inline void setVA_CTL(quint64 va_ctl) noexcept
+inline void setVA_FAULT(int cpuId, quint64 va)
+inline void setVA_Fault(VAType va) noexcept
+inline void setWorldWideName(quint64 wwn) noexcept
+inline void shutdownGlobalPTE() noexcept
+inline void stageITBPTE(CPUStateIPRInterface* cpuState, quint64 newValue) noexcept
+inline void stallPipeline_inl(AlphaCPU& cpuState, quint32 delay) noexcept
+inline void start() noexcept
+inline void stop() noexcept
+inline void syncPALcodeExceptionState(quint64) noexcept
+inline void syncProcessorModeFromIPR(CPUIdType cpuId)
+inline void triggerMachineCheck(quint64) noexcept
+inline void update(bool taken) noexcept
+inline void updateExcSumFromFPCR(CPUIdType cpuId) noexcept
+inline void updateExceptionState(quint64) noexcept
+inline void updateExceptionVectorTable(quint64) noexcept
+int size()
+noexcept : m_value(value)
+noexcept : raw(0)
+noexcept : raw(value)
+qsizetype getAssociativity()
+qsizetype getLineSize()
+qsizetype getNumSets()
+qsizetype getStatsUpdateInterval()
+qsizetype getTotalSize()
+qsizetype* getData()
+qsizetype* getMutableData()
+quint32 incrementASNGeneration(ASNType asn) noexcept
+quint64 accessCount()
+quint64 getESP_Active(int cpuId) noexcept
+quint64 getPendingSoftwareInterrupts(CPUStateIPRInterface* cpuState)
+quint64 getSSP_Active(int cpuId) noexcept
+quint64 pa(quint16 cpuId)
+quint64 readIntReg(CPUIdType cpuId, quint8 regNum) noexcept
+quint64 registrationAddr()
+quint8 getIsWrite()
+quint8* bytes() noexcept
+static DegradedDevicesReport& instance()
+static Ev6SPAMShardManager& getSPAM() noexcept
+static Ev6SPAMShardManager& getSPAM(CPUIdType cpuId) noexcept
+static GlobalPTESMP& instance() noexcept
+static IPRBank& instance() noexcept
+static ReservationManager& gInstance()
+static ReservationManager& instance()
+static SinkFn& getSink()
+static const AsnGenTable* getASNEpochTable() noexcept
+static constexpr AlphaPTE fromRaw(quint64 rawValue) noexcept
+static constexpr AlphaPTE makeInvalid() noexcept
+static constexpr PaKey fromPA(quint64 pa) noexcept
+static constexpr PcKey fromVA(quint64 va) noexcept
+static constexpr bool allowExecute(AccessPerm perm, bool userMode) noexcept
+static constexpr bool allowRead(AccessPerm perm, bool userMode) noexcept
+static constexpr bool allowWrite(AccessPerm perm, bool userMode) noexcept
+static constexpr int size() noexcept
+static constexpr qsizetype getColdSize()
+static constexpr qsizetype getHotSize()
+static constexpr qsizetype getTotalSize()
+static constexpr qsizetype size()
+static constexpr quint64 computeVPN(VAType va, PageSizeCode sc) noexcept
+static constexpr quint64 pageShift(PageSizeCode code) noexcept
+static constexpr quint64 pageSizeBytes(PageSizeCode code) noexcept
+static inline AlphaN_S::PermMask permMask(const AlphaPTE& pte) noexcept
+static inline Box inferBox(quint8 index16)
+static inline PFNType pfn(const AlphaPTE& pte) noexcept
+static inline Pipe inferPipe(quint8 index16)
+static inline Tag makeTag(quint64 va, Realm realm, quint8 sizeClass) noexcept
+static inline const IPRDescriptor* getEV6PalTempBySlot(quint16 iprIndex)
+static inline int get() noexcept
+static inline quint64 alignToQuadword(quint64 pa) noexcept
+static inline quint64 zeroExtend16(quint16 v)
+static inline quint64 zeroExtend32(quint32 v)
+static inline quint64 zeroExtend8(qsizetype v)
+static inline quint8 pteGH(PTEType raw) noexcept
+static inline quint8 sizeClassFor(quint8 sc) noexcept
+static inline unsigned bucketIndex(const Tag& t) noexcept
+static inline void initialize(int count = MAX_CPUS) noexcept
+static quint32 getASNGeneration(ASNType asn) noexcept
+static quint32 getASNGeneration(CPUIdType cpuId, ASNType asn) noexcept
+static quint32 incrementASNGeneration(ASNType asn) noexcept
+static quint32 lazyInvalidateASN(ASNType asn) noexcept
+static unsigned bucketIndex(const ISpamTag& tag) noexcept
+static unsigned bucketIndex(const KeyType& key) noexcept
+static void flushCPU(CPUIdType cpuId) noexcept
+static void initialize(int cpuCount) noexcept
+static void installSink(SinkFn fn)
+static void lazyInvalidateASN(ASNType asn) noexcept
+static void lazyInvalidateAll() noexcept
+static void log(Level lvl, const std::string& msg)
+static void shutdown() noexcept
+static void sweepDeadEntries(CPUIdType cpuId, ASNType asn) noexcept
+switch(OpKind)
+switch(accessSize)
+switch(b)
+switch(bankPolicy)
+switch(bitIndex)
+switch(category)
+switch(code)
+switch(entry.reason)
+switch(ev.exceptionClass)
+switch(exClass)
+switch(exceptionClass)
+switch(faultInfo.faultType)
+switch(faultType)
+switch(faultTypeBits)
+switch(func)
+switch(grain.targetBox)
+switch(irqState.routingPolicy)
+switch(m_policy)
+switch(memStat)
+switch(mode)
+switch(perm)
+switch(r)
+switch(reason)
+switch(result)
+switch(size)
+switch(sizeBytes)
+switch(st)
+switch(t)
+switch(tr)
+switch(type)
+switch(v.roundingMode)
+switch(variant.roundingMode)
+switch(width)
+unsigned chooseVictim(Realm realm, SC_Type sizeClass, unsigned bucketIndex) noexcept
+unsigned selectVictim(const Entry* entries) noexcept
+virtual bool flushCache() noexcept
+virtual void mmioFence(palCore_FenceKind) noexcept
+virtual void mmioReset() noexcept
+virtual void onEngineReset() noexcept
+virtual void onEngineStart() noexcept
+virtual void onEngineStop() noexcept
+virtual void onFence(palCore_FenceKind kind)
+virtual void reset() noexcept
+virtual void setDeviceUid(quint32 uid) noexcept
+void AppendData(quint64 data_Line)
+void addDegradedDevice(const DegradedDeviceEntry& entry)
+void addDegradedDevice(const DegradedDeviceInfo& info)
+void addRef()
+void attachAsnEpochs(const AsnGenTable* table) noexcept
+void attachAsnEpochs(const AsnGenTable* tbl) noexcept
+void attachMemorySystem(AlphaMemorySystem* memSys)
+void bindDeviceBus(DeviceBus* d)
+void bindGrainResolver(GrainResolver* g)
+void bindIRQController(IRQController* irq)
+void bindMMIOManager(MMIOManager* m)
+void bindReservationManager(ReservationManager* r)
+void bindSafeMemory(SafeMemory* m)
+void bindScsiController(ScsiController* s)
+void clear()
+void clear() noexcept
+void clearAllReservationForCpu()
+void clearReservation(quint16 cpuId)
+void clearReservationSet()
+void clearStagedDTBUpdate()
+void conflictWrite(quint64 pa)
+void dispatchToBox(const InstructionGrain_iSpam& grain)
+void evictHint(quint64 address)
+void evictHint(quint64 address, WriteBackFunction backingWrite)
+void example_InstructionFetch(AlphaProcessorContext& ctx, quint64 pc)
+void example_LoadInstruction(AlphaProcessorContext& ctx, quint64 va)
+void example_PALPhysicalAccess(AlphaProcessorContext& ctx, quint64 physAddr)
+void example_StoreInstruction(AlphaProcessorContext& ctx, quint64 va, quint64 data)
+void execute(const DecodedInstruction& di, AlphaProcessorContext& ctx)
+void executeSTF(PipelineSlot& slot) noexcept
+void executeSTG(PipelineSlot& slot) noexcept
+void executeSTS(PipelineSlot& slot) noexcept
+void executeSTT(PipelineSlot& slot) noexcept
+void flushAll() noexcept
+void flushICache(AlphaProcessorContext& ctx)
+void flushPipeline() noexcept
+void guestWritesAckRegister(quint32 ackBits)
+void guestWritesDmaControl(quint32 val)
+void handleArithmeticTrap(CPUIdType cpuId, quint64 faultPC)
+void handleHardwareError(CPUIdType cpuId, quint64 errorAddr, quint64 errorType)
+void handleITBMiss(CPUIdType cpuId, quint64 faultVA, quint64 faultPC)
+void handlePendingFault()
+void handleTLBMiss(CPUIdType cpuId, quint64 faultVA, quint64 faultPC)
+void handleVA_FaultOrMiss(VAType va, ASNType asn, TLBFaultType fault)
+void hostClearReservation(CPUStateIPRInterface* cpu) noexcept
+void hostClearReservation(CPUStateIPRInterface* cpuState) noexcept
+void hostMB(CPUStateIPRInterface* cpu) noexcept
+void hostRMB(CPUStateIPRInterface* cpu) noexcept
+void hostSCPublish(CPUStateIPRInterface* cpu) noexcept
+void hostSCPublish(CPUStateIPRInterface* cpuState) noexcept
+void hostWMB(CPUStateIPRInterface* cpu) noexcept
+void incrementASNGenerationAllCPUs(ASNType asn) noexcept
+void incrementAccessCnt()
+void incrementAllASNGenerations() noexcept
+void initCustom()
+void initEV5()
+void initEV6()
+void initialize()
+void insertInstructionEntry(TAGType tag, const AlphaPTE& pte)
+void invalidate(Entry& entry)
+void invalidate(const KeyType& key) noexcept
+void invalidate(unsigned slot) noexcept
+void invalidateASN_AllShards(quint8 asn) noexcept
+void invalidateAll() noexcept
+void invalidateAll(CPUIdType cpuId) noexcept
+void invalidateByPA(CPUIdType cpuId, quint64 pa) noexcept
+void invalidateByPA(quint64 pa) noexcept
+void invalidateByPC(CPUIdType cpuId, quint64 pc) noexcept
+void invalidateByPC(quint64 pc) noexcept
+void invalidateDTB0All()
+void invalidateDTB0Process(quint8 asn)
+void invalidateDTB0Single(quint64 va, quint8 currentASN)
+void invalidateDTB1All()
+void invalidateDTB1Process(quint8 asn)
+void invalidateDTB1Single(quint64 va, quint8 currentASN)
+void invalidateGranule(quint64 pa)
+void invalidateKey(const KeyType& key) noexcept
+void invalidateRange(quint64 pa, quint64 size)
+void invalidateSlot(unsigned slot) noexcept
+void itbTagWrite(CPUIdType cpuId, const Tag& tag, ASNType asn, quint8 gh, bool bITB1)
+void maintenanceTick(CPUIdType cpuId, int bucketBudgetPerASN = -1)
+void onASNWrite(AlphaCPU* cpuState, quint64 oldValue, quint64 newValue)
+void onCodeModified(quint64 pa)
+void onContextSwitch()
+void onHW_INT_CLRWrite(AlphaCPU &cpuState, quint64 oldValue, quint64 newValue)
+void onPCTX_ASTERWrite(AlphaCPU* argCpu, quint64 oldValue, quint64 newValue)
+void onPCTX_FPEWrite(AlphaCPU* argCpu, quint64 oldValue, quint64 newValue)
+void onPageModified(CPUIdType cpuId, quint64 pa)
+void onPageUnmapped(quint64 pfn)
+void queueITBFault(quint64 pc, TranslationResult result)
+void recalculateInterruptPriorities(quint8 cpuId, quint8 newIer)
+void recordAccess(const Entry& e, unsigned way) noexcept
+void registerDevice(DeviceNode* node, IDeviceEmulator* emulator, MMIOWindow* mmioWindow)
+void removeRef()
+void resetDualStatistics()
+void resetTelemetry() noexcept
+void restartFetch(quint64 pc) noexcept
+void set(unsigned way, unsigned v) noexcept
+void setActive(bool isActive)
+void setAddress(quint64 addr)
+void setAlphaExceptionType(AlphaExceptionType exType)
+void setBackingRead(ReadFunction backingRead)
+void setCacheLevel(const QString& cacheLevel)
+void setCurrentIPL(quint8 newIPL)
+void setDegraded(bool isDegraded)
+void setDirty(bool dirty)
+void setHasReservation(bool bReserved)
+void setIsWrite(quint8 writeVal)
+void setMessage(const QString& msg)
+void setOnInvalidatedCallback(const OnReservationInvalidatedFn& fn)
+void setOnline(bool isOnline)
+void setPcAtFault(quint64 faultingPC)
+void setPrecise(bool bValue)
+void setPrefetchDepth(quint32 depth)
+void setPrefetchDistance(quint32 distance)
+void setPrefetched(bool prefetched)
+void setRealm(Realm r) noexcept
+void setReservationAddr(quint64 regAddress)
+void setSoftwareCompletion(bool bCompletionNeeded)
+void setSoftwareIPLBitmask(quint32 mask)
+void setSoftwareRepairBitmask(quint32 mask)
+void setSourceRegisterBitmask(quint32 mask)
+void setState(CoherencyState state)
+void setTag(quint64 tag)
+void setTargetPlatform(grainPlatform platform)
+void setTimestamp(quint16 cpuId, quint64 v) noexcept
+void setVA(VAType v)
+void setVA_CTL(VAType c)
+void setVPTB(quint64 b)
+void setValid(bool valid)
+void set_bp_mode(quint8 val) noexcept
+void set_call_pal_r23(bool en) noexcept
+void set_hwe(bool en) noexcept
+void set_ic_en(quint8 val) noexcept
+void set_mchk_en(bool en) noexcept
+void set_pct0_en(bool en) noexcept
+void set_pct1_en(bool en) noexcept
+void set_sbe(quint8 val) noexcept
+void set_sde(quint8 val) noexcept
+void set_single_issue(bool en) noexcept
+void set_sl_xmit(bool en) noexcept
+void set_spce(bool en) noexcept
+void set_spe(quint8 val) noexcept
+void set_tb_mb_en(bool en) noexcept
+void set_va_48(bool en) noexcept
+void set_va_form_32(bool en) noexcept
+void set_vptb(quint32 val) noexcept
+void set_vptb_sext(quint16 val) noexcept
+void someInternalEvent()
+void stall()
+void sweepDeadForASN(ASNType asn, quint32 curGen) noexcept
+void sweepDeadForASN(quint8 asn, quint16 curGen) noexcept
+void tbia(CPUIdType cpuId) noexcept
+void tbis(CPUIdType cpuId, Realm realm, SC_Type sizeClass, VAType va, ASNType asn) noexcept
+void tick()
+void unregisterDevice(quint32 deviceUID)
+void unstall()
+void updateLastActivity(quint64 secondsSinceEpoch)
+void writeFpReg(quint8 index, quint64 value) noexcept
+void writeIntReg(CPUIdType cpuId, quint8 regNum, quint64 value) noexcept
+while(rIdx != wIdx)
+while(running)
+while(x)

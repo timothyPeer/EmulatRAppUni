@@ -1,0 +1,517 @@
+// ============================================================================
+// Refactored Grains - Propagate BoxResult to Slot
+// ============================================================================
+// Grains now:
+// 1. Call box method (which returns BoxResult)
+// 2. Propagate result to slot fields
+// 3. Set slot.stalled / slot.faultPending / slot.payLoad based on result
+//
+// Pattern is CONSISTENT for all grain types
+// ============================================================================
+
+#include "Boxes_Refactored.h"
+
+// ============================================================================
+// Integer Grains
+// ============================================================================
+
+/**
+ * @brief ADDQ grain - Integer add
+ */
+class ADDQ_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        // Call box
+        BoxResult r = slot.getEBox()->executeAdd(slot);
+
+        // Propagate result to slot
+        switch (r.action) {
+            case BoxAction::Continue:
+                // Success - set payload for writeback
+                slot.payLoad = r.value;
+                slot.needsWriteback = true;
+                break;
+
+            case BoxAction::Stall:
+                // Operands not ready - stall slot
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                DEBUG_LOG(QString("ADDQ stalled: %1").arg(r.stallReason));
+                break;
+
+            case BoxAction::Fault:
+                // Should not happen for ADDQ, but handle anyway
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+
+            case BoxAction::Redirect:
+                // Should not happen for ADDQ
+                break;
+        }
+    }
+};
+
+/**
+ * @brief SUBQ grain - Integer subtract
+ */
+class SUBQ_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        BoxResult r = slot.getEBox()->executeSub(slot);
+
+        // Same propagation pattern
+        switch (r.action) {
+            case BoxAction::Continue:
+                slot.payLoad = r.value;
+                slot.needsWriteback = true;
+                break;
+            case BoxAction::Stall:
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+            case BoxAction::Fault:
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+            case BoxAction::Redirect:
+                break;
+        }
+    }
+};
+
+// ============================================================================
+// Branch Grains
+// ============================================================================
+
+/**
+ * @brief BEQ grain - Branch if equal to zero
+ */
+class BEQ_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        // Condition: Ra == 0
+        auto condition = [](quint64 ra) { return ra == 0; };
+
+        BoxResult r = slot.getEBox()->executeBranch(slot, condition);
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                // Branch not taken - just continue
+                slot.branchTaken = false;
+                slot.branchTarget = slot.di.pc + 4;
+                break;
+
+            case BoxAction::Stall:
+                // Ra not ready
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+
+            case BoxAction::Redirect:
+                // Branch taken - box already set slot.branchTaken/Target
+                // Just record redirect PC
+                slot.isBranchRedirect = true;
+                break;
+
+            case BoxAction::Fault:
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+        }
+    }
+};
+
+/**
+ * @brief BNE grain - Branch if not equal to zero
+ */
+class BNE_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        // Condition: Ra != 0
+        auto condition = [](quint64 ra) { return ra != 0; };
+
+        BoxResult r = slot.getEBox()->executeBranch(slot, condition);
+
+        // Same propagation as BEQ
+        switch (r.action) {
+            case BoxAction::Continue:
+                slot.branchTaken = false;
+                slot.branchTarget = slot.di.pc + 4;
+                break;
+            case BoxAction::Stall:
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+            case BoxAction::Redirect:
+                slot.isBranchRedirect = true;
+                break;
+            case BoxAction::Fault:
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+        }
+    }
+};
+
+// ============================================================================
+// Floating-Point Grains
+// ============================================================================
+
+/**
+ * @brief ADDF grain - Float add
+ */
+class ADDF_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        FPVariant variant = decodeVariant(functionCode());
+
+        BoxResult r = slot.getFBox()->executeAddF(slot, variant);
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                slot.payLoad = r.value;
+                slot.needsWriteback = true;
+                slot.isFloatResult = true;  // Mark as float result
+                break;
+
+            case BoxAction::Stall:
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+
+            case BoxAction::Fault:
+                // FP exception (overflow, underflow, etc.)
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+
+            case BoxAction::Redirect:
+                // Shouldn't happen for ADDF
+                break;
+        }
+    }
+};
+
+/**
+ * @brief SQRTF grain - Float square root
+ */
+class SQRTF_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        FPVariant variant = decodeVariant(functionCode());
+
+        BoxResult r = slot.getFBox()->executeSqrt(slot, variant);
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                slot.payLoad = r.value;
+                slot.needsWriteback = true;
+                slot.isFloatResult = true;
+                break;
+
+            case BoxAction::Stall:
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+
+            case BoxAction::Fault:
+                // Invalid operand (NaN, negative, etc.)
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+
+            case BoxAction::Redirect:
+                break;
+        }
+    }
+};
+
+/**
+ * @brief DIVF grain - Float divide
+ */
+class DIVF_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        FPVariant variant = decodeVariant(functionCode());
+
+        BoxResult r = slot.getFBox()->executeDivF(slot, variant);
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                slot.payLoad = r.value;
+                slot.needsWriteback = true;
+                slot.isFloatResult = true;
+                break;
+
+            case BoxAction::Stall:
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+
+            case BoxAction::Fault:
+                // Divide by zero or other FP exception
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+
+            case BoxAction::Redirect:
+                break;
+        }
+    }
+};
+
+// ============================================================================
+// Memory Grains
+// ============================================================================
+
+/**
+ * @brief LDQ grain - Load quadword
+ */
+class LDQ_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        BoxResult r = slot.getMBox()->executeLoad(slot, MemSize::Quad);
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                slot.payLoad = r.value;
+                slot.needsWriteback = true;
+                break;
+
+            case BoxAction::Stall:
+                // Cache miss, TLB miss being serviced, etc.
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+
+            case BoxAction::Fault:
+                // TLB miss, access violation, etc.
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+
+            case BoxAction::Redirect:
+                break;
+        }
+    }
+};
+
+/**
+ * @brief STQ grain - Store quadword
+ */
+class STQ_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        BoxResult r = slot.getMBox()->executeStore(slot, MemSize::Quad);
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                // Store complete - no writeback to register
+                break;
+
+            case BoxAction::Stall:
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+
+            case BoxAction::Fault:
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+
+            case BoxAction::Redirect:
+                break;
+        }
+    }
+};
+
+/**
+ * @brief LDQ_L grain - Load quadword locked
+ */
+class LDQ_L_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        BoxResult r = slot.getMBox()->executeLoadLocked(slot, MemSize::Quad);
+
+        // Same as LDQ, but MBox also sets reservation
+        switch (r.action) {
+            case BoxAction::Continue:
+                slot.payLoad = r.value;
+                slot.needsWriteback = true;
+                break;
+            case BoxAction::Stall:
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+            case BoxAction::Fault:
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+            case BoxAction::Redirect:
+                break;
+        }
+    }
+};
+
+/**
+ * @brief STQ_C grain - Store quadword conditional
+ */
+class STQ_C_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        BoxResult r = slot.getMBox()->executeStoreConditional(slot, MemSize::Quad);
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                // r.value is 0 (failed) or 1 (succeeded)
+                slot.payLoad = r.value;
+                slot.needsWriteback = true;
+                break;
+            case BoxAction::Stall:
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+            case BoxAction::Fault:
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+            case BoxAction::Redirect:
+                break;
+        }
+    }
+};
+
+/**
+ * @brief MB grain - Memory barrier
+ */
+class MB_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        BoxResult r = slot.getMBox()->executeMemoryBarrier(slot);
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                // Barrier complete
+                break;
+
+            case BoxAction::Stall:
+                // Waiting for barrier to complete
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+
+            case BoxAction::Fault:
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+
+            case BoxAction::Redirect:
+                break;
+        }
+    }
+};
+
+/**
+ * @brief WMB grain - Write memory barrier
+ */
+class WMB_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        BoxResult r = slot.getMBox()->executeWriteMemoryBarrier(slot);
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                // Write buffers drained
+                break;
+            case BoxAction::Stall:
+                // Still draining
+                slot.stalled = true;
+                slot.stallReason = r.stallReason;
+                break;
+            case BoxAction::Fault:
+                slot.faultPending = true;
+                slot.faultEvent = r.fault;
+                break;
+            case BoxAction::Redirect:
+                break;
+        }
+    }
+};
+
+// ============================================================================
+// PAL Grains
+// ============================================================================
+
+/**
+ * @brief CALL_PAL grain
+ */
+class CALL_PAL_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        BoxResult r = slot.getPBox()->executeCallPal(slot);
+
+        // CALL_PAL always succeeds (no operand dependencies)
+        // Box has already set slot.palTransferPending
+
+        switch (r.action) {
+            case BoxAction::Continue:
+                // PAL transfer will be handled by pipeline
+                break;
+            case BoxAction::Stall:
+            case BoxAction::Fault:
+            case BoxAction::Redirect:
+                // Shouldn't happen for CALL_PAL
+                break;
+        }
+    }
+};
+
+/**
+ * @brief HW_REI grain - Return from PAL/interrupt
+ */
+class HW_REI_Grain : public InstructionGrain {
+public:
+    void execute(PipelineSlot& slot) const override {
+        BoxResult r = slot.getPBox()->executeREI(slot);
+
+        switch (r.action) {
+            case BoxAction::Redirect:
+                // REI redirects to return address
+                slot.reiTarget = r.redirectPC;
+                break;
+
+            case BoxAction::Continue:
+            case BoxAction::Stall:
+            case BoxAction::Fault:
+                break;
+        }
+    }
+};
+
+// ============================================================================
+// Summary - Consistent Pattern for ALL Grains
+// ============================================================================
+
+/*
+ * PATTERN (Every grain follows this):
+ *
+ * 1. Call box method:
+ *    BoxResult r = slot.getXBox()->executeYYY(slot, ...);
+ *
+ * 2. Switch on r.action:
+ *    switch (r.action) {
+ *        case Continue:  slot.payLoad = r.value; slot.needsWriteback = true;
+ *        case Stall:     slot.stalled = true; slot.stallReason = r.stallReason;
+ *        case Fault:     slot.faultPending = true; slot.faultEvent = r.fault;
+ *        case Redirect:  slot.branchTarget = r.redirectPC; (or similar)
+ *    }
+ *
+ * 3. That's it! No special cases, no instruction-type checking.
+ *
+ * Benefits:
+ * - Simple and consistent
+ * - Boxes own semantics (operand checks, computation, faults)
+ * - Grains just route and propagate
+ * - Pipeline just pumps (execute grain, commit result)
+ */

@@ -1,0 +1,150 @@
+#pragma once
+#include <QtGlobal>
+#include <QString>
+
+// Common compact permission mask (shared meaning across EVx)
+// It turns a raw PTE into a tiny mask used on the hot path. Keep the mapping consistent with your existing bit layout.
+// bit0 = U_R, bit1 = U_W, bit2 = K_R, bit3 = K_W
+enum AccessBits : quint8 {
+	USER_READ = 1 << 0,
+	USER_WRITE = 1 << 1,
+	USER_EXEC = 1 << 2,
+	KERNEL_READ = 1 << 3,
+	KERNEL_WRITE = 1 << 4,
+	KERNEL_EXEC = 1 << 5
+};
+// 
+enum class AccessIntent {
+	Read,    // Data read access
+	Write,   // Data write access
+	Execute  // Instruction fetch
+};
+
+// MMIO_CoreData
+enum class AccessKind : quint8 {
+	READ = 0,
+	WRITE = 1,
+	EXECUTE = 2,
+	FETCH_VA = 3  // Fetch Virtual Address (special case)
+};
+
+// ============================================================================
+// ACCESS MODES
+// ============================================================================
+enum class AccessMode : quint8 {
+	NONE = 0,       // Not accessible (reserved/unimplemented)
+	RO = 1,       // Read-only
+	WO = 2,       // Write-only
+	RW = 3,       // Read/write
+	W1C = 4,       // Write-1-to-clear
+	W1S = 5        // Write-1-to-set
+};
+
+
+enum AccessType { None, Read, Write, Execute, Read_Modify_Write = 4 }; // Atomic RMW (LL/SC, interlocked sequences};
+
+// CPU Family enumeration
+enum class CPUFamily {
+	EV4,
+	EV5,
+	EV6
+};
+enum class CpuState : int
+{
+	Halted = 0,      // CPU is not running, e.g. after HALT instruction
+	Running,         // Normal execution
+	Idle,            // Waiting for interrupt, scheduler, or event
+	Waiting,         // Waiting on memory, I/O, or SMP synchronization
+	Suspended,       // Stopped temporarily (e.g. debugger, breakpoint)
+	Resetting,       // In reset sequence
+	Booting,         // During initial boot
+	Faulted,         // Fault or exception pending/service required
+	Stopped,          // Permanently stopped (shutdown, not restartable)
+	PAL_Handling
+	// Add others as your architecture needs
+};
+
+enum class MemoryWidth : quint8 { // PrivilegeLevel
+	BYTE = 1,
+	WORD = 2,
+	LONGWORD = 4,
+	QUADWORD = 8
+};
+
+
+
+enum class AccessResult : quint8 {
+	Allowed = 0,         // Access is permitted
+	Fault_NoPage,        // Translation failed (no PTE / invalid PFN)
+	Fault_Permission,    // PTE permissions do not allow requested access
+	Fault_Mode,          // Processor mode cannot legally perform access
+	Fault_FEN,           // Floating-point disabled (for FP operations)
+	Fault_Alignment,     // Misaligned address (if you check this here)
+	Fault_Execution,     // Executing a non-executable page
+	Fault_Write,         // Writing to a read-only page
+	Fault_Unknown        // Safety fallback
+};
+
+
+
+enum class PrivilegeLevel : quint8 { 
+	KERNEL,
+	EXECUTIVE,
+	SUPERVISOR,
+	USER
+};
+
+inline QString PrivilegeLevelToString(PrivilegeLevel plevel) noexcept {
+	switch (plevel)
+	{
+	case PrivilegeLevel::KERNEL:
+		return "Privilege:Kernel";
+		
+	case PrivilegeLevel::EXECUTIVE:
+		return "Privilege:Executive";
+	case PrivilegeLevel::SUPERVISOR:
+		return "Privilege:Supervisor";
+	case PrivilegeLevel::USER:
+		return "Privilege:User";
+	default:
+		break;
+	}
+}
+
+
+
+
+
+
+enum class ReservationInvalidationReason
+{
+	Write,
+	PageUnmap,
+	TLBInvalidation,
+	ContextSwitch
+};
+
+
+// If you shard by size class, define a compact id (0..N-1)
+// Map your PageSizeCode to this ID in one place.
+/*enum class SizeClassId : quint8 { S8K = 0, S64K = 1 / * ... * / };*/
+
+
+
+
+// ============================================================================
+// Privilege Level to String Conversion
+// ============================================================================
+/**
+ * @brief Convert PrivilegeLevel to string
+ */
+inline QString privilegeLevelName(PrivilegeLevel priv) {
+	switch (priv) {
+	case PrivilegeLevel::KERNEL:     return "KERNEL";
+	case PrivilegeLevel::EXECUTIVE:  return "EXECUTIVE";
+	case PrivilegeLevel::SUPERVISOR: return "SUPERVISOR";
+	case PrivilegeLevel::USER:       return "USER";
+	default:                          return "UNKNOWN_PRIV";
+	}
+}
+
