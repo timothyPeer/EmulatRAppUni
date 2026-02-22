@@ -7,7 +7,7 @@
 #include <QStringList>
 #include <QString>
 #include <QDir>
-#include "../Qt/6.9.1/msvc2022_64/include/QtCore/qminmax.h"
+#include "/Qt/6.9.1/msvc2022_64/include/QtCore/qminmax.h"
 #include "configLib/global_EmulatorSettings.h"
 #include "coreLib/globalCPUCount.h"
 #include "memoryLib/global_writeBufferManager.h"
@@ -888,6 +888,8 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase5_FirmwareLoading()
 			ERROR_LOG(QString("Failed to load SRM ROM: %1").arg(srmRomFile));
 			return false;
 		}
+		
+
 
 		phase.logConfig("ROM Source", srmRomFile);
 	}
@@ -1145,6 +1147,9 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 		}
 	);
 
+	quint64 checkWord;
+	guestMem.read64(0x0, checkWord);  // or wherever your reset address is
+	qDebug() << "ROM word at reset vector:" << Qt::hex << checkWord;
 	if (!result.success) {
 		ERROR_LOG(QString("SRM firmware decompression FAILED: %1").arg(result.errorMessage));
 		markFailure();

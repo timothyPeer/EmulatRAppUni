@@ -30,7 +30,7 @@ namespace ASCII {
 // Construction
 // ============================================================================
 
-SRMConsoleDevice::SRMConsoleDevice(const Config& config, QObject* parent)
+SRMConsoleDevice::SRMConsoleDevice( Config& config, QObject* parent)
     : QObject(parent)
     , m_config(config)
 {

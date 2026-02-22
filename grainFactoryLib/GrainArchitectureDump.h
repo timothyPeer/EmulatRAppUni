@@ -475,6 +475,7 @@ inline bool GrainArchitectureDump::analyze() noexcept
     m_grainsByType.clear();
     m_duplicates.clear();
     m_gaps.clear();
+    seen.clear();
 
     collectGrains();
     detectDuplicates();
@@ -495,19 +496,35 @@ inline void GrainArchitectureDump::collectGrains() noexcept
 {
     auto& registry = InstructionGrainRegistry::instance();
 
-    seen.clear();
-    // Iterate through all possible opcodes (0x00 - 0x3F)
-    for (quint16 opcode = 0; opcode <= 0x3F; ++opcode)
+    for (int opcode = 0; opcode < 64; ++opcode)
     {
-        // For each opcode, check common function codes
-        // Most opcodes use 0, some use 0-127 (7-bit), some use 0-2047 (11-bit)
+        // PAL HW: single grain, skip func loop
+        if (opcode >= 0x19 && opcode <= 0x1F && opcode != 0x1A)
+        {
+            auto* grain = registry.lookup(static_cast<quint8>(opcode), 0,
+                GrainPlatform::Alpha);
+            if (grain)
+            {
+                GrainInfo info;
+                info.opcode = static_cast<quint8>(opcode);
+                info.functionCode = 0;
+                info.mnemonic = grain->mnemonic();
+                info.grainType = grain->grainType();
+                info.grainTypeName = grainTypeToString(info.grainType);
+                info.grain = grain;
+                m_grains.append(info);
+                m_grainsByOpcode[QString("%1").arg(opcode, 2, 16, QChar('0'))].append(info);
+            }
+            continue;
+        }
+
+        // Normal opcodes: iterate all function codes
         for (quint16 func = 0; func < 2048; ++func)
         {
             auto* grain = registry.lookup(static_cast<quint8>(opcode), func,
                 GrainPlatform::Alpha);
-            if (!grain || seen.contains(grain))
-                break;
-            seen.insert(grain);
+            if (!grain)
+                continue;
 
             GrainInfo info;
             info.opcode = static_cast<quint8>(opcode);

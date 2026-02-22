@@ -378,9 +378,9 @@ AXP_HOT AXP_ALWAYS_INLINE bool isCallPal(const DecodedInstruction& di) noexcept
     return getOpcode(di) == 0x00;
 }
 
-AXP_HOT AXP_ALWAYS_INLINE PalCallPalFunction decodedCallPalFunction(const DecodedInstruction& di) noexcept
+AXP_HOT AXP_ALWAYS_INLINE PalCallPalFunction_enum decodedCallPalFunction(const DecodedInstruction& di) noexcept
 {
-    return static_cast<PalCallPalFunction>(palFunction(di.rawBits()));
+    return static_cast<PalCallPalFunction_enum>(palFunction(di.rawBits()));
 }
 
 AXP_HOT AXP_ALWAYS_INLINE bool isBranchOpcodeFamily(quint8 opcode) noexcept

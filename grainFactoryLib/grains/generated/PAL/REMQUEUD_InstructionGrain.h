@@ -19,7 +19,7 @@
 //  Format: GF_PALFormat
 //  Latency: 1 cycles, Throughput: 1/cycle
 //
-//  Generated: 2026-02-07 12:32:52
+//  Generated: 2026-02-18 12:45:23
 //
 // ============================================================================
 
@@ -62,7 +62,7 @@ public:
     void execute(PipelineSlot& slot) const noexcept override
     {
         // Delegate to execution box via slot member
-        slot.m_palBox->executeREMQUE_UD(slot);
+        slot.m_palBox->executeREMQUEUD(slot);
     }
 
     AXP_HOT AXP_ALWAYS_INLINE

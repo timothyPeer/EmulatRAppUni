@@ -285,6 +285,7 @@ public:
         m_cBox->getBranchPredictor().clear();
         setPalMode(true,true);
         setCMMode(Mode_Privilege::Kernel);                      // start in Kernel Mode
+        qDebug() << m_iprGlobalMaster->h->pc;
     }
 
     // ========================================================================
@@ -446,8 +447,12 @@ public:
             return;
         }
 
+        // if (boxResult.needsPipelineFlush()) {
+        //     m_alphaPipeline->flush("flush::ACP-Instruction Loop");
+        // }
+
         if (boxResult.needsPipelineFlush()) {
-            m_alphaPipeline->flush("flush::ACP-Instruction Loop");
+            qDebug() << "UNEXPECTED flush request at PC:" << Qt::hex << fetchResult.virtualAddress;
         }
 
         if (boxResult.needsMemoryBarrier()) {

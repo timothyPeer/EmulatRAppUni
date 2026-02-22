@@ -164,7 +164,7 @@
 
 // CALL_PAL function dispatched into PalService::execute() switch
 // Place at: PalBox::executeCALL_PAL(), after extracting function code
-//   palFunction = PalCallPalFunction enum value (cast to quint16)
+//   palFunction = PalCallPalFunction_enum enum value (cast to quint16)
 //   pc          = CALL_PAL instruction PC
 //   name        = string name of PAL function (e.g. "CALLSYS", "SWPCTX")
 #define EXECTRACE_PAL_DISPATCH(cpuId, palFunction, pc, name) \

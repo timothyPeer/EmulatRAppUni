@@ -36,11 +36,35 @@ public:
 		return g;
 	}
 
+	// In GrainResolver::extractFunctionCode() or ResolveGrain():
+	static constexpr bool isPalHardwareOpcode(quint8 opcode) noexcept
+	{
+		// These opcodes encode operands in the function field, not instruction variants
+		return opcode == 0x19   // HW_MFPR
+			|| opcode == 0x1B   // HW_LD
+			|| opcode == 0x1D   // HW_MTPR
+			|| opcode == 0x1E   // HW_RET / HW_REI
+			|| opcode == 0x1F;  // HW_ST
+	}
+
+	inline InstructionGrain* ResolveGrain(quint32 rawBits)
+	{
+		const quint8 opcode = (rawBits >> 26) & 0x3F;
+		quint16 func;
+
+		if (isPalHardwareOpcode(opcode))
+			func = 0x0000;  // IPR index is an operand, not a grain selector
+		else
+			func = extractFunctionCode(rawBits, opcode);
+
+		return  InstructionGrainRegistry::instance().lookup(opcode, func);
+	}
+
 	// ========================================================================
 	// ResolveGrain - Main entry point
 	// Takes raw 32-bit instruction, decodes it, returns matching grain
 	// ========================================================================
-	 InstructionGrain* ResolveGrain(quint32 rawInstruction) 
+	 /*InstructionGrain* ResolveGrain(quint32 rawInstruction) 
 	{
 		// Extract opcode (bits 26-31)
 		const quint8 opcode = extractOpcode(rawInstruction);
@@ -64,7 +88,7 @@ public:
 		);
 
 		return grain;  // Returns nullptr if not found
-	}
+	}*/
 
 
 	static AXP_HOT inline InstrFormat classifyFormat(quint8 opcode) noexcept

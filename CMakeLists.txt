@@ -21,9 +21,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(CMAKE_PREFIX_PATH "D:/Qt/6.9.1/msvc2022_64")
+
 find_package(Qt6 REQUIRED COMPONENTS Core Network Concurrent)
 
-
+if(MINGW)
+    add_compile_options(-Wa,-mbig-obj)
+endif()
 
 # ============================================================================
 # Preprocessor Definitions
@@ -149,7 +153,6 @@ set(PROJECT_SOURCES
 # Header Files (for IDE organization)
 # ============================================================================
 set(PROJECT_HEADERS
-    "BitUtils.h"
     "CBoxLib/BranchPredictor.h"
     "CBoxLib/CBoxBase.h"
     "CBoxLib/CBoxLib_global.h"
@@ -230,6 +233,7 @@ set(PROJECT_HEADERS
     "coreLib/AlphaAccessSequenceGenerator.h"
     "coreLib/Ast_core_inl.h"
     "coreLib/Axp_Attributes_core.h"
+    "coreLib/BitUtils.h"
     "coreLib/BoxRequest.h"
     "coreLib/BranchPredictionStats.h"
     "coreLib/CPURegistryEntry.h"
@@ -883,6 +887,9 @@ set(PROJECT_HEADERS
     "grainFactoryLib/grains/generated/Integer/CMPLT_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/CMPULE_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/CMPULT_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/CTLZ_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/CTPOP_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/CTTZ_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/EQV_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/EXTBL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/EXTLH_InstructionGrain.h"
@@ -898,6 +905,14 @@ set(PROJECT_HEADERS
     "grainFactoryLib/grains/generated/Integer/INSQL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/INSWH_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/INSWL_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/MAXSB8_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/MAXSW4_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/MAXUB8_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/MAXUW4_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/MINSB8_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/MINSW4_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/MINUB8_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/MINUW4_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/MSKBL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/MSKLH_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/MSKLL_InstructionGrain.h"
@@ -910,6 +925,11 @@ set(PROJECT_HEADERS
     "grainFactoryLib/grains/generated/Integer/MULQ_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/MULQ_V_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/ORNOT_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/PERR_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/PKLB_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/PKWB_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/RC_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/RS_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/S4ADDL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/S4ADDQ_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/S4SUBL_InstructionGrain.h"
@@ -918,6 +938,8 @@ set(PROJECT_HEADERS
     "grainFactoryLib/grains/generated/Integer/S8ADDQ_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/S8SUBL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/S8SUBQ_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/SEXTB_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/SEXTW_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/SLL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/SRA_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/SUBL_InstructionGrain.h"
@@ -925,6 +947,8 @@ set(PROJECT_HEADERS
     "grainFactoryLib/grains/generated/Integer/SUBQ_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/SUBQ_V_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/UMULH_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/UNPKBL_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/UNPKBW_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/XOR_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/ZAPNOT_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/ZAP_InstructionGrain.h"

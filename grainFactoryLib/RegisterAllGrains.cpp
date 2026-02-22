@@ -14,7 +14,7 @@
 // ============================================================================
 //
 //  Purpose: Include all instruction grain headers to force registration
-//  Generated: 2026-02-07 12:32:52
+//  Generated: 2026-02-18 12:45:24
 //
 //  DO NOT EDIT MANUALLY - changes will be overwritten
 //
@@ -25,11 +25,11 @@
 
 // ============================================================================
 // Include all grain headers (triggers auto-registration)
-// Total grains: 600
+// Total grains: 616
 // ============================================================================
 
 
-// CBox Instructions (27 grains)
+// CBox Instructions (25 grains)
 #include "grainFactoryLib/grains/generated/Branch/BEQ_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Branch/BGE_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Branch/BGT_InstructionGrain.h"
@@ -52,13 +52,11 @@
 #include "grainFactoryLib/grains/generated/Branch/JSR_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Branch/JSR_COROUTINE_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Branch/MB_InstructionGrain.h"
-#include "grainFactoryLib/grains/generated/Branch/RC_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Branch/RET_InstructionGrain.h"
-#include "grainFactoryLib/grains/generated/Branch/RS_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Branch/TRAPB_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Branch/WMB_InstructionGrain.h"
 
-// EBox Instructions (66 grains)
+// EBox Instructions (84 grains)
 #include "grainFactoryLib/grains/generated/Integer/ADDL_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/ADDL_V_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/ADDQ_InstructionGrain.h"
@@ -80,6 +78,9 @@
 #include "grainFactoryLib/grains/generated/Integer/CMPLT_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/CMPULE_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/CMPULT_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/CTLZ_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/CTPOP_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/CTTZ_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/EQV_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/EXTBL_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/EXTLH_InstructionGrain.h"
@@ -95,6 +96,14 @@
 #include "grainFactoryLib/grains/generated/Integer/INSQL_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/INSWH_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/INSWL_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/MAXSB8_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/MAXSW4_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/MAXUB8_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/MAXUW4_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/MINSB8_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/MINSW4_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/MINUB8_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/MINUW4_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/MSKBL_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/MSKLH_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/MSKLL_InstructionGrain.h"
@@ -107,6 +116,11 @@
 #include "grainFactoryLib/grains/generated/Integer/MULQ_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/MULQ_V_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/ORNOT_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/PERR_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/PKLB_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/PKWB_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/RC_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/RS_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/S4ADDL_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/S4ADDQ_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/S4SUBL_InstructionGrain.h"
@@ -122,6 +136,8 @@
 #include "grainFactoryLib/grains/generated/Integer/SUBQ_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/SUBQ_V_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/UMULH_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/UNPKBL_InstructionGrain.h"
+#include "grainFactoryLib/grains/generated/Integer/UNPKBW_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/XOR_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/ZAP_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/Integer/ZAPNOT_InstructionGrain.h"

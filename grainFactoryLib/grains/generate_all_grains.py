@@ -194,7 +194,7 @@ def get_latency(mnemonic, opcode_hex, box):
         return 1
     
     # FP arithmetic (most ops): 6 cycles
-    elif opcode in [0x15, 0x16, 0x17]:
+    elif opcode in [0x14, 0x15, 0x16, 0x17]:
         if mnem.startswith('DIV'):
             return 63  # FP divide
         elif mnem.startswith('SQRT'):
@@ -206,6 +206,7 @@ def get_latency(mnemonic, opcode_hex, box):
     elif opcode == 0x14 or opcode == 0x1C:
         if mnem in ['CVTQS', 'CVTQT', 'CVTTS', 'CVTTQ']:
             return 10
+        return 6 # fallback
     
     # Branches: 1 cycle (misprediction penalty handled elsewhere)
     elif box == 'CBox':

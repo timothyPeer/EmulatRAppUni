@@ -39,8 +39,6 @@
 #include <QQueue>
 #include <QMutex>
 #include <QWaitCondition>
-#include "../coreLib/types_core.h"
-#include "../coreLib/Axp_Attributes_core.h"
 #include "IConsoleDevice.h"
 
 // ============================================================================
@@ -61,12 +59,13 @@ public:
         bool echoEnabled{ true };              // Echo input by default
         bool autoLaunchPutty{ false };         // Auto-launch PuTTY on start
         QString puttyPath{ "putty.exe" };      // Path to PuTTY executable
+        Config() = default;
     };
 
     // ------------------------------------------------------------------------
     // Construction
     // ------------------------------------------------------------------------
-    explicit SRMConsoleDevice(const Config& config = Config(), QObject* parent = nullptr);
+    explicit SRMConsoleDevice(Config& config, QObject* parent = nullptr);
     ~SRMConsoleDevice() override;
 
     // Delete copy/move

@@ -179,9 +179,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(CMAKE_PREFIX_PATH "D:/Qt/6.9.1/msvc2022_64")
+
 find_package(Qt6 REQUIRED COMPONENTS {' '.join(QT_MODULES)})
 
-
+if(MINGW)
+    add_compile_options(-Wa,-mbig-obj)
+endif()
 
 # ============================================================================
 # Preprocessor Definitions

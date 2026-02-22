@@ -90,7 +90,7 @@ struct BoxResult;
 
 
 enum class PalVectorId_EV6 : quint16;
-enum class PalCallPalFunction;
+enum class PalCallPalFunction_enum;
 enum class ProbeResult : quint8;
 
 #define COMPONENT_NAME "PalService"
@@ -126,7 +126,7 @@ class alignas(16) PalService final
 	//
 	QScopedPointer<Ev6Translator> m_ev6Translation{ nullptr };
 	Ev6SPAMShardManager* m_tlb;           // TLB lookup/insert
-	HWPCB* m_hwpcb;
+	//HWPCB* m_hwpcb;
 	quint64 m_pc;
 	GuestMemory* m_guestMemory;
 	ReservationManager* m_reservationManager;
@@ -155,7 +155,7 @@ public:
 		, m_router{ (interruptRouter) }
 		, m_pending{(pendingState)}
 		, m_ipiManager(&global_IPIManager())
-		, m_hwpcb(&globalHWPCBController(cpuId))
+		//, m_hwpcb(&globalHWPCBController(cpuId))
 	
 		, m_tlb(&globalSPAM(cpuId))           // TLB lookup/insert
 		, m_guestMemory(&global_GuestMemory())
@@ -277,7 +277,7 @@ public:
 		// CALL_PAL format: bits [25:0] contain the PAL function code
 		const quint32 rawBits = slot.di.rawBits();
 		const quint8 palFunction = static_cast<quint8>(rawBits & 0xFF);  // Low 8 bits
-		const PalCallPalFunction pal_function = static_cast<PalCallPalFunction>(palFunction);	// this is an enumeration of function codes for CALL_PAL 0x00
+		const PalCallPalFunction_enum pal_function = static_cast<PalCallPalFunction_enum>(palFunction);	// this is an enumeration of function codes for CALL_PAL 0x00
 
 		// Read arguments from integer registers
 		const quint64 r16q64 = m_iprGlobalMaster->readInt(16);
@@ -793,12 +793,12 @@ public:
 
 #pragma region CALL_PAL services
 
-	AXP_HOT AXP_ALWAYS_INLINE void execute(PalCallPalFunction fn, PipelineSlot& slot, PalResult& result) noexcept
+	AXP_HOT AXP_ALWAYS_INLINE void execute(PalCallPalFunction_enum fn, PipelineSlot& slot, PalResult& result) noexcept
 	{
 		const quint16 funcCode = static_cast<quint16>(getFunctionCode(slot.di));
 
 		// Sanity check
-		if (funcCode > static_cast<quint16>(PalCallPalFunction::MAX_PAL_FUNCTION)) {
+		if (funcCode > static_cast<quint16>(PalCallPalFunction_enum::MAX_PAL_FUNCTION)) {
 			ERROR_LOG(QString("CPU %1: PAL function 0x%2 out of range!")
 				.arg(slot.cpuId)
 				.arg(funcCode, 4, 16, QChar('0')));
@@ -812,95 +812,95 @@ public:
 
 		switch (fn)
 		{
-		case PalCallPalFunction::MFPR_ASN:  executeMFPR_ASN(slot, result); break;//PAL
+		case PalCallPalFunction_enum::MFPR_ASN:  executeMFPR_ASN(slot, result); break;//PAL
 
-		case PalCallPalFunction::MFPR_ASTSR:   executeMFPR_ASTSR(slot, result); break;//PAL
-		case PalCallPalFunction::READ_UNQ:  executeREAD_UNQ(slot, result); break;//PAL
-		case PalCallPalFunction::WRITE_UNQ: executeWRITE_UNQ(slot, result); break;//PAL
-		case PalCallPalFunction::GENTRAP:   executeGENTRAP(slot, result); break;//PAL
-		case PalCallPalFunction::RD_PS:     executeRD_PS(slot, result); break;//PAL
-		case PalCallPalFunction::WR_PS_SW:     executeWR_PS(slot, result); break;
-		case PalCallPalFunction::RSCC:      executeRSCC(slot, result); break;
-		case PalCallPalFunction::PROBER:    executePROBER(slot, result); break;//PAL
-		case PalCallPalFunction::PROBEW:    executePROBEW(slot, result); break;//PAL
-		case PalCallPalFunction::HALT:      executeHALT(slot, result); break;//PAL
-		case PalCallPalFunction::CFLUSH:    executeCFLUSH(slot, result); break; // PAL
-		case PalCallPalFunction::DRAINA:    executeDRAINA(slot, result); break;//PAL
-		case PalCallPalFunction::CSERVE:    executeCSERVE(slot, result); break;//PAL
-		case PalCallPalFunction::SWPPAL:    executeSWPPAL(slot, result); break;
-		case PalCallPalFunction::IMB:       executeIMB(slot, result); break;//PAL
-		case PalCallPalFunction::BPT:	executeBPT(slot, result); break; //PAL
-		case PalCallPalFunction::BUGCHECK:	executeBUGCHK(slot, result); break;// PAL
-		case PalCallPalFunction::MFPR_FEN:	executeMFPR_FEN(slot, result); break;
-		case PalCallPalFunction::MTPR_FEN:	executeMTPR_FEN(slot, result); break;
-		case PalCallPalFunction::MTPR_IPIR: executeMTPR_IPIR(slot, result); break;
-		case PalCallPalFunction::MFPR_IPL:	executeMFPR_IPL(slot, result); break;
-		case PalCallPalFunction::MTPR_IPL:	executeMTPR_IPL(slot, result); break;
-		case PalCallPalFunction::MFPR_MCES:	executeMFPR_MCES(slot, result); break;
-		case PalCallPalFunction::MTPR_MCES:	executeMTPR_MCES(slot, result); break;
-		case PalCallPalFunction::MFPR_PCBB:	executeMFPR_PCBB(slot, result); break;
-		case PalCallPalFunction::MFPR_PRBR:	executeMFPR_PRBR(slot, result); break; //Processor Base Register - Base address for per-CPU data structures
-		case PalCallPalFunction::MTPR_PRBR:	executeMTPR_PRBR(slot, result); break; //Processor Base Register - Base address for per-CPU data structures
-		case PalCallPalFunction::MFPR_PTBR:	executeMFPR_PTBR(slot, result); break;
-		case PalCallPalFunction::MFPR_SCBB:	executeMFPR_SCBB(slot, result); break;
-		case PalCallPalFunction::MTPR_SCBB:	executeMTPR_SCBB(slot, result); break;
-		case PalCallPalFunction::MFPR_SIRR:	executeMFPR_SIRR(slot, result); break;
-		case PalCallPalFunction::MFPR_SISR:	executeMFPR_SISR(slot, result); break;
-		case PalCallPalFunction::MFPR_TBCHK:	executeMFPR_TBCHK(slot, result); break;
-		case PalCallPalFunction::MTPR_TBIA:		executeMTPR_TBIA(slot, result); break;
-		case PalCallPalFunction::MTPR_TBIAP:	executeMTPR_TBIAP(slot, result); break;
-		case PalCallPalFunction::MTPR_TBIS:	executeMTPR_TBIS(slot, result); break;
-		case PalCallPalFunction::MFPR_ESP:	executeMFPR_ESP(slot, result); break;
-		case PalCallPalFunction::MTPR_ESP:	executeMTPR_ESP(slot, result); break;
-		case PalCallPalFunction::MFPR_SSP:	executeMFPR_SSP(slot, result); break;
-		case PalCallPalFunction::MTPR_SSP:	executeMTPR_SSP(slot, result); break;
-		case PalCallPalFunction::MFPR_USP:	executeMFPR_USP(slot, result); break;
-		case PalCallPalFunction::MTPR_USP:	executeMTPR_USP(slot, result); break;
-		case PalCallPalFunction::MTPR_TBISD:	executeMTPR_TBISD(slot, result); break;
-		case PalCallPalFunction::MTPR_TBISI:	executeMTPR_TBISI(slot, result); break;
-		case PalCallPalFunction::MFPR_ASTEN:	executeMFPR_ASTEN(slot, result); break;
-		case PalCallPalFunction::MFPR_VPTB:	executeMFPR_VPTB(slot, result); break;
-		case PalCallPalFunction::MTPR_VPTB:	executeMTPR_VPTB(slot, result); break;
-		case PalCallPalFunction::MTPR_PERFMON:	executeMTPR_PERFMON(slot, result); break;
-		case PalCallPalFunction::MTPR_DATFX:	executeMTPR_DATFX(slot, result); break;
-		case PalCallPalFunction::MFPR_WHAMI:	executeMFPR_WHAMI(slot, result); break;
-		case PalCallPalFunction::SWPCTX:    executeSWPCTX(slot, result); break; // PAL
-		case PalCallPalFunction::CHME:	executeCHME(slot, result); break; // PAL
-		case PalCallPalFunction::CHMK:	executeCHMK(slot, result); break; //PAL
-		case PalCallPalFunction::CHMS:	executeCHMS(slot, result); break; //PAL
-		case PalCallPalFunction::CHMU:	executeCHMU(slot, result); break;// PAL
-		case PalCallPalFunction::AMOVRM:    executeAMOVRM(slot, result); break; //PAL
-		case PalCallPalFunction::AMOVRR:    executeAMOVRR(slot, result); break; // PAL
-		case PalCallPalFunction::INSQHIL:	executeINSQHIL(slot, result); break; //PAL
-		case PalCallPalFunction::INSQTIL:	executeINSQTIL(slot, result); break;//PAL
-		case PalCallPalFunction::INSQHILR:	executeINSQHILR(slot, result); break; //PAL
-		case PalCallPalFunction::INSQTILR:	executeINSQTILR(slot, result); break;//PAL
-		case PalCallPalFunction::INSQHIQR:	executeINSQHIQR(slot, result); break; //PAL
-		case PalCallPalFunction::INSQTIQR:	executeINSQTIQR(slot, result); break;//PAL
-		case PalCallPalFunction::INSQHIQ:	executeINSQHIQ(slot, result); break;//PAL
-		case PalCallPalFunction::INSQTIQ:	executeINSQTIQ(slot, result); break;//PAL
-		case PalCallPalFunction::INSQUEL:	executeINSQUEL(slot, result); break;//PAL
-		case PalCallPalFunction::INSQUEQ:	executeINSQUEQ(slot, result); break;//PAL
-		case PalCallPalFunction::INSQUEL_D:	executeINSQUEL_D(slot, result); break;//PAL
-		case PalCallPalFunction::INSQUEQ_D:	executeINSQUEQ_D(slot, result); break;//PAL
-		case PalCallPalFunction::REMQHIL:    executeREMQHIL(slot, result); break;
-		case PalCallPalFunction::REMQTIL:    executeREMQTIL(slot, result); break;
-		case PalCallPalFunction::REMQHIQ:    executeREMQHIQ(slot, result); break;
-		case PalCallPalFunction::REMQTIQ:    executeREMQTIQ(slot, result); break;
-		case PalCallPalFunction::REMQUEL:    executeREMQUEL(slot, result); break;
-		case PalCallPalFunction::REMQUEQ:    executeREMQUEQ(slot, result); break;
-		case PalCallPalFunction::REMQUEL_D:    executeREMQUEL_D(slot, result); break;
-		case PalCallPalFunction::REMQUEQ_D:    executeREMQUEQ_D(slot, result); break;
-		case PalCallPalFunction::REMQHILR:    executeREMQHILR(slot, result); break;
-		case PalCallPalFunction::REMQTILR:    executeREMQTILR(slot, result); break;
-		case PalCallPalFunction::REMHIQR:    executeREMHIQR(slot, result); break;
-		case PalCallPalFunction::REMQTIQR:    executeREMQTIQR(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_ASTSR:   executeMFPR_ASTSR(slot, result); break;//PAL
+		case PalCallPalFunction_enum::READ_UNQ:  executeREAD_UNQ(slot, result); break;//PAL
+		case PalCallPalFunction_enum::WRITE_UNQ: executeWRITE_UNQ(slot, result); break;//PAL
+		case PalCallPalFunction_enum::GENTRAP:   executeGENTRAP(slot, result); break;//PAL
+		case PalCallPalFunction_enum::RD_PS:     executeRD_PS(slot, result); break;//PAL
+		case PalCallPalFunction_enum::WR_PS_SW:     executeWR_PS(slot, result); break;
+		case PalCallPalFunction_enum::RSCC:      executeRSCC(slot, result); break;
+		case PalCallPalFunction_enum::PROBER:    executePROBER(slot, result); break;//PAL
+		case PalCallPalFunction_enum::PROBEW:    executePROBEW(slot, result); break;//PAL
+		case PalCallPalFunction_enum::HALT:      executeHALT(slot, result); break;//PAL
+		case PalCallPalFunction_enum::CFLUSH:    executeCFLUSH(slot, result); break; // PAL
+		case PalCallPalFunction_enum::DRAINA:    executeDRAINA(slot, result); break;//PAL
+		case PalCallPalFunction_enum::CSERVE:    executeCSERVE(slot, result); break;//PAL
+		case PalCallPalFunction_enum::SWPPAL:    executeSWPPAL(slot, result); break;
+		case PalCallPalFunction_enum::IMB:       executeIMB(slot, result); break;//PAL
+		case PalCallPalFunction_enum::BPT:	executeBPT(slot, result); break; //PAL
+		case PalCallPalFunction_enum::BUGCHECK:	executeBUGCHK(slot, result); break;// PAL
+		case PalCallPalFunction_enum::MFPR_FEN:	executeMFPR_FEN(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_FEN:	executeMTPR_FEN(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_IPIR: executeMTPR_IPIR(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_IPL:	executeMFPR_IPL(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_IPL:	executeMTPR_IPL(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_MCES:	executeMFPR_MCES(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_MCES:	executeMTPR_MCES(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_PCBB:	executeMFPR_PCBB(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_PRBR:	executeMFPR_PRBR(slot, result); break; //Processor Base Register - Base address for per-CPU data structures
+		case PalCallPalFunction_enum::MTPR_PRBR:	executeMTPR_PRBR(slot, result); break; //Processor Base Register - Base address for per-CPU data structures
+		case PalCallPalFunction_enum::MFPR_PTBR:	executeMFPR_PTBR(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_SCBB:	executeMFPR_SCBB(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_SCBB:	executeMTPR_SCBB(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_SIRR:	executeMFPR_SIRR(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_SISR:	executeMFPR_SISR(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_TBCHK:	executeMFPR_TBCHK(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_TBIA:		executeMTPR_TBIA(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_TBIAP:	executeMTPR_TBIAP(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_TBIS:	executeMTPR_TBIS(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_ESP:	executeMFPR_ESP(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_ESP:	executeMTPR_ESP(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_SSP:	executeMFPR_SSP(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_SSP:	executeMTPR_SSP(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_USP:	executeMFPR_USP(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_USP:	executeMTPR_USP(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_TBISD:	executeMTPR_TBISD(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_TBISI:	executeMTPR_TBISI(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_ASTEN:	executeMFPR_ASTEN(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_VPTB:	executeMFPR_VPTB(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_VPTB:	executeMTPR_VPTB(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_PERFMON:	executeMTPR_PERFMON(slot, result); break;
+		case PalCallPalFunction_enum::MTPR_DATFX:	executeMTPR_DATFX(slot, result); break;
+		case PalCallPalFunction_enum::MFPR_WHAMI:	executeMFPR_WHAMI(slot, result); break;
+		case PalCallPalFunction_enum::SWPCTX:    executeSWPCTX(slot, result); break; // PAL
+		case PalCallPalFunction_enum::CHME:	executeCHME(slot, result); break; // PAL
+		case PalCallPalFunction_enum::CHMK:	executeCHMK(slot, result); break; //PAL
+		case PalCallPalFunction_enum::CHMS:	executeCHMS(slot, result); break; //PAL
+		case PalCallPalFunction_enum::CHMU:	executeCHMU(slot, result); break;// PAL
+		case PalCallPalFunction_enum::AMOVRM:    executeAMOVRM(slot, result); break; //PAL
+		case PalCallPalFunction_enum::AMOVRR:    executeAMOVRR(slot, result); break; // PAL
+		case PalCallPalFunction_enum::INSQHIL:	executeINSQHIL(slot, result); break; //PAL
+		case PalCallPalFunction_enum::INSQTIL:	executeINSQTIL(slot, result); break;//PAL
+		case PalCallPalFunction_enum::INSQHILR:	executeINSQHILR(slot, result); break; //PAL
+		case PalCallPalFunction_enum::INSQTILR:	executeINSQTILR(slot, result); break;//PAL
+		case PalCallPalFunction_enum::INSQHIQR:	executeINSQHIQR(slot, result); break; //PAL
+		case PalCallPalFunction_enum::INSQTIQR:	executeINSQTIQR(slot, result); break;//PAL
+		case PalCallPalFunction_enum::INSQHIQ:	executeINSQHIQ(slot, result); break;//PAL
+		case PalCallPalFunction_enum::INSQTIQ:	executeINSQTIQ(slot, result); break;//PAL
+		case PalCallPalFunction_enum::INSQUEL:	executeINSQUEL(slot, result); break;//PAL
+		case PalCallPalFunction_enum::INSQUEQ:	executeINSQUEQ(slot, result); break;//PAL
+		case PalCallPalFunction_enum::INSQUEL_D:	executeINSQUEL_D(slot, result); break;//PAL
+		case PalCallPalFunction_enum::INSQUEQ_D:	executeINSQUEQ_D(slot, result); break;//PAL
+		case PalCallPalFunction_enum::REMQHIL:    executeREMQHIL(slot, result); break;
+		case PalCallPalFunction_enum::REMQTIL:    executeREMQTIL(slot, result); break;
+		case PalCallPalFunction_enum::REMQHIQ:    executeREMQHIQ(slot, result); break;
+		case PalCallPalFunction_enum::REMQTIQ:    executeREMQTIQ(slot, result); break;
+		case PalCallPalFunction_enum::REMQUEL:    executeREMQUEL(slot, result); break;
+		case PalCallPalFunction_enum::REMQUEQ:    executeREMQUEQ(slot, result); break;
+		case PalCallPalFunction_enum::REMQUEL_D:    executeREMQUEL_D(slot, result); break;
+		case PalCallPalFunction_enum::REMQUEQ_D:    executeREMQUEQ_D(slot, result); break;
+		case PalCallPalFunction_enum::REMQHILR:    executeREMQHILR(slot, result); break;
+		case PalCallPalFunction_enum::REMQTILR:    executeREMQTILR(slot, result); break;
+		case PalCallPalFunction_enum::REMHIQR:    executeREMHIQR(slot, result); break;
+		case PalCallPalFunction_enum::REMQTIQR:    executeREMQTIQR(slot, result); break;
 
-		case PalCallPalFunction::CLRFEN:   executeCLRFEN(slot, result); break; //PAL
-		case PalCallPalFunction::SWASTEN:      executeSWASTEN(slot, result); break;//PAL
-		case PalCallPalFunction::WTINT:      executeWTINT(slot, result); break;//PAL
-		case PalCallPalFunction::LDQP:      executeLDQP(slot, result); break;//PAL
-		case PalCallPalFunction::STQP:    executeSTQP(slot, result); break; // PAL
+		case PalCallPalFunction_enum::CLRFEN:   executeCLRFEN(slot, result); break; //PAL
+		case PalCallPalFunction_enum::SWASTEN:      executeSWASTEN(slot, result); break;//PAL
+		case PalCallPalFunction_enum::WTINT:      executeWTINT(slot, result); break;//PAL
+		case PalCallPalFunction_enum::LDQP:      executeLDQP(slot, result); break;//PAL
+		case PalCallPalFunction_enum::STQP:    executeSTQP(slot, result); break; // PAL
 
 		default:
 			// Proper exception handling - no hard coded vectors!
@@ -1400,8 +1400,14 @@ public:
 	 //
 	 // ============================================================================
 
-	AXP_ALWAYS_INLINE
-	void executeSWPCTX(PipelineSlot& slot, PalResult& result) noexcept
+	AXP_ALWAYS_INLINE void executeSWPCTX(PipelineSlot& slot, PalResult& result)
+	{
+		const quint64 r16 = m_iprGlobalMaster->readInt(16);
+		// R16 = new PCBB (Process Control Block Base) physical address
+		m_iprGlobalMaster->x->pcbb = r16;
+		result.status = PalStatus::Success;
+	}
+	/*void executeSWPCTX(PipelineSlot& slot, PalResult& result) noexcept
 	{
 		// ================================================================
 		// 1. READ R16 (new HWPCB physical address)
@@ -1530,7 +1536,7 @@ public:
 			.arg(newPCBB_PA, 16, 16, QChar('0'))
 			.arg(swapResult.ptbrChanged)
 			.arg(swapResult.asnChanged));
-	}
+	}*/
 
 	// ============================================================================
 	// INSQTIL - Insert into Queue at Tail, Interlocked (Longword)
@@ -3540,9 +3546,9 @@ public:
 		// ========================================================================
 
 		quint32 funcCode = static_cast<quint32>(slot.readIntReg(16) & 0xFF);
-		quint64 arg1 = slot.readIntReg(17);  // R17
-		quint64 arg2 = slot.readIntReg(18);  // R18
-		quint64 arg3 = slot.readIntReg(19);  // R19
+		quint64 arg1 = slot.readIntReg(16);  // R17
+		quint64 arg2 = slot.readIntReg(17);  // R18
+		quint64 arg3 = slot.readIntReg(18);  // R19
 
 
 
@@ -3954,6 +3960,10 @@ public:
 			break;
 		}
 
+		case 0x44:  // WRITE_PATTERN -- memory write pattern
+			// Used by decompressor for block memory fill
+			qDebug() << "CServe::0x44 - WRITE_PATTERN -- memory write pattern";
+			break;
 		// ------------------------------------------------------------------------
 		// Invalid Function Code
 		// ------------------------------------------------------------------------
@@ -3974,6 +3984,7 @@ public:
 		// ========================================================================
 
 		result.doesReturn = true;
+		result.status = PalStatus::Success;
 	}
 
 	/*
@@ -4242,7 +4253,7 @@ public:
 		PendingEvent ev{};
 		ev.kind = PendingEventKind::Exception;
 		ev.exceptionClass = ExceptionClass_EV6::CallPal;
-		ev.palFunc = static_cast<quint16>(PalCallPalFunction::BPT);  // or your field type
+		ev.palFunc = static_cast<quint16>(PalCallPalFunction_enum::BPT);  // or your field type
 		ev.faultPC = m_iprGlobalMaster->h->pc;
 
 		m_faultDispatcher->raiseFault(ev);
@@ -5005,14 +5016,21 @@ public:
 
 	// [IMPL] WRFEN - Write Floating-point Enable
 	// R16 bit 0: 0=disable FP, 1=enable FP
-	AXP_HOT AXP_ALWAYS_INLINE void executeWRFEN(PipelineSlot& slot, PalResult& result) noexcept
+	AXP_HOT AXP_ALWAYS_INLINE void executeWRFEN(PipelineSlot& slot, PalResult& result)
+	{
+		const quint64 r16 = m_iprGlobalMaster->readInt(16);
+		m_iprGlobalMaster->h->fen = (r16 & 1);  // Enable/disable FP
+		result.status = PalStatus::Success;
+	}
+	
+	/*void executeWRFEN(PipelineSlot& slot, PalResult& result) noexcept
 	{
 		const quint64 value = readIntReg(slot, 16);
 		m_iprGlobalMaster->h->fen = (value & 1) ? 1 : 0;
 
 		result.hasReturnValue = false;
 		result.doesReturn = true;
-	}
+	}*/
 
 	// ============================================================================
 	// GROUP 5: INTERRUPT CONTROL - Real implementations
@@ -5250,7 +5268,7 @@ public:
 		kFlushPendingTraps -> reevaluate -> nothing pending above 0
 		Resume user code
 		 */
-	AXP_HOT AXP_ALWAYS_INLINE void executeRTI(PipelineSlot& slot, PalResult& result) noexcept
+	/*AXP_HOT AXP_ALWAYS_INLINE void executeRTI(PipelineSlot& slot, PalResult& result) noexcept
 	{
 		// Pop frame from kernel stack (reverse of push)
 		quint64 ksp = m_iprGlobalMaster->h->ksp;
@@ -5285,9 +5303,16 @@ public:
 		result.iplChanged();                           // IPL changed — may unmask interrupts
 		result.flushPendingTraps();                    // re-evaluate: another interrupt may be pending
 		result.requestPipelineFlush(restoredPC);
+	}*/
+
+	AXP_HOT AXP_ALWAYS_INLINE void executeRTI(PipelineSlot& slot, PalResult& result)
+	{
+		// Read saved PC from exc_addr
+		result.newPC = m_iprGlobalMaster->h->exc_addr;
+		result.pcModified = true;
+		result.requestPipelineFlush();
+		result.status = PalStatus::Success;
 	}
-
-
 
 	// [IMPL] RFE - Return from Exception
 	// Same mechanism as RTI for Alpha
@@ -5317,7 +5342,7 @@ public:
 		PendingEvent ev{};
 		ev.kind = PendingEventKind::Exception;
 		ev.exceptionClass = ExceptionClass_EV6::CallPal;
-		ev.palFunc = static_cast<quint16>(PalCallPalFunction::KBPT);
+		ev.palFunc = static_cast<quint16>(PalCallPalFunction_enum::KBPT);
 		ev.faultPC = m_iprGlobalMaster->h->pc;
 
 		m_faultDispatcher->raiseFault(ev);

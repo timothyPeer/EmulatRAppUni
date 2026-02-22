@@ -619,6 +619,8 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto execute(FetchResult& fetchResult) noexcept -> BoxResult
     {
+       
+
         PipelineStepResult result{};
         fetchResult.pipelineStepResult        = result;
         fetchResult.pipelineStepResult.action = PipelineAction::ADVANCED;
@@ -645,6 +647,7 @@ public:
         stage_MEM(); // Stage 4: Memory access
         debugStageExit("MEM", stage(STAGEMEM));
         // Check if EX-stage grain requested a flush (PAL side-effects)
+
         if (stage(STAGEEX).flushPipeline)
         {
             // Flush younger stages (IF, DE, IS)
@@ -653,6 +656,7 @@ public:
                 stage(i).valid = false;
                 stage(i).clear();
             }
+            stage(STAGEEX).flushPipeline = false;   // slot 1 has flushPipeline = true but valid = false
             fetchResult.pipelineStepResult.action = PipelineAction::ADVANCED;
             return BoxResult().flushPipeline();
         }
@@ -677,6 +681,7 @@ public:
                 stage(i).valid = false;
                 stage(i).clear();
             }
+            stage(STAGEEX).flushPipeline = false;   // slot 1 has flushPipeline = true but valid = false
             fetchResult.pipelineStepResult.action = PipelineAction::ADVANCED;
             return BoxResult().flushPipeline();
         }
@@ -854,6 +859,11 @@ private:
         */
     AXP_HOT AXP_ALWAYS_INLINE auto stage_IF() -> void
     {
+        if (m_iprGlobalMaster->h->pc == 0x9001B8)
+        {
+            qDebug() << "out profiling starts here";
+        }
+
         PipelineSlot& slot = stage(0);
         slot.clear();
 
@@ -919,7 +929,7 @@ private:
         slot.cycle       = m_cycleCount;
         slot.predictedPC = slot.predictionTarget;
 
-        m_iprGlobalMaster->h->pc = nextPC;
+        m_iprGlobalMaster->h->advancePC(nextPC);
         //setPC_Active(slot.cpuId, nextPC);
         m_pendingFetch = FetchResult{};
 
@@ -1041,6 +1051,11 @@ private:
     {
         PipelineSlot& slot = stage(STAGEEX);
 
+        if (slot.di.pc == 0x9001B8)
+        {
+            qDebug() << "Profile Test HW_MTPR";
+        }
+
         // ================================================================
         // EARLY EXITS
         // ================================================================
@@ -1129,7 +1144,7 @@ private:
                 }
                 slot.mispredict = true;
                 m_pendingFetch  = FetchResult{};
-                m_iprGlobalMaster->h->pc     = actualTarget;
+                m_iprGlobalMaster->h->advancePC( actualTarget);
 
                 DEBUG_LOG(QString("FLUSHED pipeline and redirected PC -> 0x%1")
                     .arg(actualTarget, 16, 16, QChar('0')));
@@ -1154,7 +1169,7 @@ private:
                     stage(i).clear();
                 }
 
-                m_iprGlobalMaster->h->pc = fallThrough;
+                m_iprGlobalMaster->h->advancePC(fallThrough);
 
                 DEBUG_LOG(QString("FLUSHED pipeline and redirected PC -> 0x%1 (fall-through)")
                     .arg(fallThrough, 16, 16, QChar('0')));

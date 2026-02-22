@@ -18,7 +18,7 @@
 struct WriteEntry;
 struct PalResult;
 enum class TrapCode_Class : quint8;
-enum class PalCallPalFunction ;
+enum class PalCallPalFunction_enum ;
 //enum class HW_IPR : quint16;
 
 // ============================================================================

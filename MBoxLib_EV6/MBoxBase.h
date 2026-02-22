@@ -20,17 +20,16 @@
 
 #ifndef MBOX_HEADERONLY_H
 #define MBOX_HEADERONLY_H
-#include "../machineLib/PipeLineSlot.h"
-#include "../pteLib/AlphaPTE_Core.h"
-#include "../pteLib/Ev6SiliconTLB_Singleton.h"
-#include "../pteLib/alpha_pte_core.h"
-#include "../coreLib/types_core.h"
-#include "../coreLib/Axp_Attributes_core.h"
-#include "../memoryLib/global_GuestMemory.h"
+#include "machineLib/PipeLineSlot.h"
+#include "pteLib/AlphaPTE_Core.h"
+#include "pteLib/Ev6SiliconTLB_Singleton.h"
+#include "pteLib/alpha_pte_core.h"
+#include "coreLib/types_core.h"
+#include "coreLib/Axp_Attributes_core.h"
+#include "memoryLib/global_GuestMemory.h"
 #include <QtGlobal>
-#include <intrin0.inl.h>
 
-#include "../coreLib/VA_types.h"
+#include "coreLib/VA_types.h"
 #include "coreLib/BoxRequest.h"
 #include "coreLib/alpha_fp_helpers_inl.h"
 #include "coreLib/fp_variant_core.h"

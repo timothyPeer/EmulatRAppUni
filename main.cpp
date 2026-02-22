@@ -3,7 +3,7 @@
 #include "emulatrLib/global_EmulatR_init.h"
 #include "coreLib/LoggingMacros.h"
 #include "configLib/global_EmulatorSettings.h"
-#include "emulatrLib/EmulatR_init.h"
+#include "emulatrLib/EmulatR_init.h"      
 
 int main(int argc, char* argv[])
 {

@@ -1,62 +1,22 @@
 {
   "version": 3,
-
   "configurePresets": [
     {
-      "name": "windows-base",
       "hidden": true,
-      "generator": "Ninja",
-
-      "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "installDir": "${sourceDir}/out/install/${presetName}",
-
+      "name": "Qt",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "cl.exe",
-        "CMAKE_CXX_COMPILER": "cl.exe",
-
-        "CMAKE_PREFIX_PATH": "Z:/Qt/6.9.1/msvc2022_64",
-
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "QT_CREATOR_SKIP_MAINTENANCE_TOOL_PROVIDER": "ON"
+        "CMAKE_PREFIX_PATH": "$env{QTDIR}"
       },
-
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      }
-    },
-
-    {
-      "name": "x64-debug",
-      "displayName": "x64 Debug",
-      "inherits": "windows-base",
-
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      },
-
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDebug"
-      }
-    },
-
-    {
-      "name": "x64-release",
-      "displayName": "x64 Release",
-      "inherits": "windows-base",
-
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      },
-
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded"
+      "vendor": {
+        "qt-project.org/Qt": {
+          "checksum": "wVa86FgEkvdCTVp1/nxvrkaemJc="
+        }
       }
     }
-  ]
+  ],
+  "vendor": {
+    "qt-project.org/Presets": {
+      "checksum": "67SmY24ZeVbebyKD0fGfIzb/bGI="
+    }
+  }
 }

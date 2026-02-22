@@ -19,7 +19,7 @@
 //  Format: GF_None
 //  Latency: 1 cycles, Throughput: 1/cycle
 //
-//  Generated: 2026-02-07 12:32:52
+//  Generated: 2026-02-18 12:45:23
 //
 // ============================================================================
 
@@ -63,8 +63,6 @@ public:
     {
         // Delegate to execution box via slot member
         slot.m_palBox->executeOPC07(slot);
-    
-       
     }
 
     AXP_HOT AXP_ALWAYS_INLINE

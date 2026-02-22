@@ -21,7 +21,7 @@
 //                       carrying return values, PC changes, and pipeline
 //                       side effects via PipelineEffect flags.
 //   PalStatus        -- Overall success/failure of a PAL operation.
-//   PalCallPalFunction -- Enumeration of all CALL_PAL function codes.
+//   PalCallPalFunction_enum -- Enumeration of all CALL_PAL function codes.
 //   PAL_FLAG_*       -- Compile-time PAL operation behavior flags.
 //
 // Side-effect architecture:
@@ -37,7 +37,7 @@
 #define PAL_CORE_H
 
 #include <QtGlobal>
-#include "../pteLib/alpha_pte_core.h"
+#include "pteLib/alpha_pte_core.h"
 #include "faultLib/fault_core.h"
 #include "grainFactoryLib/InstructionGrain_core.h"
 
@@ -177,9 +177,9 @@ namespace PipelineEffect {
 
 
 // ============================================================================
-// PalCallPalFunction -- All CALL_PAL function codes
+// PalCallPalFunction_enum -- All CALL_PAL function codes
 // ============================================================================
-enum class PalCallPalFunction {
+enum class PalCallPalFunction_enum {
     // Privileged (0x00-0x3F) -- requires CM=Kernel
     HALT = 0x0000,
     CFLUSH = 0x0001,
@@ -288,7 +288,6 @@ enum class PalCallPalFunction {
     GENTRAP = 0x00AA,
     KBPT = 0x00AC,
     CLRFEN = 0x00AE,
-
     MAX_PAL_FUNCTION
 };
 

@@ -302,43 +302,68 @@ struct  PipelineSlot
 
 	// ====================================================================
 	// Methods
-	// ====================================================================
-	AXP_HOT AXP_ALWAYS_INLINE  void clear()
+	AXP_HOT AXP_ALWAYS_INLINE void clear()
 	{
 		di = DecodedInstruction{};
 		grain = nullptr;
+		instructionWord = static_cast<quint32>(-1);
+		palDecoded = decoded_Pal{};
 		execUnit = ExecUnit::None;
+		// cpuId — intentionally NOT cleared (per-CPU constant)
+		faultEvent = PendingEvent{};
 		stage = PipelineStage::Empty;
 		valid = false;
 		stalled = false;
+		enterPalMode = false;
+		needsWriteback = false;
 		dualIssued = false;
+		currentStage = 0;
 		faultPending = false;
 		trapCode = TrapCode_Class::ILLEGAL_INSTRUCTION;
 		faultVA = 0;
 		targetPALVector = 0;
-		branchTaken = false;
-		branchTarget = 0;
-		palTransferPending = false;
-		payLoad = 0;
-		memResultValid = false;
-		instructionWord = static_cast<quint32>(-1);
-		registerIndex = RegisterBankInteger::NONE;
+		reiTarget = 0;
+		serialized = false;
+		mustComplete = false;
 		va = 0;
 		pa = 0;
+		ra = 0;
 		outPAData = 0;
+		pcModified = false;
+		writeRa = false;
+		writeFa = false;
+		branchTaken = false;
+		predictionTaken = false;
+		predictionValid = false;
+		predictionTarget = 0;
+		branchTarget = 0;
 		physicalAddr = 0;
-		enterPalMode = false;
+		palTransferPending = false;
+		palResult = PalResult{};
+		halted = false;
 		memoryBarrierCompleted = false;
 		writeBufferDrained = false;
-
+		needsMemoryBarrier = false;
+		needsWriteBufferDrain = false;
+		serializeType = SerializationType::Barrier_MB;
+		payLoad = 0;
+		ra_value = 0;
+		// slotSequence — intentionally NOT cleared (monotonic)
+		registerIndex = RegisterBankInteger::NONE;
+		memResultValid = false;
+		flushPipeline = false;
+		m_pending = PendingCommit{};
+		barrierKind = MemoryBarrierKind::FETCH;
 		nextPC = 0;
 		predictedPC = 0;
 		linkValue = 0;
 		jumpTarget = 0;
 		branchTestValue = 0;
 		mispredict = false;
-		pcReason = static_cast<PCReason>(0xFF);  // sentinel - "not set"
-
+		pcReason = static_cast<PCReason>(0xFF);
+		// Box pointers (m_eBox, m_fBox, etc.) — intentionally NOT cleared
+		// m_faultDispatcher — intentionally NOT cleared (per-CPU constant)
+		// m_iprGlobalMaster — intentionally NOT cleared (per-CPU constant)
 	}
 
 	// Context accessors

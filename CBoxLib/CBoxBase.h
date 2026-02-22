@@ -61,9 +61,6 @@ enum class CBoxState : quint8
 
 class CBox final
 {
-
-    CPUStateView  m_cpuView;                            // value member
-    CPUStateView* m_iprGlobalMaster{ &m_cpuView };
 public:
     // ====================================================================
     // Construction
@@ -73,8 +70,7 @@ public:
         : m_branchPredictor()
           , m_cpuId(cpuId)
           , m_state(CBoxState::RUNNING)
-          , m_hwpcb(&globalHWPCBController(cpuId))
-          , m_guestMemory(&global_GuestMemory())
+            , m_guestMemory(&global_GuestMemory())
           , m_mmioManager(&global_MMIOManager())
           , m_writeBuffer(nullptr)
         , m_barrierCoordinator(&global_MemoryBarrierCoordinator())
@@ -638,7 +634,7 @@ public:
 
         // Flush and redirect if needed
         if (mispredicted) {
-            m_hwpcb->pc = targetPC;  // Direct write is fine for hot path
+            m_iprGlobalMaster->h->pc = targetPC;  // Direct write is fine for hot path
             slot.flushPipeline = true;
         }
 
@@ -1272,7 +1268,7 @@ private:
         if (mispredicted)
         {
             // Misprediction - flush pipeline and set correct PC
-            m_iprGlobalMaster->h->pc =  actualPC;
+            m_iprGlobalMaster->h->advancePC( actualPC);
             slot.flushPipeline = true;
             DEBUG_LOG(QString("CPU %1: %2 MISPREDICT PC=0x%3 pred=%4 actual=%5 -> PC=0x%6")
                 .arg(m_cpuId)
@@ -1334,7 +1330,8 @@ private:
     BranchPredictor m_branchPredictor;
     CPUIdType       m_cpuId;
     CBoxState       m_state;
-    HWPCB* m_hwpcb{ nullptr };  // Injected in the CTOR
+    CPUStateView    m_cpuView;                            // value member
+    CPUStateView*   m_iprGlobalMaster{ &m_cpuView };
     // Subsystem references (non-owning)
     GuestMemory*        m_guestMemory;
     MMIOManager*        m_mmioManager;

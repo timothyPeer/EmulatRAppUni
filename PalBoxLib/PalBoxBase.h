@@ -157,7 +157,7 @@ public:
 #endif
 
         m_palService->execute(
-            static_cast<PalCallPalFunction>(palFunction), slot, slot.palResult);
+            static_cast<PalCallPalFunction_enum>(palFunction), slot, slot.palResult);
         commitPalResult(slot);
     }
 
@@ -742,11 +742,13 @@ public:
         m_palService->executeRFE(slot, slot.palResult);
         commitPalResult(slot);                    // Commit Pal Results
     }
-
-    AXP_HOT AXP_ALWAYS_INLINE auto executeRSCC(PipelineSlot& slot) -> void   // missing in PalService
+    void executeRTI(PipelineSlot& slot, PalResult& result)
     {
-        m_palService->executeRSCC(slot, slot.palResult);
-        commitPalResult(slot);                    // Commit Pal Results
+        // Read saved PC from exc_addr
+        result.newPC = m_iprGlobalMaster->h->exc_addr;
+        result.pcModified = true;
+        result.requestPipelineFlush();
+        result.status = PalStatus::Success;
     }
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeRTI(PipelineSlot& slot) -> void   // missing in PalService
@@ -1158,6 +1160,67 @@ public:
     {
         m_palService->executeMTPR_ASTSR(slot, slot.palResult);
         commitPalResult(slot);                    // Commit Pal Results
+    }
+
+    // REMQUEUD - Remove from Queue Unaligned Doubleword (tail)
+     // Self-relative quadword queue removal from tail
+     // Ra = queue header address
+     // Returns: R0 = status (0=empty, 1=success, 2=was last entry)
+     //          R1 = address of removed entry
+    AXP_HOT AXP_ALWAYS_INLINE auto executeREMQUEUD(PipelineSlot& slot) noexcept -> void
+    {
+        const quint64 header = slot.readIntReg(slot.di.ra);
+
+        // Read header's backward link (self-relative offset)
+        quint64 blink_raw;
+        m_guestMemory->read64(header + 8, blink_raw);
+        const qint64 blink_offset = static_cast<qint64>(blink_raw);
+
+        // Empty queue: blink offset == 0 means points to itself
+        if (blink_offset == 0)
+        {
+            slot.writeIntReg(0, 0);   // R0 = 0 (empty)
+            slot.writeIntReg(1, 0);   // R1 = undefined
+            slot.needsWriteback = false;
+            return;
+        }
+
+        // Calculate address of entry to remove (tail entry)
+        const quint64 entry = static_cast<quint64>(
+            static_cast<qint64>(header + 8) + blink_offset);
+
+        // Read the ENTRY's backward link (not header's again)
+        quint64 entry_blink_raw;
+        m_guestMemory->read64(entry + 8, entry_blink_raw);  // entry+8, not header+8
+        const qint64 entry_blink = static_cast<qint64>(entry_blink_raw);
+
+        // Calculate predecessor address
+        const quint64 pred = static_cast<quint64>(
+            static_cast<qint64>(entry + 8) + entry_blink);
+
+        // Update header's blink to skip removed entry
+        // New offset = pred relative to (header+8)
+        const qint64 new_header_blink = static_cast<qint64>(pred) -
+            static_cast<qint64>(header + 8);
+        m_guestMemory->write64(header + 8, static_cast<quint64>(new_header_blink));
+
+        // Update predecessor's flink to point to header
+        // New offset = header relative to pred
+        const qint64 new_pred_flink = static_cast<qint64>(header) -
+            static_cast<qint64>(pred);
+        m_guestMemory->write64(pred, static_cast<quint64>(new_pred_flink));  //  pred, not header+8
+
+        // Determine if this was the last entry
+        const bool wasLast = (new_header_blink == 0);
+
+        slot.writeIntReg(1, entry);              // R1 = removed entry address
+        slot.writeIntReg(0, wasLast ? 2 : 1);    // R0 = status
+        slot.needsWriteback = false;
+    }
+
+    auto executeRSCC(PipelineSlot& slot) -> void
+    {
+        m_palService->executeRSCC(slot, slot.palResult);
     }
 
     // Prevent copying
@@ -1579,37 +1642,40 @@ public:
     AXP_HOT AXP_ALWAYS_INLINE auto executeREI(PipelineSlot& slot) noexcept -> BoxResult
     {
         // Validate in PAL mode
-        //if (!(getPC_Active(m_cpuId) & 0x1))
-        if (!(m_iprGlobalMaster->isInPalMode()))                                                       // Fast Path
+        if (!(m_iprGlobalMaster->isInPalMode()))
         {
-            ERROR_LOG(QString("PalBox CPU %1: HW_REI outside PAL mode")
+            ERROR_LOG(QString("PalBox CPU %1: HW_RET outside PAL mode")
                 .arg(m_cpuId));
 
             return BoxResult()
-                   .setTrapCodeFaultClass(TrapCode_Class::ILLEGAL_INSTRUCTION)
-                   .flushPipeline();
+                .setTrapCodeFaultClass(TrapCode_Class::ILLEGAL_INSTRUCTION)
+                .flushPipeline();
         }
 
-        DEBUG_LOG(QString("PalBox CPU %1: HW_REI - exiting PAL mode")
-            .arg(m_cpuId));
+        // ================================================================
+        // EV6 HW_RET (opcode 0x1E): PC <- Rb
+        //
+        // Instruction format:
+        //   [31:26] opcode = 0x1E
+        //   [25:21] Ra     = hint register (ignored for address)
+        //   [20:16] Rb     = source register containing return address
+        //   [15:14] type   = 00=JMP, 01=RET, 10=COROUTINE, 11=STALL
+        //   [13:0]  hint   = branch predictor displacement
+        // ================================================================
+        const quint8  rb = slot.di.rb;
+        const quint64 targetPC = m_iprGlobalMaster->readInt(rb);
 
-        // Restore context
-        m_iprGlobalMaster->restoreContext();
+        DEBUG_LOG(QString("PalBox CPU %1: HW_RET Rb=R%2 target=0x%3")
+            .arg(m_cpuId)
+            .arg(rb)
+            .arg(targetPC, 16, 16, QChar('0')));
+
+        // Exit PAL mode, set new PC
+        m_iprGlobalMaster->h->forceUserPC(targetPC);
+
         // Deactivate shadow registers
         m_shadowRegsActive = false;
 
-        // Ensure PC[0] clear (exit PAL mode)
-        //quint64 pc = getPC_Active(m_cpuId);
-        if (m_iprGlobalMaster->h->pc & 0x1)                                                             // Fast Path
-        {
-            m_iprGlobalMaster->h->pc = (m_iprGlobalMaster->h->pc & ~0x1ULL);
-        }
-
-        DEBUG_LOG(QString("PalBox CPU %1: Exited PAL mode, PC=0x%2")
-            .arg(m_cpuId)
-            .arg(m_iprGlobalMaster->h->pc & ~0x1ULL, 16, 16, QChar('0')));
-
-        // Return flush request
         return BoxResult().flushPipeline();
     }
 

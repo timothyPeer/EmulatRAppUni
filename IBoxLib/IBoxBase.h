@@ -469,7 +469,8 @@ private:
 
         DecodedInstruction di;
         di.grain = grain;  //  Point to registry singleton
-        di.pc = pc;
+        //di.pc = pc;
+        di.pc = pc & ~1ULL; 
         setRaw(di, rawBits);  // SET IT BEFORE decodeInstruction!
 
         InstructionGrain* grain2 = GrainResolver::instance().ResolveGrain(rawBits);
@@ -495,7 +496,9 @@ private:
 
         FetchResult fetchResult;
         fetchResult.m_cpuId = m_cpuId;
-        fetchResult.virtualAddress = pc;    // Store VA before fetch
+        fetchResult.virtualAddress = pc & ~1ULL;    // Store VA before fetch - // Strip PAL mode bit
+        
+        //const quint64 pc = fetchResult.virtualAddress & ~1ULL;  
         fetchResult.physicalAddress = 0;     // Will be filled by fetchFromMemory
         decodeInstruction(di, fetchResult);  // Populates ra, rb, rc, semantics
 
@@ -525,26 +528,43 @@ private:
         fr.isCallPal = false;
         fr.palFunction = 0;
 
-        
+       // qDebug() << "FetchFromMemory:: " << m_iprGlobalMaster->h->pc;
 
         const quint64 pc = fr.virtualAddress;  // Virtual address
+
+       
+       // qDebug() << "FetchFromMemory - from fr.virtualAddress:: " << m_iprGlobalMaster->h->pc;
 
         // ========================================================================
         // STEP 1: Translate PC to Physical Address
         // ========================================================================
         quint64 va = 0;
         quint64 pa = 0;
+        const quint64 fetchPC = pc & ~1ULL;  // strip PAL bit for address use
       //  const MEM_STATUS translateStatus = m_mmu->translateInstructionFetch(pc, pa, fr.m_cpuId);
-        const TranslationResult translateResult = m_ev6Translator->translateVA_Instruction(
-              pc,             // Virtual address (PC)
-            pa              // Output: physical address
-        );
+        //const TranslationResult translateResult = m_ev6Translator->translateVA_Instruction(          pc,             // Virtual address (PC)        pa              // Output: physical address
+        //);
 
         // Record to trace BEFORE execution
-        
+       // qDebug() << "FetchFromMemory - from translateVA_Instruction:: " << m_iprGlobalMaster->h->pc;
 
         // Convert TranslationResult to MEM_STATUS
-        const MEM_STATUS translateStatus = convertTranslationResultToMemStatus(translateResult);
+       // const MEM_STATUS translateStatus = convertTranslationResultToMemStatus(translateResult);
+
+        if (m_iprGlobalMaster->h->inPalMode())
+        {
+            // PAL mode: PC IS the physical address, no translation
+            pa = fetchPC;
+        }
+        else
+        {
+            const TranslationResult translateResult = m_ev6Translator->translateVA_Instruction( fetchPC, pa);
+            const MEM_STATUS translateStatus = convertTranslationResultToMemStatus(translateResult);
+            if (translateStatus != MEM_STATUS::Ok) {
+                fr.fetchStatus = translateStatus;
+                return false;
+            }
+        }
 
         fr.physicalAddress = pa;  // Store translated PA in FetchResult
 
@@ -552,7 +572,7 @@ private:
         // STEP 2: Try PC Cache (Virtual Address Lookup - FASTEST)
         // ========================================================================
 
-        PcKey pcKey = PcKey::fromVA(pc);
+        PcKey pcKey = PcKey::fromVA(fetchPC);               // use the stripped (PAL) address:
         const DecodedInstruction* cachedDI = pcDecodeCache().lookup(pcKey);
 
         if (cachedDI && cachedDI->grain) {
@@ -579,7 +599,7 @@ private:
         // STEP 3: Try PA Cache (Physical Address Lookup - Coherent)
         // ========================================================================
 
-        PaKey paKey = PaKey::fromPA(pa);
+        PaKey paKey = PaKey::fromPA(fetchPC);    // use the stripped (PAL) address:
         cachedDI = paDecodeCache().lookup(paKey);
 
         if (cachedDI && cachedDI->grain) {
@@ -609,6 +629,11 @@ private:
 
         quint32 rawBits = 0;
         const MEM_STATUS fetchStatus = m_guestMemory->readInst32(pa, rawBits);
+
+        if (pc == 0x9000C8)
+        {
+            qDebug() << "HIT: FetchFromMemory at PC=0x9000C8";  // breakpoint here
+        }
 
         qDebug() << QString("Fetched from PA 0x%1: 0x%2")
             .arg(pa, 16, 16, QChar('0'))
@@ -670,6 +695,7 @@ private:
         // STEP 6: Build DecodedInstruction
         // ========================================================================
     
+        fr.di.pc = pc & ~1ULL;         // instructions always see clean PC
         DecodedInstruction& di = fr.di;
 
         // Set raw bits in grain (safe now - grain is not null)
@@ -680,7 +706,7 @@ private:
         // Extra safety : Clear semantic flags(preserve raw instruction)
         di.semantics = 0x0000000000000000;
         di.grain = grain;           // Point to registry grain (flyweight) -- we were not setting semantics... 
-        di.pc = pc;
+        di.pc = pc & ~1ULL;         // instructions always see clean PC
         di.setPhysicalAddress(pa);
         di.setRawBits(rawBits);
       

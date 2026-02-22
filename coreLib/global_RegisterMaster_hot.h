@@ -331,6 +331,11 @@ struct alignas(64) HWPCB
         std::memset(processorSerial, 0, sizeof(processorSerial));
     }
 
+    AXP_HOT AXP_ALWAYS_INLINE void advancePC(quint64 newPC) noexcept
+    {
+        pc = (newPC & ~1ULL) | (pc & 1ULL);  // preserve PAL bit
+    }
+
     // ================================================================
     // VA SIGN EXTENSION (43-bit -> 64-bit)
     // ================================================================
@@ -1392,6 +1397,8 @@ struct CPUStateView final
         return result;
     }
 };
+
+
 
 // ============================================================================
 // Singleton Accessor

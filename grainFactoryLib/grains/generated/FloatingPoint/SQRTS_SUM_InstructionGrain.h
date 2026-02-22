@@ -17,9 +17,9 @@
 //  Opcode: 0x14, Function: 0x054B
 //  Execution Box: FBox
 //  Format: GF_OperateFormat
-//  Latency: None cycles, Throughput: 1/cycle
+//  Latency: 70 cycles, Throughput: 1/cycle
 //
-//  Generated: 2026-02-07 12:32:52
+//  Generated: 2026-02-18 12:45:23
 //
 // ============================================================================
 
@@ -44,7 +44,7 @@ public:
         : InstructionGrain(
             0,           // rawBits (updated per-fetch)
             GF_OperateFormat,     // flags
-            None,   // latency (cycles)
+            70,   // latency (cycles)
             1 // throughput (instructions/cycle)
           )
         , m_mnemonic("SQRTS_SUM")

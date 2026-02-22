@@ -1,10 +1,11 @@
 #ifndef SRMCONSOLE_H
 #define SRMCONSOLE_H
 
-#include "../configLib/settings.h"
-#include "../configLib/EmulatorSettingsInline.h"
+#include "configLib/settings.h"
+#include "configLib/EmulatorSettingsInline.h"
 #include "SRMEnvStore.h"
 #include "SRMConsoleDevice.h"
+#include "coreLib/types_core.h"
 
 // Forward declarations
 class PipelineSlot;

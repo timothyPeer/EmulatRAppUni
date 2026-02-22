@@ -20,8 +20,8 @@ AXP_HOT AXP_ALWAYS_INLINE   quint32 palFunction(quint32 grainRaw) noexcept {
     return static_cast<quint32>(grainRaw & 0x3FFFFFF);  // Bits 0-25
 }
 
-AXP_HOT AXP_ALWAYS_INLINE   PalCallPalFunction decodedCallPalFunction(quint32 grainRaw) noexcept {
-	return static_cast<PalCallPalFunction>(palFunction(grainRaw));
+AXP_HOT AXP_ALWAYS_INLINE   PalCallPalFunction_enum decodedCallPalFunction(quint32 grainRaw) noexcept {
+	return static_cast<PalCallPalFunction_enum>(palFunction(grainRaw));
 }
 
 AXP_HOT AXP_ALWAYS_INLINE   constexpr bool palReturnRegIsValid(const PalReturnReg rr) noexcept
@@ -450,121 +450,121 @@ AXP_HOT AXP_ALWAYS_INLINE   quint64 palVectorIdToVectorAddress(PalVectorId_EV6 p
 }
 
 // ============================================================================
-// palFunctionName - Zero-cost string lookup for PalCallPalFunction
+// palFunctionName - Zero-cost string lookup for PalCallPalFunction_enum
 // ============================================================================
-// Returns a compile-time string literal for any PalCallPalFunction value.
+// Returns a compile-time string literal for any PalCallPalFunction_enum value.
 // Used by ExecTrace and debug logging. No allocation, no QString.
 // ============================================================================
 
-inline constexpr const char* palFunctionName(PalCallPalFunction fn) noexcept
+inline constexpr const char* palFunctionName(PalCallPalFunction_enum fn) noexcept
 {
 	switch (fn)
 	{
-	case PalCallPalFunction::HALT:           return "HALT";
-	case PalCallPalFunction::CFLUSH:         return "CFLUSH";
-	case PalCallPalFunction::DRAINA:         return "DRAINA";
-	case PalCallPalFunction::LDQP:           return "LDQP";
-	case PalCallPalFunction::STQP:           return "STQP";
-	case PalCallPalFunction::SWPCTX:         return "SWPCTX";
-	case PalCallPalFunction::MFPR_ASN:       return "MFPR_ASN";
-	case PalCallPalFunction::MTPR_ASTEN:     return "MTPR_ASTEN";
-	case PalCallPalFunction::MTPR_ASTSR:     return "MTPR_ASTSR";
-	case PalCallPalFunction::CSERVE:         return "CSERVE";
-	case PalCallPalFunction::SWPPAL:         return "SWPPAL";
-	case PalCallPalFunction::MFPR_FEN:       return "MFPR_FEN";
-	case PalCallPalFunction::MTPR_FEN:       return "MTPR_FEN";
-	case PalCallPalFunction::MTPR_IPIR:      return "MTPR_IPIR";
-	case PalCallPalFunction::MFPR_IPL:       return "MFPR_IPL";
-	case PalCallPalFunction::MTPR_IPL:       return "MTPR_IPL";
-	case PalCallPalFunction::MFPR_MCES:      return "MFPR_MCES";
-	case PalCallPalFunction::MTPR_MCES:      return "MTPR_MCES";
-	case PalCallPalFunction::MFPR_PCBB:      return "MFPR_PCBB";
-	case PalCallPalFunction::MFPR_PRBR:      return "MFPR_PRBR";
-	case PalCallPalFunction::MTPR_PRBR:      return "MTPR_PRBR";
-	case PalCallPalFunction::MFPR_PTBR:      return "MFPR_PTBR";
-	case PalCallPalFunction::MFPR_SCBB:      return "MFPR_SCBB";
-	case PalCallPalFunction::MTPR_SCBB:      return "MTPR_SCBB";
-	case PalCallPalFunction::MFPR_SIRR:      return "MFPR_SIRR";
-	case PalCallPalFunction::MFPR_SISR:      return "MFPR_SISR";
-	case PalCallPalFunction::MFPR_TBCHK:     return "MFPR_TBCHK";
-	case PalCallPalFunction::MTPR_TBIA:      return "MTPR_TBIA";
-	case PalCallPalFunction::MTPR_TBIAP:     return "MTPR_TBIAP";
-	case PalCallPalFunction::MTPR_TBIS:      return "MTPR_TBIS";
-	case PalCallPalFunction::MFPR_ESP:       return "MFPR_ESP";
-	case PalCallPalFunction::MTPR_ESP:       return "MTPR_ESP";
-	case PalCallPalFunction::MFPR_SSP:       return "MFPR_SSP";
-	case PalCallPalFunction::MTPR_SSP:       return "MTPR_SSP";
-	case PalCallPalFunction::MFPR_USP:       return "MFPR_USP";
-	case PalCallPalFunction::MTPR_USP:       return "MTPR_USP";
-	case PalCallPalFunction::MTPR_TBISD:     return "MTPR_TBISD";
-	case PalCallPalFunction::MTPR_TBISI:     return "MTPR_TBISI";
-	case PalCallPalFunction::MFPR_ASTEN:     return "MFPR_ASTEN";
-	case PalCallPalFunction::MFPR_ASTSR:     return "MFPR_ASTSR";
-	case PalCallPalFunction::MFPR_VPTB:      return "MFPR_VPTB";
-	case PalCallPalFunction::MTPR_VPTB:      return "MTPR_VPTB";
-	case PalCallPalFunction::MTPR_PERFMON:   return "MTPR_PERFMON";
-	case PalCallPalFunction::WRVPTPTR_OSF:   return "WRVPTPTR_OSF";
-	case PalCallPalFunction::MTPR_DATFX:     return "MTPR_DATFX";
-	case PalCallPalFunction::SWPCTX_OSF:     return "SWPCTX_OSF";
-	case PalCallPalFunction::WRVAL_OSF:      return "WRVAL_OSF";
-	case PalCallPalFunction::RDVAL_OSF:      return "RDVAL_OSF";
-	case PalCallPalFunction::TBI_OSF:        return "TBI_OSF";
-	case PalCallPalFunction::WRENT_OSF:      return "WRENT_OSF";
-	case PalCallPalFunction::SWPIPL_OSF:     return "SWPIPL_OSF";
-	case PalCallPalFunction::RDPS_OSF:       return "RDPS_OSF";
-	case PalCallPalFunction::WRKGP_OSF:      return "WRKGP_OSF";
-	case PalCallPalFunction::WRUSP_OSF:      return "WRUSP_OSF";
-	case PalCallPalFunction::WRPERFMON_OSF:  return "WRPERFMON_OSF";
-	case PalCallPalFunction::RDUSP_OSF:      return "RDUSP_OSF";
-	case PalCallPalFunction::WHAMI_OSF:      return "WHAMI_OSF";
-	case PalCallPalFunction::RETSYS_OSF:     return "RETSYS_OSF";
-	case PalCallPalFunction::WTINT:          return "WTINT";
-	case PalCallPalFunction::MFPR_WHAMI:     return "MFPR_WHAMI";
-	case PalCallPalFunction::BPT:            return "BPT";
-	case PalCallPalFunction::BUGCHECK:       return "BUGCHECK";
-	case PalCallPalFunction::CHME:           return "CHME";
-	case PalCallPalFunction::CHMK:           return "CHMK";
-	case PalCallPalFunction::CHMS:           return "CHMS";
-	case PalCallPalFunction::CHMU:           return "CHMU";
-	case PalCallPalFunction::IMB:            return "IMB";
-	case PalCallPalFunction::INSQHIL:        return "INSQHIL";
-	case PalCallPalFunction::INSQTIL:        return "INSQTIL";
-	case PalCallPalFunction::INSQHIQ:        return "INSQHIQ";
-	case PalCallPalFunction::INSQTIQ:        return "INSQTIQ";
-	case PalCallPalFunction::INSQUEL:        return "INSQUEL";
-	case PalCallPalFunction::INSQUEQ:        return "INSQUEQ";
-	case PalCallPalFunction::INSQUEL_D:      return "INSQUEL_D";
-	case PalCallPalFunction::INSQUEQ_D:      return "INSQUEQ_D";
-	case PalCallPalFunction::PROBER:         return "PROBER";
-	case PalCallPalFunction::PROBEW:         return "PROBEW";
-	case PalCallPalFunction::RD_PS:          return "RD_PS";
-	case PalCallPalFunction::REI:            return "REI";
-	case PalCallPalFunction::REMQHIL:        return "REMQHIL";
-	case PalCallPalFunction::REMQTIL:        return "REMQTIL";
-	case PalCallPalFunction::REMQHIQ:        return "REMQHIQ";
-	case PalCallPalFunction::REMQTIQ:        return "REMQTIQ";
-	case PalCallPalFunction::REMQUEL:        return "REMQUEL";
-	case PalCallPalFunction::REMQUEQ:        return "REMQUEQ";
-	case PalCallPalFunction::REMQUEL_D:      return "REMQUEL_D";
-	case PalCallPalFunction::REMQUEQ_D:      return "REMQUEQ_D";
-	case PalCallPalFunction::SWASTEN:        return "SWASTEN";
-	case PalCallPalFunction::WR_PS_SW:       return "WR_PS_SW";
-	case PalCallPalFunction::RSCC:           return "RSCC";
-	case PalCallPalFunction::READ_UNQ:       return "READ_UNQ";
-	case PalCallPalFunction::WRITE_UNQ:      return "WRITE_UNQ";
-	case PalCallPalFunction::AMOVRR:         return "AMOVRR";
-	case PalCallPalFunction::AMOVRM:         return "AMOVRM";
-	case PalCallPalFunction::INSQHILR:       return "INSQHILR";
-	case PalCallPalFunction::INSQTILR:       return "INSQTILR";
-	case PalCallPalFunction::INSQHIQR:       return "INSQHIQR";
-	case PalCallPalFunction::INSQTIQR:       return "INSQTIQR";
-	case PalCallPalFunction::REMQHILR:       return "REMQHILR";
-	case PalCallPalFunction::REMQTILR:       return "REMQTILR";
-	case PalCallPalFunction::REMHIQR:        return "REMHIQR";
-	case PalCallPalFunction::REMQTIQR:       return "REMQTIQR";
-	case PalCallPalFunction::GENTRAP:        return "GENTRAP";
-	case PalCallPalFunction::KBPT:           return "KBPT";
-	case PalCallPalFunction::CLRFEN:         return "CLRFEN";
+	case PalCallPalFunction_enum::HALT:           return "HALT";
+	case PalCallPalFunction_enum::CFLUSH:         return "CFLUSH";
+	case PalCallPalFunction_enum::DRAINA:         return "DRAINA";
+	case PalCallPalFunction_enum::LDQP:           return "LDQP";
+	case PalCallPalFunction_enum::STQP:           return "STQP";
+	case PalCallPalFunction_enum::SWPCTX:         return "SWPCTX";
+	case PalCallPalFunction_enum::MFPR_ASN:       return "MFPR_ASN";
+	case PalCallPalFunction_enum::MTPR_ASTEN:     return "MTPR_ASTEN";
+	case PalCallPalFunction_enum::MTPR_ASTSR:     return "MTPR_ASTSR";
+	case PalCallPalFunction_enum::CSERVE:         return "CSERVE";
+	case PalCallPalFunction_enum::SWPPAL:         return "SWPPAL";
+	case PalCallPalFunction_enum::MFPR_FEN:       return "MFPR_FEN";
+	case PalCallPalFunction_enum::MTPR_FEN:       return "MTPR_FEN";
+	case PalCallPalFunction_enum::MTPR_IPIR:      return "MTPR_IPIR";
+	case PalCallPalFunction_enum::MFPR_IPL:       return "MFPR_IPL";
+	case PalCallPalFunction_enum::MTPR_IPL:       return "MTPR_IPL";
+	case PalCallPalFunction_enum::MFPR_MCES:      return "MFPR_MCES";
+	case PalCallPalFunction_enum::MTPR_MCES:      return "MTPR_MCES";
+	case PalCallPalFunction_enum::MFPR_PCBB:      return "MFPR_PCBB";
+	case PalCallPalFunction_enum::MFPR_PRBR:      return "MFPR_PRBR";
+	case PalCallPalFunction_enum::MTPR_PRBR:      return "MTPR_PRBR";
+	case PalCallPalFunction_enum::MFPR_PTBR:      return "MFPR_PTBR";
+	case PalCallPalFunction_enum::MFPR_SCBB:      return "MFPR_SCBB";
+	case PalCallPalFunction_enum::MTPR_SCBB:      return "MTPR_SCBB";
+	case PalCallPalFunction_enum::MFPR_SIRR:      return "MFPR_SIRR";
+	case PalCallPalFunction_enum::MFPR_SISR:      return "MFPR_SISR";
+	case PalCallPalFunction_enum::MFPR_TBCHK:     return "MFPR_TBCHK";
+	case PalCallPalFunction_enum::MTPR_TBIA:      return "MTPR_TBIA";
+	case PalCallPalFunction_enum::MTPR_TBIAP:     return "MTPR_TBIAP";
+	case PalCallPalFunction_enum::MTPR_TBIS:      return "MTPR_TBIS";
+	case PalCallPalFunction_enum::MFPR_ESP:       return "MFPR_ESP";
+	case PalCallPalFunction_enum::MTPR_ESP:       return "MTPR_ESP";
+	case PalCallPalFunction_enum::MFPR_SSP:       return "MFPR_SSP";
+	case PalCallPalFunction_enum::MTPR_SSP:       return "MTPR_SSP";
+	case PalCallPalFunction_enum::MFPR_USP:       return "MFPR_USP";
+	case PalCallPalFunction_enum::MTPR_USP:       return "MTPR_USP";
+	case PalCallPalFunction_enum::MTPR_TBISD:     return "MTPR_TBISD";
+	case PalCallPalFunction_enum::MTPR_TBISI:     return "MTPR_TBISI";
+	case PalCallPalFunction_enum::MFPR_ASTEN:     return "MFPR_ASTEN";
+	case PalCallPalFunction_enum::MFPR_ASTSR:     return "MFPR_ASTSR";
+	case PalCallPalFunction_enum::MFPR_VPTB:      return "MFPR_VPTB";
+	case PalCallPalFunction_enum::MTPR_VPTB:      return "MTPR_VPTB";
+	case PalCallPalFunction_enum::MTPR_PERFMON:   return "MTPR_PERFMON";
+	case PalCallPalFunction_enum::WRVPTPTR_OSF:   return "WRVPTPTR_OSF";
+	case PalCallPalFunction_enum::MTPR_DATFX:     return "MTPR_DATFX";
+	case PalCallPalFunction_enum::SWPCTX_OSF:     return "SWPCTX_OSF";
+	case PalCallPalFunction_enum::WRVAL_OSF:      return "WRVAL_OSF";
+	case PalCallPalFunction_enum::RDVAL_OSF:      return "RDVAL_OSF";
+	case PalCallPalFunction_enum::TBI_OSF:        return "TBI_OSF";
+	case PalCallPalFunction_enum::WRENT_OSF:      return "WRENT_OSF";
+	case PalCallPalFunction_enum::SWPIPL_OSF:     return "SWPIPL_OSF";
+	case PalCallPalFunction_enum::RDPS_OSF:       return "RDPS_OSF";
+	case PalCallPalFunction_enum::WRKGP_OSF:      return "WRKGP_OSF";
+	case PalCallPalFunction_enum::WRUSP_OSF:      return "WRUSP_OSF";
+	case PalCallPalFunction_enum::WRPERFMON_OSF:  return "WRPERFMON_OSF";
+	case PalCallPalFunction_enum::RDUSP_OSF:      return "RDUSP_OSF";
+	case PalCallPalFunction_enum::WHAMI_OSF:      return "WHAMI_OSF";
+	case PalCallPalFunction_enum::RETSYS_OSF:     return "RETSYS_OSF";
+	case PalCallPalFunction_enum::WTINT:          return "WTINT";
+	case PalCallPalFunction_enum::MFPR_WHAMI:     return "MFPR_WHAMI";
+	case PalCallPalFunction_enum::BPT:            return "BPT";
+	case PalCallPalFunction_enum::BUGCHECK:       return "BUGCHECK";
+	case PalCallPalFunction_enum::CHME:           return "CHME";
+	case PalCallPalFunction_enum::CHMK:           return "CHMK";
+	case PalCallPalFunction_enum::CHMS:           return "CHMS";
+	case PalCallPalFunction_enum::CHMU:           return "CHMU";
+	case PalCallPalFunction_enum::IMB:            return "IMB";
+	case PalCallPalFunction_enum::INSQHIL:        return "INSQHIL";
+	case PalCallPalFunction_enum::INSQTIL:        return "INSQTIL";
+	case PalCallPalFunction_enum::INSQHIQ:        return "INSQHIQ";
+	case PalCallPalFunction_enum::INSQTIQ:        return "INSQTIQ";
+	case PalCallPalFunction_enum::INSQUEL:        return "INSQUEL";
+	case PalCallPalFunction_enum::INSQUEQ:        return "INSQUEQ";
+	case PalCallPalFunction_enum::INSQUEL_D:      return "INSQUEL_D";
+	case PalCallPalFunction_enum::INSQUEQ_D:      return "INSQUEQ_D";
+	case PalCallPalFunction_enum::PROBER:         return "PROBER";
+	case PalCallPalFunction_enum::PROBEW:         return "PROBEW";
+	case PalCallPalFunction_enum::RD_PS:          return "RD_PS";
+	case PalCallPalFunction_enum::REI:            return "REI";
+	case PalCallPalFunction_enum::REMQHIL:        return "REMQHIL";
+	case PalCallPalFunction_enum::REMQTIL:        return "REMQTIL";
+	case PalCallPalFunction_enum::REMQHIQ:        return "REMQHIQ";
+	case PalCallPalFunction_enum::REMQTIQ:        return "REMQTIQ";
+	case PalCallPalFunction_enum::REMQUEL:        return "REMQUEL";
+	case PalCallPalFunction_enum::REMQUEQ:        return "REMQUEQ";
+	case PalCallPalFunction_enum::REMQUEL_D:      return "REMQUEL_D";
+	case PalCallPalFunction_enum::REMQUEQ_D:      return "REMQUEQ_D";
+	case PalCallPalFunction_enum::SWASTEN:        return "SWASTEN";
+	case PalCallPalFunction_enum::WR_PS_SW:       return "WR_PS_SW";
+	case PalCallPalFunction_enum::RSCC:           return "RSCC";
+	case PalCallPalFunction_enum::READ_UNQ:       return "READ_UNQ";
+	case PalCallPalFunction_enum::WRITE_UNQ:      return "WRITE_UNQ";
+	case PalCallPalFunction_enum::AMOVRR:         return "AMOVRR";
+	case PalCallPalFunction_enum::AMOVRM:         return "AMOVRM";
+	case PalCallPalFunction_enum::INSQHILR:       return "INSQHILR";
+	case PalCallPalFunction_enum::INSQTILR:       return "INSQTILR";
+	case PalCallPalFunction_enum::INSQHIQR:       return "INSQHIQR";
+	case PalCallPalFunction_enum::INSQTIQR:       return "INSQTIQR";
+	case PalCallPalFunction_enum::REMQHILR:       return "REMQHILR";
+	case PalCallPalFunction_enum::REMQTILR:       return "REMQTILR";
+	case PalCallPalFunction_enum::REMHIQR:        return "REMHIQR";
+	case PalCallPalFunction_enum::REMQTIQR:       return "REMQTIQR";
+	case PalCallPalFunction_enum::GENTRAP:        return "GENTRAP";
+	case PalCallPalFunction_enum::KBPT:           return "KBPT";
+	case PalCallPalFunction_enum::CLRFEN:         return "CLRFEN";
 	default:                                 return "PAL_UNKNOWN";
 	}
 }
@@ -572,7 +572,7 @@ inline constexpr const char* palFunctionName(PalCallPalFunction fn) noexcept
 // Overload taking raw uint8 from getFunctionCode
 inline constexpr const char* palFunctionName(quint8 funcCode) noexcept
 {
-	return palFunctionName(static_cast<PalCallPalFunction>(funcCode));
+	return palFunctionName(static_cast<PalCallPalFunction_enum>(funcCode));
 }
 
 
