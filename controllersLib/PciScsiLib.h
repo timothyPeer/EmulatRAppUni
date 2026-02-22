@@ -1,4 +1,19 @@
 // ============================================================================
+// PciScsiLib.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiLib.H  -  Umbrella Header for PCI-attached SCSI Controllers
 // ============================================================================
 // Purpose:
@@ -6,8 +21,8 @@
 //   you now have in your project. Including this single file gives a PCI
 //   device implementation access to:
 //
-//     • SCSI controllerLib (ScsiControllerLib.H)
-//     • PCI SCSI base classes and helpers:
+//     ï¿½ SCSI controllerLib (ScsiControllerLib.H)
+//     ï¿½ PCI SCSI base classes and helpers:
 //         - PciScsiControllerBase
 //         - PciScsiMmioInterface
 //         - PciScsiDevice
@@ -19,10 +34,10 @@
 //         - PciScsiDeviceShell
 //         - PciScsiScriptEngine
 //         - PciScsiControllerTemplate
-//     • Concrete controller skeletons:
+//     ï¿½ Concrete controller skeletons:
 //         - ISP1020_Controller
 //         - KZPBA_Controller
-//     • High-level SCSI controller wrapper:
+//     ï¿½ High-level SCSI controller wrapper:
 //         - VirtualScsiController
 //
 // Design constraints:

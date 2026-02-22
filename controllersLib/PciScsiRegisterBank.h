@@ -1,4 +1,19 @@
 // ============================================================================
+// PciScsiRegisterBank.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiRegisterBank.H  -  Generic Register File for PCI SCSI Controllers
 // ============================================================================
 // Purpose:
@@ -7,10 +22,10 @@
 //   some are write-only (doorbells).
 //
 //   PciScsiRegisterBank provides:
-//     • A clean abstraction for device registers
-//     • A small registration API for adding registers
-//     • Safe read/write helpers with masking & side effects
-//     • No device-specific logic - derived controllers implement callbacks
+//     ï¿½ A clean abstraction for device registers
+//     ï¿½ A small registration API for adding registers
+//     ï¿½ Safe read/write helpers with masking & side effects
+//     ï¿½ No device-specific logic - derived controllers implement callbacks
 //
 // Design constraints:
 //   - Header-only, no .CPP

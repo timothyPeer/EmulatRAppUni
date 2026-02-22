@@ -1,4 +1,19 @@
 // ============================================================================
+// KZPBA_Controller.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // KZPBA_Controller.H
 // ============================================================================
 // DEC KZPBA PCI SCSI Controller (ISP1020-based)
@@ -8,10 +23,10 @@
 //   This header provides a thin adapter layer over the existing
 //   ISP1020_Controller, adding:
 //
-//     • DEC-specific PCI IDs (vendor 0x1011, device 0x000F)
-//     • DEC naming (“KZPBA”)
-//     • Same BAR configuration model
-//     • Same SCSI host adapter behavior
+//     ï¿½ DEC-specific PCI IDs (vendor 0x1011, device 0x000F)
+//     ï¿½ DEC naming (ï¿½KZPBAï¿½)
+//     ï¿½ Same BAR configuration model
+//     ï¿½ Same SCSI host adapter behavior
 //
 //   All SCSI, DMA, mailbox, and script-engine behavior is inherited from
 //   ISP1020_Controller.

@@ -1,14 +1,29 @@
 // ============================================================================
+// PciScsiDmaChannel.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiDmaChannel.H  -  DMA Channel Wrapper for PCI SCSI Devices
 // ============================================================================
 // Purpose:
 //   This header defines a generic DMA "channel" abstraction that wraps a
 //   PciScsiDmaEngine instance and adds:
 //
-//     • Channel enable/disable control
-//     • Channel state (Idle / Running / Paused / Stopped / Error)
-//     • Optional channel identifier and name
-//     • Simple helpers to start, pause, resume, stop, and reset a channel
+//     ï¿½ Channel enable/disable control
+//     ï¿½ Channel state (Idle / Running / Paused / Stopped / Error)
+//     ï¿½ Optional channel identifier and name
+//     ï¿½ Simple helpers to start, pause, resume, stop, and reset a channel
 //
 //   Concrete PCI SCSI controllers (derived from PciScsiDevice) can embed one
 //   or more PciScsiDmaChannel instances and tie them to device-specific
@@ -166,7 +181,7 @@ public:
 	// ------------------------------------------------------------------------
 	//
 	// These helpers change the channel state and coordinate with the engine.
-	// The actual DMA transfer work is performed inside the engine’s
+	// The actual DMA transfer work is performed inside the engineï¿½s
 	// performDmaTransfer() implementation, not here.
 	//
 	// ------------------------------------------------------------------------

@@ -1,3 +1,18 @@
+// ============================================================================
+// coreLib_core.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
 #pragma once
 #ifndef CORELIB_CORE_H
 #define CORELIB_CORE_H
@@ -5,7 +20,7 @@
 #include <QtGlobal>
 
 // ============================================================================
-// Alpha AXP SRM v6.0 (1994) – ASTEN/ASTSR/ASTER bit semantics
+// Alpha AXP SRM v6.0 (1994) ï¿½ ASTEN/ASTSR/ASTER bit semantics
 //   - ASTEN<3:0> : enable AST delivery per mode (K/E/S/U)
 //   - ASTSR<3:0> : AST pending summary per mode (K/E/S/U)
 //   - ASTER<3:0> : implementation often mirrors the same 4-mode layout
@@ -108,13 +123,13 @@ namespace ASTEN
 //   - PC bits 30:29
 //   - SI bits 28:14 (15 bits)
 //
-// NOTE: “ISUM” naming/fields can be implementation-specific (EV6/21264 style).
+// NOTE: ï¿½ISUMï¿½ naming/fields can be implementation-specific (EV6/21264 style).
 // If you have an EV6 IPR spec page for ISUM, align to that SSOT.
 // ============================================================================
 
 namespace ISUM
 {
-	// External Interrupt Summary (bits 38:33) – 6 bits
+	// External Interrupt Summary (bits 38:33) ï¿½ 6 bits
 	static constexpr quint64 EI_SHIFT = 33;
 	static constexpr quint64 EI_MASK = ((quint64(1) << 6) - 1ULL) << EI_SHIFT; // 0x0000007E00000000
 
@@ -132,7 +147,7 @@ namespace ISUM
 	static constexpr quint64 PC0_MASK = (1ULL << 29);                           // Bit 29
 	static constexpr quint64 PC1_MASK = (1ULL << 30);                           // Bit 30
 
-	// Software Interrupt Summary (bits 28:14) – 15 bits
+	// Software Interrupt Summary (bits 28:14) ï¿½ 15 bits
 	static constexpr quint64 SI_SHIFT = 14;
 	static constexpr quint64 SI_MASK = ((quint64(1) << 15) - 1ULL) << SI_SHIFT; // 0x000000001FFFC000
 

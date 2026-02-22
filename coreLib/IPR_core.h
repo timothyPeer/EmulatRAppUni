@@ -1,3 +1,18 @@
+// ============================================================================
+// IPR_core.h - defaults for IRQ
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
 #ifndef IPR_core_h__
 #define IPR_core_h__
 
@@ -19,12 +34,12 @@ AXP_HOT AXP_ALWAYS_INLINE quint8 findHighestSetBit(const quint32 mask) noexcept
 // ============================================================================
 
 readIPR() / writeIPR() exist to implement MFPR_xxx / MTPR_xxx only
-The ASA/OpenVMS PALcode definition makes MFPR/MTPR a PAL entry whose function field selects the IPR, and whose operands are in integer registers (not “method parameters” in your C++ sense):
-MFPR_xxx: reads the IPR “specified by the PALcode function field” and writes the result to R0; privileged-only (PS<CM> must be 0).
+The ASA/OpenVMS PALcode definition makes MFPR/MTPR a PAL entry whose function field selects the IPR, and whose operands are in integer registers (not ï¿½method parametersï¿½ in your C++ sense):
+MFPR_xxx: reads the IPR ï¿½specified by the PALcode function fieldï¿½ and writes the result to R0; privileged-only (PS<CM> must be 0).
 
-Alpha_AXP_System_Reference_Manu…
+Alpha_AXP_System_Reference_Manuï¿½
 MTPR_xxx: writes IPR-specific operands from R16 (and R17 reserved for future use) to the IPR; privileged-only; effect guaranteed active on the next instruction; may also return a value in R0 depending on which IPR it is.
-Alpha_AXP_System_Reference_Manu…
+Alpha_AXP_System_Reference_Manuï¿½
 So, from a software architecture perspective:
 PalService::readIPR(iprId, ctx) should be called only by the MFPR grain/handler.
 PalService::writeIPR(iprId, ctx) should be called only by the MTPR grain/handler.

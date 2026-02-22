@@ -1,15 +1,30 @@
 // ============================================================================
+// PciScsiDeviceShell.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiDeviceShell.H  -  Composite PCI SCSI Controller Skeleton
 // ============================================================================
 // Purpose:
 //   This header provides a cohesive "shell" for PCI-attached SCSI controllers.
 //   It combines:
 //
-//     • PciScsiDevice            (PCI SCSI base: config + SCSI host adapter)
-//     • PciScsiRegisterBank      (MMIO register file abstraction)
-//     • PciScsiMailboxQueue      (decoded mailbox / doorbell commands)
-//     • PciScsiInterruptController (IRQ status and mask handling)
-//     • PciScsiDmaChannel        (one or more DMA channels)
+//     ï¿½ PciScsiDevice            (PCI SCSI base: config + SCSI host adapter)
+//     ï¿½ PciScsiRegisterBank      (MMIO register file abstraction)
+//     ï¿½ PciScsiMailboxQueue      (decoded mailbox / doorbell commands)
+//     ï¿½ PciScsiInterruptController (IRQ status and mask handling)
+//     ï¿½ PciScsiDmaChannel        (one or more DMA channels)
 //
 //   The goal is to give you a ready-made skeleton that real controller
 //   implementations (QLogic, NCR 53C8xx, KZPBA, etc.) can derive from,

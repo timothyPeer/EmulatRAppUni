@@ -1,8 +1,30 @@
 // ============================================================================
+// instructionFormatClassifier.h - Alpha instruction encoding formats
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+#ifndef VS2022_EMULATR_EMULATRAPPUNI_GRAINFACTORYLIB_INSTRUCTIONFORMATCLASSIFIER_H
+#define VS2022_EMULATR_EMULATRAPPUNI_GRAINFACTORYLIB_INSTRUCTIONFORMATCLASSIFIER_H
+
+// ============================================================================
 // Instruction Format Classification
 // ============================================================================
 // Add this to DecodedInstruction_inl.h
+#include <qtGlobal>
 
+#include "DecodedInstruction.h"
+#include "DecodedInstruction_inl.h"
+#include "coreLib/Axp_Attributes_core.h"
 /**
  * @brief Alpha instruction encoding formats
  *
@@ -207,3 +229,4 @@ InstructionFormat fmt = getInstructionFormat(slot.di);
 dispatchTable[static_cast<quint8>(fmt)](slot);
 
 */
+#endif

@@ -1,10 +1,16 @@
 // ============================================================================
-// ConsoleManager.cpp
+// ConsoleManager.cpp - Get OPA device by index
 // ============================================================================
-// Copyright (c) 2025 EmulatR Project. All rights reserved.
-// Licensed under the MIT License. See LICENSE file in the project root.
-// ============================================================================
-// Console Manager Implementation
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
 // ============================================================================
 
 #include "ConsoleManager.h"

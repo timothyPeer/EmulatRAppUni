@@ -1,4 +1,19 @@
 // ============================================================================
+// PciScsiInterruptController.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiInterruptController.H  -  PCI SCSI Interrupt Status/Mask Helper
 // ============================================================================
 // Purpose:
@@ -6,10 +21,10 @@
 //   for PCI SCSI controllers. It is intended to be used by derived classes
 //   of PciScsiDevice (and friends) to manage:
 //
-//     • Interrupt reason bits (status register)
-//     • Interrupt mask bits (enable/disable reasons)
-//     • "Pending" evaluation based on (status & mask)
-//     • Simple acknowledge/clear helpers
+//     ï¿½ Interrupt reason bits (status register)
+//     ï¿½ Interrupt mask bits (enable/disable reasons)
+//     ï¿½ "Pending" evaluation based on (status & mask)
+//     ï¿½ Simple acknowledge/clear helpers
 //
 //   The *actual* wiring of interrupts to the emulator's IRQ subsystem is
 //   still done by the PCI device itself (e.g., by calling raiseInterrupt()

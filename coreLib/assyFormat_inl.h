@@ -1,3 +1,18 @@
+// ============================================================================
+// assyFormat_inl.h - -----------------------------
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
 #pragma once
 #include <QtCore/QString>
 #include <QtCore/QtGlobal>
@@ -55,7 +70,7 @@ namespace DecAsm {
         pcStr = opt.lowercaseHexPc ? pcStr.toLower() : pcStr.toUpper();
 
         // Left-pad to keep it visually consistent with the other overload.
-        // (We don’t parse instrText; we just print it.)
+        // (We donï¿½t parse instrText; we just print it.)
         QString line = QString("%1:  %2").arg(pcStr, instrText);
 
         const QString c = comment.trimmed();

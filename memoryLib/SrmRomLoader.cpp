@@ -1,14 +1,16 @@
 // ============================================================================
-// SrmRomLoader.cpp -- Alpha SRM Firmware ROM Loader
+// SrmRomLoader.cpp - - Alpha SRM Firmware ROM Loader
 // ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
 //
-// Attribution:
-//   Decompression-via-execution algorithm derived from:
-//     ES40 Emulator -- Copyright (C) 2007-2008 Camiel Vanderhoeven
-//     AxpBox fork   -- Copyright (C) 2020 Tomas Glozar
-//     CSystem::LoadROM() in System.cpp
-//     Licensed under GNU General Public License v2
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
 //
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
 // ============================================================================
 
 #include "SrmRomLoader.h"

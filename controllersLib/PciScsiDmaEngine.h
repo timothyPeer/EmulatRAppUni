@@ -1,4 +1,19 @@
 // ============================================================================
+// PciScsiDmaEngine.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiDmaEngine.H  -  Abstract DMA Descriptor Engine for PCI SCSI Devices
 // ============================================================================
 // Purpose:
@@ -7,11 +22,11 @@
 //   generic, device-agnostic DMA descriptor engine that a PCI SCSI controller
 //   can use to represent:
 //
-//     • Scatter/gather entries
-//     • Transfer direction (read/write)
-//     • Current DMA position
-//     • Descriptor fetch completion
-//     • DMA start/stop/reset semantics
+//     ï¿½ Scatter/gather entries
+//     ï¿½ Transfer direction (read/write)
+//     ï¿½ Current DMA position
+//     ï¿½ Descriptor fetch completion
+//     ï¿½ DMA start/stop/reset semantics
 //
 //   *Actual memory transfers are NOT performed here.*
 //   They will be bound to your emulator's SafeMemory/MMIOManager later.
@@ -85,9 +100,9 @@ enum class PciScsiDmaState : quint8
 //
 // Derived PCI SCSI controllers can:
 //
-//   • Load DMA descriptors from MMIO registers
-//   • Bind actual memory copy calls via their emulator's memory subsystem
-//   • Update SCSI transactions based on DMA results
+//   ï¿½ Load DMA descriptors from MMIO registers
+//   ï¿½ Bind actual memory copy calls via their emulator's memory subsystem
+//   ï¿½ Update SCSI transactions based on DMA results
 //
 // ============================================================================
 class PciScsiDmaEngine

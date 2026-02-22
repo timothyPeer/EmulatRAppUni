@@ -1,3 +1,18 @@
+// ============================================================================
+// global_cBoxState.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
 #ifndef GLOBAL_CBOXSTATE_H
 #define GLOBAL_CBOXSTATE_H
 
@@ -11,7 +26,7 @@
 //   - Other CPUs send IPIs
 //   - IRQController reads/writes interrupt state
 //
-// This is why CBox is NOT inside GlobalCPUState — different writer
+// This is why CBox is NOT inside GlobalCPUState ï¿½ different writer
 // contract. GlobalCPUState guarantees single-writer (CPU run loop).
 // CBox requires atomics because any thread may write at any time.
 //
@@ -28,7 +43,7 @@
 //   // From CPU run loop (poll)
 //   if (globalCBoxState().cbox(myCpu).shouldPoll()) { ... }
 //
-// Removed from CBox (write-only triggers — no storage):
+// Removed from CBox (write-only triggers ï¿½ no storage):
 //   tbia, tbiap, tbis, tbisd, tbisi
 //   These are dispatched directly to SPAM in writeIPR.
 // ============================================================================
@@ -42,15 +57,15 @@
 
 
 // ============================================================================
-// IPRStorage_CBox — Per-CPU Cross-Thread Interrupt / IPI State
+// IPRStorage_CBox ï¿½ Per-CPU Cross-Thread Interrupt / IPI State
 // ============================================================================
-// All mutable fields are std::atomic — safe for concurrent access.
+// All mutable fields are std::atomic ï¿½ safe for concurrent access.
 // Hot-path fields packed into first cache line for polling.
 // ============================================================================
 struct alignas(64) IPRStorage_CBox
 {
     // ========================================================================
-    // CACHE LINE 0: Hot Path — polled every instruction cycle
+    // CACHE LINE 0: Hot Path ï¿½ polled every instruction cycle
     // ========================================================================
 
     std::atomic<quint64> irq_pending{ 0 };    //  0: Pending IPL bitmask
@@ -148,7 +163,7 @@ struct alignas(64) IPRStorage_CBox
         else   irq_control.fetch_and(~(1U << 19), std::memory_order_release);
     }
 
-    // Has Pending Event [20] — MASTER POLL FLAG
+    // Has Pending Event [20] ï¿½ MASTER POLL FLAG
     AXP_HOT AXP_ALWAYS_INLINE bool hasPendingEvent() const noexcept {
         return (irq_control.load(std::memory_order_acquire) & (1U << 20)) != 0;
     }
@@ -278,7 +293,7 @@ static_assert(sizeof(IPRStorage_CBox) == 128, "CBox must be exactly 1 cache line
 
 
 // ============================================================================
-// GlobalCBoxState — Per-CPU CBox Singleton
+// GlobalCBoxState ï¿½ Per-CPU CBox Singleton
 // ============================================================================
 // Separate from GlobalCPUState because CBox has cross-thread writers.
 // GlobalCPUState guarantees single-writer per CPU. CBox does not.

@@ -1,11 +1,16 @@
 // ============================================================================
-// global_faultDispatcher.h
+// global_faultDispatcher.h - Get current CPU's fault dispatcher (TLS proxy)
 // ============================================================================
-// Copyright (c) 2025 EmulatR Project. All rights reserved.
-// Licensed under the MIT License. See LICENSE file in the project root.
-// ============================================================================
-// TLS-based fault dispatcher accessor
-// Uses CurrentCpuTLS to automatically determine which CPU's dispatcher to use
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
 // ============================================================================
 
 #ifndef GLOBAL_FAULTDISPATCHER_H

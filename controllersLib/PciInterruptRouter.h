@@ -1,4 +1,19 @@
 // ============================================================================
+// PciInterruptRouter.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciInterruptRouter.H
 // ============================================================================
 // Purpose:
@@ -46,9 +61,9 @@
 //
 // The emulator provides an implementation of this. Typically this will
 // forward into:
-//   • IRQController
-//   • CPU interrupt lines
-//   • SMP-aware IPI/interrupt distributor
+//   ï¿½ IRQController
+//   ï¿½ CPU interrupt lines
+//   ï¿½ SMP-aware IPI/interrupt distributor
 //
 // ============================================================================
 class IPciIrqSink
@@ -74,10 +89,10 @@ public:
 //
 // Notes:
 //
-//   • PCI standard says each device has an INTx line (A/B/C/D).
-//   • Most single-function devices always use INTA#.
-//   • Multi-function devices rotate INTA->INTB->INTC->INTD per function number.
-//   • DEC machines usually follow standard PCI rotation.
+//   ï¿½ PCI standard says each device has an INTx line (A/B/C/D).
+//   ï¿½ Most single-function devices always use INTA#.
+//   ï¿½ Multi-function devices rotate INTA->INTB->INTC->INTD per function number.
+//   ï¿½ DEC machines usually follow standard PCI rotation.
 //
 // This router implements the standard rotation and uses PciBus::route(intx)
 // to get the final IRQ line.

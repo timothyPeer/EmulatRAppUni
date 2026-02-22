@@ -1,3 +1,21 @@
+// ============================================================================
+// tbchk_probe_inl.h - tbchk_spam_probe_inl.h
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+#ifndef VS2022_EMULATR_EMULATRAPPUNI_PALLIB_EV6_TBCHK_PROBE_INL_H
+#define VS2022_EMULATR_EMULATRAPPUNI_PALLIB_EV6_TBCHK_PROBE_INL_H
+
 // tbchk_spam_probe_inl.h
 // ============================================================================
 // TBCHK probe wired to SPAMShardManager (header-only, ASCII)
@@ -27,38 +45,21 @@
 // TODO: If you later want DTB-only behavior, remove the ITB probe below.
 //
 
-#pragma once
-
 #include <QtCore/QtGlobal>
 
-#include "../pteLib/alpha_spam_manager.h"   // SPAMShardManager
-#include "../pteLib/alpha_spam_types.h"     // Realm, ASNType, PFNType, SC_Type
-#include "../pteLib/alpha_pte_core.h"       // AlphaN_S::PermMask (or your core header)
-#include "../corelib/Axp_Attributes_core.h"
-#include "../coreLib/types_core.h"
-
-// Hot IPR bank must expose current ASN for this CPU in your model.
-struct IPRHotBank
-{
-	quint64 asn = 0;
-};
-
-
-// ----------------------------------------------------------------------------
-// Optional: if you want CPU-model gating, implement this.
-// ----------------------------------------------------------------------------
-AXP_FLATTEN bool tbchkIsImplemented_EV6(CPUIdType cpuId) noexcept
-{
-	Q_UNUSED(cpuId);
-	return true;
-}
+#include "pteLib/alpha_spam_manager.h"   // SPAMShardManager
+#include "pteLib/alpha_spam_types.h"     // Realm, ASNType, PFNType, SC_Type
+#include "pteLib/alpha_pte_core.h"       // AlphaN_S::PermMask (or your core header)
+#include "corelib/Axp_Attributes_core.h"
+#include "coreLib/types_core.h"
+#include "pteLib/Ev6SiliconTLB_Singleton.h"
 
 // ----------------------------------------------------------------------------
 // Probe presence of a cached translation for (va, asn).
 // Uses SPAMShardManager::tlbLookup(), which probes all GH (3..0) and both
 // global and non-global tags.
 // ----------------------------------------------------------------------------
-AXP_FLATTEN bool tbchkProbePresent_EV6(CPUIdType cpuId, quint64 va, ASNType asn) noexcept
+AXP_HOT AXP_ALWAYS_INLINE bool tbchkProbePresent_EV6(CPUIdType cpuId, quint64 va, ASNType asn) noexcept
 {
 	auto& spam = globalEv6SPAM();
 
@@ -75,22 +76,6 @@ AXP_FLATTEN bool tbchkProbePresent_EV6(CPUIdType cpuId, quint64 va, ASNType asn)
 	return hitD || hitI;
 }
 
-// ----------------------------------------------------------------------------
-// Encode TBCHK return value per SRM 5.3.18 (p5-24).
-// ----------------------------------------------------------------------------
-AXP_FLATTEN quint64 tbchkReturnValue_EV6(CPUIdType cpuId, quint64 va) noexcept
-{
-	if (!tbchkIsImplemented_EV6(cpuId))
-	{
-		// SRM: not implemented returns bit63=1, bit0=0
-		return (1ull << 63);
-	}
 
-	// SRM: ASN-qualified if ASNs implemented
-	const ASNType asn = static_cast<ASNType>(globalIPRHot(cpuId).asn & 0xFFu);
 
-	const bool present = tbchkProbePresent_EV6(cpuId, va, asn);
-
-	// Implemented: bit63=0; bit0 indicates presence
-	return present ? 1ull : 0ull;
-}
+#endif

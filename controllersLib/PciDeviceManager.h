@@ -1,12 +1,27 @@
 // ============================================================================
+// PciDeviceManager.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciDeviceManager.H  -  PCI Device Registry and BAR Allocation Helper
 // ============================================================================
 // Purpose:
 //   This header defines a small, header-only PCI device manager used to:
 //
-//     • Track PCI devices by (bus, slot, function)
-//     • Assign non-overlapping BAR address ranges via PciBarAllocator
-//     • Associate MMIO-capable devices with their BARs
+//     ï¿½ Track PCI devices by (bus, slot, function)
+//     ï¿½ Assign non-overlapping BAR address ranges via PciBarAllocator
+//     ï¿½ Associate MMIO-capable devices with their BARs
 //
 //   It does NOT talk to SafeMemory or MMIOManager directly. Instead, it
 //   records the BAR assignments so a higher-level component (such as your

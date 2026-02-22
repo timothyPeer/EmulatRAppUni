@@ -1,3 +1,18 @@
+// ============================================================================
+// Ev6SiliconTLB.h - This header uses Ev6SPAMShardManager as a by-value member.
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
 #ifndef Ev6SiliconTLB_h__
 #define Ev6SiliconTLB_h__
 

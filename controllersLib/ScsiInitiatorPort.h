@@ -1,4 +1,19 @@
 // ============================================================================
+// ScsiInitiatorPort.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // ScsiInitiatorPort.H  -  SCSI Initiator Port (SAM-2 Model)
 // ============================================================================
 // Purpose:
@@ -6,14 +21,14 @@
 //   host-side identity on a SCSI bus.
 //
 //   This class stores:
-//     • Initiator port name (e.g. "scsi0")
-//     • A 64-bit initiator WWN (or synthetic ID)
-//     • Basic statistics counters (thread-safe optional)
+//     ï¿½ Initiator port name (e.g. "scsi0")
+//     ï¿½ A 64-bit initiator WWN (or synthetic ID)
+//     ï¿½ Basic statistics counters (thread-safe optional)
 //
 //   It is used by:
-//     • ScsiHostAdapter
-//     • ScsiController
-//     • GenericScsiHostAdapter
+//     ï¿½ ScsiHostAdapter
+//     ï¿½ ScsiController
+//     ï¿½ GenericScsiHostAdapter
 //
 //   It does NOT depend on:
 //     - SafeMemory

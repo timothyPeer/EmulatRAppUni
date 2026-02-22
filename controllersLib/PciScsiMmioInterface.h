@@ -1,13 +1,28 @@
 // ============================================================================
+// PciScsiMmioInterface.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiMmioInterface.H  -  Abstract MMIO Interface for PCI SCSI Controllers
 // ============================================================================
 // Purpose:
 //   Defines the minimal MMIO interface required for any PCI-attached
 //   SCSI controller in the emulator. This interface is implemented by:
 //
-//       • PciScsiDevice
-//       • PciScsiDeviceShell
-//       • Any derived concrete controller
+//       ï¿½ PciScsiDevice
+//       ï¿½ PciScsiDeviceShell
+//       ï¿½ Any derived concrete controller
 //
 //   The emulator's PCI/MMIO layer will call these methods for guest reads
 //   and writes into the device's BAR-mapped regions.
@@ -42,11 +57,11 @@
 //
 // This is the core MMIO abstraction. Any PCI SCSI controller MUST implement:
 //
-//   • associatedBarIndex()
-//   • barSize()
-//   • mmioRegionName()
-//   • mmioRead8/16/32/64()
-//   • mmioWrite8/16/32/64()
+//   ï¿½ associatedBarIndex()
+//   ï¿½ barSize()
+//   ï¿½ mmioRegionName()
+//   ï¿½ mmioRead8/16/32/64()
+//   ï¿½ mmioWrite8/16/32/64()
 //
 // These functions are invoked when the guest performs MMIO accesses using:
 //
@@ -65,7 +80,7 @@ public:
 	// BAR index + size
 	// ------------------------------------------------------------------------
 
-	// Which BAR number (0–5) is used for this MMIO region.
+	// Which BAR number (0ï¿½5) is used for this MMIO region.
 	virtual int associatedBarIndex() const noexcept = 0;
 
 	// Size of the BAR-backed region (in bytes).

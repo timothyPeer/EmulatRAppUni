@@ -1,4 +1,19 @@
 // ============================================================================
+// PciScsiScriptEngine.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiScriptEngine.H  -  Abstract Microcode / Script Engine for PCI SCSI
 // ============================================================================
 // Purpose:
@@ -6,9 +21,9 @@
 //   include a programmable engine that executes a small instruction set,
 //   referred to as:
 //
-//     • "SCRIPTS" (NCR 53C810/815/825/875)
-//     • "Sequencer" (Adaptec AIC controllers)
-//     • "RISC Engine" or "Command Processor" (QLogic)
+//     ï¿½ "SCRIPTS" (NCR 53C810/815/825/875)
+//     ï¿½ "Sequencer" (Adaptec AIC controllers)
+//     ï¿½ "RISC Engine" or "Command Processor" (QLogic)
 //
 //   This header defines a device-agnostic abstraction of such a programmable
 //   micro-engine. It does NOT define any specific instruction set. Instead it

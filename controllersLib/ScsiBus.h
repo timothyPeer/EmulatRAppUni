@@ -1,4 +1,19 @@
 // ============================================================================
+// ScsiBus.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // ScsiBus.H  -  Logical SCSI Bus Abstraction for controllerLib
 // ============================================================================
 // The ScsiBus class is a lightweight abstraction representing a SCSI bus.
@@ -50,7 +65,7 @@
 // It provides:
 //    - A target namespace (0..15 typically).
 //    - Global bus-level reset and introspection.
-//    - A convenient façade for binding devices by target and LUN.
+//    - A convenient faï¿½ade for binding devices by target and LUN.
 //
 // The bus delegates all actual I/O to ScsiController::execute().
 // ============================================================================
@@ -135,7 +150,7 @@ public:
 		// we can simply loop through known targets:
 		for (quint8 tid = 0; tid < 16; ++tid)
 		{
-			for (quint8 ll = 0; ll < 8; ++ll)   // LUNs 0–7 typical
+			for (quint8 ll = 0; ll < 8; ++ll)   // LUNs 0ï¿½7 typical
 			{
 				VirtualScsiDevice* dev =
 					m_controller.deviceFor(tid, ScsiLun(ll));

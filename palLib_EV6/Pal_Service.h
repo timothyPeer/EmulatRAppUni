@@ -1,3 +1,18 @@
+// ============================================================================
+// Pal_Service.h - Check if interrupt should be blocked due to PAL mode
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
 #ifndef PAL_SERVICE_H
 #define PAL_SERVICE_H
 // ============================================================================
@@ -567,7 +582,7 @@ public:
 		writeIPR : readInt(16) -> switch (index) -> store to correct container or trigger action
 	 */
 	// ============================================================================
-	// readIPR — HW_MFPR: R0 <- IPR
+	// readIPR ï¿½ HW_MFPR: R0 <- IPR
 	// ============================================================================
 	AXP_HOT AXP_ALWAYS_INLINE void readIPR(quint16 iprIndex2, quint64& result) const noexcept
 	{
@@ -606,7 +621,7 @@ public:
 	}
 
 	// ============================================================================
-	// writeIPR — HW_MTPR: IPR <- R16
+	// writeIPR ï¿½ HW_MTPR: IPR <- R16
 	// ============================================================================
 	AXP_HOT AXP_ALWAYS_INLINE void writeIPR( quint16 iprIndex, PipelineSlot& slot) noexcept
 	{
@@ -1478,7 +1493,7 @@ public:
 			m_iprGlobalMaster->h->setIPL_Unsynced(m_iprGlobalMaster->h->ipl);
 
 			// ============================================================
-			// TLB INVALIDATION — mandatory after context switch
+			// TLB INVALIDATION ï¿½ mandatory after context switch
 			// ============================================================
 			// EV6 TLB entries are ASN-tagged, but:
 			//   - PTBR change = completely different page tables
@@ -1486,7 +1501,7 @@ public:
 			//   - ASN same    = PTBR must also be same (OS contract)
 			//
 			// If PTBR changed, flush everything (new address space).
-			// If only ASN changed, ASN tagging handles it — no flush.
+			// If only ASN changed, ASN tagging handles it ï¿½ no flush.
 			// Global (ASM) entries survive both cases.
 			// ============================================================
 			if (swapResult.ptbrChanged)
@@ -5252,7 +5267,7 @@ public:
 		Push frame(PC, PS with IPL = 20) onto KSP
 		IPL = 22, vector to ent_int
 		|
-		 Timer at IPL 22 (equal, NOT delivered — deferred)
+		 Timer at IPL 22 (equal, NOT delivered ï¿½ deferred)
 		|
 		 IPI handler does REI
 		Pop frame -> restore IPL = 20, PC = PC
@@ -5278,7 +5293,7 @@ public:
 
 		// Pop in reverse order: PC first (was pushed last), then PS
 		if (m_ev6Translation->popStack(ksp, restoredPC, slot.di.pc, PrivilegeLevel::KERNEL) ) {
-			// fault during pop — escalate
+			// fault during pop ï¿½ escalate
 			result.doesReturn = false;
 			return;
 		}
@@ -5300,7 +5315,7 @@ public:
 		result.pcModified = true;
 		result.newPC = restoredPC & ~0x1ULL;
 		result.doesReturn = false;
-		result.iplChanged();                           // IPL changed — may unmask interrupts
+		result.iplChanged();                           // IPL changed ï¿½ may unmask interrupts
 		result.flushPendingTraps();                    // re-evaluate: another interrupt may be pending
 		result.requestPipelineFlush(restoredPC);
 	}*/

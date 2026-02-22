@@ -1,3 +1,18 @@
+// ============================================================================
+// ScsiOpcodes.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
 #ifndef SCSI_OPCODES_H
 #define SCSI_OPCODES_H
 // ============================================================================
@@ -54,7 +69,7 @@ namespace ScsiOpcode6
 	static const quint8 SEND_DIAGNOSTIC = 0x1D;
 	static const quint8 PREVENT_ALLOW = 0x1E;
 
-	// Vendor-specific range: 0xC0–0xFF
+	// Vendor-specific range: 0xC0ï¿½0xFF
 }
 
 // ============================================================================

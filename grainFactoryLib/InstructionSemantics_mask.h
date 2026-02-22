@@ -1,3 +1,18 @@
+// ============================================================================
+// InstructionSemantics_mask.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
 #ifndef INSTRUCTIONSEMANTICS_MASK_H
 #define INSTRUCTIONSEMANTICS_MASK_H
 
@@ -57,7 +72,7 @@ enum InstrSemantics : quint64
     // ---- Pipeline/ordering (19..21)
     S_SideEffect = 1u << 19,
     S_Barrier = 1u << 20,
-    S_NeedsFence = 1u << 21,   // optional “ordering required” bit (distinct from Barrier)
+    S_NeedsFence = 1u << 21,   // optional ï¿½ordering requiredï¿½ bit (distinct from Barrier)
 
     // ---- PAL format (22)
     S_PalFormat = 1u << 22,

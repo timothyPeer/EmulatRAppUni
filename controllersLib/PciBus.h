@@ -1,11 +1,26 @@
 // ============================================================================
+// PciBus.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciBus.H  -  PCI Bus Model (Bus / Slot / Function Registry + IRQ Routing)
 // ============================================================================
 // Purpose:
 //   Represents ONE PCI bus in the emulator. Provides:
-//     • Device lookup by (bus, slot, function)
-//     • Enumeration of all slots
-//     • INTx (INTA#/INTB#/INTC#/INTD#) routing to system IRQ lines
+//     ï¿½ Device lookup by (bus, slot, function)
+//     ï¿½ Enumeration of all slots
+//     ï¿½ INTx (INTA#/INTB#/INTC#/INTD#) routing to system IRQ lines
 //
 //   This is separate from PciDeviceManager:
 //     - PciBus knows topology & routing
@@ -13,7 +28,7 @@
 //     - EmulatorManager coordinates discovery and MMIO installation
 //
 //   Future expansion:
-//     - Multi-hose support (hose0/hose1/…)
+//     - Multi-hose support (hose0/hose1/ï¿½)
 //     - Bridge devices (PCI-to-PCI bridge)
 //     - PCI Express (optional)
 //
@@ -76,9 +91,9 @@ struct PciInterruptRoute
 // ============================================================================
 //
 // The PciBus object holds:
-//   • Bus number
-//   • IRQ routing overrides
-//   • Device registration (references to PciRegisteredDevice objects)
+//   ï¿½ Bus number
+//   ï¿½ IRQ routing overrides
+//   ï¿½ Device registration (references to PciRegisteredDevice objects)
 //
 // Device storage rule:
 //   - The bus does NOT own the devices or BARs.

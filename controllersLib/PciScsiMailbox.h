@@ -1,4 +1,19 @@
 // ============================================================================
+// PciScsiMailbox.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiMailbox.H  -  Generic Mailbox / Doorbell Interface for PCI SCSI
 // ============================================================================
 // Purpose:
@@ -67,7 +82,7 @@ struct PciScsiMailboxCommand
 	quint8  lun;           // Logical unit number
 	quint64 guestAddress;  // Optional: buffer pointer guest provided
 	quint32 length;        // Optional: buffer length
-	QByteArray cdb;        // Optional CDB contents (0–16 bytes typically)
+	QByteArray cdb;        // Optional CDB contents (0ï¿½16 bytes typically)
 
 	// Additional opaque bits the device may interpret.
 	quint32 flags;

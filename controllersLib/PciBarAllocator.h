@@ -1,4 +1,19 @@
 // ============================================================================
+// PciBarAllocator.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciBarAllocator.H  -  Simple PCI BAR Address Allocator
 // ============================================================================
 // Purpose:
@@ -18,7 +33,7 @@
 //   It only hands out aligned physical base addresses.
 //
 // Reference:
-//   • PCI Local Bus Specification, Rev. 2.x, BAR and address space section
+//   ï¿½ PCI Local Bus Specification, Rev. 2.x, BAR and address space section
 //     (Memory/IO decode and BASE_ADDRESS registers).
 // ============================================================================
 
@@ -75,16 +90,16 @@ struct PciBarInfo
 //
 // Integration:
 //
-//   • Typically constructed during emulator startup:
+//   ï¿½ Typically constructed during emulator startup:
 //
 //       PciBarAllocator mmioAlloc(0x80000000ULL, 0x90000000ULL, 0x1000);
 //
-//   • For each PCI device:
+//   ï¿½ For each PCI device:
 //
 //       PciBarInfo bar0 = mmioAlloc.allocate(deviceBar0Size);
 //       device->setBarBase(0, bar0.base);
 //
-//   • MMIOManager will later map [bar0.base, bar0.base + bar0.size) to the
+//   ï¿½ MMIOManager will later map [bar0.base, bar0.base + bar0.size) to the
 //     device's PciScsiMmioInterface implementation.
 //
 // Design notes:

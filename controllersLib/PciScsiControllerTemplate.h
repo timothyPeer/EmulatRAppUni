@@ -1,29 +1,44 @@
 // ============================================================================
+// PciScsiControllerTemplate.h - ============================================================================
+// ============================================================================
+// Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Licensed under eNVy Systems Non-Commercial License v1.1
+//
+// Project Architect: Timothy Peer
+// AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Commercial use prohibited without separate license.
+// Contact: peert@envysys.com | https://envysys.com
+// Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
+// ============================================================================
+
+// ============================================================================
 // PciScsiControllerTemplate.H  -  Skeleton PCI SCSI Controller Template
 // ============================================================================
 // Purpose:
 //   This header provides a ready-to-extend skeleton for PCI-attached SCSI
 //   controllers. It combines the composite device shell:
 //
-//     • PciScsiDeviceShell      (PCI config + MMIO + SCSI adapter)
-//     • PciScsiScriptEngine     (optional microcode / script engine)
+//     ï¿½ PciScsiDeviceShell      (PCI config + MMIO + SCSI adapter)
+//     ï¿½ PciScsiScriptEngine     (optional microcode / script engine)
 //
 //   and wires them together with a *very small* example register map that
 //   demonstrates:
 //
-//     • Interrupt status / mask registers
-//     • A mailbox doorbell register
-//     • A DMA control register
-//     • A script engine PC register
+//     ï¿½ Interrupt status / mask registers
+//     ï¿½ A mailbox doorbell register
+//     ï¿½ A DMA control register
+//     ï¿½ A script engine PC register
 //
 //   This class is intentionally abstract. Actual controllers should derive
 //   from PciScsiControllerTemplate and:
 //
-//     • Configure PCI IDs (vendorId, deviceId, classCode, etc.)
-//     • Define BAR size and index
-//     • Implement executeOneInstruction()
-//     • Implement raiseInterrupt() and clearInterrupt()
-//     • Optionally override decodeMailboxDoorbell() and onDmaControlWrite()
+//     ï¿½ Configure PCI IDs (vendorId, deviceId, classCode, etc.)
+//     ï¿½ Define BAR size and index
+//     ï¿½ Implement executeOneInstruction()
+//     ï¿½ Implement raiseInterrupt() and clearInterrupt()
+//     ï¿½ Optionally override decodeMailboxDoorbell() and onDmaControlWrite()
 //
 // Design constraints:
 //   - Header-only, no .CPP file.
