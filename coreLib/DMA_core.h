@@ -1,6 +1,8 @@
-#pragma once
+#ifndef VS2022_EMULATR_EMULATRAPPUNI_CORELIB_DMA_CORE_H
+#define VS2022_EMULATR_EMULATRAPPUNI_CORELIB_DMA_CORE_H
+
 #include <QtGlobal>
-#include "corelib_global.h"
+
 
 struct DMACapabilities {
 	// DMA support
@@ -24,3 +26,4 @@ struct DMACapabilities {
 	{
 	}
 };
+#endif

@@ -1232,6 +1232,14 @@ private:
     AXP_HOT AXP_ALWAYS_INLINE auto stage_MEM() -> void
     {
         PipelineSlot& slot = stage(STAGEMEM);
+
+
+        // ================================================================
+        // NORMAL — WB instruction passed, pending is safe to commit
+        // ================================================================
+
+        commitPending(slot); // we need to commit from here to handle instruction serialization of LDA / ZAPNOT / LDAH
+
         if (!slot.valid) return;
 
         // ================================================================
@@ -1307,11 +1315,7 @@ private:
         // ================================================================
         // Pending is from an instruction that passed EX without faulting.
         // WB is empty (pipeline filling or post-flush), safe to commit.
-        if (!slot.valid)
-        {
-            commitPending(slot);
-            return;
-        }
+        
 
         // ================================================================
         // 1. FAULT CHECK — discard pending (younger instruction)
@@ -1366,10 +1370,6 @@ private:
             return;
         }
 
-        // ================================================================
-        // 3. NORMAL — WB instruction passed, pending is safe to commit
-        // ================================================================
-        commitPending(slot);
 
         // ================================================================
         // 4. MEMORY STORE COMMIT
