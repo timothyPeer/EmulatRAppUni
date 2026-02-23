@@ -1,0 +1,652 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Memory MapVisual</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="# CANONICAL PA ROUTING TABLE (Option A) # ASA Emulator - Single Source of Truth for Physical Address Mapping # Date: 2025-01-27 &nbsp;## DESIGN PRINCIPLE: SafeMemory is the only wri" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "memory-mapvisual.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Memory MapVisual</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?memory-mapvisual.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Memory MapVisual</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="check_circular_py-appendix.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="introduction.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="compiler-options.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal"># CANONICAL PA ROUTING TABLE (Option A)</p>
+<p class="p_Normal"># ASA Emulator - Single Source of Truth for Physical Address Mapping</p>
+<p class="p_Normal"># Date: 2025-01-27</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## DESIGN PRINCIPLE: SafeMemory is the only writable RAM</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All &quot;normal memory&quot; (including HWRPB, low memory structures, main RAM) </p>
+<p class="p_Normal">is stored in SafeMemory with no duplication.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## PA REGION TABLE (Non-Overlapping, Ordered by PA)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample">|<span class="f_CodeExample">&nbsp;PA&nbsp;Start&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;PA&nbsp;End&nbsp;(excl)&nbsp;&nbsp;|&nbsp;Size&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Target&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Notes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|----------------|----------------|-----------|------------------|--------------------------------|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x0000_0000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;0x0000_2000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;8&nbsp;KB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;**SafeMemory**&nbsp;&nbsp;&nbsp;|&nbsp;Low&nbsp;memory&nbsp;scratch/reserved&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x0000_2000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;0x0000_6000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;16&nbsp;KB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;**SafeMemory**&nbsp;&nbsp;&nbsp;|&nbsp;HWRPB&nbsp;data&nbsp;structure&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x0000_6000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;0x0001_0000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;40&nbsp;KB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;**SafeMemory**&nbsp;&nbsp;&nbsp;|&nbsp;Reserved/scratch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x0001_0000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;0x2000_0000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;~512&nbsp;MB&nbsp;&nbsp;&nbsp;|&nbsp;**Unmapped**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Reserved/fault&nbsp;on&nbsp;access&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x2000_0000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;0x2020_0000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;2&nbsp;MB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;**SRMFirmware**&nbsp;&nbsp;|&nbsp;clipper.bin&nbsp;(read-only)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x2020_0000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;0x8000_0000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;~1.5&nbsp;GB&nbsp;&nbsp;&nbsp;|&nbsp;**Unmapped**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Reserved/fault&nbsp;on&nbsp;access&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x8000_0000&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;0x8_8000_0000&nbsp;&nbsp;|&nbsp;32&nbsp;GB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;**SafeMemory**&nbsp;&nbsp;&nbsp;|&nbsp;Main&nbsp;RAM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x8_8000_0000&nbsp;&nbsp;|&nbsp;0x10_0000_0000&nbsp;|&nbsp;~96&nbsp;GB&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;**Unmapped**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Reserved&nbsp;(future&nbsp;expansion)&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x10_0000_0000&nbsp;|&nbsp;0x20_0000_0000&nbsp;|&nbsp;64&nbsp;GB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;**MMIOManager**&nbsp;&nbsp;|&nbsp;Device&nbsp;CSRs,&nbsp;BARs,&nbsp;PCI&nbsp;config&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;0x20_0000_0000&nbsp;|&nbsp;...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;**Unmapped**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Reserved&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## SAFEMEMORY OFFSET CALCULATION</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory is **discontinuous in PA space** but **contiguous internally**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Internal SafeMemory Layout (offset-based)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">SafeMemory Offset &nbsp;| PA Range &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Purpose</p>
+<p class="p_Normal">-------------------|------------------------|---------------------------</p>
+<p class="p_Normal">0x0000_0000 &nbsp; &nbsp; &nbsp; &nbsp;| 0x0000_0000 - 0x0001_0000 | Low 64 KB (includes HWRPB at +0x2000)</p>
+<p class="p_Normal">0x0001_0000 &nbsp; &nbsp; &nbsp; &nbsp;| 0x8000_0000 - 0x8_8000_0000 | Main RAM (32 GB)</p>
+<p class="p_Normal">-------------------|------------------------|---------------------------</p>
+<p class="p_Normal">Total Size: 64 KB + 32 GB = 0x8_0001_0000 bytes</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### PA → SafeMemory Offset Translation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**CRITICAL**: SafeMemory has TWO PA regions that map to ONE contiguous buffer!</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">quint64 paToSafeMemoryOffset(quint64 pa) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Region 1: Low 64 KB (PA 0x0 - 0x10000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (pa &gt;= 0x0000_0000 &amp;&amp; pa &lt; 0x0001_0000) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return pa; &nbsp;// Direct mapping: PA 0x0 → offset 0x0</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Region 2: Main RAM (PA 0x8000_0000 - 0x8_8000_0000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (pa &gt;= 0x8000_0000 &amp;&amp; pa &lt; 0x8_8000_0000) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return (pa - 0x8000_0000) + 0x0001_0000; &nbsp;// Main RAM starts at offset 0x10000</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Not in SafeMemory</p>
+<p class="p_Normal"> &nbsp; &nbsp;return INVALID_OFFSET;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Example Translations:**</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">PA 0x0000_0000 → SafeMemory offset 0x0000_0000 (first byte of low memory)</p>
+<p class="p_Normal">PA 0x0000_2000 → SafeMemory offset 0x0000_2000 (HWRPB start)</p>
+<p class="p_Normal">PA 0x0000_FFFF → SafeMemory offset 0x0000_FFFF (last byte of low memory)</p>
+<p class="p_Normal">PA 0x8000_0000 → SafeMemory offset 0x0001_0000 (first byte of main RAM)</p>
+<p class="p_Normal">PA 0x8000_0100 → SafeMemory offset 0x0001_0100 (offset 0x100 into main RAM)</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## GUESTMEMORY IMPLEMENTATION</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Route Table Structure</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">struct PARouteEntry {</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 startPA; &nbsp; &nbsp; &nbsp;// Inclusive</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 endPA; &nbsp; &nbsp; &nbsp; &nbsp;// Exclusive</p>
+<p class="p_Normal"> &nbsp; &nbsp;RouteTarget target;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// For SafeMemory regions, store offset calculation parameters</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 offsetBase; &nbsp; // Add this to (pa - startPA) to get subsystem offset</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">enum class RouteTarget : quint8 {</p>
+<p class="p_Normal"> &nbsp; &nbsp;None = 0,</p>
+<p class="p_Normal"> &nbsp; &nbsp;SafeMemory,</p>
+<p class="p_Normal"> &nbsp; &nbsp;SRMFirmware,</p>
+<p class="p_Normal"> &nbsp; &nbsp;MMIOManager</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Route Table Initialization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">void GuestMemory::initDefaultPARoutes() noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.clear();</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.reserve(5); &nbsp;// Fixed size, no realloc</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// SafeMemory Region 1: Low 64 KB (PA 0x0 - 0x10000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.startPA &nbsp; &nbsp;= 0x0000_0000,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.endPA &nbsp; &nbsp; &nbsp;= 0x0001_0000,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.target &nbsp; &nbsp; = RouteTarget::SafeMemory,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.offsetBase = 0x0 &nbsp;// PA 0x0 → SafeMemory offset 0x0</p>
+<p class="p_Normal"> &nbsp; &nbsp;});</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// SRM Firmware: Read-only clipper.bin (PA 0x2000_0000 - 0x2020_0000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.startPA &nbsp; &nbsp;= 0x2000_0000,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.endPA &nbsp; &nbsp; &nbsp;= 0x2020_0000,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.target &nbsp; &nbsp; = RouteTarget::SRMFirmware,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.offsetBase = 0x0 &nbsp;// PA 0x2000_0000 → SRM offset 0x0</p>
+<p class="p_Normal"> &nbsp; &nbsp;});</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// SafeMemory Region 2: Main RAM (PA 0x8000_0000 - 0x8_8000_0000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.startPA &nbsp; &nbsp;= 0x8000_0000,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.endPA &nbsp; &nbsp; &nbsp;= 0x8_8000_0000,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.target &nbsp; &nbsp; = RouteTarget::SafeMemory,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.offsetBase = 0x0001_0000 &nbsp;// PA 0x8000_0000 → SafeMemory offset 0x10000</p>
+<p class="p_Normal"> &nbsp; &nbsp;});</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// MMIO: Device registers (PA 0x10_0000_0000 - 0x20_0000_0000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.startPA &nbsp; &nbsp;= 0x10_0000_0000,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.endPA &nbsp; &nbsp; &nbsp;= 0x20_0000_0000,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.target &nbsp; &nbsp; = RouteTarget::MMIOManager,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.offsetBase = 0x0 &nbsp;// MMIO uses absolute PA (no offset translation)</p>
+<p class="p_Normal"> &nbsp; &nbsp;});</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;GuestMemory: PA routing table initialized (Option A)&quot;);</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Routing Logic</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">MEM_STATUS GuestMemory::readPA(quint64 pa, quint8 width, quint64&amp; outValue) const noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Find route</p>
+<p class="p_Normal"> &nbsp; &nbsp;const PARouteEntry* route = findRoute(pa);</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!route) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::AccessViolation; &nbsp;// Unmapped PA</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Route to target</p>
+<p class="p_Normal"> &nbsp; &nbsp;switch (route-&gt;target) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SafeMemory:</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Calculate SafeMemory offset</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 offset = (pa - route-&gt;startPA) + route-&gt;offsetBase;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Route to SafeMemory</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_safeMem-&gt;load(offset, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SRMFirmware:</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Calculate SRM firmware offset</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 offset = pa - route-&gt;startPA; &nbsp;// offsetBase = 0</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Route to SRM firmware (read-only)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_srm-&gt;read(offset, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::MMIOManager:</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// MMIO uses absolute PA (no offset)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_mmio-&gt;handleRead(pa, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;default:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::AccessViolation;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## SAFEMEMORY INITIALIZATION</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">bool SafeMemory::initialize(quint64 sizeBytes) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Size calculation: Low 64 KB + Main RAM 32 GB</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 lowMemSize = 0x0001_0000; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // 64 KB</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 mainRamSize = 0x8_0000_0000; &nbsp; &nbsp; &nbsp; &nbsp;// 32 GB</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 totalSize = lowMemSize + mainRamSize;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (sizeBytes != totalSize) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(QString(&quot;SafeMemory: Expected size 0x%1, got 0x%2&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(totalSize, 16, 16, QChar('0'))</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(sizeBytes, 16, 16, QChar('0')));</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Create sparse backing</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_backing = std::make_unique&lt;SparseMemoryBacking&gt;();</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!m_backing-&gt;allocate(totalSize)) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(&quot;SafeMemory: Failed to allocate sparse backing&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_sizeBytes = totalSize;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot;SafeMemory: Initialized with %1 GB total&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.arg(totalSize / (1024.0 * 1024.0 * 1024.0)));</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot; &nbsp;Low memory: 64 KB (offsets 0x0 - 0x10000)&quot;));</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot; &nbsp;Main RAM: &nbsp; 32 GB (offsets 0x10000 - 0x8_0001_0000)&quot;));</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return true;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## HWRPB INITIALIZATION (Lives in SafeMemory!)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">bool initializeHWRPB() noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// HWRPB is at PA 0x2000</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 hwrpbPA = 0x0000_2000;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Get span from GuestMemory (routes to SafeMemory)</p>
+<p class="p_Normal"> &nbsp; &nbsp;Span hwrpbSpan = m_guestMemory-&gt;getSpanToPA(hwrpbPA, 0x4000, WriteOnly);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (hwrpbSpan.len &lt; 0x4000) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(&quot;Failed to get HWRPB span&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Zero entire HWRPB region</p>
+<p class="p_Normal"> &nbsp; &nbsp;memset(hwrpbSpan.data, 0, 0x4000);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Cast to HWRPB structure</p>
+<p class="p_Normal"> &nbsp; &nbsp;AlphaHWRPB* hwrpb = reinterpret_cast&lt;AlphaHWRPB*&gt;(hwrpbSpan.data);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Populate HWRPB fields</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;physicalBase = 0x2000;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;signature = 0x4250525748ULL; &nbsp;// &quot;HWRPB&quot;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;revision = 6;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;size = 0x4000;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;pageSize = 8192;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ... etc ...</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;HWRPB initialized in SafeMemory at PA 0x2000&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return true;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Key point**: No AlphaMemorySystem! HWRPB lives in SafeMemory just like any other data.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## SPAN-BASED ACCESS FOR CSERVE</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Span Structure</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">struct Span {</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint8* data; &nbsp; &nbsp;// Pointer to memory (nullptr if invalid)</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 len; &nbsp; &nbsp; // Valid length (0 if error, truncated at page boundary)</p>
+<p class="p_Normal"> &nbsp; &nbsp;bool writable; &nbsp; // Read-only or read-write</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">enum class AccessIntent : quint8 {</p>
+<p class="p_Normal"> &nbsp; &nbsp;ReadOnly,</p>
+<p class="p_Normal"> &nbsp; &nbsp;WriteOnly,</p>
+<p class="p_Normal"> &nbsp; &nbsp;ReadWrite</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### GuestMemory::getSpanToPA</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">Span GuestMemory::getSpanToPA(quint64 pa, quint64 requestedLen, AccessIntent intent) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Find route</p>
+<p class="p_Normal"> &nbsp; &nbsp;const PARouteEntry* route = findRoute(pa);</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!route) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false}; &nbsp;// Unmapped</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Check if target supports spans</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (route-&gt;target == RouteTarget::MMIOManager) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false}; &nbsp;// MMIO doesn't support direct spans</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Calculate offset</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 offset = (pa - route-&gt;startPA) + route-&gt;offsetBase;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Route to subsystem</p>
+<p class="p_Normal"> &nbsp; &nbsp;switch (route-&gt;target) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SafeMemory:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_safeMem-&gt;getSpan(offset, requestedLen, intent);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SRMFirmware:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (intent != AccessIntent::ReadOnly) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false}; &nbsp;// SRM is read-only</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_srm-&gt;getSpan(offset, requestedLen);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;default:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### SafeMemory::getSpan</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">Span SafeMemory::getSpan(quint64 offset, quint64 requestedLen, AccessIntent intent) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Validate offset</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (offset &gt;= m_sizeBytes) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Truncate to page boundary (64 KB)</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 pageSize = 64 * 1024;</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 offsetInPage = offset % pageSize;</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 bytesAvailInPage = pageSize - offsetInPage;</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 actualLen = std::min(requestedLen, bytesAvailInPage);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Get page index</p>
+<p class="p_Normal"> &nbsp; &nbsp;const qsizetype pageIdx = static_cast&lt;qsizetype&gt;(offset / pageSize);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Ensure page exists</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint8* page = m_backing-&gt;ensurePage(pageIdx);</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!page) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false}; &nbsp;// Allocation failed</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Return span</p>
+<p class="p_Normal"> &nbsp; &nbsp;return {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.data = page + offsetInPage,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.len = actualLen,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.writable = (intent != AccessIntent::ReadOnly)</p>
+<p class="p_Normal"> &nbsp; &nbsp;};</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### CSERVE PUTS Using Span Pattern</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">case 0x09: &nbsp;// PUTS - Put String</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 bufferVA = slot.regs[17]; &nbsp;// a1 = buffer VA</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 length = slot.regs[18]; &nbsp; &nbsp;// a2 = length</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 remaining = length;</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 currentVA = bufferVA;</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 totalWritten = 0;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;while (remaining &gt; 0) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Translate current VA → PA</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 pa = 0;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (translateVA_Load(slot.cpuId, currentVA, pa) != TranslationResult::Success) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;slot.regs[0] = totalWritten; &nbsp;// Return bytes written so far</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Get span to guest buffer (may be truncated at page boundary)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;Span span = m_guestMemory-&gt;getSpanToPA(pa, remaining, AccessIntent::ReadOnly);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (span.len == 0) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Invalid address or MMIO</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;slot.regs[0] = totalWritten;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Write this chunk to console</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 written = consoleMgr.putStringToOPA(0, span.data, span.len);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (written != span.len) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Console error</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;slot.regs[0] = totalWritten + written;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Advance</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;totalWritten += written;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;currentVA += written;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;remaining -= written;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;slot.regs[0] = totalWritten; &nbsp;// Return total bytes written</p>
+<p class="p_Normal"> &nbsp; &nbsp;break;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Correctness**: Handles page boundaries, sparse pages, translation failures.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## ELIMINATION OF ALPHAMEMORY SYSTEM</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Before (WRONG - Duplication)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">AlphaMemorySystem has:</p>
+<p class="p_Normal"> &nbsp;- m_palBuffer (64 KB) &nbsp; &nbsp; ← DUPLICATE of SafeMemory offsets 0x0 - 0x10000</p>
+<p class="p_Normal"> &nbsp;- m_hwrpbBuffer (16 KB) &nbsp; ← DUPLICATE of SafeMemory offsets 0x2000 - 0x6000</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### After (CORRECT - Single Truth)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">AlphaMemorySystem REMOVED ENTIRELY</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">HWRPB initialization:</p>
+<p class="p_Normal"> &nbsp;- Gets span from GuestMemory at PA 0x2000</p>
+<p class="p_Normal"> &nbsp;- Writes directly to SafeMemory</p>
+<p class="p_Normal"> &nbsp;- No duplication, no synchronization needed</p>
+<p class="p_Normal"> &nbsp;</p>
+<p class="p_Normal">PAL emulation:</p>
+<p class="p_Normal"> &nbsp;- PAL is C++ code, not a memory region</p>
+<p class="p_Normal"> &nbsp;- No storage needed</p>
+<p class="p_Normal"> &nbsp;- CALL_PAL instructions execute C++ handlers</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## IMPLEMENTATION CHECKLIST</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">- [ ] Remove AlphaMemorySystem storage (m_palBuffer, m_hwrpbBuffer)</p>
+<p class="p_Normal">- [ ] Update GuestMemory route table (two SafeMemory regions)</p>
+<p class="p_Normal">- [ ] Implement offsetBase calculation in routing</p>
+<p class="p_Normal">- [ ] Update SafeMemory initialization (64 KB + 32 GB)</p>
+<p class="p_Normal">- [ ] Implement Span structure</p>
+<p class="p_Normal">- [ ] Implement GuestMemory::getSpanToPA()</p>
+<p class="p_Normal">- [ ] Implement SafeMemory::getSpan()</p>
+<p class="p_Normal">- [ ] Implement SRMFirmwareRegion::getSpan()</p>
+<p class="p_Normal">- [ ] Update HWRPB initialization (use span, not separate buffer)</p>
+<p class="p_Normal">- [ ] Update CSERVE PUTS/GETS (use span loop pattern)</p>
+<p class="p_Normal">- [ ] Verify no QVector/QByteArray in hot paths</p>
+<p class="p_Normal">- [ ] Test cross-page access with spans</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## MEMORY MAP VISUAL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample">```</p>
+<p class="p_CodeExample"><span class="f_CodeExample">PA&nbsp;Space:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SafeMemory&nbsp;Internal:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x0000_0000&nbsp;┌─────────────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0x0000_0000&nbsp;┌─────────────┐</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;Low&nbsp;Memory&nbsp;&nbsp;│&nbsp;&nbsp;─────────────────&gt;&nbsp;│&nbsp;Low&nbsp;64&nbsp;KB&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;(64&nbsp;KB)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x0000_2000&nbsp;│&nbsp;&nbsp;[HWRPB]&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;[HWRPB&nbsp;at&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;+0x2000]&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x0001_0000&nbsp;├─────────────┤&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0x0001_0000&nbsp;├─────────────┤</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;Unmapped&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;Main&nbsp;RAM&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;(~512&nbsp;MB)&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;(32&nbsp;GB)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x2000_0000&nbsp;├─────────────┤&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;SRM&nbsp;Firmware│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;(2&nbsp;MB)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;──&gt;&nbsp;SRMFirmware&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x2020_0000&nbsp;├─────────────┤&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;Unmapped&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;(~1.5&nbsp;GB)&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x8000_0000&nbsp;├─────────────┤&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0x0001_0000&nbsp;│&nbsp;(continued)&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;Main&nbsp;RAM&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;─────────────────&gt;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;(32&nbsp;GB)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x8_8000_000├─────────────┤&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0x8_0001_000└─────────────┘</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;Unmapped&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x10_0000_00├─────────────┤</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;MMIO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;──&gt;&nbsp;MMIOManager</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;(64&nbsp;GB)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x20_0000_00└─────────────┘</span></p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**This is your canonical PA routing table implementing Option A!**</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

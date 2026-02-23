@@ -1,0 +1,421 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 12 – AlphaCPU Core</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="Excellent — here is **Chapter 12**, written as the **first chapter of Group 2 (Core Processor Implementation)**. This chapter is intentionally *mechanical, ownership-focused,..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "alphacpu-core.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Chapter 12 – AlphaCPU Core</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?alphacpu-core.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Chapter 12 – AlphaCPU Core</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="11_11-summary.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="architecture-overview.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="12_1-purpose-of-this-chapter.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">Excellent — here is **Chapter 12**, written as the **first chapter of Group 2 (Core Processor Implementation)**. This chapter is intentionally *mechanical, ownership-focused, and code-oriented*, not conceptual. It answers *“who owns what and who drives execution.”*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You can drop this in verbatim.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Chapter 12 – AlphaCPU Core</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.1 Purpose of This Chapter</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This chapter defines the **AlphaCPU core object** and its responsibilities within EmulatR.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU is the **unit of execution**. It owns:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* The processor run loop</p>
+<p class="p_Normal">* Pipeline state</p>
+<p class="p_Normal">* Architectural registers</p>
+<p class="p_Normal">* Per-CPU execution context</p>
+<p class="p_Normal">* Interaction with SMP, interrupts, and PAL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This chapter does **not** redefine architectural rules (those are in Group 1).</p>
+<p class="p_Normal">Instead, it explains **how those rules are enforced in code**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.2 AlphaCPU as the Unit of Execution</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each AlphaCPU instance represents **one physical Alpha processor**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Key properties:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* One AlphaCPU = one hardware CPU</p>
+<p class="p_Normal">* Each AlphaCPU runs independently</p>
+<p class="p_Normal">* All AlphaCPUs execute concurrently in SMP</p>
+<p class="p_Normal">* AlphaCPU owns *all* per-CPU state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">There is no shared CPU object and no master CPU.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.3 Ownership Model</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 12.3.1 AlphaCPU Owns</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU directly owns or controls:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* AlphaPipeline</p>
+<p class="p_Normal">* Register banks (integer, FP)</p>
+<p class="p_Normal">* Processor status (PS, IPL)</p>
+<p class="p_Normal">* TLBs (ITB / DTB)</p>
+<p class="p_Normal">* Write buffers</p>
+<p class="p_Normal">* LL/SC reservation state (via GuestMemory hooks)</p>
+<p class="p_Normal">* FaultDispatcher (per-CPU view)</p>
+<p class="p_Normal">* PalBox execution context</p>
+<p class="p_Normal">* CPU-local interrupt state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No other subsystem may mutate this state directly.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 12.3.2 AlphaCPU Does *Not* Own</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU does **not** own:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* GuestMemory (shared)</p>
+<p class="p_Normal">* SafeMemory (shared)</p>
+<p class="p_Normal">* Devices or MMIO</p>
+<p class="p_Normal">* DeviceManager</p>
+<p class="p_Normal">* MMIOManager</p>
+<p class="p_Normal">* SMPManager</p>
+<p class="p_Normal">* Global interrupt controller</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These are accessed via defined interfaces only.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.4 CPU Lifecycle</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 12.4.1 Creation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPUs are created by **SMPManager**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">During creation:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* CPUId is assigned</p>
+<p class="p_Normal">* Architectural state is initialized</p>
+<p class="p_Normal">* Pipeline is reset</p>
+<p class="p_Normal">* TLBs are cleared</p>
+<p class="p_Normal">* PAL mode is inactive</p>
+<p class="p_Normal">* Interrupts are masked</p>
+<p class="p_Normal">* PC is set to reset vector</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No execution occurs during construction.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 12.4.2 Startup</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Execution begins when:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* SMPManager starts the CPU run loop</p>
+<p class="p_Normal">* Initial PC is valid</p>
+<p class="p_Normal">* Reset state is complete</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each AlphaCPU enters its own run loop.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 12.4.3 Shutdown</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU exits its run loop when:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* HALT instruction retires</p>
+<p class="p_Normal">* Fatal exception occurs</p>
+<p class="p_Normal">* External shutdown signal is received</p>
+<p class="p_Normal">* Simulation ends</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Shutdown is graceful:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Pipeline drains or flushes</p>
+<p class="p_Normal">* Device state remains intact</p>
+<p class="p_Normal">* Other CPUs continue unless directed otherwise</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.5 The AlphaCPU Run Loop</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 12.5.1 Role of the Run Loop</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The run loop is the **clocked execution engine**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each iteration represents **one hardware cycle**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Responsibilities per cycle:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. Pre-cycle checks (halt, interrupts, exceptions)</p>
+<p class="p_Normal">2. Pipeline advancement</p>
+<p class="p_Normal">3. Barrier release evaluation</p>
+<p class="p_Normal">4. Exception / interrupt delivery</p>
+<p class="p_Normal">5. Housekeeping and statistics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 12.5.2 Run Loop Invariants</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The run loop must enforce:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* One cycle per iteration</p>
+<p class="p_Normal">* Deterministic ordering</p>
+<p class="p_Normal">* No mid-instruction interruption</p>
+<p class="p_Normal">* No speculative privilege leakage</p>
+<p class="p_Normal">* Precise exception semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The run loop is the *only* place where execution advances.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.6 Pipeline Integration</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU owns the **AlphaPipeline** and drives it explicitly.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Responsibilities:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Advance pipeline stages</p>
+<p class="p_Normal">* Handle stalls and flushes</p>
+<p class="p_Normal">* Coordinate serialization</p>
+<p class="p_Normal">* Commit architectural state in WB</p>
+<p class="p_Normal">* Restart fetch after control flow changes</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU does **not** execute instructions directly — it delegates execution to the pipeline and grains.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.7 Interaction with FaultDispatcher</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU is responsible for:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Polling pending faults and interrupts</p>
+<p class="p_Normal">* Determining delivery timing</p>
+<p class="p_Normal">* Initiating pipeline flushes</p>
+<p class="p_Normal">* Entering PAL on delivery</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Fault detection may occur anywhere, but **delivery is centralized in AlphaCPU**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.8 Interrupt Handling Responsibility</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Samples interrupt state during pre-cycle phase</p>
+<p class="p_Normal">* Applies masking and IPL rules</p>
+<p class="p_Normal">* Selects highest-priority pending interrupt</p>
+<p class="p_Normal">* Initiates PAL entry when delivered</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Interrupts never interrupt instruction execution mid-cycle.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.9 PAL Integration</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU enforces PAL semantics by:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Serializing CALL_PAL</p>
+<p class="p_Normal">* Clearing LL/SC reservations on PAL entry</p>
+<p class="p_Normal">* Capturing register-context snapshots</p>
+<p class="p_Normal">* Blocking speculative execution</p>
+<p class="p_Normal">* Enforcing HW_REI restore semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL execution is coordinated, not special-cased.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.10 SMP Awareness</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each AlphaCPU:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Knows its CPUId</p>
+<p class="p_Normal">* Participates in SMP coordination</p>
+<p class="p_Normal">* Receives IPIs as interrupts</p>
+<p class="p_Normal">* Performs local TLB invalidation</p>
+<p class="p_Normal">* Enforces per-CPU privilege boundaries</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU never directly modifies another CPU’s state.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.11 Timing and Determinism</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU guarantees:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Deterministic execution per CPU</p>
+<p class="p_Normal">* Deterministic interaction ordering</p>
+<p class="p_Normal">* Explicit visibility boundaries</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All nondeterminism is **intentional and observable**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.12 Error Handling Policy</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU responds to errors by:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Raising precise exceptions</p>
+<p class="p_Normal">* Entering PAL</p>
+<p class="p_Normal">* Halting execution if unrecoverable</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Undefined behavior is not permitted.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12.13 Summary</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU is:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* The sole execution authority</p>
+<p class="p_Normal">* The owner of per-CPU architectural state</p>
+<p class="p_Normal">* The driver of the pipeline</p>
+<p class="p_Normal">* The arbiter of exceptions and interrupts</p>
+<p class="p_Normal">* The enforcer of privilege boundaries</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Nothing executes unless AlphaCPU allows it.</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

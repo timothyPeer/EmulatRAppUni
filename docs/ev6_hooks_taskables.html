@@ -1,0 +1,532 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Taskables &gt; EV6_Hooks_Taskables</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="Absolutely — here is a **fully structured, facility-level system-side-effect checklist** for **EV6_Hooks**, matching the exact format you approved for ReservationManager." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "ev6_hooks_taskables.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">EV6_Hooks_Taskables</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?ev6_hooks_taskables.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="taskables.html">Taskables</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">EV6_Hooks_Taskables</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="hwpcb_taskables.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="taskables.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="cpustateiprinterface-taskables.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">Absolutely — here is a **fully structured, facility-level system-side-effect checklist** for **EV6_Hooks**, matching the exact format you approved for ReservationManager.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This document is **ready for copy/paste into your documentation**, and it gives you a *complete architectural map* of what EV6_Hooks is responsible for, what subsystems it interacts with, and which downstream effects must be implemented inside other modules (CSII, IRQController, PAL, IPR, HWPCB, AlphaCPU).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Everything below is derived directly from the uploaded file:</p>
+<p class="p_Normal">**EV6_Hooks.h** → </p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># ✅ **System Side-Effect Checklist (SSEC)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **Facility:** `EV6_Hooks`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **Purpose:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EV6_Hooks implements the architecture-specific behavior for EV6 IPRs (Internal Processor Registers).</p>
+<p class="p_Normal">These hooks run during:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* PALcode IPR writes/reads</p>
+<p class="p_Normal">* AST behavior</p>
+<p class="p_Normal">* IPL promotion/demotion</p>
+<p class="p_Normal">* Exception summary updates</p>
+<p class="p_Normal">* Translation subsystem interactions</p>
+<p class="p_Normal">* Interrupt eligibility changes</p>
+<p class="p_Normal">* Mode transitions (CM / PS)</p>
+<p class="p_Normal">* TLB behavior (via MM_STAT, VA, EXC_ADDR etc.)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This module does **not own state**; rather, it coordinates updates to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* CPUStateIPRInterface (CSII)</p>
+<p class="p_Normal">* IPRBank</p>
+<p class="p_Normal">* HWPCB Bank</p>
+<p class="p_Normal">* IRQController</p>
+<p class="p_Normal">* ReservationManager</p>
+<p class="p_Normal">* EV6 TLB/PTE subsystem</p>
+<p class="p_Normal">* AlphaCPU (for exception, trap, interrupt pending state changes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 🔷 **A. Internal Operations (performed by EV6_Hooks)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EV6_Hooks defines routines for updating architectural registers:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">| Step | Operation &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Description &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Must Trigger &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| ---- | ----------------------------- | --------------------------------------- | ---------------------------- |</p>
+<p class="p_Normal">| A1 &nbsp; | Update CM (Current Mode) &nbsp; &nbsp; &nbsp;| Implements EV6 CM Write semantics &nbsp; &nbsp; &nbsp; | Mode change callbacks &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| A2 &nbsp; | Update IPL &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Handles SIRR and IER interactions &nbsp; &nbsp; &nbsp; | Recalc interrupt priority &nbsp; &nbsp;|</p>
+<p class="p_Normal">| A3 &nbsp; | Update ASTER/ASTRR/ASTEN &nbsp; &nbsp; &nbsp;| Manages AST subsystem control registers | AST pending state update &nbsp; &nbsp; |</p>
+<p class="p_Normal">| A4 &nbsp; | Update EXC_ADDR &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Reflects exception address handling &nbsp; &nbsp; | Exception tracking &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| A5 &nbsp; | Update EXC_SUM &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Hardware exception summary &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Exception decode + IRQ &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| A6 &nbsp; | Update VA register &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Required by ITB reload PALcode &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| MM_STAT update &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| A7 &nbsp; | Update MM_STAT &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Tracks TLB miss type &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Permissible to trigger traps |</p>
+<p class="p_Normal">| A8 &nbsp; | Manage TB_TAG / TB_PTE writes | Supports PAL ITB/DTB operations &nbsp; &nbsp; &nbsp; &nbsp; | TLB insert/update actions &nbsp; &nbsp;|</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 🔷 **B. External Events Affecting EV6_Hooks**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">| Step | External Source &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Event &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Expected Response in EV6_Hooks &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| ---- | ------------------------ | -------------------------- | ---------------------------------------- |</p>
+<p class="p_Normal">| B1 &nbsp; | CPUStateIPRInterface &nbsp; &nbsp; | IPR write by PAL or kernel | Call correct EV6_Hook handler &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| B2 &nbsp; | AlphaCPU &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Exception or trap &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Update EXC_ADDR, EXC_SUM &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| B3 &nbsp; | IRQController &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| IPL change &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Influence AST &amp; EXC delivery &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| B4 &nbsp; | MMIOManager / SafeMemory | Memory exceptions &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Update EXC_SUM &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| B5 &nbsp; | PTE/TLB (Ev6PteCache) &nbsp; &nbsp;| TLB miss behavior &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Set MM_STAT values &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| B6 &nbsp; | PAL Executor &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | TBIS/TBIA/TBIAP &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Invoke TLB invalidation paths &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| B7 &nbsp; | HWPCB operations &nbsp; &nbsp; &nbsp; &nbsp; | Context switch &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Reset AST, CM, PS, VA fields as required |</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 🔷 **C. Downstream Effects (side effects caused by EV6_Hooks)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> ⚠ EV6_Hooks calls into multiple subsystems, and *these calls must exist* as stubs or full implementations.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">| Step | Subsystem &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Condition &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Must Call &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| ---- | ------------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------- |</p>
+<p class="p_Normal">| C1 &nbsp; | **CPUStateIPRInterface** | Mode change, CM write &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| `onModeChange()`, `manageShadowBanks()`, `flushSpeculativeState()` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| C2 &nbsp; | **CPUStateIPRInterface** | Exception registers updated &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| `updateExceptionState()`, `evaluateExceptionSummary()` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| C3 &nbsp; | **CPUStateIPRInterface** | AST subsystem changes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| `requestAST()`, `checkPendingAST()` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| C4 &nbsp; | **CPUStateIPRInterface** | Interrupt eligibility change &nbsp; &nbsp; &nbsp; &nbsp; | `notifyModeChangeAffectsInterruptEligibility()` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| C5 &nbsp; | **IRQController** &nbsp; &nbsp; &nbsp; &nbsp;| IPL changes, SIRR writes, IER writes | `setCPUIpl()`, `setInterruptEnableMask()`, `checkPendingInterrupts()`, `deliverInterrupt()` |</p>
+<p class="p_Normal">| C6 &nbsp; | **Ev6PteCache** &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| TB_TAG/TB_PTE writes, MM_STAT writes | `invalidateVA()`, `insertTLBEntry()`, `updateTLBState()` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| C7 &nbsp; | **IPRBank** &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| IPR changes from hooks &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Update backing IPR register values &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| C8 &nbsp; | **HWPCBBank** &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| ASTEN/ASTER/ASTRR updates &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Modify HWPCB context state &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| C9 &nbsp; | **ReservationManager** &nbsp; | Mode changes, traps &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| `clearReservation(cpu)` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| C10 &nbsp;| **AlphaCPU** &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Interrupt/trap requests &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| `takeInterrupt()`, `signalException()` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is the exact set of “unimplemented / TODO” calls your compiler errors are pointing to.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 🔷 **D. Specific Function Responsibilities in EV6_Hooks (Required Implementations)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Below is a breakdown of each function in EV6_Hooks from the uploaded file, and what its *intended* behavior is.</p>
+<p class="p_Normal">This is your master reference.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **1. CM (Current Mode) Handler**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">*(onCM_Write)*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Purpose:**</p>
+<p class="p_Normal">Change mode → K, E, S, U.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Must do:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Update CM in IPRBank</p>
+<p class="p_Normal">* Inform CSII:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `onModeChange()`</p>
+<p class="p_Normal"> &nbsp;* `manageShadowBanks()`</p>
+<p class="p_Normal"> &nbsp;* `flushSpeculativeState()`</p>
+<p class="p_Normal"> &nbsp;* `notifyModeChangeAffectsInterruptEligibility()`</p>
+<p class="p_Normal">* Possibly drop reservations (depends on mode rules)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Missing Methods Needed:**</p>
+<p class="p_Normal">✔ `CPUStateIPRInterface::onModeChange()`</p>
+<p class="p_Normal">✔ `CPUStateIPRInterface::manageShadowBanks()`</p>
+<p class="p_Normal">✔ `CPUStateIPRInterface::flushSpeculativeState()`</p>
+<p class="p_Normal">✔ `CPUStateIPRInterface::notifyModeChangeAffectsInterruptEligibility()`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **2. SIRR (Software Interrupt Request Register)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">*(onSIRRWrite)*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Purpose:**</p>
+<p class="p_Normal">Write SIRR → modify IPL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Must do:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Update IPL</p>
+<p class="p_Normal">* Call IRQController:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `setCPUIpl()`</p>
+<p class="p_Normal"> &nbsp;* `checkPendingInterrupts()`</p>
+<p class="p_Normal"> &nbsp;* `deliverInterrupt()`</p>
+<p class="p_Normal">* Evaluate AST if needed</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Missing Methods Needed:**</p>
+<p class="p_Normal">✔ `IRQController::setCPUIpl()`</p>
+<p class="p_Normal">✔ `IRQController::checkPendingInterrupts()`</p>
+<p class="p_Normal">✔ `IRQController::deliverInterrupt()`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **3. IER (Interrupt Enable Register)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">*(onIER_Write)*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Purpose:**</p>
+<p class="p_Normal">Modify interrupt mask.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Must do:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Update IRQ controller mask</p>
+<p class="p_Normal">* Recalculate interrupt priorities</p>
+<p class="p_Normal">* Check pending interrupts</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Missing Methods Needed:**</p>
+<p class="p_Normal">✔ `IRQController::setInterruptEnableMask()`</p>
+<p class="p_Normal">✔ `IRQController::recalculateInterruptPriorities()`</p>
+<p class="p_Normal">✔ `IRQController::checkPendingInterrupts()`</p>
+<p class="p_Normal">✔ `IRQController::deliverInterrupt()`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **4. AST Subsystem**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">*(onPCTX_ASTERWrite / onPCTX_ASTRRWrite)*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Purpose:**</p>
+<p class="p_Normal">Controls asynchronous system traps.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Must do:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Update ASTER / ASTRR in HWPCB</p>
+<p class="p_Normal">* Tell CSII:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `requestAST()`</p>
+<p class="p_Normal"> &nbsp;* `checkPendingAST()`</p>
+<p class="p_Normal">* Tell IRQController:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `requestAST()`</p>
+<p class="p_Normal"> &nbsp;* `checkPendingAST()`</p>
+<p class="p_Normal">* AST summary interaction with IPL + Interrupt logic</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Missing Methods Needed:**</p>
+<p class="p_Normal">✔ `CPUStateIPRInterface::requestAST()`</p>
+<p class="p_Normal">✔ `CPUStateIPRInterface::checkPendingAST()`</p>
+<p class="p_Normal">✔ `IRQController::requestAST()`</p>
+<p class="p_Normal">✔ `IRQController::checkPendingAST()`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **5. EXC_ADDR**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">*(onEXC_ADDR_Write)*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Purpose:**</p>
+<p class="p_Normal">Update exception address register.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Must do:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Update IPRBank</p>
+<p class="p_Normal">* Notify CSII:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `updateExceptionState()`</p>
+<p class="p_Normal"> &nbsp;* `notifyExceptionAddressChanged()`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Missing CSII Methods:**</p>
+<p class="p_Normal">✔ `updateExceptionState()`</p>
+<p class="p_Normal">✔ `notifyExceptionAddressChanged()`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **6. EXC_SUM**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">*(onEXC_SUM_Write)*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Purpose:**</p>
+<p class="p_Normal">Track EV6 exception summary bits.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Must do:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Call CSII:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `evaluateExceptionSummary()`</p>
+<p class="p_Normal"> &nbsp;* `isHardwareErrorPresent()`</p>
+<p class="p_Normal"> &nbsp;* `triggerMachineCheck()`</p>
+<p class="p_Normal"> &nbsp;* `attemptErrorRecovery()`</p>
+<p class="p_Normal"> &nbsp;* `shouldGenerateExceptionInterrupt()`</p>
+<p class="p_Normal"> &nbsp;* `generateExceptionInterrupt()`</p>
+<p class="p_Normal"> &nbsp;* `logExceptionSummaryChange()`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Missing CSII Methods:**</p>
+<p class="p_Normal">✔ All 6 above</p>
+<p class="p_Normal">(Currently missing from CPUStateIPRInterface)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **7. VA (Virtual Address)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">*(onVA_Write)*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Purpose:**</p>
+<p class="p_Normal">Helps PAL ITB miss handling.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Must do:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Update IPRBank</p>
+<p class="p_Normal">* Notify CSII:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `updateVA()` (not currently defined)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **8. MM_STAT**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">*(onMMSTAT_Write)*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Purpose:**</p>
+<p class="p_Normal">IME, DME, ACV, TNV TLB miss type encoding.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Must do:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Update IPRBank</p>
+<p class="p_Normal">* Notify CSII:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `updateMMStat()` (not currently defined)</p>
+<p class="p_Normal">* Possibly interact with PTE subsystem depending on miss reason</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 🔷 **E. Summary of Required New Methods by Class**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This solves your “~200 missing functions” problem.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **CPUStateIPRInterface — Needs 20+ new stubs:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">onModeChange()</p>
+<p class="p_Normal">manageShadowBanks()</p>
+<p class="p_Normal">flushSpeculativeState()</p>
+<p class="p_Normal">notifyModeChangeAffectsInterruptEligibility()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">requestAST()</p>
+<p class="p_Normal">checkPendingAST()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">updateExceptionState()</p>
+<p class="p_Normal">notifyExceptionAddressChanged()</p>
+<p class="p_Normal">evaluateExceptionSummary()</p>
+<p class="p_Normal">isHardwareErrorPresent()</p>
+<p class="p_Normal">triggerMachineCheck()</p>
+<p class="p_Normal">attemptErrorRecovery()</p>
+<p class="p_Normal">shouldGenerateExceptionInterrupt()</p>
+<p class="p_Normal">generateExceptionInterrupt()</p>
+<p class="p_Normal">logExceptionSummaryChange()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">updateVA() &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- new</p>
+<p class="p_Normal">updateMMStat() &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- new</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **IRQController — Needs 6 new stubs:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">setCPUIpl()</p>
+<p class="p_Normal">checkPendingInterrupts()</p>
+<p class="p_Normal">deliverInterrupt()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">setInterruptEnableMask()</p>
+<p class="p_Normal">recalculateInterruptPriorities()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">requestAST()</p>
+<p class="p_Normal">checkPendingAST()</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **IPRBank — Must expose fields for EXC_ADDR, EXC_SUM, VA, MM_STAT**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You largely have these.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **HWPCBBank — Must expose ASTER, ASTEN, ASTRR, ASTSR**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Again, you have these fields; the hooks need indexing helpers.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **Ev6PteCache — Needed indirectly for MM_STAT and TB_TAG, TB_PTE**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">May require:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">recordMissType()</p>
+<p class="p_Normal">syncMMStat()</p>
+<p class="p_Normal">invalidateVA()</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 🎉 **Final Notes**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You now have:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">✔ A complete **side-effect checklist** for EV6_Hooks</p>
+<p class="p_Normal">✔ A mapping of **every missing function**</p>
+<p class="p_Normal">✔ A list of **which class must implement** each missing callback</p>
+<p class="p_Normal">✔ A roadmap that allows you to cleanly remove all 200 compiler errors</p>
+<p class="p_Normal">✔ A structure matching the ReservationManager document you approved</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If you want, I can next generate:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **Option A** — A complete stubbed `CPUStateIPRInterface` containing all missing methods.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **Option B** — A complete stubbed set of additions for `IRQController`.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **Option C** — A fully rewritten `EV6_Hooks.h` with all TODO functions mapped and commented.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Just tell me:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">➡ **“Generate Option A”**, or</p>
+<p class="p_Normal">➡ **“Generate Option B”**, or</p>
+<p class="p_Normal">➡ **“Generate Option C.”**</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

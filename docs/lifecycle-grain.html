@@ -1,0 +1,372 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; Grains &gt; Lifecycle&nbsp;</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="A characterization aligned with EV6/ASA semantics and the current EmulatR design." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "lifecycle-grain.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Lifecycle </span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?lifecycle-grain.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a> &gt; <a href="grains_.html">Grains</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Lifecycle </span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="grains_.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="grains_.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="automatic-generationgrains.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">A characterization aligned with EV6/ASA semantics and the current EmulatR design.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">## Short Answer (Verdict)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. **HW_MTPR (including MTPR_SIRR)** is responsible for **updating IPR state only**.</p>
+<p class="p_Normal">2. **Interrupts (including ASTs)** are **scheduled**, not immediately executed.</p>
+<p class="p_Normal">3. **Delivery occurs at a defined post-retirement boundary**, before the next PC+n fetch.</p>
+<p class="p_Normal">4. **IRQController + FaultDispatcher** are the correct abstraction for delivery.</p>
+<p class="p_Normal">5. Your current EmulatR model matches Alpha architectural intent.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You are **not missing a hidden side effect** in HW_MTPR.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">&nbsp;</span></h2>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">## 1. Architectural Rule to Anchor Everything</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">From the Alpha System Architecture (EV6 consistent):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&gt; *Writing an IPR may cause an interrupt or exception to become pending, but delivery occurs only at architecturally defined recognition points.*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">That sentence is the key.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Recognition ≠ write**</p>
+<p class="p_Normal">**Pending ≠ delivered**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">## 2. Correct Lifecycle (Refined)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Let’s restate the lifecycle using your components and the Alpha rules.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> A. Grain executes (e.g., HW_MTPR_SIRR)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">At grain execution:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* The grain:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Validates privilege</p>
+<p class="p_Normal"> &nbsp;* Writes the architectural register (IPR)</p>
+<p class="p_Normal"> &nbsp;* Returns normally</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For **MTPR_SIRR** specifically:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Bitwise effect:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* SIRR bit(s) set in the appropriate IPR</p>
+<p class="p_Normal">* Semantic effect:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* “An interrupt is now *pending*”</p>
+<p class="p_Normal">* **No control transfer**</p>
+<p class="p_Normal">* **No PAL entry**</p>
+<p class="p_Normal">* **No pipeline break**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is *exactly correct*.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&gt; HW_MTPR sets state; it does not deliver events.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> B. Grain retirement (serialization point)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">At retirement:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* All side effects of the grain are complete</p>
+<p class="p_Normal">* Ordering is guaranteed</p>
+<p class="p_Normal">* PC+n is determined but **not yet fetched**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is the **earliest legal point** at which an interrupt may be recognized.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> C. Interrupt recognition window (between grains)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Now — and only now — the emulator may ask:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Is there a pending interrupt?</p>
+<p class="p_Normal">* Is delivery enabled?</p>
+<p class="p_Normal">* Is IPL sufficient?</p>
+<p class="p_Normal">* Are we not already in PALmode?</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This check belongs **outside the grain**, in:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* AlphaPipeline</p>
+<p class="p_Normal">* or a post-retirement hook</p>
+<p class="p_Normal">* or your existing “end of cycle” logic</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If eligible:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Schedule interrupt delivery via:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* IRQController</p>
+<p class="p_Normal"> &nbsp;* FaultDispatcher</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This matches hardware: **interrupt delivery is asynchronous to instruction execution but synchronous to retirement boundaries**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> D. Interrupt delivery (before next fetch)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Before fetching PC+n:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. Pipeline drains (conceptually)</p>
+<p class="p_Normal">2. EXC_ADDR set</p>
+<p class="p_Normal">3. EXC_SUM updated</p>
+<p class="p_Normal">4. PALmode entered</p>
+<p class="p_Normal">5. PC redirected to PAL vector</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is handled by **FaultDispatcher**, not the grain that caused the interrupt to become pending.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 3. Why HW_MTPR Must NOT Deliver Side Effects</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is an important architectural correctness point.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If HW_MTPR did delivery directly, you would violate:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Precise exception rules</p>
+<p class="p_Normal">* Interrupt deferral semantics</p>
+<p class="p_Normal">* PAL nesting guarantees</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Examples of what must NOT happen inside HW_MTPR:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Jumping to PAL immediately</p>
+<p class="p_Normal">* Forcing pipeline drain mid-grain</p>
+<p class="p_Normal">* Overriding PC before retirement</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Alpha explicitly allows:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">MTPR SIRR</p>
+<p class="p_Normal">(next instruction retires)</p>
+<p class="p_Normal">&lt;interrupt is taken here&gt;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">So your separation is **required**, not optional.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">## 4. ASTs Are the Same (Just Lower Priority)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">ASTs (Asynchronous System Traps):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Are architecturally just another interrupt class</p>
+<p class="p_Normal">* Differ in priority and masking rules</p>
+<p class="p_Normal">* Use the same delivery mechanism</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">So:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* AST pending bit set (via IPR or OS-specific path)</p>
+<p class="p_Normal">* AST scheduled</p>
+<p class="p_Normal">* AST delivered at post-retirement recognition point</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Your model treating ASTs via IRQController + FaultDispatcher is **correct**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">&nbsp;</span></h2>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">## 5. Mapping Responsibilities (Clear Ownership)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is how you should document ownership:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> HW_MTPR Grain</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Writes IPR</p>
+<p class="p_Normal">* Updates pending bits</p>
+<p class="p_Normal">* No delivery</p>
+<p class="p_Normal">* No control transfer</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> IRQController</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Aggregates pending interrupt sources</p>
+<p class="p_Normal">* Applies priority and masking rules</p>
+<p class="p_Normal">* Answers “is an interrupt deliverable now?”</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> FaultDispatcher</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Performs architectural delivery</p>
+<p class="p_Normal">* Updates EXC_ADDR / EXC_SUM</p>
+<p class="p_Normal">* Enters PALmode</p>
+<p class="p_Normal">* Redirects PC</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> AlphaPipeline</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Defines recognition points</p>
+<p class="p_Normal">* Calls dispatcher before next PC fetch</p>
+<p class="p_Normal">* Guarantees ordering</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is **clean**, **testable**, and **faithful**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 6. Your Model vs Hardware (Sanity Check)</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;Aspect&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Real&nbsp;EV6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EmulatR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;---------------------&nbsp;|&nbsp;----------------------------&nbsp;|&nbsp;-------------------------&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;MTPR&nbsp;causes&nbsp;interrupt&nbsp;|&nbsp;Sets&nbsp;pending&nbsp;latch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Sets&nbsp;IPR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;Delivery&nbsp;timing&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Between&nbsp;retired&nbsp;instructions&nbsp;|&nbsp;Between&nbsp;grains&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;Interrupt&nbsp;nesting&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;PALmode-guarded&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;PALmode-guarded&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;OoO&nbsp;effects&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Hidden&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Collapsed&nbsp;into&nbsp;retirement&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;AST&nbsp;handling&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Deferred&nbsp;interrupt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Deferred&nbsp;interrupt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">✅ All aligned.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">## 7. One-Sentence Documentation You Can Use</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&gt; *In EmulatR, instructions such as MTPR_SIRR update interrupt-related IPR state but do not directly cause interrupt delivery. Pending interrupts are evaluated only at instruction retirement boundaries by the AlphaPipeline, and delivery is performed by the IRQController and FaultDispatcher prior to fetching the next PC.*</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">That sentence is **architecturally bulletproof**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

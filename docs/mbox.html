@@ -1,0 +1,526 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; BOX Architecture &gt; MBox</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="Below is a **clean, grain-scoped specification** for **MBox responsibilities**, deliberately restricted to **what instruction grains executed in the MBox must support** — not..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "mbox.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">MBox</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?mbox.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a> &gt; <a href="box-architecture.html">BOX Architecture</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">MBox</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="registers-ibox.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="box-architecture.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="registers-mbox.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Below is a **clean, grain-scoped specification** for **MBox responsibilities**, deliberately restricted to **what instruction grains executed in the MBox must support** — not pipeline orchestration, not global policy, not device behavior.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is written as a **design contract** you can keep next to the MBox executor header.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># MBox Grain Support Specification</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">(Alpha AXP – EV6-style model)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 1. Scope and Intent</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The **MBox** is responsible for executing **memory-affecting and ordering-affecting instruction grains** whose architectural effects include:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Data memory access</p>
+<p class="p_Normal">* Atomicity / reservation semantics</p>
+<p class="p_Normal">* Memory ordering guarantees</p>
+<p class="p_Normal">* Cache / prefetch / hint semantics</p>
+<p class="p_Normal">* Certain PAL-mediated memory operations</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This specification defines **only what an individual MBox grain must implement** to be architecturally correct.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The MBox **does not**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Own register writeback</p>
+<p class="p_Normal">* Resolve PAL vectors</p>
+<p class="p_Normal">* Perform instruction fetch or decode</p>
+<p class="p_Normal">* Implement scheduling or hazard detection</p>
+<p class="p_Normal">* Implement device behavior</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 2. Instruction Classes Assigned to MBox</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">An instruction grain is executed in the MBox **iff** it has at least one of the following semantics:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `S_MemFmt`</p>
+<p class="p_Normal">* `S_Load` or `S_Store`</p>
+<p class="p_Normal">* `S_LoadLocked` or `S_StoreConditional`</p>
+<p class="p_Normal">* `S_Barrier`</p>
+<p class="p_Normal">* Explicit cache / prefetch / write-hint semantics</p>
+<p class="p_Normal">* PAL instructions whose architectural effect is memory-side</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 2.1 Memory-Format Instructions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Examples:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `LDQ`, `LDQ_U`, `LDT`, `LDS`, `LDG`, `LDF`</p>
+<p class="p_Normal">* `STQ`, `STQ_U`, `STT`, `STS`, `STG`, `STF`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 2.2 Atomic / Reservation Instructions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Examples:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `LDL_L`, `LDQ_L`</p>
+<p class="p_Normal">* `STL_C`, `STQ_C`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 2.3 Memory Ordering / Barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Examples:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `MB`, `WMB`, `TRAPB`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 2.4 Cache / Hint Instructions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Examples:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `FETCH`, `FETCH_M`</p>
+<p class="p_Normal">* `WH64`, `WH64EN`</p>
+<p class="p_Normal">* `ECB`, `EXCB`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 2.5 PALcode Memory Operations</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Examples:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `PAL_LDQP`</p>
+<p class="p_Normal">* `PAL_STQP`</p>
+<p class="p_Normal">* `PAL_CFLUSH`</p>
+<p class="p_Normal">* `PAL_DRAINA`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 3. Mandatory Responsibilities of an MBox Grain</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each MBox grain **must implement all applicable items below**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 4. Effective Address Formation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Every MBox grain that accesses memory must:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. Compute VA as:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; ```</p>
+<p class="p_Normal"> &nbsp; VA = Rb + signext(disp16)</p>
+<p class="p_Normal"> &nbsp; ```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">2. Apply instruction-specific address modification:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * `_U` instructions: clear low bits or compute lane index</p>
+<p class="p_Normal"> &nbsp; * Alignment-sensitive instructions: validate natural alignment</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">3. Record `faultVA` on success or failure</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 5. Alignment Handling</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each grain must enforce alignment rules **exactly per instruction**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">| Instruction &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Alignment Required &nbsp; &nbsp; |</p>
+<p class="p_Normal">| --------------------- | ---------------------- |</p>
+<p class="p_Normal">| LDQ / STQ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 8 bytes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| LDT / STT &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 8 bytes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| LDS / LDF / STS / STF | 4 bytes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| LDQ_U / STQ_U &nbsp; &nbsp; &nbsp; &nbsp; | **No alignment fault** |</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If alignment fails:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* The grain must construct a **PendingEvent** with:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `MemoryFaultType::ALIGNMENT`</p>
+<p class="p_Normal"> &nbsp;* `faultVA = VA`</p>
+<p class="p_Normal"> &nbsp;* `isWrite` correctly set</p>
+<p class="p_Normal">* Execution must stop immediately</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 6. Address Translation and Access Control</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each MBox grain must:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. Perform **DTB lookup** using:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * `VA`</p>
+<p class="p_Normal"> &nbsp; * current `ASN`</p>
+<p class="p_Normal"> &nbsp; * data realm</p>
+<p class="p_Normal">2. On failure:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Raise DTB miss PendingEvent</p>
+<p class="p_Normal">3. Validate access permissions:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Read vs write</p>
+<p class="p_Normal"> &nbsp; * Kernel vs user</p>
+<p class="p_Normal">4. On violation:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Raise access-violation PendingEvent</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The grain **must not**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Modify TLBs</p>
+<p class="p_Normal">* Perform page table walks directly</p>
+<p class="p_Normal">* Resolve PAL vectors</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 7. Physical Memory Access</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each MBox grain must:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Translate `VA → PA`</p>
+<p class="p_Normal">* Perform physical memory access using SafeMemory:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Byte / long / quad as required</p>
+<p class="p_Normal">* Detect and propagate:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Bus errors</p>
+<p class="p_Normal"> &nbsp;* Device faults</p>
+<p class="p_Normal"> &nbsp;* MMIO exceptions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On failure:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Raise a memory fault PendingEvent</p>
+<p class="p_Normal">* Preserve `faultVA`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 8. Reservation Semantics (LL/SC)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For grains with `S_LoadLocked` or `S_StoreConditional`:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> Load-Locked (`LD*_L`)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Establish reservation:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `ReservationManager::setReservation(cpuId, PA)`</p>
+<p class="p_Normal">* Load value normally</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> Store-Conditional (`ST*_C`)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Verify reservation:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* On success:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;* Perform store</p>
+<p class="p_Normal"> &nbsp; &nbsp;* Return success (payload = 1)</p>
+<p class="p_Normal"> &nbsp;* On failure:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;* Do **not** store</p>
+<p class="p_Normal"> &nbsp; &nbsp;* Return failure (payload = 0)</p>
+<p class="p_Normal">* Clear reservation in all cases</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MBox grains **must** call reservation invalidation on:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Any successful store</p>
+<p class="p_Normal">* Any conflicting store to the same PA</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 9. Payload Production</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each MBox grain must produce exactly one of:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* **No payload** (stores, barriers, cache ops)</p>
+<p class="p_Normal">* **One 64-bit payload** (loads, LL/SC result)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rules:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Payload is an **opaque architectural image**</p>
+<p class="p_Normal">* FP loads place mapped FP bits into payload</p>
+<p class="p_Normal">* Integer loads place integer bits into payload</p>
+<p class="p_Normal">* Store-conditional writes success/failure indicator</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Set:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">slot.payload</p>
+<p class="p_Normal">slot.needsWriteback</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The grain **must not** write registers directly.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 10. Memory Ordering and Barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For instructions with `S_Barrier`:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* The grain must:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Enforce ordering with respect to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;* Prior loads</p>
+<p class="p_Normal"> &nbsp; &nbsp;* Prior stores</p>
+<p class="p_Normal">* Implementation may be:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Logical fence</p>
+<p class="p_Normal"> &nbsp;* Pipeline serialization</p>
+<p class="p_Normal"> &nbsp;* Reservation flush</p>
+<p class="p_Normal">* Exact mechanism is implementation-defined</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The grain must **not**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Perform any memory access</p>
+<p class="p_Normal">* Modify registers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 11. Cache / Hint Instructions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For cache or hint instructions:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Grains must:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Compute VA</p>
+<p class="p_Normal"> &nbsp;* Perform translation and permission checks if required</p>
+<p class="p_Normal"> &nbsp;* Notify cache / memory subsystem</p>
+<p class="p_Normal">* Architectural state **must not change**</p>
+<p class="p_Normal">* No payload is produced</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 12. PAL Memory Grains (MBox side)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL grains executed in MBox must:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Obey all rules above</p>
+<p class="p_Normal">* Use physical addressing if specified</p>
+<p class="p_Normal">* Bypass ASN where architecturally required</p>
+<p class="p_Normal">* Defer PAL vector resolution to the dispatcher</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13. Forbidden Responsibilities (Explicitly Out of Scope)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">An MBox grain must **never**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Write integer or FP registers directly</p>
+<p class="p_Normal">* Update PC</p>
+<p class="p_Normal">* Modify PS or IPL</p>
+<p class="p_Normal">* Resolve PAL vectors</p>
+<p class="p_Normal">* Perform instruction decode</p>
+<p class="p_Normal">* Access other CPUs’ registers</p>
+<p class="p_Normal">* Manage pipeline scheduling</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 14. Minimal Required Interfaces</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">An MBox grain assumes availability of:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `globalEv6SPAM()` (DTB access)</p>
+<p class="p_Normal">* `globalFaultDispatcher(cpuId)`</p>
+<p class="p_Normal">* `SafeMemory` PA read/write</p>
+<p class="p_Normal">* `ReservationManager`</p>
+<p class="p_Normal">* `PipelineSlot` (payload + bookkeeping)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 15. Summary (One-Page Mental Model)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&gt; **An MBox grain is responsible for everything that happens *between* a virtual address and an architectural payload — and nothing beyond that.**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">It:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Computes addresses</p>
+<p class="p_Normal">* Enforces alignment</p>
+<p class="p_Normal">* Performs translation</p>
+<p class="p_Normal">* Applies permissions</p>
+<p class="p_Normal">* Touches memory</p>
+<p class="p_Normal">* Manages reservations</p>
+<p class="p_Normal">* Produces payloads</p>
+<p class="p_Normal">* Raises faults</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">It does **not**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Write registers</p>
+<p class="p_Normal">* Interpret results</p>
+<p class="p_Normal">* Control execution flow</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If you want next, I can:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Do the same spec for **EBox**, **FBox**, or **IBox**</p>
+<p class="p_Normal">* Map your existing grains against this checklist</p>
+<p class="p_Normal">* Turn this into a header-level contract comment</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MBox owns:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>TLB</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>IPR read/write paths</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>PTBR/VA_CTL/VA_FORM</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Stack manipulation</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>CM/PS tracking</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Memory barriers (MB/WMB)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>REI / CHME / CHMS transitions</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>DTB </p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Load / Store Operations </p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>PAL Code execution</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MBox&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|-------------------------------------------|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;-&nbsp;SafeMemory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;-&nbsp;ITB/DTB&nbsp;staging&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;-&nbsp;Load/Store&nbsp;queues&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;-&nbsp;PAL&nbsp;entry&nbsp;and&nbsp;execution&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;-&nbsp;IPR&nbsp;read/write&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;-&nbsp;Fault&nbsp;generation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;-&nbsp;AST&nbsp;generation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|-------------------------------------------|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;execute(slot)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------+</span></p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 15 – Memory System Implementation Details &gt; 15.3 GuestMemory Region Support and PA Routing</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="15.3.1 PA Routing Table &nbsp;GuestMemory maintains a QVector&lt;PARouteEntry&gt; routing table that maps contiguous physical address ranges to subsystems. Each PARouteEntry is an..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "15_3-guestmemory-region-suppor.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">15.3 GuestMemory Region Support and PA Routing</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?15_3-guestmemory-region-suppor.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-15---memory-system-imp.html">Chapter 15 – Memory System Implementation Details</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">15.3 GuestMemory Region Support and PA Routing</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="15_2-guestmemory-vs-safememory.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-15---memory-system-imp.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="15_4-sparsememorybacking---on-.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">15.3.1 PA Routing Table</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">GuestMemory maintains a <span class="f_CodeExample">QVector&lt;PARouteEntry&gt;</span> routing table that maps contiguous physical address ranges to subsystems. Each <span class="f_CodeExample">PARouteEntry</span> is an 8-byte-aligned structure containing the start PA, end PA (exclusive), a <span class="f_CodeExample">RouteTarget</span> discriminator, and an <span class="f_CodeExample">offsetBase</span> for PA-to-subsystem-offset translation. The entry provides <span class="f_CodeExample">contains()</span>, <span class="f_CodeExample">containsRange()</span>, <span class="f_CodeExample">overlaps()</span>, and <span class="f_CodeExample">calculateOffset()</span> inline methods.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The <span class="f_CodeExample">RouteTarget</span> enumeration has three values: <span class="f_CodeExample">None</span> (unmapped), <span class="f_CodeExample">SafeMemory</span> (RAM), and <span class="f_CodeExample">MMIOManager</span> (memory-mapped I/O devices). During initialization, <span class="f_CodeExample">initDefaultPARoutes()</span> reads the memory map from <span class="f_CodeExample">EmulatorSettings</span> and builds exactly two routes. Overlap validation runs at initialization and logs errors for any overlapping ranges.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">15.3.2 Default Route Configuration</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Route</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">PA Range</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Target</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Offset Mapping</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">1 – RAM</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[0x0, ramBase + ramSize)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">SafeMemory</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Identity (PA = offset, offsetBase = 0x0)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">2 – MMIO</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[mmioBase, mmioBase + mmioSize)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">MMIOManager</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct PA passthrough to device handlers</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">With default settings, Route 1 spans [0x0, 0x880000000) covering 34 GB (ramBase 0x0 + 32 GB + low memory), and Route 2 spans [0x1000000000, 0x2000000000) covering 64 GB of Typhoon PCI I/O space. The <span class="f_CodeExample">setRoutes()</span> method allows custom routing tables for non-standard configurations.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">15.3.3 SafeMemory Physical Address Layout</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Because Route 1 uses identity mapping (offsetBase = 0), the SafeMemory offset equals the physical address for all RAM accesses. The layout within SafeMemory is:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">PA&nbsp;0x000000&nbsp;-&nbsp;0x1FFFFF&nbsp;SRM&nbsp;firmware&nbsp;(decompressed&nbsp;by&nbsp;SrmRomLoader)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;+--&nbsp;0x002000&nbsp;HWRPB&nbsp;(Hardware&nbsp;Restart&nbsp;Parameter&nbsp;Block)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;+--&nbsp;0x008000&nbsp;PAL&nbsp;entry&nbsp;(PC&nbsp;=&nbsp;0x8001,&nbsp;PAL&nbsp;mode&nbsp;bit&nbsp;set)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;+--&nbsp;0x0xxxxx&nbsp;PAL&nbsp;vectors,&nbsp;SRM&nbsp;console&nbsp;code</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PA&nbsp;0x600000&nbsp;PAL_BASE&nbsp;(dispatch&nbsp;table)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PA&nbsp;0x900000&nbsp;Decompressor&nbsp;staging&nbsp;area&nbsp;(temporary)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PA&nbsp;0x80000000+&nbsp;Main&nbsp;RAM&nbsp;(OS&nbsp;kernel,&nbsp;applications)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SRM firmware is decompressed into SafeMemory at PA 0x0 by <span class="f_CodeExample">SrmRomLoader</span> during system initialization. There is no separate firmware region — after decompression, firmware is simply bytes in RAM.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">15.3.4 Platform Address Maps</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The <span class="f_CodeExample">PlatformAddressMap</span> structure in <span class="f_CodeExample">memory_core.h</span> defines platform-specific physical address space layouts for different Alpha chipset families. Each map specifies RAM base, maximum and actual RAM size, MMIO base and size, and a vector of named <span class="f_CodeExample">Aperture</span> structures for detailed per-hose MMIO sub-regions.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Platform</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Chipset</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Max RAM</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">DS10 / DS20</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Tsunami</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">2 GB</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ES40 / ES45</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Clipper</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">64 GB</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">GS80 / GS160 / GS320</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Wildfire</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">128–512 GB</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">15.3.5 Code Example – PA Routing Path</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">MEM_STATUS&nbsp;GuestMemory::readRouted(quint64&nbsp;pa,&nbsp;quint8&nbsp;width,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint64&amp;&nbsp;outValue,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AccessKind&nbsp;kind)&nbsp;const&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;PARouteEntry*&nbsp;route&nbsp;=&nbsp;findRoute(pa);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!route)&nbsp;return&nbsp;MEM_STATUS::AccessViolation;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;quint64&nbsp;offset&nbsp;=&nbsp;route-&gt;calculateOffset(pa);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(route-&gt;target)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;RouteTarget::SafeMemory:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;m_safeMem-&gt;load(offset,&nbsp;width,&nbsp;outValue);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;RouteTarget::MMIOManager:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;m_mmio-&gt;handleRead(pa,&nbsp;width,&nbsp;outValue);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: memoryLib/memory_core.h (~412 lines) – PlatformAddressMap, Aperture, MEM_STATUS, SystemType_EmulatR; memoryLib/SrmRomLoader.h (~161 lines) – SRM firmware decompression-via-execution; configLib/global_EmulatorSettings.h – Memory map configuration.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

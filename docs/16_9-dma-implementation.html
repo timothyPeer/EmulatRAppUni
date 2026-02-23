@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 16 – Device Model &amp; DMA &gt; 16.9 DMA Implementation</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="16.9.1 DMA Data Flow &nbsp;DMA (Direct Memory Access) allows devices to read from and write to GuestMemory directly, without CPU intervention for each byte transferred. In..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "16_9-dma-implementation.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">16.9 DMA Implementation</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?16_9-dma-implementation.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-16---device-model--dma.html">Chapter 16 – Device Model &amp; DMA</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">16.9 DMA Implementation</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="16_8-irq-integration-architect.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-16---device-model--dma.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="mplatedefault-modified2026-02-.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.9.1 DMA Data Flow</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DMA (Direct Memory Access) allows devices to read from and write to GuestMemory directly, without CPU intervention for each byte transferred. In ASA-EmulatR, DMA operations are performed by device I/O threads and route through <span class="f_CodeExample">GuestMemory</span> using the <span class="f_CodeExample">AccessKind::DMARead</span> and <span class="f_CodeExample">AccessKind::DMAWrite</span> designators, which enables GuestMemory to apply DMA-specific access policies.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The typical DMA write path (device → GuestMemory): the device I/O thread fills a local data buffer from host-side I/O (e.g., disk read), calls <span class="f_CodeExample">DMACoherencyManager</span> to prepare the transfer (RX path: DeviceToRAM), writes data into GuestMemory via <span class="f_CodeExample">writeBlock()</span> with <span class="f_CodeExample">AccessKind::DMAWrite</span>, and signals coherency completion. The typical DMA read path (GuestMemory → device) follows the TX path: <span class="f_CodeExample">DMACoherencyManager</span> flushes CPU caches for the region (RAMToDevice), reads data from GuestMemory, and delivers it to the host-side I/O path.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.9.2 DMA Coherency Manager</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">DMACoherencyManager</span> (<span class="f_CodeExample">mmio_DMACoherencyManager.h</span>, ~579 lines) ensures that DMA transfers observe correct memory ordering with respect to CPU operations. It manages three coherency concerns:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">TX path (RAMToDevice):</span> Before a device reads from GuestMemory (e.g., to fetch DMA descriptors or transmit buffer data), <span class="f_CodeExample">DMACoherencyManager</span> ensures that all prior CPU writes to the affected memory region are visible. In a real Alpha system, this would involve cache flush operations; in ASA-EmulatR, it involves draining the affected CPU's write buffer entries that overlap the DMA region.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">RX path (DeviceToRAM):</span> After a device writes to GuestMemory (e.g., depositing received network packets or disk read data), <span class="f_CodeExample">DMACoherencyManager</span> ensures that subsequent CPU reads from the affected region see the device-written data, not stale cached values. This involves invalidating any overlapping write buffer entries and, in SMP configurations, coordinating across multiple CPUs.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">LL/SC reservation invalidation:</span> DMA writes to memory regions that overlap with an active LL/SC reservation must break the reservation. <span class="f_CodeExample">DMACoherencyManager</span> calls <span class="f_CodeExample">ReservationManager::breakReservationsOnCacheLine()</span> for each 64-byte cache line touched by a DMA write. This prevents a STx_C from succeeding after a device has modified the memory it was protecting.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.9.3 DMA Address Constraints</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DMA addresses are physical addresses within the GuestMemory space. <span class="f_CodeExample">DMABufferDescriptor</span> tracks each allocated DMA buffer with its physical address, size, owning device UID, and address mask. The address mask distinguishes 32-bit DMA devices (which can only address the lower 4 GB of physical memory) from 64-bit DMA devices (which can address the full physical address space). The <span class="f_CodeExample">dmaMask</span> field in <span class="f_CodeExample">DeviceTemplate</span> specifies the device's DMA addressing capability.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Invariant:</span> All DMA transfers route through GuestMemory with explicit AccessKind designation. No device may access SafeMemory directly. DMA completion does not imply memory ordering unless enforced by a subsequent interrupt and barrier.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: mmioLib/mmio_DMACoherencyManager.h (~579 lines) – Coherency manager; <a href="15_8-ll_sc-reservation-trackin.html" class="topiclink">15.8 LL/SC Reservation Tracking</a>; <a href="15_12-diagnostics-and-dma-cohe.html" class="topiclink">15.12 Diagnostics and DMA Coherency</a>.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

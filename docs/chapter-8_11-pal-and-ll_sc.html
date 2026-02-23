@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 8 - PAL and Privileged Boundary &gt; 8.11 PAL and LL/SC Reservations</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="LL/SC operations must never span a privileged boundary. A reservation created in non-PAL execution cannot survive entry into PAL mode, exit from PAL mode, exception delivery,..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "chapter-8_11-pal-and-ll_sc.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">8.11 PAL and LL/SC Reservations</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?chapter-8_11-pal-and-ll_sc.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-8---pal-and-privleged-.html">Chapter 8 - PAL and Privileged Boundary</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">8.11 PAL and LL/SC Reservations</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="chapter-8_10-enforcing-the-pri.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-8---pal-and-privleged-.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="8_12-pal-register-matrix.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">LL/SC operations must never span a privileged boundary. A reservation created in non-PAL execution cannot survive entry into PAL mode, exit from PAL mode, exception delivery, interrupt delivery, or context switches. This is a fundamental Alpha architectural rule and is mandatory for correctness.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">8.11.1 Why Reservations Cannot Cross PAL Boundaries</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">LL/SC relies on optimistic reservations tied to CPU execution context, memory ordering assumptions, and cache coherency state. PAL transitions break all three: execution context changes, ordering is enforced (full serialization), pipeline state is flushed, and privilege level changes. Allowing reservations to survive PAL entry would permit privileged code to commit untrusted atomic sequences, user code to observe privileged memory ordering, and stale reservations to succeed incorrectly.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">8.11.2 Clearing Rules</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In ASA-EmulatR, LL/SC reservations are cleared unconditionally on: CALL_PAL entry, HW_REI exit, exception delivery, interrupt delivery, context switch, and certain serialization barriers (EXCB, MB where required). This applies to all CPUs independently. Reservation tracking lives in GuestMemory (via ReservationManager), not in execution boxes, ensuring global visibility and centralized invalidation.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">8.11.3 Example Scenario</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">;&nbsp;User&nbsp;Mode:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">LDL_L&nbsp;R1,&nbsp;[X]&nbsp;;&nbsp;Reservation&nbsp;created</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CALL_PAL&nbsp;0xNN&nbsp;;&nbsp;Enter&nbsp;PAL&nbsp;→&nbsp;reservation&nbsp;cleared</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">;&nbsp;PAL&nbsp;Mode:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">...&nbsp;;&nbsp;Privileged&nbsp;work</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">HW_REI&nbsp;;&nbsp;Return&nbsp;to&nbsp;user&nbsp;→&nbsp;reservation&nbsp;cleared&nbsp;again</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">;&nbsp;User&nbsp;Mode:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">STL_C&nbsp;R1,&nbsp;[X]&nbsp;;&nbsp;MUST&nbsp;FAIL&nbsp;(reservation&nbsp;was&nbsp;cleared)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Even if no other CPU touched the cache line, the store-conditional must fail because the reservation was cleared on PAL entry.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter-5_11-load-locked-_-sto.html" class="topiclink">5.11 Load-Locked / Store-Conditional (LL/SC)</a>; <a href="chapter-6_12-interaction-with-.html" class="topiclink">6.12 Interaction with LL/SC</a></span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

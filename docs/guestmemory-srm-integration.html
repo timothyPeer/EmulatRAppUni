@@ -1,0 +1,579 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Keep &gt; GuestMemory SRM Integration</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="# GuestMemory SRM Integration - Complete Guide &nbsp;## Summary &nbsp;You asked how to add **SRM as a routing target** in your existing GuestMemory architecture. Here's the complete solu" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "guestmemory-srm-integration.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">GuestMemory SRM Integration</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?guestmemory-srm-integration.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="keep.html">Keep</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">GuestMemory SRM Integration</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="srm-load.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="keep.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="alpha-boot-sequence.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal"># GuestMemory SRM Integration - Complete Guide</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Summary</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You asked how to add **SRM as a routing target** in your existing GuestMemory architecture. Here's the complete solution:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 🎯 Your Current Architecture (Excellent!)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Existing Routing System:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">GuestMemory (router)</p>
+<p class="p_Normal"> &nbsp; &nbsp;↓ classifies PA</p>
+<p class="p_Normal"> &nbsp; &nbsp;├─→ SafeMemory (RAM) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0x0 - 0x1_0000_0000 (4GB)</p>
+<p class="p_Normal"> &nbsp; &nbsp;├─→ MMIOManager (devices) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0x1_0000_0000 - 0x2_0000_0000 (4GB)</p>
+<p class="p_Normal"> &nbsp; &nbsp;└─→ AlphaMemorySystem (PAL+SRM) &nbsp; &nbsp;0x2_0000_0000 - 0x2_0500_0000 (80MB)</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Your comment says AMS handles &quot;PAL+SRM+HWRPB&quot;** - but these are conceptually different:</p>
+<p class="p_Normal">- **PAL** = Low-level CPU services (C++ emulated or real Alpha binary)</p>
+<p class="p_Normal">- **SRM** = High-level firmware (clipper.bin - real Alpha binary)</p>
+<p class="p_Normal">- **HWRPB** = Data structures</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Recommendation:** Separate SRM from AMS for clarity and modularity.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## ✅ Proposed Architecture (4 Routing Targets)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Updated Routing System:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">GuestMemory (router)</p>
+<p class="p_Normal"> &nbsp; &nbsp;↓ classifies PA</p>
+<p class="p_Normal"> &nbsp; &nbsp;├─→ SafeMemory (RAM) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0x0_0000_0000 - 0x1_0000_0000 (4GB)</p>
+<p class="p_Normal"> &nbsp; &nbsp;├─→ MMIOManager (devices) &nbsp; &nbsp; &nbsp; &nbsp; 0x1_0000_0000 - 0x2_0000_0000 (4GB)</p>
+<p class="p_Normal"> &nbsp; &nbsp;├─→ AlphaMemorySystem (PAL) &nbsp; &nbsp; &nbsp; 0x2_0000_0000 - 0x2_0010_0000 (1MB)</p>
+<p class="p_Normal"> &nbsp; &nbsp;├─→ SRMFirmwareRegion (SRM) &nbsp; &nbsp; &nbsp; 0x2_0010_0000 - 0x2_0030_0000 (2MB) ← NEW!</p>
+<p class="p_Normal"> &nbsp; &nbsp;└─→ AlphaMemorySystem (HWRPB) &nbsp; &nbsp; 0x2_0030_0000 - 0x2_0040_0000 (1MB)</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Benefits:**</p>
+<p class="p_Normal">- ✅ Clear separation: PAL ≠ SRM ≠ HWRPB</p>
+<p class="p_Normal">- ✅ SRM can be reloaded independently</p>
+<p class="p_Normal">- ✅ Write protection enforced at SRM level</p>
+<p class="p_Normal">- ✅ Statistics tracking for SRM accesses</p>
+<p class="p_Normal">- ✅ Easy to understand and maintain</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 🔧 Implementation Changes</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **1. Add SRM to RouteTarget Enum**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">enum class RouteTarget : quint8</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;None = 0,</p>
+<p class="p_Normal"> &nbsp; &nbsp;SafeMemory,</p>
+<p class="p_Normal"> &nbsp; &nbsp;MMIOManager,</p>
+<p class="p_Normal"> &nbsp; &nbsp;AlphaMemorySystem,</p>
+<p class="p_Normal"> &nbsp; &nbsp;SRMFirmware &nbsp; &nbsp; &nbsp; &nbsp;// ← NEW!</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **2. Create SRMFirmwareRegion Class**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**New class to handle SRM binary:**</p>
+<p class="p_Normal">- Loads clipper.bin from file</p>
+<p class="p_Normal">- Provides read/write access (write-protected by default)</p>
+<p class="p_Normal">- Tracks access statistics</p>
+<p class="p_Normal">- Enforces alignment and bounds</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Files:**</p>
+<p class="p_Normal">- `SRMFirmwareRegion.h` - Interface</p>
+<p class="p_Normal">- `SRMFirmwareRegion.cpp` - Implementation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **3. Update GuestMemory**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Add SRM subsystem:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">class GuestMemory {</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ...</p>
+<p class="p_Normal"> &nbsp; &nbsp;SRMFirmwareRegion* m_srm{ nullptr }; &nbsp;// ← NEW!</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;void attachSubsystems(</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;SafeMemory* sm,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;MMIOManager* mmio,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;AlphaMemorySystem* ams,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;SRMFirmwareRegion* srm &nbsp;// ← NEW!</p>
+<p class="p_Normal"> &nbsp; &nbsp;);</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Update routing table:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">void GuestMemory::initDefaultPARoutes() noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.clear();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// RAM: 4GB at 0x0</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({ 0x0000000000000000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0x0000000100000000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RouteTarget::SafeMemory });</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// MMIO: 4GB at 0x1_0000_0000</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({ 0x0000000100000000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0x0000000200000000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RouteTarget::MMIOManager });</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// AMS PAL: 1MB at 0x2_0000_0000</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({ 0x0000000200000000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0x0000000200100000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RouteTarget::AlphaMemorySystem });</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// SRM: 2MB at 0x2_0010_0000 ← NEW!</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({ 0x0000000200100000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0x0000000200300000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RouteTarget::SRMFirmware });</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// AMS HWRPB: 1MB at 0x2_0030_0000</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({ 0x0000000200300000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0x0000000200400000ULL, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;RouteTarget::AlphaMemorySystem });</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Update routing logic:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">MEM_STATUS GuestMemory::readRouted(quint64 pa, quint8 width, </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; quint64&amp; outValue, AccessKind kind) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;const RouteTarget t = classifyPARange(pa, width);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;switch (t) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SafeMemory:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_safeMem-&gt;load(pa, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::MMIOManager:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_mmio-&gt;handleRead(pa, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::AlphaMemorySystem:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_ams-&gt;read(pa, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SRMFirmware: &nbsp;// ← NEW!</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;const quint64 offset = pa - m_srm-&gt;basePA();</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return m_srm-&gt;read(offset, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;default:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::AccessViolation;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 📊 Memory Map Comparison</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Before (Your Current Map):**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">0x0000_0000_0000_0000 ┌─────────────────────────┐</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ RAM (4GB) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ SafeMemory &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│</p>
+<p class="p_Normal">0x0000_0001_0000_0000 ├─────────────────────────┤</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ MMIO (4GB) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ MMIOManager &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │</p>
+<p class="p_Normal">0x0000_0002_0000_0000 ├─────────────────────────┤</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ PAL+SRM+HWRPB (80MB) &nbsp; &nbsp;│ ← Lumped together</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ AlphaMemorySystem &nbsp; &nbsp; &nbsp; │</p>
+<p class="p_Normal">0x0000_0002_0500_0000 └─────────────────────────┘</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **After (Proposed Map):**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">0x0000_0000_0000_0000 ┌─────────────────────────┐</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ RAM (4GB) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ SafeMemory &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│</p>
+<p class="p_Normal">0x0000_0001_0000_0000 ├─────────────────────────┤</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ MMIO (4GB) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ MMIOManager &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │</p>
+<p class="p_Normal">0x0000_0002_0000_0000 ├─────────────────────────┤</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ PAL (1MB) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │ ← Separated!</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ AlphaMemorySystem &nbsp; &nbsp; &nbsp; │</p>
+<p class="p_Normal">0x0000_0002_0010_0000 ├─────────────────────────┤</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ SRM (2MB) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │ ← NEW! clipper.bin</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ SRMFirmwareRegion &nbsp; &nbsp; &nbsp; │</p>
+<p class="p_Normal">0x0000_0002_0030_0000 ├─────────────────────────┤</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ HWRPB (1MB) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; │ ← Separated!</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ AlphaMemorySystem &nbsp; &nbsp; &nbsp; │</p>
+<p class="p_Normal">0x0000_0002_0040_0000 └─────────────────────────┘</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Advantages:**</p>
+<p class="p_Normal">- Clear separation of PAL, SRM, HWRPB</p>
+<p class="p_Normal">- SRM at dedicated address (0x2_0010_0000)</p>
+<p class="p_Normal">- Easy to reload SRM independently</p>
+<p class="p_Normal">- Write protection at SRM level</p>
+<p class="p_Normal">- Better organization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 🚀 Initialization Sequence</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Step 1: Create Subsystems**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// Create all four subsystems</p>
+<p class="p_Normal">SafeMemory* safeMem = new SafeMemory();</p>
+<p class="p_Normal">safeMem-&gt;allocate(0x0, 0x100000000); &nbsp;// 4GB RAM</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIOManager* mmio = new MMIOManager();</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem* ams = new AlphaMemorySystem();</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SRMFirmwareRegion* srm = new SRMFirmwareRegion({</p>
+<p class="p_Normal"> &nbsp; &nbsp;.basePA = 0x0000000200100000ULL,</p>
+<p class="p_Normal"> &nbsp; &nbsp;.size = 0x00200000ULL, &nbsp;// 2MB</p>
+<p class="p_Normal"> &nbsp; &nbsp;.writeProtected = true</p>
+<p class="p_Normal">});</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Step 2: Load SRM Firmware**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// Load clipper.bin into SRM region</p>
+<p class="p_Normal">if (!srm-&gt;loadFromFile(&quot;clipper.bin&quot;)) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;ERROR_LOG(&quot;Failed to load SRM firmware&quot;);</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Step 3: Attach to GuestMemory**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">auto&amp; gm = global_GuestMemory();</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">gm.attachSubsystems(</p>
+<p class="p_Normal"> &nbsp; &nbsp;safeMem, &nbsp;// RAM</p>
+<p class="p_Normal"> &nbsp; &nbsp;mmio, &nbsp; &nbsp; // Devices</p>
+<p class="p_Normal"> &nbsp; &nbsp;ams, &nbsp; &nbsp; &nbsp;// PAL/HWRPB</p>
+<p class="p_Normal"> &nbsp; &nbsp;srm &nbsp; &nbsp; &nbsp; // SRM firmware ← NEW!</p>
+<p class="p_Normal">);</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">gm.initDefaultPARoutes();</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Step 4: Set CPU PC**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// Set PC to SRM entry point</p>
+<p class="p_Normal">cpu-&gt;setPC(0x0000000200100000ULL); &nbsp;// SRM base</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">// Set PAL_BASE (for C++ emulation, this is unused)</p>
+<p class="p_Normal">cpu-&gt;writeIPR(IPR_PAL_BASE, 0x0000000200000000ULL);</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 💡 How It Works</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Instruction Fetch from SRM:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">CPU wants to fetch instruction at PC = 0x2_0010_0000</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. CPU calls: gm.readInst32(0x2_0010_0000, instr)</p>
+<p class="p_Normal">2. GuestMemory classifies PA → RouteTarget::SRMFirmware</p>
+<p class="p_Normal">3. GuestMemory routes to: m_srm-&gt;read(offset=0, width=4, value)</p>
+<p class="p_Normal">4. SRMFirmwareRegion reads from clipper.bin buffer</p>
+<p class="p_Normal">5. Returns Alpha instruction (e.g., CALL_PAL #0x03)</p>
+<p class="p_Normal">6. CPU executes instruction</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **CALL_PAL Execution:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">SRM code contains: CALL_PAL #0x03 (CSERVE)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. CPU decodes CALL_PAL instruction (fetched from SRM region)</p>
+<p class="p_Normal">2. CPU traps to PAL mode</p>
+<p class="p_Normal">3. Your PalService::executeCSERVE() is invoked (C++ handler)</p>
+<p class="p_Normal">4. R16 examined for CSERVE function code</p>
+<p class="p_Normal">5. Console I/O performed via ConsoleManager</p>
+<p class="p_Normal">6. Return to SRM code (next instruction)</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Write Protection:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">Attempt to write to SRM:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">gm.write64(0x2_0010_0000, 0x12345678)</p>
+<p class="p_Normal"> &nbsp;↓</p>
+<p class="p_Normal">GuestMemory routes to SRMFirmwareRegion</p>
+<p class="p_Normal"> &nbsp;↓</p>
+<p class="p_Normal">SRMFirmwareRegion checks writeProtected = true</p>
+<p class="p_Normal"> &nbsp;↓</p>
+<p class="p_Normal">Returns MEM_STATUS::AccessViolation</p>
+<p class="p_Normal"> &nbsp;↓</p>
+<p class="p_Normal">CPU raises fault</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 🎯 Key Design Decisions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Why Separate SRM from AMS?**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Conceptual:**</p>
+<p class="p_Normal">- PAL = Low-level system services (often C++ emulated)</p>
+<p class="p_Normal">- SRM = High-level firmware (real Alpha binary)</p>
+<p class="p_Normal">- HWRPB = Data structures</p>
+<p class="p_Normal">- **These are different things!**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Practical:**</p>
+<p class="p_Normal">- SRM binary can be reloaded independently</p>
+<p class="p_Normal">- Write protection enforced at SRM level</p>
+<p class="p_Normal">- Statistics tracking for SRM execution</p>
+<p class="p_Normal">- Clearer debugging (know if executing from SRM vs PAL)</p>
+<p class="p_Normal">- Easier to swap SRM versions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Why Not Make SRM Part of SafeMemory?**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory is for **general RAM** - writable, cacheable, no special handling.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SRM needs:</p>
+<p class="p_Normal">- Write protection (ROM)</p>
+<p class="p_Normal">- Load from file (clipper.bin)</p>
+<p class="p_Normal">- Statistics tracking</p>
+<p class="p_Normal">- Separate lifecycle management</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Separate class is cleaner.**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Why 0x2_0010_0000 for SRM Base?**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Your existing map uses 0x2_xxxx_xxxx for system resources:</p>
+<p class="p_Normal">- 0x2_0000_0000 = PAL (1MB is plenty for PAL if you had it)</p>
+<p class="p_Normal">- 0x2_0010_0000 = SRM (2MB for clipper.bin)</p>
+<p class="p_Normal">- 0x2_0030_0000 = HWRPB (1MB for data structures)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Total:** 4MB of system space, well within your 0x2_0500_0000 allocation.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 📋 Files Provided</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Core Implementation:**</p>
+<p class="p_Normal">1. **GuestMemory_UPDATED.h** - Updated header with SRM support</p>
+<p class="p_Normal">2. **GuestMemory_UPDATED.cpp** - Updated implementation with routing</p>
+<p class="p_Normal">3. **SRMFirmwareRegion.h** - New SRM handler interface</p>
+<p class="p_Normal">4. **SRMFirmwareRegion.cpp** - New SRM handler implementation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **Examples:**</p>
+<p class="p_Normal">5. **GUESTMEMORY_SRM_INIT_EXAMPLE.cpp** - Complete initialization example</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## ✅ Integration Checklist</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">- [ ] Add `SRMFirmware` to `RouteTarget` enum</p>
+<p class="p_Normal">- [ ] Add `SRMFirmwareRegion.h` and `.cpp` to project</p>
+<p class="p_Normal">- [ ] Update `GuestMemory::attachSubsystems()` signature</p>
+<p class="p_Normal">- [ ] Update `GuestMemory::initDefaultPARoutes()`</p>
+<p class="p_Normal">- [ ] Update `GuestMemory::readRouted()` with SRM case</p>
+<p class="p_Normal">- [ ] Update `GuestMemory::writeRouted()` with SRM case</p>
+<p class="p_Normal">- [ ] Add `isSRM()` helper method</p>
+<p class="p_Normal">- [ ] Create `SRMFirmwareRegion` instance during init</p>
+<p class="p_Normal">- [ ] Load `clipper.bin` into SRM region</p>
+<p class="p_Normal">- [ ] Set CPU PC to SRM base (0x2_0010_0000)</p>
+<p class="p_Normal">- [ ] Test instruction fetch from SRM</p>
+<p class="p_Normal">- [ ] Test write protection (should fail)</p>
+<p class="p_Normal">- [ ] Verify CALL_PAL instructions execute</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 🎉 Benefits Summary</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **✅ Architecture:**</p>
+<p class="p_Normal">- Clean separation of concerns</p>
+<p class="p_Normal">- Single routing point (no ambiguity)</p>
+<p class="p_Normal">- Easy to trace execution</p>
+<p class="p_Normal">- Modular and maintainable</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **✅ Functionality:**</p>
+<p class="p_Normal">- SRM binary loaded separately</p>
+<p class="p_Normal">- Write protection enforced</p>
+<p class="p_Normal">- Statistics tracking available</p>
+<p class="p_Normal">- Easy firmware reload</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **✅ Performance:**</p>
+<p class="p_Normal">- Direct routing (minimal overhead)</p>
+<p class="p_Normal">- Inline classification</p>
+<p class="p_Normal">- No nested checks</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### **✅ Debugging:**</p>
+<p class="p_Normal">- Clear PA→subsystem mapping</p>
+<p class="p_Normal">- Easy to dump memory map</p>
+<p class="p_Normal">- Statistics show SRM usage</p>
+<p class="p_Normal">- Write violations logged</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 🚀 Next Steps</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. **Integrate SRMFirmwareRegion** into your project</p>
+<p class="p_Normal">2. **Update GuestMemory** routing tables</p>
+<p class="p_Normal">3. **Load clipper.bin** during initialization</p>
+<p class="p_Normal">4. **Set CPU PC** to SRM entry (0x2_0010_0000)</p>
+<p class="p_Normal">5. **Run emulator** and watch SRM execute!</p>
+<p class="p_Normal">6. **Connect PuTTY** to port 23</p>
+<p class="p_Normal">7. **See &quot;P00&gt;&gt;&gt; &quot; prompt!** 🎊</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Your routing architecture was already excellent - this just extends it with proper SRM support!** 🎯</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

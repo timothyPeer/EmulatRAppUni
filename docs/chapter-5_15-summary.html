@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 5 - Memory System Architecture &gt; 5.15 Summary</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="The ASA-EmulatR memory architecture mirrors Alpha AXP behavior while remaining debuggable, testable, and extensible." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "chapter-5_15-summary.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">5.15 Summary</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?chapter-5_15-summary.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-5---memory-system-arch.html">Chapter 5 - Memory System Architecture</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">5.15 Summary</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="chapter-5_14-smp-consideration.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-5---memory-system-arch.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="chapter-6---serialization-and-.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">The ASA-EmulatR memory architecture mirrors Alpha AXP behavior while remaining debuggable, testable, and extensible.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Memory System Inventory</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">GuestMemory — PA router and reservation tracker (286 lines)</p>
+<p class="p_Normal">SafeMemory — physical RAM with sparse backing (253 lines)</p>
+<p class="p_Normal">SparseMemoryBacking — on-demand page allocation (507 lines)</p>
+<p class="p_Normal">WriteBufferManager — per-CPU write buffering (218 lines)</p>
+<p class="p_Normal">ReservationManager — global LL/SC reservation tracking (153 lines)</p>
+<p class="p_Normal">Ev6Translator — VA→PA translation with page table walking (1,336 lines)</p>
+<p class="p_Normal">Total: 2,753 lines across six memory system headers.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Key Takeaways</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>GuestMemory is the single shared physical address space — one global instance, PA routing table, typed read/write API</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">2.</span>SafeMemory is a dumb RAM backend — byte-addressable, bounds-checked, sparse-allocated, no ordering knowledge</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">3.</span>Loads are synchronous; stores are deferred — two-phase store model (address in EX, commit in WB)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">4.</span>Ordering is never implicit — the weak memory model means no ordering without explicit barriers</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">5.</span>Barriers enforce visibility and completion — MB, WMB, EXCB, TRAPB (full semantics in Chapter 6)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">6.</span>MMIO is strongly ordered — synchronous, unbuffered, no reordering</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">7.</span>LL/SC uses optimistic reservations — per-CPU, cache-line granularity, globally tracked by ReservationManager</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">8.</span>Translation is implementation-selected — page size and VA width chosen at bring-up, three-level page table with KSEG fast path</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">9.</span>Memory faults are precise — detected in EX, delivered in WB, never speculative</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">10.</span>Memory semantics are enforced by coordination, not timing</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter-6---serialization-and-.html" class="topiclink">Chapter 6 - Serialization and Stall Model (next chapter)</a>.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

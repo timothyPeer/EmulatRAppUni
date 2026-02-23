@@ -1,0 +1,444 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 10 – Devices and Memory-Mapped I/O (MMIO)</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="10.1 Purpose of This Chapter &nbsp;This chapter defines how EmulatR models devices and memory-mapped I/O (MMIO), and how device interactions integrate with: The AlphaCPU pipeline Th" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "chapter-10---devices-and-mmio.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Chapter 10 – Devices and Memory-Mapped I/O (MMIO)</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?chapter-10---devices-and-mmio.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Chapter 10 – Devices and Memory-Mapped I/O (MMIO)</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="9_14-summary.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="architecture-overview.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="10_1-purpose-of-this-chapter.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.1 Purpose of This Chapter</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This chapter defines how EmulatR models <span style="font-weight: bold;">devices</span> and <span style="font-weight: bold;">memory-mapped I/O (MMIO)</span>, and how device interactions integrate with:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The AlphaCPU pipeline</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The memory system</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Interrupt delivery</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Serialization and ordering</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>SMP execution</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Devices are <span style="font-weight: bold;">asynchronous entities</span>, but MMIO access is <span style="font-weight: bold;">synchronous and strongly</span> ordered. This distinction is fundamental to correctness.</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.2 Design Philosophy</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EmulatR follows real Alpha hardware principles:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="font-weight:bold;display:inline-block;width:20px;margin-left:-20px">1.</span><span style="font-weight: bold;">MMIO is memory-mapped but not memory-like</span></p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="font-weight:bold;display:inline-block;width:20px;margin-left:-20px">2.</span><span style="font-weight: bold;">MMIO accesses are strongly ordered</span></p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="font-weight:bold;display:inline-block;width:20px;margin-left:-20px">3.</span><span style="font-weight: bold;">Device operations are asynchronous</span></p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="font-weight:bold;display:inline-block;width:20px;margin-left:-20px">4.</span><span style="font-weight: bold;">Completion is signaled via interrupts</span></p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="font-weight:bold;display:inline-block;width:20px;margin-left:-20px">5.</span><span style="font-weight: bold;">CPU execution never blocks on device work</span></p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="font-weight:bold;display:inline-block;width:20px;margin-left:-20px">6.</span><span style="font-weight: bold;">PAL mediates privileged device control</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This separation ensures correctness, debuggability, and architectural fidelity.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">10.3 Device Model Overview</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.3.1 What a Device Is</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In EmulatR, a device is an object that:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Owns one or more MMIO address ranges</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Exposes registers via MMIO</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Executes operations asynchronously</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Signals completion via interrupts</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>May perform DMA into GuestMemory</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Devices do <span style="font-weight: bold;">not</span> execute in the CPU pipeline.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.3.2 Device Attachment</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Devices are:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Created by the DeviceManager / {SCSIDeviceManager, ConsoleManager, NetworkManager, FibreDeviceManager, IDEDeviceManager, &nbsp;etc.}</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Registered with the MMIOManager</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Assigned physical address ranges</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Assigned interrupt lines</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Optionally bound to backing storage or network endpoints</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Once registered, devices become visible to all CPUs via GuestMemory.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">10.4 MMIO Address Space</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.4.1 MMIO vs RAM</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO regions are distinguished from RAM by <span style="font-weight: bold;">address range</span>, not instruction type.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When a physical address resolves to:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>RAM → handled by SafeMemory</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>MMIO → routed to a device handler</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This distinction occurs <span style="font-weight: bold;">after translation</span> (VA → PA).</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.4.2 ROUTING MECHANISM</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO access flow:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">CPU&nbsp;Instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Address&nbsp;Translation&nbsp;(MBox)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Physical&nbsp;Address</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">GuestMemory</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">MMIOManager</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Device&nbsp;Register&nbsp;Handler</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_Normal">SafeMemory is never involved in MMIO.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">10.5 MMIO Access Semantics</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.5.1 Strong Ordering Rules</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO accesses are strongly ordered:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>No reordering</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>No buffering</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>No speculation</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>No combining</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>No deferral</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Every MMIO read or write:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Completes synchronously</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Is visible immediately</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Observes program order</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This prevents device protocol violations.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.5.2 Pipeline Behavior</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO access occurs during the <span style="font-weight: bold;">EX stage.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Behavior:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The instruction executes synchronously</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The pipeline may stall for the duration</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The result is returned immediately</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>No write buffer is used</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO instructions retire only after the access completes.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">10.6 Device Registers</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.6.1 Register Access</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Devices expose control and status registers via MMIO.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Typical registers:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Command registers</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Status registers</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Data registers</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Interrupt control registers</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>DMA descriptors</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Reads and writes are performed using standard load/store instructions.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.6.2 Side Effects</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO register access may have side effects:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Writing a command register may start an operation</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Reading a status register may clear bits</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Writing a control bit may acknowledge an interrupt</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These side effects occur during the MMIO access itself.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">10.7 Asynchronous Device Operations</span></h2>
+<p class="p_Normal">10.7.1 Device Execution Model</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">After receiving a command:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The device begins work asynchronously</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>CPU execution continues immediately</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The device may perform DMA</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Completion is deferred</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The CPU never spins waiting for a device unless software explicitly polls.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.7.2 DMA Operations</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DMA allows devices to:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Read from GuestMemory</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Write to GuestMemory</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Bypass CPU caches (architecturally)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DMA is subject to:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Address translation rules</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Access permissions</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Cache coherency rules (modeled)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DMA completion does not imply ordering unless enforced by barriers or interrupts.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">10.8 Interrupt Signaling</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.8.1 Device Interrupts</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Devices signal completion via interrupts.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Process:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>Device completes work</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">2.</span>Device asserts interrupt line</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">3.</span>InterruptController records pending IRQ</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">4.</span>CPU samples interrupt during pre-cycle phase</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">5.</span>Interrupt is delivered through PAL</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.8.2 Interrupt Acknowledgment</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Interrupt acknowledgment typically occurs via MMIO:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>CPU reads or writes a device register</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Device clears interrupt condition</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Interrupt line is deasserted</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL code often performs this acknowledgment.</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">&nbsp;</span></h2>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">10.9 MMIO and Serialization</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.9.1 Implicit Ordering</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO accesses are implicitly serialized.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No explicit barrier is required to ensure:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Ordering relative to other MMIO accesses</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Visibility to the device</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">However, ordering relative to normal memory may require barriers.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.9.2 Required Barriers</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Common patterns:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">MB before MMIO write</span> - ensures prior memory writes are visible before device sees command.</p>
+<p class="p_Normal"><span style="font-weight: bold;">MB after MMIO read</span> - ensures device results are visible before CPU proceeds.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This mirrors real Alpha programming requirements.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">10.10 PAL and Device Control</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.10.1 Privileged Operations</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Some device operations require PAL mode:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Device initialization</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Interrupt routing configuration</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>DMA enablement</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>System-wide device control</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Accessing these registers outside PAL faults.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.10.2 Interrupt Dispatch</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All device interrupts ultimately enter PAL.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL code:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Identifies interrupt source</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Acknowledges device</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Invokes OS handler</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Returns via HW_REI</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This ensures controlled, serialized device interaction.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.11 SMP Considerations</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In SMP systems:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Devices are globally visible</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>MMIO ordering is global</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Interrupts may target specific CPUs</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>DMA affects shared memory</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Barriers may be required for cross-CPU coordination</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Devices themselves are not CPU-affine unless explicitly configured.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.12 Error Handling</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO access may generate faults:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Access violation</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Alignment fault</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Device-specific errors</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These faults:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Are detected synchronously</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Are delivered precisely</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Enter PAL through normal exception flow</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Device errors do not corrupt CPU state.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.13 Debugging and Instrumentation</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Recommended diagnostics:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Log all MMIO reads/writes with CPUId</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Trace device command submission</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Trace interrupt assertion and acknowledgment</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Validate DMA address ranges</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Verify ordering with explicit barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO bugs are ordering bugs until proven otherwise.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">10.14 Summary</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Key principles:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>MMIO is strongly ordered</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">2.</span>Devices are asynchronous</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">3.</span>MMIO access is synchronous</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">4.</span>Completion is interrupt-driven</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">5.</span>DMA operates on GuestMemory</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">6.</span>PAL mediates privileged control</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">7.</span>SMP visibility is explicit</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">8.</span>Barriers ensure correctness</p>
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; BOX Architecture &gt; CBox &gt; Registers</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="CBox operations participate in the architectural order of operations as serialized, atomic control commits; the MSB-first 6-bit shifting is purely microarchitectural and must..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "registers.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Registers</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?registers.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a> &gt; <a href="box-architecture.html">BOX Architecture</a> &gt; <a href="cbox.html">CBox</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Registers</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="cbox.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="cbox.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="ebox.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">CBox operations participate in the architectural order of operations as serialized, atomic control commits; the MSB-first 6-bit shifting is purely microarchitectural and must be collapsed into a single grain-level state transition that enforces the same ordering guarantees as PAL entry, interrupts,</p>
+<p class="p_Normal">and HW_REI.</p>
+<p class="p_Comment"><span class="f_Comment">&nbsp;</span></p>
+<p class="p_Comment"><span class="f_Comment">&quot;Order is guaranteed by program-order retirement and explicit serialization points; any asynchronous backends MUST be drained/fenced at those points.&quot;</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The EmulatR implements deterministic retirement order of the PC+n / serialized grain loop.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The CBox ordering implementation is not only &quot;program order&quot;; it also requires a serialization point that fences visibility of certain effects relative to:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 26px; margin-left: 0;"><span class="f_Normal" style="font-family: 'Courier New';display:inline-block;width:13px;margin-left:-13px">o</span>interrupts / PAL entry,</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 26px; margin-left: 0;"><span class="f_Normal" style="font-family: 'Courier New';display:inline-block;width:13px;margin-left:-13px">o</span>instruction fetch coherency (I-stream),</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 26px; margin-left: 0;"><span class="f_Normal" style="font-family: 'Courier New';display:inline-block;width:13px;margin-left:-13px">o</span>and any microarchitectural concurrency you simulate (async mem, device DMA, etc.).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Heading3" style="display:inline-block;width:20px;margin-left:-20px">A.</span><span class="f_Heading3">Grain as the architectural &quot;retirement event&quot;</span></p>
+<p class="p_Normal">An instruction grain represents a single Alpha instruction at the point it is architecturally retired. The AlphaPipeline executes grains in program order and commits each grain's architected side effects before advancing the PC to the next instruction (PC+4 or redirected PC).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_Heading3">B. CBox grains are serialization grains</span> </p>
+<p class="p_Normal">CBox-related grains (e.g., hw_mtpr_I_CTL, hw_mtpr_IC_FLUSH, hw_mfpr_I_CTL) are modeled as &quot;serialized control transactions&quot;. The grain does not model EV6 microarchitectural mechanisms (e.g., internal shift-register loading of 6-bit chunks into C_DATA). Instead, the grain models the architectural contract:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The operation is atomic with respect to architectural observation.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>All prior instructions are complete before the CBox state change becomes visible.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>No subsequent instruction observes a partial CBox update.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">C. What &quot;complete&quot; means for CBox retirement</span></h3>
+<p class="p_Normal">At retirement of a CBox grain, the EmulatR guarantees:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>The requested CBox control effect is logically committed (or treated as a no-op with preserved ordering, where appropriate).</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">2.</span>The pipeline is serialized such that interrupts cannot be taken &quot;mid-CBox&quot;.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">3.</span>Any required instruction-stream ordering point is established (e.g., an IC_FLUSH acts as an I-stream barrier even if the emulator does not model a physically stale I-cache).</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">D. Where the ordering comes from</span></h3>
+<p class="p_Normal">The ordering semantics are achieved by:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The AlphaPipeline's in-order retirement (grain pumping), AND</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>An explicit &quot;serialize pipeline&quot; step performed by CBox grains to ensure that side effects are completed and visible before PC advances.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The AlphaPipeline &nbsp;enforces &quot;retire one grain at a time and complete all its side effects before PC advances&quot;; the AlphaPipleline provides the essential architectural ordering property that CBox needs.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Order of Operation Rule for CBox Grains. </span></h3>
+<p class="p_Normal">Include these as short &quot;MUST&quot; statements in your documentation:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rule 1: Grain retirement is the architectural commit boundary.</p>
+<p class="p_Normal">Rule 2: CBox grains perform a serialization step before commit.</p>
+<p class="p_Normal">Rule 3: Interrupt delivery checks occur only at grain boundaries or at explicit pipeline safe points; serialization grains block mid-grain interrupt entry.</p>
+<p class="p_Normal">Rule 4: MB/WMB and CBox serialization drain/fence any emulator-internal async queues that can reorder visibility (SafeMemory, MMIO, device I/O).</p>
+<p class="p_Normal">Rule 5: IC_FLUSH may be modeled as a no-op only if it still provides the ordering point required for I-stream correctness (e.g., invalidating translated code cache entries for the affected region if you have a JIT/cache).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Grain Order of Operation (PC+n) and AlphaPipeLine with MB/WMB fencing handle the following C_Box bit shifting:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CBox Bit Shifting Operations: </p>
+<p class="p_Normal">Split into three shift register chains. </p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>The hardware allocates 367 bits for the /write_ONCE chain, of which the 21264 uses 303 bits. &nbsp;During hardware reset (after BiST), 367 bits are always shifted into the WRITE_ONCE chain from the SROM, MSB first, so that anu unused bits are shifted out the end of the WRITE_ONCE chain. </p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">2.</span>A 36-bit WRITE_MANY chain that is loaded using MTPR instructions to the CBox data register.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span>Six bits of information are shifted into the WRITE_MANY chain during each write transaction to the CBox data register.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">3.</span>A 60-bit CBox ERROR_REG chain that is read by using MFFR instructions from the Cbox data register in combination with MTPR instruction to the CBox shift register. Each write transaction to the CBox shift register destructively shifts six bits of information out of the Cbox error register. </p>
+<p class="p_Normal">d</p>
+<p class="p_Normal">Internal PAL instructions referenced: HW_MTPR and HW_MFPR<span style="background-color: #ff0000;">&nbsp;(what is the dispatch mechanism?</span>)</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Name</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Offset</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Implementation</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">C_DATA</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[5:0] RW</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_MTPR instruction this register causes six bits of data to be placed in a serial shift register. &nbsp;When the HW_MTPR instruction is retired, the data is shifted into the CBox. &nbsp;After the shift register has been accessed, performing a HW_MFPR instruction this register will return six bits of data. </p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">C_SHFT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[0] W</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Writing a 1 to this register bit causes six bits of Cbox IPR dta to shift into the Cbox data registerws. Software can then use a HW_MFPR read operation to the CBox data register to read the data. </p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">WRITE_ONCE </p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Chain order from LSB to MSB - document this. </p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">WRITE_MANY</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Chain order of multi-bit vectors [MSB:LSB] - the LSB is the first bit in the CBox chain</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,688 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Run Loop Nested Stack</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="=============================================================================" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "run-loop-nested-stack.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Run Loop Nested Stack</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?run-loop-nested-stack.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Run Loop Nested Stack</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="cserve-selector-table-based-on.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="architecture-overview.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="core-processor-implementation.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">ITERATION&nbsp;N:&nbsp;Normal&nbsp;Mode&nbsp;-&nbsp;CALL_PAL&nbsp;#0x83</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">AlphaCPU::runOneInstruction()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;1:&nbsp;Check&nbsp;processor&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;isPalMode&nbsp;=&nbsp;(PC[0]&nbsp;==&nbsp;1)&nbsp;→&nbsp;FALSE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;shadowRegsActive&nbsp;=&nbsp;FALSE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;2:&nbsp;Check&nbsp;CBox&nbsp;for&nbsp;pending&nbsp;events</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;Check&nbsp;interrupts&nbsp;(none&nbsp;deliverable,&nbsp;IPL=3)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;Check&nbsp;ASTs&nbsp;(none&nbsp;pending)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;3:&nbsp;Fetch&nbsp;instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;fetchPC&nbsp;=&nbsp;getPC_Active(cpuId)&nbsp;&amp;&nbsp;~0x1ULL&nbsp;→&nbsp;0x00000001200041A0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;Translate&nbsp;VA→PA&nbsp;via&nbsp;ev6TranslateFastVA()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;Read&nbsp;32&nbsp;bits&nbsp;from&nbsp;memory</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;rawInstruction&nbsp;=&nbsp;0x00000083&nbsp;(CALL_PAL&nbsp;#0x83)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;4:&nbsp;Decode&nbsp;instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;IBox::fetchAndDecode(fetchResult)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;grain.opcode&nbsp;=&nbsp;OPCODE_CALL_PAL&nbsp;(0x00)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;grain.palFunction&nbsp;=&nbsp;0x83</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;grain.pc&nbsp;=&nbsp;0x00000001200041A0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;Return&nbsp;fetchResult.grain</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;5:&nbsp;Execute&nbsp;pipeline&nbsp;(PUMP&nbsp;-&nbsp;no&nbsp;side&nbsp;effects)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;BoxResult&nbsp;boxResult&nbsp;=&nbsp;AlphaPipeline::execute(fetchResult)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;stage_IF</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;slot.di&nbsp;=&nbsp;fetchResult.grain</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;stage_ID</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;slot.decoded&nbsp;=&nbsp;true&nbsp;(no&nbsp;operands&nbsp;for&nbsp;CALL_PAL)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;stage_EX&nbsp;(ROUTING&nbsp;ONLY)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;Detect&nbsp;slot.di.opcode&nbsp;==&nbsp;OPCODE_CALL_PAL</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;Route&nbsp;to&nbsp;PalBox</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;boxResult&nbsp;=&nbsp;PalBox::execute(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;PalBox::execute(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;switch&nbsp;(slot.di.opcode)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;case&nbsp;OPCODE_CALL_PAL:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;enterPal(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PalEntryReason::CALL_PAL_INSTRUCTION,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;slot.di.palFunction,&nbsp;&nbsp;//&nbsp;0x83</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;slot.di.pc&nbsp;+&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;0x00000001200041A4</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;PalBox::enterPal(CALL_PAL_INSTRUCTION,&nbsp;0x83,&nbsp;0x00000001200041A4)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;1.&nbsp;Record&nbsp;entry&nbsp;metadata</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;m_entryReason&nbsp;=&nbsp;CALL_PAL_INSTRUCTION</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;m_entryVector&nbsp;=&nbsp;0x83</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;m_faultPC&nbsp;=&nbsp;0x00000001200041A4</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;2.&nbsp;Save&nbsp;complete&nbsp;context&nbsp;(UNIFIED)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;saveCompleteContext(m_cpuId,&nbsp;m_savedContext)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;m_savedContext.hwpcb&nbsp;=&nbsp;getHWPCB_Active(cpuId)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;PC&nbsp;=&nbsp;0x00000001200041A0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;PS,&nbsp;IPL=3,&nbsp;CM=USER</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;KSP,&nbsp;ESP,&nbsp;SSP,&nbsp;USP</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;PTBR,&nbsp;ASN,&nbsp;etc.</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;R[0..31]&nbsp;→&nbsp;m_savedContext.intRegs[0..31]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;F[0..31]&nbsp;→&nbsp;m_savedContext.floatRegs[0..31]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;FPCR&nbsp;→&nbsp;m_savedContext.fpcr</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;3.&nbsp;Compute&nbsp;PAL&nbsp;entry&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;palBase&nbsp;=&nbsp;getPAL_BASE_Active(cpuId)&nbsp;→&nbsp;0xFFFFFE0000000000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;entryPC&nbsp;=&nbsp;palBase&nbsp;+&nbsp;(0x83&nbsp;*&nbsp;64)&nbsp;→&nbsp;0xFFFFFE0000002030</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;(PAL&nbsp;function&nbsp;dispatch&nbsp;table)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;4.&nbsp;Set&nbsp;exception&nbsp;address&nbsp;(return&nbsp;address)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;setEXC_ADDR_Active(cpuId,&nbsp;0x00000001200041A4)&nbsp;✅&nbsp;pc+4</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;5.&nbsp;Enter&nbsp;PAL&nbsp;mode&nbsp;(CENTRALIZED&nbsp;-&nbsp;only&nbsp;place&nbsp;PC[0]&nbsp;set)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;setPC_Active(cpuId,&nbsp;0xFFFFFE0000002030&nbsp;|&nbsp;0x1)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;→&nbsp;PC&nbsp;=&nbsp;0xFFFFFE0000002031&nbsp;(PC[0]=1,&nbsp;PAL&nbsp;mode)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;setIPL_Active(cpuId,&nbsp;7)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;setCM_Active(cpuId,&nbsp;CM_KERNEL)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;6.&nbsp;Activate&nbsp;shadow&nbsp;registers</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;m_shadowRegsActive&nbsp;=&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;7.&nbsp;Return&nbsp;BoxResult</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;BoxResult().requestFlush()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;stage_MEM&nbsp;(no&nbsp;memory&nbsp;operation)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;stage_WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;boxResult&nbsp;(propagate&nbsp;BoxResult&nbsp;from&nbsp;PalBox)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;6:&nbsp;Handle&nbsp;BoxResult&nbsp;(AlphaCPU&nbsp;orchestrates&nbsp;side&nbsp;effects)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;if&nbsp;(boxResult.needsFlush())</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;AlphaPipeline::flush()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;Clear&nbsp;all&nbsp;pipeline&nbsp;stages</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;Invalidate&nbsp;prefetch&nbsp;buffers</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;Clear&nbsp;any&nbsp;pending&nbsp;MBox/EBox&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;PC&nbsp;now&nbsp;=&nbsp;0xFFFFFE0000002031&nbsp;(ready&nbsp;for&nbsp;PAL&nbsp;fetch)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└─&nbsp;Return&nbsp;to&nbsp;executeLoop</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">ITERATION&nbsp;N+1:&nbsp;PAL&nbsp;Mode&nbsp;-&nbsp;First&nbsp;PAL&nbsp;Instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">AlphaCPU::runOneInstruction()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;1:&nbsp;Check&nbsp;processor&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;isPalMode&nbsp;=&nbsp;(getPC_Active(cpuId)&nbsp;&amp;&nbsp;0x1)&nbsp;→&nbsp;TRUE&nbsp;✅</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;shadowRegsActive&nbsp;=&nbsp;TRUE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;2:&nbsp;Check&nbsp;CBox&nbsp;(events&nbsp;blocked&nbsp;in&nbsp;PAL)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;Interrupts&nbsp;→&nbsp;BLOCKED&nbsp;(IPL=7,&nbsp;highest&nbsp;level)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;ASTs&nbsp;→&nbsp;BLOCKED&nbsp;(in&nbsp;PAL&nbsp;mode)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;3:&nbsp;Fetch&nbsp;instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;fetchPC&nbsp;=&nbsp;getPC_Active(cpuId)&nbsp;&amp;&nbsp;~0x1ULL&nbsp;→&nbsp;0xFFFFFE0000002030</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;(mask&nbsp;off&nbsp;PAL&nbsp;bit&nbsp;for&nbsp;fetch)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;Translate&nbsp;VA→PA&nbsp;(PAL&nbsp;addresses&nbsp;identity-mapped&nbsp;or&nbsp;supervisor&nbsp;space)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;rawInstruction&nbsp;=&nbsp;0x23DEFFC8&nbsp;(LDA&nbsp;R30,&nbsp;-56(R30))</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;4:&nbsp;Execute&nbsp;pipeline</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;BoxResult&nbsp;boxResult&nbsp;=&nbsp;AlphaPipeline::execute(fetchResult)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;stage_EX</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;Route&nbsp;LDA&nbsp;to&nbsp;EBox</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;EBox::executeLDA(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;Read&nbsp;R30&nbsp;(normal,&nbsp;not&nbsp;shadowed)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;result&nbsp;=&nbsp;R30&nbsp;+&nbsp;(-56)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;slot.result&nbsp;=&nbsp;result</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;stage_WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;Write&nbsp;slot.result&nbsp;to&nbsp;R30</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;BoxResult()&nbsp;(no&nbsp;flags)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;5:&nbsp;Handle&nbsp;BoxResult</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;No&nbsp;flags&nbsp;set</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;Normal&nbsp;retirement</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;PC&nbsp;+=&nbsp;4&nbsp;→&nbsp;0xFFFFFE0000002035&nbsp;(still&nbsp;PC[0]=1)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└─&nbsp;Return&nbsp;to&nbsp;executeLoop</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">FLOW&nbsp;2:&nbsp;Event-Based&nbsp;PAL&nbsp;Entry&nbsp;(TLB&nbsp;Miss&nbsp;in&nbsp;MBox)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">AlphaCPU::runOneInstruction()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Steps&nbsp;1-4:&nbsp;Normal&nbsp;fetch/decode&nbsp;(LDQ&nbsp;R1,&nbsp;0(R2))</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;5:&nbsp;Execute&nbsp;pipeline</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;BoxResult&nbsp;boxResult&nbsp;=&nbsp;AlphaPipeline::execute(fetchResult)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;stage_EX</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;Compute&nbsp;VA&nbsp;=&nbsp;R2&nbsp;+&nbsp;0&nbsp;→&nbsp;0x0000000120FFA000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;Route&nbsp;to&nbsp;MBox</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;BoxResult&nbsp;=&nbsp;MBox::executeLDQ(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;MBox::executeLDQ(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;1.&nbsp;Extract&nbsp;VA&nbsp;from&nbsp;slot</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;va&nbsp;=&nbsp;slot.memAddress&nbsp;=&nbsp;0x0000000120FFA000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;2.&nbsp;Translate&nbsp;VA→PA&nbsp;(BEFORE&nbsp;any&nbsp;side&nbsp;effects!)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;result&nbsp;=&nbsp;ev6TranslateFullVA(cpuId,&nbsp;va,&nbsp;READ,&nbsp;mode,&nbsp;pa,&nbsp;pte)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;Check&nbsp;canonical</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;TLB&nbsp;lookup&nbsp;→&nbsp;MISS</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;Page&nbsp;walk&nbsp;→&nbsp;walkPageTable_EV6()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;L3&nbsp;PTE&nbsp;invalid&nbsp;(page&nbsp;not&nbsp;present)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;TranslationResult::PageNotPresent</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;3.&nbsp;Translation&nbsp;failed&nbsp;-&nbsp;return&nbsp;immediately</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;(NO&nbsp;memory&nbsp;access,&nbsp;NO&nbsp;state&nbsp;change!)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;return&nbsp;BoxResult()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.setFaultType(FaultType::DTBM_MISS)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.setFaultPC(slot.di.pc)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;Faulting&nbsp;PC!</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.setFaultVA(va)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.requestFlush()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;(Translation&nbsp;succeeded&nbsp;path&nbsp;not&nbsp;taken)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;BoxResult&nbsp;returned&nbsp;with&nbsp;fault&nbsp;info</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;stage_MEM&nbsp;(skipped&nbsp;-&nbsp;fault&nbsp;already&nbsp;detected)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;stage_WB&nbsp;(propagate&nbsp;BoxResult,&nbsp;no&nbsp;writeback&nbsp;on&nbsp;fault)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;boxResult</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;6:&nbsp;Handle&nbsp;BoxResult&nbsp;(AlphaCPU&nbsp;detects&nbsp;fault)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;if&nbsp;(boxResult.hasFault())</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;Handle&nbsp;fault&nbsp;through&nbsp;unified&nbsp;entry</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;Extract&nbsp;fault&nbsp;info</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;faultType&nbsp;=&nbsp;DTBM_MISS</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;faultPC&nbsp;=&nbsp;0x00000001200041C0&nbsp;(LDQ&nbsp;instruction&nbsp;PC)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;faultVA&nbsp;=&nbsp;0x0000000120FFA000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;Determine&nbsp;PAL&nbsp;vector</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;vector&nbsp;=&nbsp;DTBM_VECTOR&nbsp;(0xFFFFFE0000000080&nbsp;or&nbsp;similar)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;PalBox::enterPal(DTBM_FAULT,&nbsp;vector,&nbsp;faultPC)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;1.&nbsp;Record&nbsp;entry&nbsp;metadata</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;m_entryReason&nbsp;=&nbsp;DTBM_FAULT</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;m_entryVector&nbsp;=&nbsp;DTBM_VECTOR</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;m_faultPC&nbsp;=&nbsp;0x00000001200041C0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;2.&nbsp;Save&nbsp;complete&nbsp;context&nbsp;(SAME&nbsp;as&nbsp;CALL_PAL!)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;saveCompleteContext(m_cpuId,&nbsp;m_savedContext)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;(same&nbsp;as&nbsp;CALL_PAL&nbsp;flow)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;3.&nbsp;Compute&nbsp;PAL&nbsp;entry&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;entryPC&nbsp;=&nbsp;vector&nbsp;(DTBM_VECTOR,&nbsp;not&nbsp;function&nbsp;dispatch)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;4.&nbsp;Set&nbsp;exception&nbsp;address&nbsp;(restart&nbsp;PC&nbsp;for&nbsp;retry)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;setEXC_ADDR_Active(cpuId,&nbsp;0x00000001200041C0)&nbsp;✅&nbsp;Faulting&nbsp;PC!</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;setVA_Active(cpuId,&nbsp;0x0000000120FFA000)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(save&nbsp;faulting&nbsp;VA&nbsp;for&nbsp;PAL&nbsp;handler)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;5.&nbsp;Enter&nbsp;PAL&nbsp;mode&nbsp;(SAME&nbsp;centralized&nbsp;code)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;setPC_Active(cpuId,&nbsp;DTBM_VECTOR&nbsp;|&nbsp;0x1)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;setIPL_Active(cpuId,&nbsp;7)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;setCM_Active(cpuId,&nbsp;CM_KERNEL)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;6.&nbsp;Activate&nbsp;shadow&nbsp;registers</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;m_shadowRegsActive&nbsp;=&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;7.&nbsp;Return&nbsp;BoxResult</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;BoxResult().requestFlush()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;AlphaPipeline::flush()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;Clear&nbsp;all&nbsp;stages,&nbsp;no&nbsp;stale&nbsp;fault&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└─&nbsp;PC&nbsp;now&nbsp;at&nbsp;DTBM_VECTOR&nbsp;|&nbsp;0x1,&nbsp;ready&nbsp;to&nbsp;handle&nbsp;fault</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">FLOW&nbsp;3:&nbsp;HW_REI&nbsp;-&nbsp;Unified&nbsp;Exit&nbsp;from&nbsp;PAL</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">AlphaCPU::runOneInstruction()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;1:&nbsp;Check&nbsp;processor&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;isPalMode&nbsp;=&nbsp;TRUE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;shadowRegsActive&nbsp;=&nbsp;TRUE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;2:&nbsp;Fetch&nbsp;HW_REI&nbsp;instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;fetchPC&nbsp;=&nbsp;getPC_Active(cpuId)&nbsp;&amp;&nbsp;~0x1ULL</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;rawInstruction&nbsp;=&nbsp;0x7BFF8001&nbsp;(HW_REI)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;3:&nbsp;Execute&nbsp;pipeline</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;BoxResult&nbsp;boxResult&nbsp;=&nbsp;AlphaPipeline::execute(fetchResult)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;stage_EX&nbsp;(ROUTING&nbsp;ONLY)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;Detect&nbsp;slot.di.opcode&nbsp;==&nbsp;OPCODE_HW_REI</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;Route&nbsp;to&nbsp;PalBox</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;boxResult&nbsp;=&nbsp;PalBox::execute(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;PalBox::execute(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;switch&nbsp;(slot.di.opcode)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;case&nbsp;OPCODE_HW_REI:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;executeREI(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;PalBox::executeREI(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;1.&nbsp;Validate&nbsp;in&nbsp;PAL&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;currentPC&nbsp;=&nbsp;getPC_Active(cpuId)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;if&nbsp;(!(currentPC&nbsp;&amp;&nbsp;0x1))</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;//&nbsp;Illegal&nbsp;REI&nbsp;-&nbsp;not&nbsp;in&nbsp;PAL&nbsp;mode!</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;BoxResult()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.setFaultType(FaultType::ILLEGAL_INSTRUCTION)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.requestFlush()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;//&nbsp;Validation&nbsp;passed</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;2.&nbsp;Restore&nbsp;complete&nbsp;context&nbsp;(UNIFIED)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;restoreCompleteContext(m_cpuId,&nbsp;m_savedContext)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;Restore&nbsp;HWPCB&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;setPC_Active(cpuId,&nbsp;m_savedContext.hwpcb.pc)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;(PC[0]&nbsp;already&nbsp;cleared&nbsp;in&nbsp;saved&nbsp;context)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;setPS_Active(cpuId,&nbsp;m_savedContext.hwpcb.ps)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;setIPL_Active(cpuId,&nbsp;m_savedContext.hwpcb.ipl)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;setCM_Active(cpuId,&nbsp;m_savedContext.hwpcb.cm)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;Restore&nbsp;stacks,&nbsp;PTBR,&nbsp;ASN,&nbsp;etc.</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;R[0..31]&nbsp;←&nbsp;m_savedContext.intRegs[0..31]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;F[0..31]&nbsp;←&nbsp;m_savedContext.floatRegs[0..31]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;FPCR&nbsp;←&nbsp;m_savedContext.fpcr</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;3.&nbsp;Deactivate&nbsp;shadow&nbsp;registers</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;m_shadowRegsActive&nbsp;=&nbsp;false</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;4.&nbsp;Ensure&nbsp;PC[0]&nbsp;clear&nbsp;(explicit&nbsp;check)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;├─&nbsp;currentPC&nbsp;=&nbsp;getPC_Active(cpuId)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;if&nbsp;(currentPC&nbsp;&amp;&nbsp;0x1)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;setPC_Active(cpuId,&nbsp;currentPC&nbsp;&amp;&nbsp;~0x1ULL)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;5.&nbsp;Return&nbsp;BoxResult</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;BoxResult().requestFlush()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;stage_WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;return&nbsp;boxResult</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">├─&nbsp;Step&nbsp;4:&nbsp;Handle&nbsp;BoxResult</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;├─&nbsp;AlphaPipeline::flush()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;Clear&nbsp;all&nbsp;stages,&nbsp;ensure&nbsp;clean&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─&nbsp;Determine&nbsp;next&nbsp;PC&nbsp;based&nbsp;on&nbsp;entry&nbsp;reason:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;If&nbsp;entry&nbsp;was&nbsp;CALL_PAL:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─&nbsp;PC&nbsp;=&nbsp;0x00000001200041A4&nbsp;(return&nbsp;address,&nbsp;pc+4)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;If&nbsp;entry&nbsp;was&nbsp;DTBM_FAULT:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;PC&nbsp;=&nbsp;0x00000001200041C0&nbsp;(retry&nbsp;faulting&nbsp;instruction)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└─&nbsp;Return&nbsp;to&nbsp;executeLoop&nbsp;(back&nbsp;in&nbsp;normal&nbsp;mode)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">UNIFIED&nbsp;PALBOX&nbsp;API&nbsp;(CRITICAL&nbsp;CONTRACT)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">class&nbsp;PalBox&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">public:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;========================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;SINGLE&nbsp;ENTRY&nbsp;POINT&nbsp;(used&nbsp;by&nbsp;both&nbsp;instruction&nbsp;and&nbsp;event&nbsp;paths)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;========================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;BoxResult&nbsp;enterPal(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PalEntryReason&nbsp;reason,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;vectorOrSelector,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;faultPC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;noexcept&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1.&nbsp;Record&nbsp;metadata</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_entryReason&nbsp;=&nbsp;reason;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_entryVector&nbsp;=&nbsp;vectorOrSelector;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_faultPC&nbsp;=&nbsp;faultPC;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;2.&nbsp;Save&nbsp;context&nbsp;(UNIFIED&nbsp;-&nbsp;same&nbsp;for&nbsp;all&nbsp;entry&nbsp;types)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;saveCompleteContext(m_cpuId,&nbsp;m_savedContext);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;3.&nbsp;Compute&nbsp;entry&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;entryPC;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(reason&nbsp;==&nbsp;PalEntryReason::CALL_PAL_INSTRUCTION)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entryPC&nbsp;=&nbsp;computePalEntryPC(m_cpuId,&nbsp;vectorOrSelector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entryPC&nbsp;=&nbsp;vectorOrSelector;&nbsp;&nbsp;//&nbsp;Direct&nbsp;vector&nbsp;for&nbsp;faults</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4.&nbsp;Set&nbsp;exception&nbsp;address</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setEXC_ADDR_Active(m_cpuId,&nbsp;faultPC);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;For&nbsp;CALL_PAL:&nbsp;faultPC&nbsp;is&nbsp;pc+4&nbsp;(return&nbsp;address)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;For&nbsp;faults:&nbsp;faultPC&nbsp;is&nbsp;faulting&nbsp;instruction&nbsp;(retry&nbsp;address)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;5.&nbsp;Enter&nbsp;PAL&nbsp;mode&nbsp;(CENTRALIZED&nbsp;-&nbsp;only&nbsp;place&nbsp;PC[0]&nbsp;set)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setPC_Active(m_cpuId,&nbsp;entryPC&nbsp;|&nbsp;0x1ULL);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setIPL_Active(m_cpuId,&nbsp;7);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setCM_Active(m_cpuId,&nbsp;CM_KERNEL);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;6.&nbsp;Activate&nbsp;shadow&nbsp;registers</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_shadowRegsActive&nbsp;=&nbsp;true;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;7.&nbsp;Return&nbsp;flush&nbsp;request</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;BoxResult().requestFlush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;========================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;SINGLE&nbsp;EXIT&nbsp;POINT&nbsp;(unified&nbsp;for&nbsp;all&nbsp;return&nbsp;types)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;========================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;BoxResult&nbsp;executeREI(const&nbsp;PipelineSlot&amp;&nbsp;slot)&nbsp;noexcept&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1.&nbsp;Validate&nbsp;in&nbsp;PAL&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!(getPC_Active(m_cpuId)&nbsp;&amp;&nbsp;0x1))&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Illegal&nbsp;REI&nbsp;outside&nbsp;PAL&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;BoxResult()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.setFaultType(FaultType::ILLEGAL_INSTRUCTION)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.requestFlush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;2.&nbsp;Restore&nbsp;context&nbsp;(UNIFIED&nbsp;-&nbsp;restores&nbsp;everything)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;restoreCompleteContext(m_cpuId,&nbsp;m_savedContext);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;3.&nbsp;Deactivate&nbsp;shadow&nbsp;registers</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_shadowRegsActive&nbsp;=&nbsp;false;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4.&nbsp;Ensure&nbsp;PC[0]&nbsp;clear&nbsp;(double-check)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;pc&nbsp;=&nbsp;getPC_Active(m_cpuId);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(pc&nbsp;&amp;&nbsp;0x1)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setPC_Active(m_cpuId,&nbsp;pc&nbsp;&amp;&nbsp;~0x1ULL);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;5.&nbsp;Return&nbsp;flush&nbsp;request</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;BoxResult().requestFlush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;========================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;GRAIN&nbsp;EXECUTOR&nbsp;(routes&nbsp;to&nbsp;entry/exit&nbsp;based&nbsp;on&nbsp;opcode)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;========================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;BoxResult&nbsp;execute(const&nbsp;PipelineSlot&amp;&nbsp;slot)&nbsp;noexcept&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(slot.di.opcode)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;OPCODE_CALL_PAL:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;enterPal(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PalEntryReason::CALL_PAL_INSTRUCTION,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;slot.di.palFunction,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;slot.di.pc&nbsp;+&nbsp;4&nbsp;&nbsp;//&nbsp;Return&nbsp;to&nbsp;next&nbsp;instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;OPCODE_HW_REI:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;executeREI(slot);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;OPCODE_HW_MFPR:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;executeHW_MFPR(slot);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;OPCODE_HW_MTPR:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;executeHW_MTPR(slot);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;BoxResult();&nbsp;&nbsp;//&nbsp;Unknown&nbsp;opcode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">private:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;CPUIdType&nbsp;m_cpuId;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;CPUContextSnapshot&nbsp;m_savedContext;&nbsp;&nbsp;//&nbsp;Complete&nbsp;context&nbsp;storage</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;PalEntryReason&nbsp;m_entryReason;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;m_entryVector;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;m_faultPC;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;m_shadowRegsActive;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">ALPHACPU&nbsp;ORCHESTRATION&nbsp;(FINAL&nbsp;PATTERN)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;AlphaCPU::runOneInstruction()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1.&nbsp;Check&nbsp;for&nbsp;external&nbsp;events&nbsp;(interrupts,&nbsp;IPIs)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(checkForInterrupt())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_palbox-&gt;enterPal(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PalEntryReason::INTERRUPT,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTERRUPT_VECTOR,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getPC_Active(m_cpuId)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;flush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;2.&nbsp;Fetch&nbsp;and&nbsp;decode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;FetchResult&nbsp;fetchResult&nbsp;=&nbsp;fetchInstruction();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;3.&nbsp;Execute&nbsp;pipeline&nbsp;(PUMP)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;BoxResult&nbsp;boxResult&nbsp;=&nbsp;m_pipeline-&gt;execute(fetchResult);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4.&nbsp;Handle&nbsp;BoxResult&nbsp;flags</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4a.&nbsp;Fault&nbsp;detected?</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(boxResult.hasFault())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;vector&nbsp;=&nbsp;getFaultVector(boxResult.faultType());</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_palbox-&gt;enterPal(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getFaultReason(boxResult.faultType()),</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vector,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boxResult.faultPC()&nbsp;&nbsp;//&nbsp;Faulting&nbsp;instruction&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;flush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4b.&nbsp;Flush&nbsp;requested?</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(boxResult.needsFlush())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;flush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4c.&nbsp;Other&nbsp;side&nbsp;effects</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(boxResult.needsMemoryBarrier())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Handle&nbsp;memory&nbsp;barrier</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;5.&nbsp;Normal&nbsp;retirement</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;PC&nbsp;already&nbsp;updated&nbsp;by&nbsp;pipeline&nbsp;or&nbsp;PalBox</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CRITICAL&nbsp;INVARIANTS&nbsp;(MUST&nbsp;MAINTAIN)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">✅&nbsp;1.&nbsp;PC[0]&nbsp;ONLY&nbsp;touched&nbsp;by&nbsp;PalBox</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;enterPal()&nbsp;sets&nbsp;PC[0]&nbsp;=&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;executeREI()&nbsp;clears&nbsp;PC[0]&nbsp;=&nbsp;0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Fetch&nbsp;always&nbsp;masks:&nbsp;fetchPC&nbsp;=&nbsp;PC&nbsp;&amp;&nbsp;~0x1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">✅&nbsp;2.&nbsp;Context&nbsp;save/restore&nbsp;IDENTICAL&nbsp;for&nbsp;all&nbsp;entry&nbsp;types</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;CALL_PAL&nbsp;saves&nbsp;complete&nbsp;context</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Faults&nbsp;save&nbsp;complete&nbsp;context</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;REI&nbsp;restores&nbsp;complete&nbsp;context</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;No&nbsp;drift&nbsp;possible</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">✅&nbsp;3.&nbsp;Restart&nbsp;PC&nbsp;correct&nbsp;for&nbsp;entry&nbsp;type</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;CALL_PAL:&nbsp;EXC_ADDR&nbsp;=&nbsp;pc&nbsp;+&nbsp;4&nbsp;(return)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Faults:&nbsp;EXC_ADDR&nbsp;=&nbsp;faulting&nbsp;PC&nbsp;(retry)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;REI&nbsp;uses&nbsp;saved&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">✅&nbsp;4.&nbsp;No&nbsp;partial&nbsp;commit&nbsp;on&nbsp;faults</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Translation&nbsp;BEFORE&nbsp;memory&nbsp;access</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Translation&nbsp;BEFORE&nbsp;register&nbsp;write</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Fault&nbsp;returns&nbsp;immediately,&nbsp;no&nbsp;state&nbsp;change</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">✅&nbsp;5.&nbsp;Pipeline&nbsp;flush&nbsp;clears&nbsp;ALL&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;All&nbsp;stages&nbsp;cleared</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;No&nbsp;stale&nbsp;fault&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;No&nbsp;pending&nbsp;MBox&nbsp;operations</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">✅&nbsp;6.&nbsp;REI&nbsp;validates&nbsp;PAL&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Check&nbsp;PC[0]&nbsp;=&nbsp;1&nbsp;before&nbsp;executing</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Generate&nbsp;fault&nbsp;if&nbsp;not&nbsp;in&nbsp;PAL&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Prevents&nbsp;illegal&nbsp;state&nbsp;transitions</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">✅&nbsp;7.&nbsp;AlphaPipeline&nbsp;never&nbsp;modifies&nbsp;PC&nbsp;directly</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Only&nbsp;routes&nbsp;grains</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;Only&nbsp;returns&nbsp;BoxResult</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;-&nbsp;AlphaCPU&nbsp;handles&nbsp;all&nbsp;PC&nbsp;changes</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

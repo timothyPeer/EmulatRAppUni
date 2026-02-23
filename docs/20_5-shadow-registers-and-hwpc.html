@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 20 – Boot Sequence, PAL, and SRM Integration &gt; 20.5 Shadow Registers and HWPCB</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="20.5.1 PAL Shadow Registers &nbsp;When PAL mode is entered, shadow registers are activated providing a separate register workspace for PAL code. PAL shadow registers substitute for..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "20_5-shadow-registers-and-hwpc.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">20.5 Shadow Registers and HWPCB</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?20_5-shadow-registers-and-hwpc.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-20---boot-sequence_-pa.html">Chapter 20 – Boot Sequence, PAL, and SRM Integration</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">20.5 Shadow Registers and HWPCB</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="20_4-pal-mode-entry-and-exit.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-20---boot-sequence_-pa.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="20_6-privileged-instructions.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">20.5.1 PAL Shadow Registers</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When PAL mode is entered, shadow registers are activated providing a separate register workspace for PAL code. PAL shadow registers substitute for R8–R14 and R25 during PAL mode execution. This allows PAL code to use these registers without saving/restoring the interrupted context's values — the hardware shadow bank automatically preserves the non-PAL register state.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Shadow registers are activated on <span class="f_CodeExample">enterPal()</span> (<span class="f_CodeExample">m_shadowRegsActive = true</span>) and deactivated on <span class="f_CodeExample">executeREI()</span>. The execution engine checks the shadow register flag and routes register accesses to the appropriate bank. Shadow registers preserve state while the CPU is quiesced and enable efficient nested exception handling.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">20.5.2 HWPCB (Hardware Privileged Context Block)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The HWPCB (<span class="f_CodeExample">HWPCB_core.h</span>) is the per-CPU hardware process context block that holds the complete architectural state of a process. PAL entry captures full architectural state via <span class="f_CodeExample">saveContext()</span> into the HWPCB, and HW_REI restores full architectural state via <span class="f_CodeExample">restoreContext()</span> from the HWPCB. No partial restoration is permitted.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">HWPCB fields include: the architectural PC, processor status (PS), current mode (CM), IPL, ASN, stack pointers for all four modes (KSP, ESP, SSP, USP), AST registers (ASTEN, ASTER, ASTRR, ASTSR), FP enable (FEN), PCBB (PCB base address), PTBR (page table base), SCBB (system control block base), VPTB (virtual page table base), PRBR, SYSPTBR, MCES, and exception state (EXC_ADDR, EXC_SUM).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">HWPCBBank</span> (<span class="f_CodeExample">globalHWPCBBank()</span>) manages per-CPU HWPCB instances. It is initialized during system construction via <span class="f_CodeExample">globalHWPCBBank().init(numCpus)</span>. HWPCB state must be saved/restored across context switches (SWPCTX), and all four AST registers are part of process context.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">20.5.3 Context Switch (SWPCTX)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The SWPCTX PAL call coordinates process context switching. It saves the current process state to the outgoing HWPCB, loads the incoming process state from the new HWPCB (pointed to by R16), updates the active PCBB, clears LL/SC reservations, and flushes per-process caches (PC and PA decode caches are flushed via IMB-equivalent behavior). ASN management during context switches uses the epoch-based lazy invalidation mechanism described in Chapter 17 — if the incoming process's ASN has a stale epoch, non-global TLB entries are invalidated.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: HWPCB_core.h – HWPCB field definitions; <a href="chapter-8_6-pal-and-exceptions.html" class="topiclink">8.6 PAL Execution Model</a> (shadow registers); <a href="17_7-asn-management-and-cohere.html" class="topiclink">17.7 ASN Management and Coherence</a> (epoch-based invalidation).</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

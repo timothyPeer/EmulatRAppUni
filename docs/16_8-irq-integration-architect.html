@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 16 – Device Model &amp; DMA &gt; 16.8 IRQ Integration Architecture</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="16.8.1 IRQ System Migration &nbsp;The device interrupt architecture in ASA-EmulatR has been migrated away from the legacy IRQController class. Device IRQ interfaces are now handled..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "16_8-irq-integration-architect.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">16.8 IRQ Integration Architecture</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?16_8-irq-integration-architect.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-16---device-model--dma.html">Chapter 16 – Device Model &amp; DMA</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">16.8 IRQ Integration Architecture</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="16_7-network-and-fibre-channel.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-16---device-model--dma.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="16_9-dma-implementation.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.8.1 IRQ System Migration</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The device interrupt architecture in ASA-EmulatR has been migrated away from the legacy <span class="f_CodeExample">IRQController</span> class. Device IRQ interfaces are now handled by the newer IRQ system located in <span class="f_CodeExample">coreLib/</span>, which provides a more modular, lock-free hot path and cleaner separation between device interrupt assertion, CPU polling, and PAL delivery.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The current IRQ architecture is organized around the following components in <span class="f_CodeExample">coreLib/</span>:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span><span class="f_CodeExample">IRQPendingState</span> — Per-CPU interrupt state using atomic bitmask operations. Provides the lock-free hot path: <span class="f_CodeExample">hasPendingInterrupt()</span> reads an <span class="f_CodeExample">atomic&lt;quint32&gt;</span> pendingIPLMask with no locking. Interrupt assertion sets bits in the mask; acknowledgment clears them.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span><span class="f_CodeExample">IPI_core.h</span> — Inter-processor interrupt definitions: <span class="f_CodeExample">IPICommand</span> enum (TLB shootdown, barrier synchronization, custom messages), IPI delivery through the per-CPU pending state.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span><span class="f_CodeExample">onIPLChanged_inl.h</span> — Inline handler invoked when the current IPL changes (via MTPR SIRR or PAL exit), re-evaluating which pending interrupts are now deliverable.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.8.2 Device Interrupt Flow (Current Architecture)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The device-to-PAL interrupt delivery path using the current <span class="f_CodeExample">coreLib/</span> IRQ system:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Device&nbsp;completes&nbsp;operation&nbsp;(in&nbsp;device&nbsp;I/O&nbsp;thread)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Assert&nbsp;IRQ:&nbsp;set&nbsp;bit&nbsp;in&nbsp;target&nbsp;CPU's&nbsp;IRQPendingState</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;pendingIPLMask&nbsp;|=&nbsp;(1&nbsp;&lt;&lt;&nbsp;deviceIPL)&nbsp;[atomic,&nbsp;lock-free]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CPU&nbsp;run&nbsp;loop:&nbsp;AlphaCPU::runOneInstruction()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;if&nbsp;(!inPalMode)&nbsp;poll&nbsp;IRQPendingState&nbsp;[lock-free&nbsp;read]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">hasPendingInterrupt(currentIPL)&nbsp;→&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;(pending&nbsp;IPL&nbsp;&gt;&nbsp;current&nbsp;IPL,&nbsp;not&nbsp;in&nbsp;PAL&nbsp;mode)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Deliver&nbsp;to&nbsp;FaultDispatcher&nbsp;→&nbsp;PendingEvent</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PAL&nbsp;INTERRUPT&nbsp;handler&nbsp;entry</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PAL&nbsp;identifies&nbsp;source,&nbsp;acknowledges&nbsp;(MMIO&nbsp;write&nbsp;to&nbsp;device)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Device&nbsp;clears&nbsp;interrupt&nbsp;condition</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">HW_REI&nbsp;returns&nbsp;to&nbsp;interrupted&nbsp;code</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The hot path — polling for pending interrupts during the CPU run loop — is entirely lock-free. The <span class="f_CodeExample">pendingIPLMask</span> is an atomic bitmask where each bit corresponds to an IPL level. Reading this mask costs approximately 5 cycles (single atomic load), making per-instruction interrupt polling practical without performance impact.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.8.3 IRQ Routing and Affinity</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Device interrupts are routed to specific CPUs based on routing policy. The supported policies are:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Policy</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Behavior</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">FIXED_CPU</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Always delivered to a specific CPU (affinity-pinned). Used for boot devices and primary console.</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">ROUND_ROBIN</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Rotates across available CPUs for load distribution.</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">LOWEST_IPL</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Delivered to the CPU currently running at the lowest IPL (most likely to accept the interrupt promptly).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Routing policy is configured per device vector in the <span class="f_CodeExample">IrqTemplate</span> structure within <span class="f_CodeExample">DeviceTemplate</span>. The default for most devices is <span class="f_CodeExample">FIXED_CPU</span> with affinity to CPU 0, matching typical Alpha firmware behavior where the primary CPU handles all device interrupts until the OS reconfigures routing.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.8.4 Level-Triggered vs Edge-Triggered Semantics</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The IRQ system supports both trigger modes via the <span class="f_CodeExample">IRQTrigger</span> enumeration. <span style="font-weight: bold;">Level-triggered</span> interrupts remain asserted until the device explicitly clears the condition (typically via an MMIO register write from PAL). The <span class="f_CodeExample">inServiceMask</span> in <span class="f_CodeExample">IRQPendingState</span> tracks level-triggered sources to prevent re-delivery while the interrupt is being serviced. <span style="font-weight: bold;">Edge-triggered</span> interrupts are one-shot: the pending bit is set on assertion and consumed on delivery, with no in-service tracking needed.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Most Alpha device interrupts are level-triggered. Edge-triggered mode is used for specific IPI types and timer interrupts.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: coreLib/IRQPendingState.h – Per-CPU interrupt state; coreLib/IPI_core.h – IPI definitions; <a href="chapter-7_9-interrupt-handling.html" class="topiclink">7.10 Interrupt Handling</a>; <a href="chapter-9_6-write-buffers-in-s.html" class="topiclink">9.6 Inter-Processor Interrupts (IPIs)</a> .</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

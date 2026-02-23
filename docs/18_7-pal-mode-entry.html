@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 18 – Fault Dispatcher &amp; Precise Exceptions &gt; 18.7 PAL Mode Entry</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="18.7.1 enterPalMode() Sequence &nbsp;All exception and interrupt delivery paths converge on AlphaCPU::enterPalMode(), which performs the atomic transition from normal execution to..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "18_7-pal-mode-entry.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">18.7 PAL Mode Entry</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?18_7-pal-mode-entry.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-18---fault-dispatcher-.html">Chapter 18 – Fault Dispatcher &amp; Precise Exceptions</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">18.7 PAL Mode Entry</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="18_6-pipeline-fault-detection-.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-18---fault-dispatcher-.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="18_8-precise-exception-guarant.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">18.7.1 enterPalMode() Sequence</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All exception and interrupt delivery paths converge on <span class="f_CodeExample">AlphaCPU::enterPalMode()</span>, which performs the atomic transition from normal execution to PAL handler code:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;enterPalMode(PalEntryReason&nbsp;reason,&nbsp;quint64&nbsp;vector,&nbsp;quint64&nbsp;faultPC)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;1.&nbsp;Save&nbsp;complete&nbsp;context</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;saveContext();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;2.&nbsp;Compute&nbsp;entry&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;entryPC;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;if&nbsp;(reason&nbsp;==&nbsp;PalEntryReason::CALL_PAL_INSTRUCTION)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;entryPC&nbsp;=&nbsp;m_iprGlobalMaster-&gt;computeCallPalEntry(vector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;else</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;entryPC&nbsp;=&nbsp;vector;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;3.&nbsp;Set&nbsp;EXC_ADDR&nbsp;to&nbsp;faulting&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;h-&gt;exc_addr&nbsp;=&nbsp;faultPC;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;4.&nbsp;Enter&nbsp;PAL&nbsp;mode:&nbsp;IPL&nbsp;=&nbsp;7,&nbsp;CM&nbsp;=&nbsp;KERNEL</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;h-&gt;pc&nbsp;=&nbsp;entryPC&nbsp;|&nbsp;0x1;&nbsp;//&nbsp;low&nbsp;bit&nbsp;=&nbsp;PAL&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;h-&gt;setIPL_Unsynced(7);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;h-&gt;setCM(CM_KERNEL);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;5.&nbsp;Activate&nbsp;shadow&nbsp;registers&nbsp;for&nbsp;CALL_PAL</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;if&nbsp;(reason&nbsp;==&nbsp;CALL_PAL_INSTRUCTION)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;setShadowEnabled(true);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;6.&nbsp;Flush&nbsp;pipeline</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_alphaPipeline-&gt;flush(&quot;enterPalMode&quot;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The state changes are atomic with respect to the CPU: <span class="f_CodeExample">EXC_ADDR</span> receives the faulting PC, <span class="f_CodeExample">EXC_SUM</span> is updated for arithmetic exceptions, processor status is updated (mode → kernel, IPL → 7, interrupts masked), and the pipeline is flushed. The low bit of the entry PC (<span class="f_CodeExample">| 0x1</span>) is the architectural PAL mode indicator checked by the execution engine on every instruction.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">18.7.2 PAL Entry Reasons</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">PalEntryReason</span> determines how the PAL vector is computed and what additional state is saved:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Reason</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Behavior</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">CALL_PAL_INSTRUCTION</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Explicit PAL call; vector from PAL_BASE + dispatch offset; shadow registers activated</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">FAULT</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Synchronous fault (translation, alignment, access violation); vector from exception dispatch</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">TRAP</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Synchronous trap (arithmetic, software); vector from exception dispatch</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">INTERRUPT</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Asynchronous interrupt; vector from interrupt dispatch table</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Invariant:</span> All exception delivery paths call <span class="f_CodeExample">enterPalMode()</span> with the appropriate <span class="f_CodeExample">PalEntryReason</span> and <span class="f_CodeExample">PalVectorId</span>. All interrupt delivery calls <span class="f_CodeExample">PalService::deliverInterrupt()</span>. No exception handler exists outside PAL code.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: cpuCoreLib/AlphaCPU.h – enterPalMode(); <a href="chapter-7_8-pal-mode-entry.html" class="topiclink">7.9 Exception Delivery and PAL Mode Entry</a>; <a href="chapter-8---pal-and-privleged-.html" class="topiclink">Chapter 8 - PAL and Privileged Boundary</a>.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

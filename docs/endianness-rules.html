@@ -1,0 +1,476 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Endianness Rules</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="Alpha is ALWAYS little-endian. There is no big-endian mode. Any big-endian data must be explicitly byte-swapped by software." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "endianness-rules.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Endianness Rules</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?endianness-rules.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Endianness Rules</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="decodedinstruction.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="introduction.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="flow-chart-runloop.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">Alpha is ALWAYS little-endian. There is no big-endian mode. Any big-endian data must be explicitly byte-swapped by software.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">ALPHA ENDIANNESS - ARCHITECTURAL FACTS:</p>
+<p class="p_Normal">---------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>ALPHA IS LITTLE-ENDIAN (Native)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span> &nbsp; - All Alpha processors (21064, 21164, 21264/EV6) are little-endian</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span> &nbsp; - Memory is stored with least significant byte at lowest address</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span> &nbsp; - This is the ONLY native mode - no big-endian mode switch</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">2.</span>INSTRUCTIONS ARE LITTLE-ENDIAN</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span> &nbsp; - 32-bit instructions stored in little-endian format</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span> &nbsp; - Opcode extraction works on little-endian values</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span> &nbsp; - No byte swapping needed for instruction fetch</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">3.</span>DATA ACCESSES ARE LITTLE-ENDIAN</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span> &nbsp; - LDQ, LDL, LDWU, LDBU all assume little-endian memory</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span> &nbsp; - STQ, STL, STW, STB all write little-endian</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span> &nbsp; - No automatic byte swapping in hardware</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">4.</span>BYTE SWAPPING IS SOFTWARE-CONTROLLED</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span> &nbsp; - Alpha provides INSWL, EXTQH, etc. for manual byte manipulation</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span> &nbsp; - OSF/1, Tru64, Linux/Alpha all assume little-endian</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span> &nbsp; - Big-endian data must be explicitly converted by software</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">5.</span>MMIO CAN BE CONFIGURED</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span> &nbsp; - Some Alpha systems (like AlphaServer) have I/O controllers</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span> &nbsp; &nbsp; that support per-device endianness configuration</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span> &nbsp; - This is handled by the I/O bridge/chipset, NOT the CPU</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">d.</span> &nbsp; - The CPU always operates in little-endian mode</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Architecture Stack</span></h2>
+<p class="p_Normal">--------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>LAYER 1: CPU (Alpha Instructions)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span> Native little-endian operations</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span> No byte swapping</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span> Operates on host-endian values in registers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">2.</span>LAYER 2: GuestMemory / SafeMemory</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span>Stores memory in LITTLE-ENDIAN format (Alpha native)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span>readPA() converts from little-endian to host-endian</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span>writePA() converts from host-endian to little-endian</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">d.</span>This is WHERE endianness conversion happens</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">3.</span>LAYER 3: MMIO Manager</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span>Per-device endianness configuration</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span>Most devices: little-endian (native Alpha)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span>Some devices: big-endian (e.g., network interfaces)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">d.</span>Handled by device-specific read/write handlers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">4.</span>LAYER 4: Host Machine</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span>Could be x86-64 (little-endian) or ARM64 (bi-endian)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span>Qt provides qFromLittleEndian() / qToLittleEndian()</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span>Use these for memory &lt;-&gt; register transfers</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">EmulatR Implementation (Endian Support)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">From AlphaMemorySystem.h, your readRAM():</p>
+<p class="p_Normal">-----------------------------------------</p>
+<p class="p_CodeExample"><span class="f_CodeExample">case&nbsp;8:&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;val;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!m_guestMem-&gt;readPA(pa,&nbsp;&amp;val,&nbsp;8))&nbsp;return&nbsp;false;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;outValue&nbsp;=&nbsp;qFromLittleEndian(val);&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;true;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Implementation Rule: </span></h3>
+<p class="p_Normal">1. GuestMemory stores bytes in little-endian (Alpha native)</p>
+<p class="p_Normal">2. readPA() returns raw bytes (little-endian)</p>
+<p class="p_Normal">3. qFromLittleEndian() converts to host endianness</p>
+<p class="p_Normal">4. CPU operates on host-endian values</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">From AlphaMemorySystem.h, your writeRAM():</p>
+<p class="p_Normal">------------------------------------------</p>
+<p class="p_CodeExample"><span class="f_CodeExample">case&nbsp;8:&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;val&nbsp;=&nbsp;qToLittleEndian(value);&nbsp;&nbsp;//&nbsp;✅&nbsp;CORRECT!</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;m_guestMem-&gt;writePA(pa,&nbsp;&amp;val,&nbsp;8);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Implementation Rule: </span></h3>
+<p class="p_Normal">1. CPU provides value in host endianness</p>
+<p class="p_Normal">2. qToLittleEndian() converts to Alpha native (little-endian)</p>
+<p class="p_Normal">3. writePA() stores bytes in little-endian format</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Implementation Rule: </span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The global_BoxMemory.h functions you're using:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">inline&nbsp;bool&nbsp;readPA_Quad(quint64&nbsp;pa,&nbsp;quint64&amp;&nbsp;outValue)&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;globalBoxMemory().readPA(pa,&nbsp;&amp;outValue,&nbsp;8);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This ultimately calls AlphaMemorySystem::readRAM() which does:</p>
+<p class="p_Normal"> &nbsp; &nbsp;outValue = qFromLittleEndian(val);</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">So endianness IS handled - at the memory system layer!</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">YOUR MBox FUNCTIONS Do not perform endian translations</p>
+<p class="p_Normal">---------------------------------------------------------</p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;MBox::executeLDQ(const&nbsp;DecodedInstruction&amp;&nbsp;di)&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;data;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;readPA_Quad(pa,&nbsp;data);&nbsp;&nbsp;//&nbsp;Returns&nbsp;value&nbsp;in&nbsp;host&nbsp;endianness&nbsp;✅</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;writeIntReg(m_cpuId,&nbsp;di.ra,&nbsp;data);&nbsp;&nbsp;//&nbsp;CPU&nbsp;uses&nbsp;host&nbsp;endianness&nbsp;✅</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Implementation Rule: </span></h3>
+<p class="p_Normal">1. readPA_Quad() handles conversion from little-endian memory</p>
+<p class="p_Normal">2. CPU registers operate in host endianness</p>
+<p class="p_Normal">3. No manual byte swapping needed at instruction level</p>
+<p class="p_Normal">*/</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_Heading2">MMIO ENDIANNESS HANDLING. </span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO devices may need different endianness:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Network Interface Card (Big-Endian)</p>
+<p class="p_Normal">--------------------------------------------</p>
+<p class="p_CodeExample"><span class="f_CodeExample">class&nbsp;NetworkDevice&nbsp;:&nbsp;public&nbsp;MMIODevice</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;MMIOStatus&nbsp;handleRead(quint64&nbsp;offset,&nbsp;quint8&nbsp;width,&nbsp;quint64&amp;&nbsp;outValue)&nbsp;override</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;rawValue&nbsp;=&nbsp;m_registers[offset&nbsp;/&nbsp;4];</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;This&nbsp;device&nbsp;is&nbsp;big-endian&nbsp;(common&nbsp;for&nbsp;network&nbsp;chips)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(width&nbsp;==&nbsp;4)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outValue&nbsp;=&nbsp;qFromBigEndian(rawValue);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;MMIOStatus::OK;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;MMIOStatus&nbsp;handleWrite(quint64&nbsp;offset,&nbsp;quint8&nbsp;width,&nbsp;quint64&nbsp;value)&nbsp;override</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Convert&nbsp;from&nbsp;host&nbsp;to&nbsp;big-endian&nbsp;for&nbsp;this&nbsp;device</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(width&nbsp;==&nbsp;4)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_registers[offset&nbsp;/&nbsp;4]&nbsp;=&nbsp;qToBigEndian(static_cast&lt;quint32&gt;(value));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;MMIOStatus::OK;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Example:&nbsp;Serial&nbsp;Port&nbsp;(Little-Endian)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">------------------------------------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">class&nbsp;SerialDevice&nbsp;:&nbsp;public&nbsp;MMIODevice</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;MMIOStatus&nbsp;handleRead(quint64&nbsp;offset,&nbsp;quint8&nbsp;width,&nbsp;quint64&amp;&nbsp;outValue)&nbsp;override</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Most&nbsp;serial&nbsp;devices&nbsp;are&nbsp;byte-oriented,&nbsp;no&nbsp;endianness&nbsp;issues</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(width&nbsp;==&nbsp;1)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outValue&nbsp;=&nbsp;m_registers[offset];</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;MMIOStatus::OK;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Implementation Rule: </span></h3>
+<p class="p_Normal">---------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>RAM is always little-endian (Alpha native)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>MMIO endianness is device-specific</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Handle it in the device's read/write methods</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>NOT in the CPU instruction handlers</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">INSTRUCTION FETCH ENDIANNESS</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Instructions are 32-bit little-endian values:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Example instruction: 0x47E03400 (little-endian in memory)</p>
+<p class="p_Normal">Memory bytes: [0x00, 0x34, 0xE0, 0x47] at addresses [n, n+1, n+2, n+3]</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When fetched:</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint32 raw;</p>
+<p class="p_Normal"> &nbsp; &nbsp;readPA_Long(pc, raw); &nbsp;// Returns 0x47E03400 in host endianness</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Decode:</p>
+<p class="p_Normal"> &nbsp; &nbsp;opcode = (raw &gt;&gt; 26) &amp; 0x3F; &nbsp;// Bits 31:26</p>
+<p class="p_Normal"> &nbsp; &nbsp;ra = (raw &gt;&gt; 21) &amp; 0x1F; &nbsp; &nbsp; &nbsp;// Bits 25:21</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Implementation Rule: </span></h3>
+<p class="p_Normal">1. Memory stores instruction in little-endian</p>
+<p class="p_Normal">2. readPA_Long() converts to host endianness</p>
+<p class="p_Normal">3. Bit extraction works on host-endian value</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">// ============================================================================</p>
+<p class="p_Normal">// ENDIANNESS IN DIFFERENT SCENARIOS</p>
+<p class="p_Normal">// ============================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SCENARIO 1: x86-64 Host (Little-Endian)</p>
+<p class="p_Normal">---------------------------------------</p>
+<p class="p_Normal">Alpha Memory: [0x78, 0x56, 0x34, 0x12] (little-endian, value = 0x12345678)</p>
+<p class="p_Normal">Host Machine: Little-endian</p>
+<p class="p_Normal">Conversion: qFromLittleEndian() is a no-op on x86-64</p>
+<p class="p_Normal">Result: 0x12345678 in CPU register ✅</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SCENARIO 2: Big-Endian Host (Hypothetical)</p>
+<p class="p_Normal">------------------------------------------</p>
+<p class="p_Normal">Alpha Memory: [0x78, 0x56, 0x34, 0x12] (little-endian, value = 0x12345678)</p>
+<p class="p_Normal">Host Machine: Big-endian</p>
+<p class="p_Normal">Conversion: qFromLittleEndian() byte-swaps to [0x12, 0x34, 0x56, 0x78]</p>
+<p class="p_Normal">Result: 0x12345678 in CPU register ✅</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SCENARIO 3: ARM64 Host (Bi-Endian, Running Little-Endian)</p>
+<p class="p_Normal">---------------------------------------------------------</p>
+<p class="p_Normal">Same as x86-64 case - qFromLittleEndian() is a no-op ✅</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">KEY INSIGHT:</p>
+<p class="p_Normal">-----------</p>
+<p class="p_Normal">Your code is PORTABLE because:</p>
+<p class="p_Normal">1. Alpha memory is always little-endian</p>
+<p class="p_Normal">2. Qt's qFromLittleEndian/qToLittleEndian handle host conversion</p>
+<p class="p_Normal">3. CPU operates on host-endian values</p>
+<p class="p_Normal">4. No #ifdef needed for different host architectures</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">/*</p>
+<p class="p_Normal">Your GuestMemory should do something like:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">bool&nbsp;GuestMemory::readPA(quint64&nbsp;pa,&nbsp;void*&nbsp;buffer,&nbsp;size_t&nbsp;size)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Read&nbsp;bytes&nbsp;from&nbsp;guest&nbsp;memory&nbsp;(stored&nbsp;in&nbsp;little-endian)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;memcpy(buffer,&nbsp;m_ram&nbsp;+&nbsp;pa,&nbsp;size);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;true;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">bool&nbsp;GuestMemory::writePA(quint64&nbsp;pa,&nbsp;const&nbsp;void*&nbsp;buffer,&nbsp;size_t&nbsp;size)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Write&nbsp;bytes&nbsp;to&nbsp;guest&nbsp;memory&nbsp;(stored&nbsp;in&nbsp;little-endian)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;memcpy(m_ram&nbsp;+&nbsp;pa,&nbsp;buffer,&nbsp;size);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;true;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Then in AlphaMemorySystem::readRAM():</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 val;</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_guestMem-&gt;readPA(pa, &amp;val, 8); &nbsp; &nbsp; &nbsp;// Raw bytes (little-endian)</p>
+<p class="p_Normal"> &nbsp; &nbsp;outValue = qFromLittleEndian(val); &nbsp; &nbsp;// Convert to host endianness </p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">And in AlphaMemorySystem::writeRAM():</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 val = qToLittleEndian(value); // Convert to little-endian</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_guestMem-&gt;writePA(pa, &amp;val, 8); &nbsp; &nbsp; // Store bytes </p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">WHERE ENDIANNESS IS HANDLED:</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>GuestMemory/SafeMemory Layer:</p>
+<p class="p_Normal"> &nbsp; - Stores bytes in little-endian (Alpha native)</p>
+<p class="p_Normal"> &nbsp; - Converts to/from host endianness on read/write</p>
+<p class="p_Normal"> &nbsp; - Uses qFromLittleEndian() / qToLittleEndian()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>MMIO Layer (Device-Specific):</p>
+<p class="p_Normal"> &nbsp; - Per-device endianness configuration</p>
+<p class="p_Normal"> &nbsp; - Most devices: little-endian (Alpha native)</p>
+<p class="p_Normal"> &nbsp; - Some devices: big-endian (handled in device code)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">❌ CPU Instruction Layer (MBox, EBox, etc.):</p>
+<p class="p_Normal"> &nbsp; - NO endianness handling needed</p>
+<p class="p_Normal"> &nbsp; - Operates on host-endian values</p>
+<p class="p_Normal"> &nbsp; - Memory layer handles conversion</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">❌ Register File:</p>
+<p class="p_Normal"> &nbsp; - NO endianness handling needed</p>
+<p class="p_Normal"> &nbsp; - Just stores native host values</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">VERIFICATION CHECKLIST:</p>
+<p class="p_Normal">----------------------</p>
+<p class="p_Normal">1. ✅ Check AlphaMemorySystem::readRAM() uses qFromLittleEndian()</p>
+<p class="p_Normal">2. ✅ Check AlphaMemorySystem::writeRAM() uses qToLittleEndian()</p>
+<p class="p_Normal">3. ✅ GuestMemory stores bytes in little-endian order</p>
+<p class="p_Normal">4. ✅ MMIO devices handle their own endianness</p>
+<p class="p_Normal">5. ✅ CPU instructions just use values, no swapping</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">ALPHA ARCHITECTURAL FACT.</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">TESTING ENDIANNESS CORRECTNESS</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Test Case: Write and Read Back</p>
+<p class="p_Normal">------------------------------</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Write&nbsp;known&nbsp;value</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">quint64&nbsp;testValue&nbsp;=&nbsp;0x0123456789ABCDEF;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">writePA_Quad(0x1000,&nbsp;testValue);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Read&nbsp;back</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">quint64&nbsp;readValue;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">readPA_Quad(0x1000,&nbsp;readValue);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Verify</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assert(readValue&nbsp;==&nbsp;testValue);&nbsp;&nbsp;//&nbsp;Should&nbsp;be&nbsp;identical</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Check&nbsp;memory&nbsp;bytes&nbsp;(should&nbsp;be&nbsp;little-endian)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">quint8*&nbsp;bytes&nbsp;=&nbsp;getMemoryPointer(0x1000);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assert(bytes[0]&nbsp;==&nbsp;0xEF);&nbsp;&nbsp;//&nbsp;Least&nbsp;significant&nbsp;byte&nbsp;at&nbsp;lowest&nbsp;address</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assert(bytes[1]&nbsp;==&nbsp;0xCD);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assert(bytes[2]&nbsp;==&nbsp;0xAB);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assert(bytes[3]&nbsp;==&nbsp;0x89);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assert(bytes[4]&nbsp;==&nbsp;0x67);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assert(bytes[5]&nbsp;==&nbsp;0x45);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assert(bytes[6]&nbsp;==&nbsp;0x23);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assert(bytes[7]&nbsp;==&nbsp;0x01);&nbsp;&nbsp;//&nbsp;Most&nbsp;significant&nbsp;byte&nbsp;at&nbsp;highest&nbsp;address</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_Normal">This verifies:</p>
+<p class="p_Normal">1. Write converts host → little-endian</p>
+<p class="p_Normal">2. Memory stores in little-endian</p>
+<p class="p_Normal">3. Read converts little-endian → host</p>
+<p class="p_Normal">4. Round-trip preserves value</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">CONCLUSION.</span></h2>
+<p class="p_Normal">----------</p>
+<p class="p_Normal">The current architecture is CORRECT. Endianness is handled at the right layer (memory system), and your instruction implementations don't need to worry about it. Keep doing what you're doing! </p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

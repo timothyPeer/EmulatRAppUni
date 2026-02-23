@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 16 – Device Model &amp; DMA &gt; 16.1 Device Differentiation and Class Hierarchy</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="16.1.1 Device Classes &nbsp;ASA-EmulatR distinguishes devices by function, bus attachment, and I/O characteristics. The mmio_DeviceClass enumeration in coreLib/mmio_core.h provides..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "16_1-device-differentiation-an.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">16.1 Device Differentiation and Class Hierarchy</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?16_1-device-differentiation-an.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-16---device-model--dma.html">Chapter 16 – Device Model &amp; DMA</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">16.1 Device Differentiation and Class Hierarchy</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="chapter-16---device-model--dma.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-16---device-model--dma.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="16_2-mmio-routing-implementati.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.1.1 Device Classes</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">ASA-EmulatR distinguishes devices by function, bus attachment, and I/O characteristics. The <span class="f_CodeExample">mmio_DeviceClass</span> enumeration in <span class="f_CodeExample">coreLib/mmio_core.h</span> provides the primary classification:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">enum&nbsp;class&nbsp;mmio_DeviceClass&nbsp;:&nbsp;quint8&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;INVALID&nbsp;=&nbsp;0,&nbsp;UNKNOWN,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;Controllers&nbsp;(bus-facing&nbsp;HBAs)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;SCSI_HBA,&nbsp;IDE_CONTROLLER,&nbsp;NIC,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;Child&nbsp;devices&nbsp;(protocol-level)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;SCSI_DISK,&nbsp;SCSI_TAPE,&nbsp;SCSI_CDROM,&nbsp;SCSI_CONTROLLER,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IDE_DISK,&nbsp;IDE_CDROM,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;UART_CONSOLE,&nbsp;UART,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;Infrastructure</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;HOST_BRIDGE_NODE,&nbsp;BRIDGE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This enumeration drives template selection in <span class="f_CodeExample">DeviceCatalog</span>, MMIO window attribute assignment, interrupt routing policy defaults, and diagnostic identification. The two-tier structure — controllers versus child devices — reflects the physical Alpha bus topology: a SCSI HBA controller sits on the PCI bus with its own MMIO BAR, while individual SCSI disks and tapes are protocol-level entities behind that controller.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.1.2 Specialized Device Managers</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each device category has a dedicated manager responsible for device lifecycle, resource allocation, and bus-specific protocol handling:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Manager</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Device Classes</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Responsibility</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">SCSIDeviceManager</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">SCSI_HBA, SCSI_DISK, SCSI_TAPE, SCSI_CDROM</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">SCSI bus topology, LUN enumeration, command routing</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">IDEDeviceManager</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">IDE_CONTROLLER, IDE_DISK, IDE_CDROM</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">IDE channel/master-slave pairing, PIO/DMA mode</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">NetworkManager</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">NIC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Network adapter lifecycle, packet I/O, MAC addressing</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">FibreDeviceManager</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Fibre Channel / FG storage</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">FC fabric topology, port login, FCP command dispatch</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">ConsoleManager</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">UART_CONSOLE, UART</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Serial console (OPA0), terminal I/O, SRM console integration</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">FirmwareDeviceManager</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ROM, firmware regions</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">SRM firmware loading, DMA coordination (~540 lines)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each manager is independently instantiable and registers its devices with the shared <span class="f_CodeExample">MMIOManager</span> and IRQ system. This independence means device categories can be developed and validated in isolation — a fully functional SCSI subsystem does not require a working network stack, and vice versa.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.1.3 Storage Device Differentiation</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Storage devices in ASA-EmulatR support multiple backing strategies, selectable per device instance:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Direct RAW Partition Access</span> — The device emulator maps a host-side raw disk partition (or raw disk image file) directly as the guest storage medium. Reads and writes translate 1:1 to host-side block I/O. This mode provides the highest fidelity to real hardware behavior and is the preferred mode for production guest OS installations. RAW access implies no metadata overhead and no container format translation.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">File System Container</span> — The guest disk is stored as a container file on the host file system (e.g., a flat image file or a structured container with embedded metadata). This mode supports snapshot-friendly workflows, easier backup, and host-side inspection. The container format includes a header describing geometry, sector size, and optional compression. Access goes through the host file system, which adds latency but enables portability across host platforms.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Fibre Channel / FG Storage</span> — Fibre Channel devices present storage via the FCP (Fibre Channel Protocol) command set. The <span class="f_CodeExample">FibreDeviceManager</span> emulates FC port login, fabric topology, and FCP command routing. Backing storage may be either RAW or container, but the guest sees an FC-attached LUN with FC-specific inquiry data and error recovery semantics. This path is structurally complete at the manager level but requires further FCP command coverage.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All three modes present the same SCSI or IDE command interface to the guest — the backing strategy is transparent to guest software. The device manager selects the appropriate host-side I/O path based on configuration in <span class="f_CodeExample">ASA-EmulatR.ini</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: mmioLib/IDeviceEmulator.h (~266 lines) – Device interface contract; coreLib/mmio_core.h (~405 lines) – mmio_DeviceClass enumeration, MMIOWindow attributes; mmioLib/mmio_DeviceCatalog.h (~130 lines) – Template database.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 11 - Architectural Invariants</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="11.1 Purpose of This Chapter &nbsp;This chapter defines the architectural invariants of EmulatR. &nbsp;An architectural invariant is a rule that: &nbsp;Must always hold true &nbsp;Is independe" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "chapter-11---architectural-inv.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Chapter 11 - Architectural Invariants</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?chapter-11---architectural-inv.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Chapter 11 - Architectural Invariants</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="10_13-summary.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="architecture-overview.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="11_1-purpose-of-this-chapter.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.1 Purpose of This Chapter</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This chapter defines the architectural invariants of EmulatR.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">An architectural invariant is a rule that:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Must always hold true</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Is independent of implementation details</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Cannot be violated by optimization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Defines correctness, not performance</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If an invariant is violated, the emulator is architecturally incorrect, even if it appears to work.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These invariants apply across:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Single-CPU and SMP systems</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL and non-PAL execution</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All pipeline stages</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All device and MMIO interactions</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">11.2 Execution and Pipeline Invariants</span></h1>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.2.1 Precise Execution</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All exceptions are precise</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When an exception is delivered:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All prior instructions have completed</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No later instruction has modified architectural state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No instruction partially commits</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">There are no imprecise exceptions in EmulatR.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.2.2 Single Commit Point</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Architectural state commits only in Writeback</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No instruction updates architectural state earlier</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Speculative results are never visible</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This applies to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Registers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PC</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Condition codes</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Memory visibility</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.2.3 EX Stage Authority</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All instruction semantics execute in EX stage</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Memory operations occur in EX via MBox</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Other pipeline stages perform bookkeeping only</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No architectural work occurs outside EX.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.2.4 No Speculation Across Serialization Points</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No speculative instruction may execute past:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MB</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">WMB</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EXCB</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">TRAPB</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CALL_PAL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">HW_REI</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Serialization points are absolute.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">11.3 Memory Model Invariants</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.3.1 Weak Ordering by Default</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Memory is weakly ordered</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Loads and stores may reorder</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Stores may be deferred</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Visibility is not guaranteed without barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No implicit ordering exists.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.3.2 Explicit Ordering Only</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Ordering is enforced only by:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MB / WMB</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EXCB / TRAPB</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL entry / exit</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Certain MMIO semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Any code relying on implicit ordering is incorrect.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.3.3 MMIO Strong Ordering</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO accesses are strongly ordered</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO accesses are synchronous</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO accesses are never buffered</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO accesses are never speculative</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO correctness overrides performance.</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">&nbsp;</span></h2>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">11.4 Load-Locked / Store-Conditional (LL/SC) Invariants</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.4.1 Reservation Model</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">LL/SC uses reservations, not locks</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Reservations are:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Per-CPU</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Cache-line granular</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Optimistic</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Non-blocking</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No mutex semantics exist.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.4.2 Reservation Lifetime</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A CPU may hold at most one reservation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Reservations are cleared on:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Any store to the cache line</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Any store by the same CPU</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MB / EXCB where required</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL entry or exit</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Exception or interrupt delivery</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Context switch</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Reservations never survive privilege boundaries.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.4.3 Store-Conditional Semantics</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">ST*_C must:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Succeed only if reservation is valid</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Fail otherwise</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Clear reservation regardless of outcome</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No retries are implicit.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">11.5 Privilege and PAL Invariants</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.5.1 Absolute Privileged Boundary</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Execution is either PAL or non-PAL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">There is no intermediate privilege state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Privilege cannot be escalated incrementally</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.5.2 Single Entry / Single Exit</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CALL_PAL is the only entry into PAL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">HW_REI is the only exit from PAL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Any other path is illegal and must fault.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.5.3 Complete State Restoration</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL entry captures full architectural state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">HW_REI restores full architectural state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No partial restoration is permitted</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No PAL state leaks into non-PAL execution</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">&nbsp;</span></h2>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">11.6 Exception and Interrupt Invariants</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.6.1 Classification</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Faults are synchronous</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Traps are synchronous but post-commit</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Interrupts are asynchronous</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each follows distinct delivery rules.</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.6.2 Priority and Isolation</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Only one exception or interrupt is delivered at a time</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Exceptions are prioritized deterministically</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Interrupts are maskable and deferrable</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Faults affect only the current CPU</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.6.3 PAL-Mediated Delivery</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All exceptions and interrupts enter PAL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No exception bypasses PAL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL is the sole authority for dispatch</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">&nbsp;</span></h2>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">11.7 SMP Invariants</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.7.1 True Symmetry</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All CPUs are peers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No CPU has implicit authority</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No global CPU lock exists</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.7.2 Per-CPU Independence</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each CPU has independent:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Pipeline</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Registers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">TLBs</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Write buffers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Reservations</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No CPU directly mutates another CPU’s private state.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.7.3 Shared Memory, Explicit Coordination</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">GuestMemory is shared</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Visibility is not immediate</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Coordination occurs only through:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">IPIs</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL operations</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">11.8 Device and MMIO Invariants</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.8.1 Asynchronous Devices</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Devices operate asynchronously</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CPU never blocks on device execution</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Completion is interrupt-driven or polled</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.8.2 Synchronous MMIO</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO access is synchronous</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Side effects occur immediately</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO is strongly ordered</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.8.3 DMA Rules</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DMA operates on GuestMemory</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DMA obeys access permissions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DMA completion does not imply ordering without barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">11.9 Debugging and Observability Invariants</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.9.1 Determinism</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Given the same inputs, execution is deterministic</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SMP ordering differences are intentional and observable</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No hidden timing dependencies exist</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.9.2 Traceability</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Every architectural event is traceable:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Exceptions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Interrupts</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL transitions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Reservation changes</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MMIO accesses</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If it cannot be traced, it cannot be trusted.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.10 Invariant Violations</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Any violation of an architectural invariant indicates:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A design bug, or</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">An implementation defect</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Performance, convenience, or simplicity never justify violating an invariant.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">11.11 Summary</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Architectural invariants define what EmulatR is.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Key guarantees:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Precise execution</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Explicit ordering</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Absolute privilege separation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Deterministic SMP behavior</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Correct atomic semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Strong MMIO correctness</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL-mediated control</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Full observability</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These invariants are the foundation on which all future features must stand.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Where This Chapter Fits</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This chapter should be treated as:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A correctness checklist</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A validation guide</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A regression test oracle</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A contributor contract</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

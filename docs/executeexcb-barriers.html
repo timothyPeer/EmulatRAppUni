@@ -1,0 +1,407 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; Cpu &gt; Barriers &gt; executeEXCB</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="// ============================================================================" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "executeexcb-barriers.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">executeEXCB</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?executeexcb-barriers.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a> &gt; <a href="cpu.html">Cpu</a> &gt; <a href="barriers.html">Barriers</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">executeEXCB</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="barriers.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="barriers.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="executewmb-barriers.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;EXCB&nbsp;Real-World&nbsp;Example&nbsp;-&nbsp;Alpha&nbsp;Assembly&nbsp;with&nbsp;Pipeline&nbsp;Stages&nbsp;Annotated</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Use&nbsp;Case:&nbsp;Reading&nbsp;exception&nbsp;registers&nbsp;after&nbsp;a&nbsp;potential&nbsp;fault</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">/*</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SCENARIO:&nbsp;Kernel&nbsp;exception&nbsp;handler&nbsp;needs&nbsp;to&nbsp;read&nbsp;EXC_ADDR&nbsp;after&nbsp;a&nbsp;DTB&nbsp;miss</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Alpha&nbsp;Assembly&nbsp;Code:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">--------------------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x20001000:&nbsp;&nbsp;LDQ&nbsp;&nbsp;&nbsp;R1,&nbsp;0(R2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Load&nbsp;that&nbsp;might&nbsp;fault&nbsp;(DTB&nbsp;miss)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x20001004:&nbsp;&nbsp;ADDQ&nbsp;&nbsp;R1,&nbsp;R3,&nbsp;R4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Arithmetic&nbsp;that&nbsp;might&nbsp;trap&nbsp;(overflow)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x20001008:&nbsp;&nbsp;STQ&nbsp;&nbsp;&nbsp;R5,&nbsp;8(R6)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Store&nbsp;that&nbsp;might&nbsp;fault&nbsp;(ACV)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x2000100C:&nbsp;&nbsp;EXCB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Exception&nbsp;barrier&nbsp;-&nbsp;WAIT&nbsp;for&nbsp;faults</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x20001010:&nbsp;&nbsp;MFPR&nbsp;&nbsp;R7,&nbsp;EXC_ADDR&nbsp;&nbsp;&nbsp;;&nbsp;NOW&nbsp;safe&nbsp;to&nbsp;read&nbsp;exception&nbsp;register</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x20001014:&nbsp;&nbsp;MFPR&nbsp;&nbsp;R8,&nbsp;EXC_SUM&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Read&nbsp;exception&nbsp;summary</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">0x20001018:&nbsp;&nbsp;BEQ&nbsp;&nbsp;&nbsp;R7,&nbsp;no_fault&nbsp;&nbsp;&nbsp;;&nbsp;Branch&nbsp;if&nbsp;no&nbsp;exception</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">KEY&nbsp;POINT:&nbsp;EXCB&nbsp;ensures&nbsp;that&nbsp;if&nbsp;ANY&nbsp;of&nbsp;the&nbsp;three&nbsp;prior&nbsp;instructions&nbsp;(LDQ,&nbsp;ADDQ,&nbsp;STQ)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">caused&nbsp;an&nbsp;exception,&nbsp;that&nbsp;exception&nbsp;is&nbsp;FULLY&nbsp;DELIVERED&nbsp;before&nbsp;we&nbsp;read&nbsp;EXC_ADDR.</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Without&nbsp;EXCB,&nbsp;we&nbsp;might&nbsp;read&nbsp;stale&nbsp;EXC_ADDR&nbsp;from&nbsp;a&nbsp;previous&nbsp;exception!</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">*/</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;CYCLE-BY-CYCLE&nbsp;PIPELINE&nbsp;FLOW&nbsp;(6-Stage&nbsp;Pipeline)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">/*</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PIPELINE&nbsp;STAGES:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;0:&nbsp;Fetch&nbsp;(IF)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;1:&nbsp;Decode&nbsp;(ID)&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;2:&nbsp;Issue&nbsp;(IS)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;3:&nbsp;Execute&nbsp;(EX)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;4:&nbsp;Memory&nbsp;(MEM)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;5:&nbsp;Writeback&nbsp;(WB)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;0:&nbsp;Initial&nbsp;State&nbsp;-&nbsp;LDQ&nbsp;enters&nbsp;pipeline</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PC&nbsp;=&nbsp;0x20001000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;LDQ&nbsp;R1,0&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x1000)&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;1:&nbsp;Pipeline&nbsp;filling</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PC&nbsp;=&nbsp;0x20001004</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;ADDQ&nbsp;R1,3&nbsp;|&nbsp;LDQ&nbsp;R1,0&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x1004)&nbsp;&nbsp;|&nbsp;(0x1000)&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;2:&nbsp;Pipeline&nbsp;filling</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PC&nbsp;=&nbsp;0x20001008</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;STQ&nbsp;R5,8&nbsp;&nbsp;|&nbsp;ADDQ&nbsp;R1,3&nbsp;|&nbsp;LDQ&nbsp;R1,0&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x1008)&nbsp;&nbsp;|&nbsp;(0x1004)&nbsp;&nbsp;|&nbsp;(0x1000)&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;3:&nbsp;Pipeline&nbsp;filling</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PC&nbsp;=&nbsp;0x2000100C</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;EXCB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;STQ&nbsp;R5,8&nbsp;&nbsp;|&nbsp;ADDQ&nbsp;R1,3&nbsp;|&nbsp;LDQ&nbsp;R1,0&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x100C)&nbsp;&nbsp;|&nbsp;(0x1008)&nbsp;&nbsp;|&nbsp;(0x1004)&nbsp;&nbsp;|&nbsp;(0x1000)&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;LDQ&nbsp;starts&nbsp;executing&nbsp;-&nbsp;might&nbsp;cause&nbsp;DTB&nbsp;miss!</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;4:&nbsp;EXCB&nbsp;enters&nbsp;Decode,&nbsp;LDQ&nbsp;accesses&nbsp;memory</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PC&nbsp;=&nbsp;0x20001010&nbsp;(BUT&nbsp;FETCH&nbsp;WILL&nbsp;STALL!)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;MFPR&nbsp;R7&nbsp;&nbsp;&nbsp;|&nbsp;EXCB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;STQ&nbsp;R5,8&nbsp;&nbsp;|&nbsp;ADDQ&nbsp;R1,3&nbsp;|&nbsp;LDQ&nbsp;R1,0&nbsp;&nbsp;|&nbsp;[empty]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x1010)&nbsp;&nbsp;|&nbsp;(0x100C)&nbsp;&nbsp;|&nbsp;(0x1008)&nbsp;&nbsp;|&nbsp;(0x1004)&nbsp;&nbsp;|&nbsp;(0x1000)&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;⚠️&nbsp;DTB&nbsp;MISS!</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;LDQ&nbsp;causes&nbsp;DTB&nbsp;miss&nbsp;in&nbsp;MEM&nbsp;stage&nbsp;-&nbsp;exception&nbsp;is&nbsp;signaled</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Fault&nbsp;event&nbsp;is&nbsp;queued&nbsp;in&nbsp;fault&nbsp;dispatcher</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;5:&nbsp;EXCB&nbsp;enters&nbsp;Execute&nbsp;-&nbsp;SETS&nbsp;STALL&nbsp;FLAGS</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;[STALL]&nbsp;&nbsp;&nbsp;|&nbsp;MFPR&nbsp;R7&nbsp;&nbsp;&nbsp;|&nbsp;EXCB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;STQ&nbsp;R5,8&nbsp;&nbsp;|&nbsp;ADDQ&nbsp;R1,3&nbsp;|&nbsp;LDQ&nbsp;R1,0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x1010)&nbsp;&nbsp;|&nbsp;(0x100C)&nbsp;&nbsp;|&nbsp;(0x1008)&nbsp;&nbsp;|&nbsp;(0x1004)&nbsp;&nbsp;|&nbsp;(0x1000)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;^^^^^^^^^&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;EXECUTES:&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;stalled=true&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;serializeType=Barrier_EXC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;EXCB&nbsp;sets&nbsp;stall&nbsp;flags&nbsp;in&nbsp;Execute&nbsp;stage</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;isFrontendStalled()&nbsp;returns&nbsp;TRUE&nbsp;-&nbsp;no&nbsp;new&nbsp;fetches!</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Pipeline&nbsp;starts&nbsp;draining</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;6:&nbsp;Pipeline&nbsp;draining&nbsp;-&nbsp;EXCB&nbsp;waits&nbsp;in&nbsp;Execute&nbsp;stage</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;[STALL]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;MFPR&nbsp;R7&nbsp;&nbsp;&nbsp;|&nbsp;EXCB*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;STQ&nbsp;R5,8&nbsp;&nbsp;|&nbsp;ADDQ&nbsp;R1,3</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x1010)&nbsp;&nbsp;|&nbsp;(0x100C)&nbsp;&nbsp;|&nbsp;(0x1008)&nbsp;&nbsp;|&nbsp;(0x1004)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(STALLED)&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;EXCB&nbsp;still&nbsp;stalled,&nbsp;waiting&nbsp;for&nbsp;prior&nbsp;instructions</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;checkBarrierRelease()&nbsp;checks:&nbsp;Are&nbsp;prior&nbsp;stages&nbsp;clear?&nbsp;NO&nbsp;(STQ&nbsp;in&nbsp;MEM)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;7:&nbsp;Still&nbsp;draining</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;[STALL]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;EXCB*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;MFPR&nbsp;R7&nbsp;&nbsp;&nbsp;|&nbsp;STQ&nbsp;R5,8</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x100C)&nbsp;&nbsp;|&nbsp;(0x1010)&nbsp;&nbsp;|&nbsp;(0x1008)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(STALLED)&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;checkBarrierRelease()&nbsp;checks:&nbsp;Are&nbsp;prior&nbsp;stages&nbsp;clear?&nbsp;NO&nbsp;(MFPR&nbsp;in&nbsp;MEM)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;8:&nbsp;Still&nbsp;draining</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;[STALL]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;EXCB*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;MFPR&nbsp;R7</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x100C)&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x1010)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(STALLED)&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;checkBarrierRelease()&nbsp;checks:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;&nbsp;&nbsp;✓&nbsp;All&nbsp;prior&nbsp;stages&nbsp;clear&nbsp;(Fetch/Decode/Issue&nbsp;are&nbsp;empty)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;&nbsp;&nbsp;✓&nbsp;All&nbsp;exceptions&nbsp;delivered&nbsp;(DTB&nbsp;miss&nbsp;was&nbsp;handled)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;&nbsp;&nbsp;→&nbsp;RELEASE:&nbsp;stalled&nbsp;=&nbsp;false</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;9:&nbsp;EXCB&nbsp;released&nbsp;-&nbsp;advances&nbsp;to&nbsp;MEM&nbsp;stage</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;MFPR&nbsp;R8&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;EXCB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;[empty]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x1014)&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x100C)&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;EXCB&nbsp;advances&nbsp;to&nbsp;MEM&nbsp;(no-op)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;isFrontendStalled()&nbsp;=&nbsp;FALSE&nbsp;-&nbsp;fetch&nbsp;resumes!</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Next&nbsp;instruction&nbsp;(MFPR&nbsp;R8,&nbsp;EXC_SUM)&nbsp;is&nbsp;fetched</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CYCLE&nbsp;10:&nbsp;EXCB&nbsp;completes,&nbsp;pipeline&nbsp;resumed</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Stage:&nbsp;|&nbsp;Fetch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Decode&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Issue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Execute&nbsp;&nbsp;&nbsp;|&nbsp;MEM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;WB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------|-----------|-----------|-----------|-----------|-----------|----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Inst:&nbsp;&nbsp;|&nbsp;BEQ&nbsp;R7&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;MFPR&nbsp;R8&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;[empty]&nbsp;&nbsp;&nbsp;|&nbsp;EXCB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x1018)&nbsp;&nbsp;|&nbsp;(0x1014)&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;(0x100C)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;EXCB&nbsp;completes&nbsp;writeback</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;EXC_ADDR&nbsp;is&nbsp;now&nbsp;safely&nbsp;readable&nbsp;(contains&nbsp;fault&nbsp;address&nbsp;from&nbsp;DTB&nbsp;miss)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Pipeline&nbsp;fully&nbsp;operational</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Pipeline&nbsp;stall&nbsp;is&nbsp;released</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">RESULT:&nbsp;EXC_ADDR&nbsp;contains&nbsp;the&nbsp;virtual&nbsp;address&nbsp;that&nbsp;caused&nbsp;the&nbsp;DTB&nbsp;miss</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Exception&nbsp;handler&nbsp;can&nbsp;now&nbsp;process&nbsp;the&nbsp;fault&nbsp;correctly</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">================================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">*/</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;CRITICAL&nbsp;INSIGHT:&nbsp;EXCB&nbsp;Waits&nbsp;for&nbsp;PRIOR&nbsp;Instructions,&nbsp;Not&nbsp;Next&nbsp;Ones</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">/*</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CORRECT&nbsp;UNDERSTANDING:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">=====================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">LDQ&nbsp;R1,&nbsp;0(R2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Instruction&nbsp;that&nbsp;might&nbsp;fault</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">ADDQ&nbsp;R1,&nbsp;R3,&nbsp;R4&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Instruction&nbsp;that&nbsp;might&nbsp;trap</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">STQ&nbsp;R5,&nbsp;8(R6)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Instruction&nbsp;that&nbsp;might&nbsp;fault</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">EXCB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;←&nbsp;WAIT&nbsp;HERE&nbsp;until&nbsp;all&nbsp;3&nbsp;prior&nbsp;instructions&nbsp;complete</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">MFPR&nbsp;R7,&nbsp;EXC_ADDR&nbsp;&nbsp;;&nbsp;←&nbsp;NOW&nbsp;safe&nbsp;-&nbsp;exception&nbsp;state&nbsp;is&nbsp;stable</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">The&nbsp;barrier&nbsp;ensures:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">1.&nbsp;LDQ,&nbsp;ADDQ,&nbsp;STQ&nbsp;have&nbsp;all&nbsp;completed&nbsp;(or&nbsp;faulted)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">2.&nbsp;Any&nbsp;exceptions&nbsp;they&nbsp;caused&nbsp;have&nbsp;been&nbsp;fully&nbsp;delivered</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">3.&nbsp;Exception&nbsp;registers&nbsp;(EXC_ADDR,&nbsp;EXC_SUM)&nbsp;reflect&nbsp;current&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">4.&nbsp;MFPR&nbsp;reads&nbsp;will&nbsp;see&nbsp;correct&nbsp;exception&nbsp;information</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">*/</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Memory&nbsp;Ordering&nbsp;Context</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">/*</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">You&nbsp;mentioned&nbsp;&quot;memory&nbsp;order&quot;&nbsp;-&nbsp;that's&nbsp;correct&nbsp;but&nbsp;applies&nbsp;to&nbsp;memory&nbsp;barriers:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">WMB&nbsp;(Write&nbsp;Memory&nbsp;Barrier):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">---------------------------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">STQ&nbsp;R1,&nbsp;0(R2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Store&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">STQ&nbsp;R3,&nbsp;8(R4)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Store&nbsp;2&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">WMB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;←&nbsp;Ensure&nbsp;both&nbsp;stores&nbsp;complete&nbsp;in&nbsp;order</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">STQ&nbsp;R5,&nbsp;16(R6)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Store&nbsp;3&nbsp;-&nbsp;won't&nbsp;execute&nbsp;until&nbsp;WMB&nbsp;releases</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">MB&nbsp;(Memory&nbsp;Barrier):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-------------------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">LDQ&nbsp;R1,&nbsp;0(R2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Load&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">STQ&nbsp;R3,&nbsp;8(R4)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Store&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">MB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;←&nbsp;Ensure&nbsp;all&nbsp;prior&nbsp;loads/stores&nbsp;complete</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">LDQ&nbsp;R5,&nbsp;16(R6)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Load&nbsp;2&nbsp;-&nbsp;won't&nbsp;execute&nbsp;until&nbsp;MB&nbsp;releases</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">EXCB&nbsp;(Exception&nbsp;Barrier):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">------------------------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">LDQ&nbsp;R1,&nbsp;0(R2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Might&nbsp;fault</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">ADDQ&nbsp;R1,&nbsp;R3,&nbsp;R4&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;Might&nbsp;trap</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">EXCB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;←&nbsp;Ensure&nbsp;all&nbsp;prior&nbsp;exceptions&nbsp;delivered</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">MFPR&nbsp;R7,&nbsp;EXC_ADDR&nbsp;&nbsp;;&nbsp;Safe&nbsp;to&nbsp;read&nbsp;exception&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">*/</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

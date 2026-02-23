@@ -1,0 +1,379 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; Hardware Privileged Context Block (HWPCB)</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="Address Space Number,ASN,AST Enable Register,AST Summary Register,ASTEN,ASTSR,Data Alignment Trap,DATFX,ESP,Executive Stack Pointer,FEN,Floating-Point Enable,Floating-Point Exception,FPE,Kernel Stack Pointer,KSP,Page Table Base Register,PAL Scratch Area,PAL_SCRATCH[8],PRBR,Process Region Base Register,PTBR,Saved PC,Saved Processor Status,SAVED_PC,SAVED_PS,SCBB,SSP,Supervisor Stack Pointer,System Control Block Base,Unique Value,UNQ,User Stack Pointer,User Stack Pointer,USP,USP,Virtual Page Table Base,VPTB" />
+   <meta name="description" content="HWPCB (Hardware Privileged Context Block) - Field List" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "hwpcb-.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Hardware Privileged Context Block (HWPCB)</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?hwpcb-.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Hardware Privileged Context Block (HWPCB)</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="load---silos-.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="alpha.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="architectural-overview---memor.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">HWPCB (Hardware Privileged Context Block) - Field List</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; width:96px; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Name</span></p>
+</th>
+<th style="vertical-align:top; width:201px; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Desc</span></p>
+</th>
+<th style="vertical-align:top; width:1933px; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Implementation</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">KSP &nbsp; &nbsp; </p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal"> Kernel Stack Pointer </p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Stack pointer for kernel mode</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">ESP &nbsp; &nbsp; </p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal"> Executive Stack Pointer </p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal"> Stack pointer for executive mode</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">SSP &nbsp; &nbsp; &nbsp; &nbsp;</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">Supervisor Stack Pointer </p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Stack pointer for supervisor mode</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">USP &nbsp; &nbsp; &nbsp;</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">User Stack Pointer</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Stack pointer for user mode</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">PTBR </p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">Page Table Base Register </p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Base address of page table</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">ASN</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">Address Space Number </p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Address space identifier context switch</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">ASTSR &nbsp; &nbsp;</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">AST Summary Register &nbsp; &nbsp; &nbsp; &nbsp; </p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Asynchronous System Trap summary</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Consideration. &nbsp;</span></p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>ASTSR is the only stateful register for AST pending</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">a.</span>ASTSR holds pending AST state</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">b.</span>It is the single source of truth</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">c.</span>it is updated by:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 60px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">i.</span>OS / PAL logic</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 60px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">ii.</span>AST posting mechanisms</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">d.</span>It is not masked</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 40px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">e.</span>It is not filtered</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">2. Updates affect register: ISUM - not state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">ISUM:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>reflects current pending interrupt state</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>includes AST bits</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>may be masked or unmasked depending on your design choice</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>must not store independent AST state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When ASTSR changes:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>ISUM must observe the new AST state</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>ISUM must not cache stale values</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>ISUM must not be updated independently</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Adopted implementation strategies:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>ISUM is computed on read</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>ISUM is not stored</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>MFPR_ISUM builds it dynamically from:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Writing the ASTSR internal processor register (Section 13.3) requests an AST for any of the</p>
+<p class="p_Normal">four processor modes. This operation may request an AST on a formerly inactive level and</p>
+<p class="p_Normal">thus cause an AST interrupt. The logic required to check for this condition is:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Courier,monospace;">ASTSR&lt;3:0&gt; </span><span style="font-size: 13px; font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';">&#8592; </span><span style="font-size: 13px; font-family: Courier,monospace;">{ASTSR&lt;3:0&gt; AND R16&lt;3:0&gt;} OR R16&lt;7:4&gt;</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Courier,monospace;">IF ASTEN&lt;0&gt; AND ASTSR&lt;0&gt; AND {PS&lt;IPL&gt; LT 2} THEN</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Courier,monospace;">{initiate AST interrupt at IPL 2}</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">ASTEN &nbsp; &nbsp;</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">AST Enable Register</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">AST enable mask</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">FEN</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">Floating-Point Enable &nbsp; </p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">FP instruction enable/disable</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">FPE</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">Floating-Point Exception</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">FP exception flags</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">UNQ</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">Unique Value &nbsp; &nbsp; &nbsp; &nbsp; </p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Process-unique value OpenVMS/Tru64 use</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">PRBR</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">Process Region Base Register</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Region base for process space PAL dependent</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">SCBB</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">System Control Block Base</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Address of SCB interrupt vector table</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">VPTB &nbsp; &nbsp;</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">Virtual Page Table Base</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Base of system virtual page table PAL dependent</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">USP</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">User Stack Pointer &nbsp; &nbsp;</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Duplicated for completeness; see above</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">PAL_SCRATCH[8]</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">PAL Scratch Area</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Array of 8 PAL-scratch registers reserved for PALcode</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">SAVED_PC</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal"> Saved PC &nbsp;</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Used by PAL entry/exit code fault/trap return</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">SAVED_PS &nbsp; &nbsp; &nbsp; &nbsp;</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal"> Saved Processor Status</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">Saved processor status at PAL entry</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:96px; padding:0; border:solid thin #000000;"><p class="p_Normal">DATFX &nbsp;</p>
+</td>
+<td style="vertical-align:top; width:201px; padding:0; border:solid thin #000000;"><p class="p_Normal">Data Alignment Trap</p>
+</td>
+<td style="vertical-align:top; width:1933px; padding:0; border:solid thin #000000;"><p class="p_Normal">MTPR_DATFX is a PAL-only instruction that updates the DATFX internal processor register. </p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The instruction performs a pure architectural state update with no immediate side effects. </p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The new DATFX value affects the handling of future data access faults and is consulted by the fault logic when such events occur.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Example Usage:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;setKSP_Active1,&nbsp;0x20000000;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Set&nbsp;KSP&nbsp;for&nbsp;CPU&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">quint64&nbsp;pc&nbsp;=&nbsp;getSavedPC_Active0;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Get&nbsp;SavedPC&nbsp;for&nbsp;CPU&nbsp;0</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">References:</span></p>
+<p class="p_Normal">- See HWPCB_core.h for member definitions.</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

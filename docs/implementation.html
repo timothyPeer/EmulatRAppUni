@@ -1,0 +1,425 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; SCSI &gt; Implementation</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="Got it, thanks for the correction – I’ll ignore the “coreLib” idea for SCSI and lay out a clean header structure and placement for everything SCSI-related." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "implementation.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Implementation</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?implementation.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a> &gt; <a href="scsi.html">SCSI</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Implementation</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="scsi.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="scsi.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="tier.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">Got it, thanks for the correction – I’ll ignore the “coreLib” idea for SCSI and lay out a clean header structure and placement for everything SCSI-related.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Below is a text-only plan you can drop into your notes and follow as you move files around.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. High-level goals for SCSI header placement</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. Keep core CPU / MMU / PTE code completely free of SCSI dependencies.</p>
+<p class="p_Normal">2. Group SCSI protocol types and virtual devices in a dedicated SCSI module.</p>
+<p class="p_Normal">3. Keep bus-facing controllers (KZPBA, QLogic, etc.) with your other PCI/EISA/Turbochannel controllers, not in the SCSI core.</p>
+<p class="p_Normal">4. Keep the layering very obvious so you avoid circular references:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; CPU / Core</p>
+<p class="p_Normal"> &nbsp; uses DeviceManager, MMIOManager</p>
+<p class="p_Normal"> &nbsp; uses Controllers (PCI SCSI HBAs)</p>
+<p class="p_Normal"> &nbsp; use SCSI core (VirtualScsiDevice, ScsiCommand, etc.)</p>
+<p class="p_Normal"> &nbsp; uses Qt, SafeMemory, backends</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">So: SCSI lives in its own “device / protocol” area, and controllers sit with the rest of your MMIO / PCI devices.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">2. Recommended directory and library layout</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Assuming your existing include tree looks roughly like:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* include\Alpha\Cpu</p>
+<p class="p_Normal">* include\Alpha\EV4 / EV5 / EV6</p>
+<p class="p_Normal">* include\Alpha\IPR</p>
+<p class="p_Normal">* include\Alpha\MMIO</p>
+<p class="p_Normal">* include\Alpha\Controllers</p>
+<p class="p_Normal">* include\Alpha\Manager</p>
+<p class="p_Normal">* include\Alpha\Config</p>
+<p class="p_Normal">* etc.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">I would add:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* include\Alpha\SCSI\</p>
+<p class="p_Normal">* include\Alpha\Devices\Scsi\</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">and *not* put any of these in coreLib.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Suggested library split**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* coreLib</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* CPU, MMU, PTE, IPR, PAL, FP, Vector, etc.</p>
+<p class="p_Normal"> &nbsp;* No SCSI headers at all.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* scsiCoreLib (new, or folded into your “devicesLib” if you prefer fewer libs)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* All SCSI protocol and virtual device headers under:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;* include\Alpha\SCSI\</p>
+<p class="p_Normal"> &nbsp; &nbsp;* include\Alpha\Devices\Scsi\</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* controllersLib (or keep as your existing controllers module)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* PCI / EISA / TC controllers, including SCSI HBAs, under:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;* include\Alpha\Controllers\</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">3. SCSI protocol core headers (include\Alpha\SCSI)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These are the “pure protocol” headers used by any SCSI controller or virtual SCSI device. They should not depend on AlphaCPU, AlphaProcessorContext, or PAL, and ideally only depend on Qt containers and basic types.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Place in **include\Alpha\SCSI**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. `ScsiTypes.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Status codes, message codes, generic enums.</p>
+<p class="p_Normal"> &nbsp; * Example contents:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * `enum class ScsiStatus` (GOOD, CHECK_CONDITION, BUSY, etc.)</p>
+<p class="p_Normal"> &nbsp; &nbsp; * `enum class ScsiSenseKey`</p>
+<p class="p_Normal"> &nbsp; &nbsp; * `enum class ScsiDataDirection` (None, In, Out)</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Small helper structs such as `ScsiLun` (encoded, decoded)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">2. `ScsiOpcodes.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * All standard SCSI opcodes (READ6, WRITE6, READ10, WRITE10, INQUIRY, MODE_SENSE, etc.).</p>
+<p class="p_Normal"> &nbsp; * Keeps the actual numeric constants in one place.</p>
+<p class="p_Normal"> &nbsp; * No Qt dependencies required here.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">3. `ScsiCdb.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Packed structs or helpers for 6-, 10-, 12-, and 16-byte CDB formats.</p>
+<p class="p_Normal"> &nbsp; * Accessor functions `getLBA()`, `getTransferLength()`, etc.</p>
+<p class="p_Normal"> &nbsp; * This is your main place to do CDB decoding logic for the emulator.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">4. `ScsiSenseData.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Fixed and descriptor sense layouts.</p>
+<p class="p_Normal"> &nbsp; * Helpers to build sense data for common conditions (not ready, medium error, illegal request, etc.).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">5. `ScsiCommand.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Lightweight struct representing a single command instance:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * CDB buffer</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Data direction</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Expected transfer length</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Pointer or reference to data buffer</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Sense buffer</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Status / completion code</p>
+<p class="p_Normal"> &nbsp; * This header is used by both controllers and virtual devices.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">6. `ScsiCommandQueue.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Abstract queue or simple FIFO for pending SCSI commands.</p>
+<p class="p_Normal"> &nbsp; * Optionally, support tagged command queuing (simple, ordered, head-of-queue) if you want to line up with your per-LUN queue design later.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">4. Virtual device headers (include\Alpha\Devices\Scsi)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These are the virtual devices that implement “disk”, “tape”, “CD-ROM/ISO” semantics. They should be independent of bus details; the controller sees them through `VirtualScsiDevice` interface only.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Place in **include\Alpha\Devices\Scsi**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. `VirtualScsiDevice.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Abstract base class for any SCSI target.</p>
+<p class="p_Normal"> &nbsp; * Depends on:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * `ScsiCommand.h`, `ScsiTypes.h`</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Qt basic types, SafeMemory or QIODevice if you like</p>
+<p class="p_Normal"> &nbsp; * Key functions:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * `bool handleCommand(ScsiCommand&amp; cmd) noexcept;` (pure virtual)</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Optional: `bool supportsTaggedQueueing() const;`</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Optional: `quint8 getDeviceType() const;` (maps to INQUIRY peripheral device type)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">2. `VirtualScsiDisk.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Implements a block device backed by:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * A disk image (`QFile`, QIODevice)</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Or raw physical disk handle (later)</p>
+<p class="p_Normal"> &nbsp; * Uses `ScsiCdb.h` to interpret READ/WRITE, SYNCHRONIZE CACHE, MODE SENSE, etc.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">3. `VirtualTapeDevice.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Implements tape semantics for your chosen container format (SIMH .TAP, VTape, etc.).</p>
+<p class="p_Normal"> &nbsp; * Handles space file, write filemarks, load/unload, etc.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">4. `VirtualIsoDevice.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Implements CD/DVD-style SCSI target backed by ISO image.</p>
+<p class="p_Normal"> &nbsp; * Handles READ(10) / READ(12) for 2048-byte sectors, some basic mode pages, etc.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">5. (Optional, but I suspect you will want these soon)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * `VirtualScsiBackend.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Abstracts the actual storage backing (disk image, physical disk, cache layer).</p>
+<p class="p_Normal"> &nbsp; * `VirtualScsiCacheLayer.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Integrates your QCache / QPersistentCache per-LUN acceleration.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">5. Controller headers (include\Alpha\Controllers)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Your bus-facing controllers sit with the other MMIO / PCI / EISA controllers, not with SCSI core. These headers depend on:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* AlphaCPU (for IRQs or callbacks)</p>
+<p class="p_Normal">* MMIOManager</p>
+<p class="p_Normal">* DeviceManager</p>
+<p class="p_Normal">* SCSI core (`ScsiCommand`, `VirtualScsiDevice`, etc.)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Place in **include\Alpha\Controllers**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. `VirtualScsiController.h` (generic base)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Abstracts a generic SCSI HBA front-end on some bus.</p>
+<p class="p_Normal"> &nbsp; * Knows about:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * LUN mapping to `VirtualScsiDevice` instances</p>
+<p class="p_Normal"> &nbsp; &nbsp; * IRQ line to CPU</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Controller registers / queues as needed by derived concrete controllers</p>
+<p class="p_Normal"> &nbsp; * Exposes:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * `attachDevice(quint8 bus, quint8 target, quint8 lun, VirtualScsiDevice* dev)`</p>
+<p class="p_Normal"> &nbsp; &nbsp; * `handleMmioRead/write()`</p>
+<p class="p_Normal"> &nbsp; &nbsp; * `raiseInterrupt()` etc.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">2. Concrete controller headers:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * `decKZPBA_Controller.h` (PCI SCSI BIOS-less adapter)</p>
+<p class="p_Normal"> &nbsp; * `qlogicISP10x0_Controller.h`</p>
+<p class="p_Normal"> &nbsp; * Any other specific SCSI HBAs you emulate.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These headers represent the MMIO side the guest sees: registers, DMA rings, interrupts. They call into your SCSI core to turn I/O descriptors into `ScsiCommand` objects.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">6. DeviceManager / MMIOManager linkage</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">To keep the layering consistent:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `DeviceManager` (already in include\Alpha\Manager) stays as the orchestrator:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Creates concrete controllers (from JSON config).</p>
+<p class="p_Normal"> &nbsp;* Creates virtual SCSI devices and attaches them to controllers.</p>
+<p class="p_Normal"> &nbsp;* Injects IRQ lines and MMIO mapping into the controllers.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No SCSI core headers should be included by CPU or MMU code. CPU only sees controllers via MMIOManager and IRQController.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">7. What to do with existing SCSI headers you already have</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For each existing SCSI-related header:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* If it describes protocol pieces (opcodes, sense, CDB structs, generic ScsiCommand):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Move to `include\Alpha\SCSI\` and adjust includes accordingly.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* If it describes a virtual disk, tape, or ISO device:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Move to `include\Alpha\Devices\Scsi\`.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* If it describes a PCI or bus-facing controller:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Move to `include\Alpha\Controllers\`.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">And importantly:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Remove any SCSI headers from coreLib’s public include path.</p>
+<p class="p_Normal">* Make scsiCoreLib (or your chosen devicesLib) depend on coreLib, not the other way around.</p>
+<p class="p_Normal">* controllersLib depends on both coreLib and scsiCoreLib.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">8. If you want, next step</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If you’d like, the next step can be:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* I draft a concrete `VirtualScsiDevice.h` and `VirtualScsiDisk.h` header pair following your usual inline-only style, with full comments and references to the SCSI standard (and Alpha docs where relevant, like firmware notes about KZPSA / QLogic support). You can then drop them under:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `include\Alpha\Devices\Scsi\VirtualScsiDevice.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `include\Alpha\Devices\Scsi\VirtualScsiDisk.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">and wire them into your build.</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

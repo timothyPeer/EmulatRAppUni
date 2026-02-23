@@ -1,0 +1,466 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; Managers &gt; SafeMemory - RAM</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="1. Scope and Responsibilities &nbsp;**SafeMemory’s role** &nbsp;* Provide a **safe, bounded, byte-addressable backing store** for guest *physical* memory. * Internally store data in a" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "safememory---ram.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">SafeMemory - RAM</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?safememory---ram.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a> &gt; <a href="managers.html">Managers</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">SafeMemory - RAM</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="alphasystemmemoryfinakl.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="managers.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="mmio.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal"> 1. Scope and Responsibilities</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**SafeMemory’s role**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Provide a **safe, bounded, byte-addressable backing store** for guest *physical* memory.</p>
+<p class="p_Normal">* Internally store data in a **QByteArray of fixed size N** (the configured RAM size).</p>
+<p class="p_Normal">* Offer **inline helpers** for typed loads/stores of 8/16/32/64-bit values (and possibly 128-bit later).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Enforce:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Bounds checks (no read/write outside [0, size)).</p>
+<p class="p_Normal"> &nbsp;* Alignment rules (caller chooses policy; SafeMemory can enforce if requested).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Be **agnostic** with respect to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* CPU count</p>
+<p class="p_Normal"> &nbsp;* Regions (0–3) and their caching policies</p>
+<p class="p_Normal"> &nbsp;* PALcode and MB/WMB/TRAPB</p>
+<p class="p_Normal"> &nbsp;* TLB / SPAM / PTEs</p>
+<p class="p_Normal"> &nbsp;* MMIO / devices</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Out of scope (handled above SafeMemory)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Virtual address translation (VA → PA).</p>
+<p class="p_Normal"> &nbsp;→ Implemented by TLB / PTESPAM / PTE logic.</p>
+<p class="p_Normal">* Region policies (cacheability, write-back vs write-through vs uncached).</p>
+<p class="p_Normal"> &nbsp;→ Implemented by AlphaMemorySystem / MemoryFacade using physical address + region tables (ASA memory regions).</p>
+<p class="p_Normal">* Memory ordering and coherency semantics (MB, WMB, TRAPB).</p>
+<p class="p_Normal"> &nbsp;→ Implemented by AlphaCPU / ControlExecutor using barriers and reservation logic.</p>
+<p class="p_Normal">* MMIO dispatch and device side effects.</p>
+<p class="p_Normal"> &nbsp;→ AlphaMemorySystem decides “this PA is MMIO” and routes to MMIOManager instead of calling SafeMemory.</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 2. Class Identity and Lifetime</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Type**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `class SafeMemory final`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Final to emphasize it is a concrete primitive, not a polymorphic base.</p>
+<p class="p_Normal"> &nbsp;* Non-copyable (copy would imply duplicating guest RAM, which is not intended).</p>
+<p class="p_Normal"> &nbsp;* Movable optional (but typically created once and held by EmulatorManager / AlphaMemorySystem).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Ownership**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Owned by a higher-level component, e.g.:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `AlphaMemorySystem`, `MemoryFacade`. or a QGlobalStatic</p>
+<p class="p_Normal">* Constructed early in emulator initialization, before CPUs start.</p>
+<p class="p_Normal">* Destroyed when emulator shuts down or snapshot/restore manager resets the memory.</p>
+<p class="p_Normal">* SafeMemory should provide a one-time initialization function which initializes the RAM size for the life of the class. Memory is initialized scaled as gigabytes of memory. &nbsp;::initializeMemory(32); // is 32 GigaBytes of memory. &nbsp;This is the maximum we will support at this time. &nbsp; A MAX_RAM_SIZE will be defined in the SafeMemory_core_inl.h helper that will load for SafeMemory operations. </p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Lifetime guarantees**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* After initialization, the size is fixed (no reallocations) for the “normal” lifetime.</p>
+<p class="p_Normal">* If resizes are allowed at all (optional), they are:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Rare administrative actions.</p>
+<p class="p_Normal"> &nbsp;* Performed with global synchronization at a higher layer (quiesce CPUs, etc.).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 3. Internal Data Model</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Storage**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* One **QByteArray m_bytes**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Length = configured RAM size (N bytes).</p>
+<p class="p_Normal"> &nbsp;* Represents guest *physical* addresses 0 .. N-1.</p>
+<p class="p_Normal"> &nbsp;* Indexed directly by guest physical offset (PA) once AlphaMemorySystem has mapped PA into this RAM.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Metadata**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `quint64 m_sizeBytes`:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* The total number of bytes of RAM exposed through this SafeMemory instance.</p>
+<p class="p_Normal">* Optional:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* A lightweight **mutex** for admin operations (resize, clear, snapshot), but *not* for every single load/store.</p>
+<p class="p_Normal"> &nbsp;* A debug flag or structure for tracing (e.g., enable/disable access logging), controlled by higher layers.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**No region information**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* SafeMemory does **not** track Region 0/1/2/3 or MMIO windows.</p>
+<p class="p_Normal">* It accepts *only* offsets that AlphaMemorySystem has already validated as “this is RAM”.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 4. Public API – Conceptual</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All methods are expected to be **inline** for performance. No code here, just signatures and semantics.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 4.1 Initialization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `bool initialize(quint64 sizeBytes);`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Allocates `m_bytes` to `sizeBytes` and zero-fills.</p>
+<p class="p_Normal"> &nbsp;* Returns false if allocation fails (out-of-memory).</p>
+<p class="p_Normal"> &nbsp;* Called once at startup (or during configuration change) before CPUs run.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `quint64 size() const;`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Returns `m_sizeBytes`.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 4.2 Raw access (for snapshot / DMA copying)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `quint8* data();`</p>
+<p class="p_Normal">* `const quint8* data() const;`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Semantics:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* These return direct pointers into the internal buffer.</p>
+<p class="p_Normal">* Intended for **bulk operations** only (snapshots, diagnostic dumps, offline copy).</p>
+<p class="p_Normal">* Callers must **not** use these for normal CPU load/store paths.</p>
+<p class="p_Normal">* Callers must manage concurrency externally if multiple CPUs or devices might use this pointer.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 4.3 Typed loads and stores</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Provide a small set of canonical helpers:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `Status load8(quint64 paddr, quint8&amp; out) const;`</p>
+<p class="p_Normal">* `Status load16(quint64 paddr, quint16&amp; out) const;`</p>
+<p class="p_Normal">* `Status load32(quint64 paddr, quint32&amp; out) const;`</p>
+<p class="p_Normal">* `Status load64(quint64 paddr, quint64&amp; out) const;`</p>
+<p class="p_Normal">* `Status store8(quint64 paddr, quint8 value);`</p>
+<p class="p_Normal">* `Status store16(quint64 paddr, quint16 value);`</p>
+<p class="p_Normal">* `Status store32(quint64 paddr, quint32 value);`</p>
+<p class="p_Normal">* `Status store64(quint64 paddr, quint64 value);`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Endianness:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Alpha physical memory is **little-endian**.</p>
+<p class="p_Normal">* Helpers interpret and assemble/disassemble multi-byte values accordingly.</p>
+<p class="p_Normal">* Higher-level code (e.g., VAX emulation) deals with alternate byte orders as needed.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Alignment behavior:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* SafeMemory can be configured with one of two policies (decided at design time):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;1. **Strict alignment mode**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Enforces natural alignment for 16/32/64-bit accesses.</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Returns `Misaligned` status if `paddr` is not aligned.</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Higher layers map `Misaligned` → Alpha alignment trap (PAL/OS defined behavior).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;2. **Tolerant mode (optional)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Implements misaligned access by performing multiple byte/word loads/stores.</p>
+<p class="p_Normal"> &nbsp; &nbsp; * This is *not* architecturally correct unless PAL/OS expects emulation above.</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Recommended only if you explicitly want to emulate OS misalignment fixup.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Reference: Alpha Architecture Reference Manual, load/store instruction descriptions and alignment rules.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Bounds behavior:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* If `paddr + access_size &gt; m_sizeBytes`, return `OutOfRange`.</p>
+<p class="p_Normal">* Higher layers map `OutOfRange` to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Access violation / machine check, depending on the use-case.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 5. Status and Error Model</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Define a small enum `Status` returned by all typed operations:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `Ok` — operation succeeded, value is valid.</p>
+<p class="p_Normal">* `OutOfRange` — physical address + size is outside RAM bounds.</p>
+<p class="p_Normal">* `Misaligned` — address violates alignment rules in strict mode.</p>
+<p class="p_Normal">* Optional extension:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `Unmapped` — reserved for future if SafeMemory is ever used for sparse mapping.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Higher layers (AlphaMemorySystem/AlphaCPU) interpret these:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `Ok` → normal execution.</p>
+<p class="p_Normal">* `OutOfRange` or `Unmapped` → physical address error → likely machine check or access violation.</p>
+<p class="p_Normal">* `Misaligned` → alignment fault → PAL or OS may emulate or signal SIGBUS-like condition.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory **does not throw exceptions** for these conditions; all error conditions are expected and represented by `Status`.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 6. Concurrency and SMP Considerations</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Assumptions**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Multiple CPUs (threads) can access SafeMemory concurrently.</p>
+<p class="p_Normal">* SafeMemory must not be a bottleneck but must maintain functional correctness.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Concurrency model**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Standard aligned loads/stores of POD types are treated as **host-atomic** at the granularity of the type, assuming the host platform guarantees atomic aligned loads/stores of 64-bit values (true on x86-64).</p>
+<p class="p_Normal">* SafeMemory does **not** implement its own caching or coherency; it simply reflects writes into the single backing array.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Memory ordering**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* SafeMemory does *not* implement memory fences or barriers.</p>
+<p class="p_Normal">* Emulated instructions `MB`, `WMB`, `TRAPB`, etc., are modeled in higher layers:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* AlphaCPU / ControlExecutor will perform appropriate host memory fences (e.g., std::atomic_thread_fence) and enforce ordering semantics.</p>
+<p class="p_Normal"> &nbsp;* SafeMemory just provides consistent storage.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Administrative operations**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Rare operations like `initialize()` or `resize()` (if allowed) should be protected by **internal mutex** or performed only when CPUs are not running.</p>
+<p class="p_Normal">* In many designs, RAM size is immutable during runtime → no dynamic resize needed → minimal need for locking.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 7. Relationship to Regions and Regions’ Policies</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Even though ASA defines Region 0–3 with different caching/coherency rules, **SafeMemory itself is region-agnostic**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**How regions are applied:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* AlphaMemorySystem (or similar) knows:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* For a given PA, which **region** it falls into.</p>
+<p class="p_Normal"> &nbsp;* Whether the region:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;* Allows byte/word/longword/quadword accesses.</p>
+<p class="p_Normal"> &nbsp; &nbsp;* Is write-back, write-through, or uncached.</p>
+<p class="p_Normal"> &nbsp; &nbsp;* Has any special atomicity/ordering rules.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* AlphaMemorySystem checks:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Region’s allowed access size.</p>
+<p class="p_Normal"> &nbsp;* Region’s alignment requirements.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Only after those rules pass does it call SafeMemory’s typed load/store.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">So the layering is:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. **CPU/VM subsystem**: VA → PA (via PTESPAM, TLB, etc.).</p>
+<p class="p_Normal">2. **AlphaMemorySystem**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * Determine region (0–3).</p>
+<p class="p_Normal"> &nbsp; * Apply region policies (caching/atomicity/access-size semantics).</p>
+<p class="p_Normal"> &nbsp; * Decide RAM vs MMIO vs ROM.</p>
+<p class="p_Normal">3. **SafeMemory**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * If this PA is mapped to RAM, perform the actual byte operation.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 8. Interaction with Reservations (LDx_L / STx_C)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Reservations and “coherency points” are explicitly **not SafeMemory’s job**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Each CPU has reservation state:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Reserved PA (the address of the last LDx_L).</p>
+<p class="p_Normal"> &nbsp;* A token or version (for STx_C success/failure).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* A separate **ReservationManager** (or per-CPU state) monitors writes:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* When STx_C is attempted, it checks that:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;* The PA matches the reserved address.</p>
+<p class="p_Normal"> &nbsp; &nbsp;* No conflicting write has occurred since reservation.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* SafeMemory:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Just performs the actual store when requested.</p>
+<p class="p_Normal"> &nbsp;* Does not know about reservations, tokens, or STx_C.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This matches the architecture described in the ASA and leaves SafeMemory purely as a storage primitive.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 9. Planned QObject Wrapper (High-Level)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Later, you can wrap `SafeMemory` in a QObject-based class:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* `class SafeMemoryAdapter : public QObject`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Holds a `SafeMemory` instance.</p>
+<p class="p_Normal"> &nbsp;* Exposes slots for administrative operations (`initialize`, `snapshot`, `clear`, etc.).</p>
+<p class="p_Normal"> &nbsp;* Emits signals for high-level events (e.g., `memoryResized`, `snapshotCompleted`).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Important:</p>
+<p class="p_Normal">This wrapper **does not** sit on the hot path for per-instruction loads/stores:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Normal CPU memory accesses go directly through `SafeMemory` (or via AlphaMemorySystem which holds a pointer/reference to it).</p>
+<p class="p_Normal">* QObject wrapper is only for configuration/UI/instrumentation.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> 10. Summary of Design Decisions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* **SafeMemory is final, header-only, and minimal.**</p>
+<p class="p_Normal">* It stores RAM in a **QByteArray**; no awareness of regions, MMIO, or PAL.</p>
+<p class="p_Normal">* It provides **inline typed load/store helpers** with:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Bounds checks.</p>
+<p class="p_Normal"> &nbsp;* Optional strict alignment enforcement.</p>
+<p class="p_Normal"> &nbsp;* Little-endian assembly/disassembly.</p>
+<p class="p_Normal">* It returns a small **Status** code instead of throwing.</p>
+<p class="p_Normal">* **Arbitration, regions, reservations, and PAL interfaces** are:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Implemented in AlphaMemorySystem, ReservationManager, and AlphaCPU.</p>
+<p class="p_Normal"> &nbsp;* Represented as *side-effect helpers above SafeMemory*.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

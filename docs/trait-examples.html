@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha PTE Traits Usage Guide</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="AddressSpaceMatch,alpha_pte_core,alpha_pte_traits,alpha_pte_traits_ev6_dtb,alpha_pte_traits_ev6_itb,alpha_pte_view,AlphaPTE,ASN (Address Space Number),CanonicalPTE,ClockPolicy,CPUFamily,CPUStateIPRInterface,CurrentASN,DataTLB,decodeVAFromTag,DefaultInvalidationStrategy,DTB_PTE0,DTB_PTE1,DTB_TAG0,DTB_TAG1,DualDTBManagerInterface,EBoxVAState,Ev6_DtbPteTraits,FaultOnExecute,FaultOnRead,FaultOnWrite,fromDtbPteWrite,fromItbPteWrite,getAsm,GranularityHint,insertDTB,insertITB,InstructionTLB,invalidateAllDTB,invalidateAllITB,invalidateASN,IPR (Internal Processor Register),IPRStorage,isGlobal,isValid,ITB_PTE,ITB_TAG,KernelReadEnable,KernelWriteEnable,lookupDTB,lookupITB,maintenanceTick,MMU (Memory Management Unit),PageTableEntry,Permissions,PermMask,permMask,pfn,PFN (Page Frame Number),pipelineDelay,PTECache,PTETraits,PTETraits&lt;CPUFamily&gt;,PTEView,RandomPolicy,Realm,ReplacementPolicyEnum,Set Prediction and Access Memory,SPAMBucket,SPAMShardManager,SRRIPPolicy,stageDTB0PTE,stageDTB1PTE,stageDTBCommon,stageITBPTE,TBIA,TBIAP,TBIS,TemplatePolicyBase,TLB (Translation Lookaside Buffer),TLBFlush,tlbInsert,TLBInvalidate,tlbLookup,tlbTBIS,toDtbPteRead,toItbPteRead,TranslationBuffer,UserReadEnable,UserWriteEnable,VA (Virtual Address)" />
+   <meta name="description" content="Overview -------- The Alpha PTE subsystem uses *traits* to adapt the canonical AlphaPTE format to the specific page table layouts and access patterns of each Alpha CPU generatio" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "trait-examples.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Alpha PTE Traits Usage Guide</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?trait-examples.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Alpha PTE Traits Usage Guide</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="usage-and-integrationlogging.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="trait---ctor-usage-examples.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Overview</span></h2>
+<p class="p_Normal">--------</p>
+<p class="p_Normal">The Alpha PTE subsystem uses *traits* to adapt the canonical AlphaPTE format to the</p>
+<p class="p_Normal">specific page table layouts and access patterns of each Alpha CPU generation (EV4, EV5, EV6).</p>
+<p class="p_Normal">Traits provide static helpers for decoding, encoding, and extracting VA and permission info</p>
+<p class="p_Normal">from hardware-format PTEs and tags.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">This guide explains:</span></p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>How to select and use PTETraits specializations</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>How to convert between raw IPR (hardware) PTEs and canonical AlphaPTEs</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>How to use these traits with the SPAMShardManager (PTE cache/TLB manager)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>How to connect these in your CPUStateIPRInterface and page table handling code</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Key Types</span></p>
+<p class="p_Normal">---------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>AlphaPTE &nbsp; &nbsp; &nbsp; &nbsp; : Canonical struct for all Alpha PTEs (see alpha_pte_core.h)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>PTETraits &nbsp; &nbsp; &nbsp; &nbsp;: Template providing static decode/encode methods for a CPU gen/layout</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>SPAMShardManager : TLB/PTE cache template (uses traits for all encoding/decoding)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>CPUStateIPRInterface : Your CPU/SoC context interface for IPR and TLB operations</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Selecting the Right Traits</span></h3>
+<p class="p_Normal">--------------------------</p>
+<p class="p_Normal">Choose the appropriate traits specialization for your target. Example for EV6 ITB and DTB:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample">&nbsp;<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;//&nbsp;EV6&nbsp;ITB&nbsp;traits&nbsp;(Instruction&nbsp;TLB)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;ItbTraits&nbsp;=&nbsp;PTETraits&lt;CPUFamily::EV6,&nbsp;44U&gt;;&nbsp;//&nbsp;44-bit&nbsp;VA</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;EV6&nbsp;DTB&nbsp;traits&nbsp;(Data&nbsp;TLB)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;DtbTraits&nbsp;=&nbsp;Ev6_DtbPteTraits&lt;CPUFamily::EV6,&nbsp;44U&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See: alpha_pte_traits_ev6_itb.h and alpha_pte_traits_ev6_dtb.h</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Example: Decoding a PTE from a raw ITB_PTE register value</span></p>
+<p class="p_Normal">---------------------------------------------------------</p>
+<p class="p_Normal">Suppose you have just written to the ITB_PTE register (e.g., via MTPR). You want to canonicalize this hardware-format PTE using the trait:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample">&nbsp;&nbsp;<span class="f_CodeExample">&nbsp;&nbsp;quint64&nbsp;rawItbPte&nbsp;=&nbsp;/*&nbsp;value&nbsp;from&nbsp;IPR&nbsp;write&nbsp;*/;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;AlphaPTE&nbsp;canonicalPte&nbsp;=&nbsp;ItbTraits::fromItbPteWrite(rawItbPte);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">Example: Decoding VA from an ITB_TAG register</span></p>
+<p class="p_Normal">---------------------------------------------</p>
+<p class="p_CodeExample">&nbsp;<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;quint64&nbsp;rawItbTag&nbsp;=&nbsp;/*&nbsp;value&nbsp;from&nbsp;IPR&nbsp;ITB_TAG&nbsp;*/;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;va&nbsp;=&nbsp;ItbTraits::decodeVAFromTag(rawItbTag);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Example: Inserting a PTE into the TLB using Traits and SPAMShardManager</span></p>
+<p class="p_Normal">----------------------------------------------------------------------</p>
+<p class="p_Normal">This is the core of your stageITBPTE helper</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample">&nbsp;&nbsp;&nbsp;<span class="f_CodeExample">&nbsp;//&nbsp;1.&nbsp;Canonicalize&nbsp;hardware-format&nbsp;PTE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;AlphaPTE&nbsp;canonicalPte&nbsp;=&nbsp;ItbTraits::fromItbPteWrite(rawPteWriteFormat);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;2.&nbsp;Recover&nbsp;VA&nbsp;from&nbsp;staged&nbsp;ITB_TAG</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;va&nbsp;=&nbsp;ItbTraits::decodeVAFromTag(stagedItbTag);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;3.&nbsp;Obtain&nbsp;current&nbsp;ASN&nbsp;from&nbsp;the&nbsp;CPU&nbsp;or&nbsp;IPR</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;asn&nbsp;=&nbsp;getCurrentASN();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4.&nbsp;Determine&nbsp;global&nbsp;mapping&nbsp;(ASM&nbsp;==&nbsp;0&nbsp;is&nbsp;global)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;isGlobal&nbsp;=&nbsp;!canonicalPte.getAsm();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;5.&nbsp;Insert&nbsp;into&nbsp;TLB/SPAM</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;itbManager-&gt;tlbInsert(cpuId,&nbsp;Realm::I,&nbsp;0,&nbsp;va,&nbsp;asn,&nbsp;isGlobal,&nbsp;canonicalPte);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_Normal"><span style="font-weight: bold;">Example: Full DTB Bank Handling Using Traits (stageDTB0PTE)</span></p>
+<p class="p_Normal">-----------------------------------------------------------</p>
+<p class="p_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;<span class="f_CodeExample">//&nbsp;1.&nbsp;Canonicalize&nbsp;hardware-format&nbsp;PTE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;AlphaPTE&nbsp;canonicalPte&nbsp;=&nbsp;DtbTraits::fromDtbPteWrite(rawDtbPte);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;2.&nbsp;Recover&nbsp;VA&nbsp;from&nbsp;staged&nbsp;DTB_TAG0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;va&nbsp;=&nbsp;DtbTraits::decodeVAFromTag(stagedDtbTag0);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;3.&nbsp;Get&nbsp;ASN</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;asn&nbsp;=&nbsp;getCurrentASN();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4.&nbsp;Determine&nbsp;global&nbsp;mapping</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;isGlobal&nbsp;=&nbsp;!canonicalPte.getAsm();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;5.&nbsp;Insert&nbsp;into&nbsp;D-stream&nbsp;TLB/SPAM</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;dtbManager-&gt;tlbInsert(cpuId,&nbsp;Realm::D,&nbsp;0,&nbsp;va,&nbsp;asn,&nbsp;isGlobal,&nbsp;canonicalPte);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Working with PTEView and Trait-Based Abstraction</span></p>
+<p class="p_Normal">------------------------------------------------</p>
+<p class="p_Normal">If you want a view object that wraps a canonical PTE and provides trait-based access:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample">&nbsp;&nbsp;&nbsp;<span class="f_CodeExample">&nbsp;PTEView&lt;ItbTraits&gt;&nbsp;pteView(canonicalPte);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Access&nbsp;validity,&nbsp;PFN,&nbsp;permission,&nbsp;etc.:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;valid&nbsp;=&nbsp;pteView.isValid();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;pfn&nbsp;=&nbsp;pteView.pfn();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;PermMask&nbsp;pmask&nbsp;=&nbsp;pteView.permMask();</span></p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">&nbsp;</span></p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See: alpha_pte_view.h</span></p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Usage Pattern in CPUStateIPRInterface</span></h3>
+<p class="p_Normal">-------------------------------------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Use traits to canonicalize or decode hardware-format PTEs and tags (see stageITBPTE, stageDTB0PTE).</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Use SPAMShardManager's tlbInsert, tlbLookup, tlbTBIS, and invalidateASN to manage the TLB/cache.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Example: Integrating Traits with TLB Insert (from your interface)</span></p>
+<p class="p_Normal">-----------------------------------------------------------------</p>
+<p class="p_CodeExample">&nbsp;&nbsp;<span class="f_CodeExample">&nbsp;&nbsp;//&nbsp;Insert&nbsp;ITB&nbsp;entry&nbsp;(instruction&nbsp;translation)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;CPUStateIPRInterface::insertITB(quint64&nbsp;va,&nbsp;quint8&nbsp;asn,&nbsp;const&nbsp;AlphaPTE&amp;&nbsp;pte,&nbsp;bool&nbsp;global)&nbsp;noexcept&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;itbManager-&gt;tlbInsert(cpuId,&nbsp;Realm::I,&nbsp;0,&nbsp;va,&nbsp;asn,&nbsp;global,&nbsp;pte);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Lookup&nbsp;DTB&nbsp;entry&nbsp;(data&nbsp;translation)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;CPUStateIPRInterface::lookupDTB(quint64&nbsp;va,&nbsp;quint8&nbsp;asn,&nbsp;quint32&amp;&nbsp;outPfn,&nbsp;PermMask&amp;&nbsp;outPermMask)&nbsp;const&nbsp;noexcept&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;dtbManager-&gt;tlbLookup(cpuId,&nbsp;Realm::D,&nbsp;0,&nbsp;va,&nbsp;asn,&nbsp;outPfn,&nbsp;outPermMask);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_Normal"><span style="font-weight: bold;">Advanced Example: Specializing for EV6/EV5/EV4 at Compile Time</span></p>
+<p class="p_Normal">--------------------------------------------------------------</p>
+<p class="p_CodeExample">&nbsp;&nbsp;&nbsp;<span class="f_CodeExample">&nbsp;#if&nbsp;TARGET_CPU&nbsp;==&nbsp;CPUFamily::EV6</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;ItbTraits&nbsp;=&nbsp;PTETraits&lt;CPUFamily::EV6,&nbsp;44U&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;DtbTraits&nbsp;=&nbsp;Ev6_DtbPteTraits&lt;CPUFamily::EV6,&nbsp;44U&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;#elif&nbsp;TARGET_CPU&nbsp;==&nbsp;CPUFamily::EV5</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;ItbTraits&nbsp;=&nbsp;PTETraits&lt;CPUFamily::EV5,&nbsp;43U&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;DtbTraits&nbsp;=&nbsp;PTETraits&lt;CPUFamily::EV5,&nbsp;43U&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;#else</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;ItbTraits&nbsp;=&nbsp;PTETraits&lt;CPUFamily::EV4,&nbsp;32U&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;DtbTraits&nbsp;=&nbsp;PTETraits&lt;CPUFamily::EV4,&nbsp;32U&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;#endif</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Now all your decode/encode logic is handled through the chosen traits type.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Trait-Driven TLB Insert (SPAMShardManager::tlbInsert)</span></h3>
+<p class="p_Normal">-----------------------------------------------------</p>
+<p class="p_CodeExample">&nbsp;<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;bool&nbsp;tlbInsert(quint16&nbsp;cpuId,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Realm&nbsp;realm,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;sizeClass,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;va,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;asn,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;isGlobal,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;AlphaPTE&amp;&nbsp;pteRaw)&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;T&nbsp;=&nbsp;Traits;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Prepare&nbsp;tag</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;auto&nbsp;tag&nbsp;=&nbsp;makeTag(va,&nbsp;realm,&nbsp;sizeClassFor(sizeClass));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entry&nbsp;e{};</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.tag&nbsp;=&nbsp;tag;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.asn&nbsp;=&nbsp;asn;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.flags.global&nbsp;=&nbsp;isGlobal;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.flags.transitioning&nbsp;=&nbsp;false;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.asnGenAtFill&nbsp;=&nbsp;m_asnEpochs[cpuId][asn].loadRelaxed();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.pfn&nbsp;=&nbsp;static_cast&lt;quint32&gt;(T::pfn(pteRaw));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.permMask&nbsp;=&nbsp;T::permMask(pteRaw);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.pteRaw&nbsp;=&nbsp;pteRaw;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;buck&nbsp;=&nbsp;bucket(cpuId,&nbsp;realm,&nbsp;sizeClass,&nbsp;bucketIndex(tag));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;buck.insert(e);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See: alpha_spam_manager.h</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">References</span></h3>
+<p class="p_Normal">----------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>alpha_pte_traits.h, alpha_pte_traits_ev6_itb.h, alpha_pte_traits_ev6_dtb.h</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>alpha_pte_core.h (AlphaPTE definition)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>alpha_pte_view.h (PTEView class)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>alpha_spam_manager.h (SPAMShardManager)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>CPUStateIPRInterface.h/.cpp (your interface)</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Best Practices</span></h3>
+<p class="p_Normal">--------------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Always decode hardware-format PTEs and tags using the correct traits.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Never assume a specific layout—always use traits helpers for cross-generation support.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Use PTEView when you need safe, readable field access for generic code.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Use SPAMShardManager for all translation buffer (TLB/PTE cache) management.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Generated for ASA-EmulatR Project - 2025-11-14.</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

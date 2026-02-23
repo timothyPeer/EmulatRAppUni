@@ -1,0 +1,1144 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; Controllers &gt; IRQController</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="Advanced Usage,AlphaCPU Integration,AlphaCPU interrupt polling, CPU Integration,ASN-scoped invalidation, IPI Integration,atomic pending IPL mask, Architecture,broadcast invalidation, IPI Integration,broadcast IPI, IPI Integration,cache-line aligned CPU state, Performance Tuning,Core Interrupt Flow,CPU affinity routing, Device Interrupt Integration,CPU run loop integration, CPU Integration,custom routing policies, Advanced Topics,Debugging &amp; Diagnostics,Device Integration,device interrupt registration, Device Interrupt Integration,device ISR dispatch, Device Interrupt Integration,edge-triggered interrupt, Device Interrupt Integration,fault sink integration, CPU Integration,FIXED_CPU routing, Device Interrupt Integration,hot path optimization, Performance Tuning,HW_REI return path, PAL Integration,inter-processor interrupt (IPI), IPI Integration,interrupt acknowledgement, Device Interrupt Integration,interrupt affinity optimization, Advanced Topics,interrupt coalescing, Advanced Topics,interrupt controller, Overview,interrupt delivery, Architecture,interrupt dispatch, Architecture,interrupt eligibility report, Debugging and Diagnostics,interrupt eligibility, Debugging and Diagnostics,interrupt fairness, Performance Tuning,interrupt fast path, Performance Tuning,interrupt latency reduction, Performance Tuning,interrupt masking, Architecture,interrupt priority level (IPL), Architecture,interrupt queue sharding, Architecture,interrupt routing policy, Architecture,interrupt state dump, Debugging and Diagnostics,interrupt statistics counters, Debugging and Diagnostics,interrupt trace logging, Debugging and Diagnostics,interrupt vector, Architecture,IPI (Inter-Processor Interrupts),IPI dequeue processing, CPU Integration,IPI queue handling, IPI Integration,level-triggered interrupt, Device Interrupt Integration,lock-free hot path, Key Design Principles,lock-free polling, Key Design Principles,LOWEST_IPL routing, Advanced Topics,MTPR_SIRR, Software Interrupts,PAL entry on interrupt, PAL Integration,PAL interrupt blocking, PAL Integration,PAL interrupt entry, PAL Integration,PAL mode awareness, Architecture,PAL Semantics,per-CPU interrupt queue, Architecture,per-CPU interrupt state, Architecture,per-CPU IPL tracking, CPU Integration,per-CPU shard, Architecture,per-CPU TLB invalidation, IPI Integration,Performance &amp; Hot Path,pipeline flush on interrupt, CPU Integration,precise interrupt delivery, PAL Integration,ROUND_ROBIN routing, Device Interrupt Integration,routing affinity hints, Advanced Topics,Routing Policies,Sharding &amp; Lock-Free Design,shareable interrupt, Device Interrupt Integration,SMP &amp; Per-CPU Design,SMP interrupt delivery, Architecture,software interrupt IPL, Software Interrupts,software interrupt request, Software Interrupts,software interrupt routing, Software Interrupts,software interrupt vector, Software Interrupts,Software Interrupts,spurious interrupt detection, Debugging and Diagnostics,TLB &amp; Coherency,TLB shootdown IPI, IPI Integration,TLB shootdown, IPI Integration" />
+   <meta name="description" content="# IRQController Integration Guide &nbsp;**Version:** 1.0 &nbsp; **Date:** December 2025 &nbsp; **Author:** Timothy Peer / eNVy Systems, Inc. &nbsp; &nbsp; Table of Contents &nbsp;1. [Overview](#overvi" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "irqcontroller-controllers.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">IRQController</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?irqcontroller-controllers.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a> &gt; <a href="controllers.html">Controllers</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">IRQController</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="controllers.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="controllers.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="cpu.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black"># IRQController Integration Guide</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Version:** 1.0 &nbsp;</p>
+<p class="p_Normal">**Date:** December 2025 &nbsp;</p>
+<p class="p_Normal">**Author:** Timothy Peer / eNVy Systems, Inc.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Table of Contents</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. [Overview](#overview)</p>
+<p class="p_Normal">2. [Architecture](#architecture)</p>
+<p class="p_Normal">3. [Quick Start](#quick-start)</p>
+<p class="p_Normal">4. [CPU Integration](#cpu-integration)</p>
+<p class="p_Normal">5. [Device Interrupt Integration](#device-interrupt-integration)</p>
+<p class="p_Normal">6. [IPI (Inter-Processor Interrupt) Integration](#ipi-integration)</p>
+<p class="p_Normal">7. [PAL Integration](#pal-integration)</p>
+<p class="p_Normal">8. [Software Interrupts (MTPR_SIRR)](#software-interrupts)</p>
+<p class="p_Normal">9. [Advanced Topics](#advanced-topics)</p>
+<p class="p_Normal">10. [Performance Tuning](#performance-tuning)</p>
+<p class="p_Normal">11. [Debugging and Diagnostics](#debugging-and-diagnostics)</p>
+<p class="p_Normal">12. [Complete Examples](#complete-examples)</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Overview</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The `IRQController` is a production-ready, SMP-aware interrupt controller for Alpha AXP emulation. It provides:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">- **Lock-free hot paths** for interrupt polling (~5 cycles)</p>
+<p class="p_Normal">- **Per-CPU interrupt queues** (zero cross-CPU contention)</p>
+<p class="p_Normal">- **IPL-based masking** (Alpha architectural semantics)</p>
+<p class="p_Normal">- **PAL mode awareness** (blocks non-critical interrupts)</p>
+<p class="p_Normal">- **Flexible routing** (FIXED_CPU, ROUND_ROBIN, LOWEST_IPL)</p>
+<p class="p_Normal">- **IPI support** (TLB shootdown, barriers, custom messages)</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Key Design Principles</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. **Hot path is lock-free**: `hasPendingInterrupt()` and `getNextInterrupt()` use atomic operations</p>
+<p class="p_Normal">2. **Cold path uses mutex**: `assertIRQ()`, `registerIRQVector()` use QMutex</p>
+<p class="p_Normal">3. **Per-CPU sharding**: Each CPU has its own interrupt queue (`vectors[ipl]`)</p>
+<p class="p_Normal">4. **Alpha semantics**: IPL masking, PAL mode blocking, critical interrupt override</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Architecture</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Data Structures</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">IRQController</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;├─&nbsp;m_cpuStates[MAX_CPUS]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Per-CPU&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;vectors[NUM_IPL_LEVELS]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Per-IPL&nbsp;FIFO&nbsp;queues</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;pendingIPLMask&nbsp;(atomic&lt;quint32&gt;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Bitmask&nbsp;of&nbsp;pending&nbsp;IPLs</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;currentIPL&nbsp;(quint8)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Current&nbsp;interrupt&nbsp;priority</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;interruptsEnabled&nbsp;(atomic&lt;bool&gt;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Global&nbsp;IE&nbsp;flag</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;inPalMode&nbsp;(atomic&lt;bool&gt;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;PAL&nbsp;mode&nbsp;flag</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;└─&nbsp;m_irqStates[vector]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Per-vector&nbsp;configuration</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;ipl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Interrupt&nbsp;priority&nbsp;level</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;routingPolicy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;FIXED_CPU,&nbsp;ROUND_ROBIN,&nbsp;etc.</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;affinityCPU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Target&nbsp;CPU&nbsp;(if&nbsp;FIXED_CPU)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;triggerMode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;EDGE&nbsp;or&nbsp;LEVEL</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Interrupt Flow</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Device&nbsp;raises&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">assertIRQ(vector,&nbsp;ipl)&nbsp;[mutex&nbsp;protected]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">selectTargetCPU()&nbsp;[routing&nbsp;policy]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">deliverToCPU(cpuId,&nbsp;vector,&nbsp;ipl)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">cpuState.vectors[ipl].append(vector)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">cpuState.pendingIPLMask&nbsp;|=&nbsp;(1&nbsp;&lt;&lt;&nbsp;ipl)&nbsp;[atomic]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">AlphaCPU::runOneInstruction()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">irqCtrl.poll(cpuId,&nbsp;faultSink)&nbsp;[lock-free]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">hasPendingInterrupt(cpuId,&nbsp;currentIPL)&nbsp;[lock-free]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">getNextInterrupt(cpuId,&nbsp;currentIPL,&nbsp;&amp;vector,&nbsp;&amp;ipl)&nbsp;[mutex]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">deliverPendingEvent()&nbsp;[raises&nbsp;to&nbsp;PAL]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PAL&nbsp;INTERRUPT&nbsp;handler</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">acknowledgeInterrupt(cpuId,&nbsp;ipl)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Device&nbsp;ISR&nbsp;executes</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">&nbsp;</span></h2>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Quick Start</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Step 1: Initialize IRQController</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;In&nbsp;system&nbsp;initialization</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">auto&amp;&nbsp;smpMgr&nbsp;=&nbsp;SMPManager::instance();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">int&nbsp;cpuCount&nbsp;=&nbsp;4;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">IRQController*&nbsp;irqCtrl&nbsp;=&nbsp;new&nbsp;IRQController(cpuCount);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">smpMgr.bindIRQController(irqCtrl);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">DEBUG_LOG(QString(&quot;IRQController&nbsp;initialized&nbsp;for&nbsp;%1&nbsp;CPUs&quot;).arg(cpuCount));</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Step 2: Register Device Interrupts</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;SCSI&nbsp;controller&nbsp;gets&nbsp;vector&nbsp;0x800,&nbsp;IPL&nbsp;20,&nbsp;fixed&nbsp;to&nbsp;CPU&nbsp;0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">irqCtrl-&gt;registerIRQVector(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;0x800,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;vector</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;20,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;ipl</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;hoseId</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;scsiCtrl-&gt;getDeviceUID(),&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;deviceUid</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;SCSI&nbsp;Primary&quot;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;deviceName</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;IRQTrigger::LEVEL,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;triggerMode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;shareable</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">IrqRoutingConfig&nbsp;cfg;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">cfg.policy&nbsp;=&nbsp;IRQRoutingPolicy::FIXED_CPU;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">cfg.affinityCpu&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">irqCtrl-&gt;setIRQRouting(0x800,&nbsp;cfg);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Step 3: Poll in CPU Run Loop</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;In&nbsp;AlphaCPU::runOneInstruction()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">if&nbsp;(!inPalMode)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.poll(m_cpuId,&nbsp;*m_faultSink);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(m_faultSink-&gt;eventPending())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deliverPendingEvent();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;flush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">```</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Step 4: Assert Interrupts from Devices</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;In&nbsp;SCSI&nbsp;controller&nbsp;when&nbsp;operation&nbsp;completes</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;ScsiController::completeOperation()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;operation&nbsp;complete&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.assertIRQ(m_interruptVector);&nbsp;&nbsp;//&nbsp;Vector&nbsp;0x800</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(&quot;SCSI:&nbsp;Interrupt&nbsp;asserted&quot;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> CPU Integration</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> AlphaCPU Polling Loop</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">class&nbsp;AlphaCPU</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">public:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;AXP_HOT&nbsp;AXP_ALWAYS_INLINE&nbsp;void&nbsp;runOneInstruction()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;bool&nbsp;inPalMode&nbsp;=&nbsp;m_palService-&gt;isInPalMode();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1.&nbsp;Check&nbsp;for&nbsp;pending&nbsp;faults/interrupts&nbsp;(if&nbsp;not&nbsp;in&nbsp;PAL)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!inPalMode&nbsp;&amp;&amp;&nbsp;m_faultSink-&gt;eventPending())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deliverPendingEvent();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;flush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;2.&nbsp;Poll&nbsp;for&nbsp;hardware&nbsp;interrupts&nbsp;(if&nbsp;not&nbsp;in&nbsp;PAL)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!inPalMode)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.poll(m_cpuId,&nbsp;*m_faultSink);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(m_faultSink-&gt;eventPending())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deliverPendingEvent();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;flush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;3.&nbsp;Poll&nbsp;for&nbsp;IPIs&nbsp;(TLB&nbsp;shootdown,&nbsp;barriers,&nbsp;etc.)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!inPalMode)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pollIPIs();&nbsp;&nbsp;//&nbsp;Process&nbsp;inter-processor&nbsp;interrupts</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4.&nbsp;Execute&nbsp;one&nbsp;pipeline&nbsp;cycle</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;step();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;5.&nbsp;Check&nbsp;for&nbsp;faults&nbsp;raised&nbsp;during&nbsp;execution</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!inPalMode&nbsp;&amp;&amp;&nbsp;m_faultSink-&gt;eventPending())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deliverPendingEvent();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;flush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;6.&nbsp;Fetch&nbsp;new&nbsp;instruction&nbsp;(if&nbsp;pipeline&nbsp;can&nbsp;accept)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;============================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!m_pipeline-&gt;isFrontendStalled())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FetchResult&nbsp;fetchResult;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;fetchOk&nbsp;=&nbsp;m_iBox-&gt;stepPipeline(fetchResult);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(fetchOk)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;supplyFetchResult(fetchResult);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(m_faultSink-&gt;eventPending())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deliverPendingEvent();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_pipeline-&gt;flush();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Updating IPL (MTPR PS)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;In&nbsp;AlphaProcessorContext::setPS()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">AXP_HOT&nbsp;AXP_ALWAYS_INLINE&nbsp;void&nbsp;setPS(quint64&nbsp;value)&nbsp;noexcept&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;m_cachedPS&nbsp;=&nbsp;value;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;m_cachedCM&nbsp;=&nbsp;(value&nbsp;&amp;&nbsp;0x3);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;m_cachedIPL&nbsp;=&nbsp;((value&nbsp;&gt;&gt;&nbsp;3)&nbsp;&amp;&nbsp;0x1F);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;m_cachedVMM&nbsp;=&nbsp;(value&nbsp;&gt;&gt;&nbsp;8)&nbsp;&amp;&nbsp;0x1;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Update&nbsp;IRQ&nbsp;controller&nbsp;if&nbsp;IPL&nbsp;changed</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(m_cachedIPL&nbsp;!=&nbsp;m_irqControllerIPL)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.setCPUIpl(m_cpuId,&nbsp;m_cachedIPL);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_irqControllerIPL&nbsp;=&nbsp;m_cachedIPL;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Update&nbsp;global&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;setPS_Active(m_cpuId,&nbsp;value);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;setCM_Active(m_cpuId,&nbsp;m_cachedIPL);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Device Interrupt Integration</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> SCSI Controller Example</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">class&nbsp;ScsiController</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">public:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;====================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Initialization</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;====================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;initialize()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Allocate&nbsp;interrupt&nbsp;vector&nbsp;from&nbsp;system</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Register&nbsp;primary&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_primaryVector&nbsp;=&nbsp;0x800;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_primaryIPL&nbsp;=&nbsp;20;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.registerIRQVector(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_primaryVector,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_primaryIPL,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_hoseId,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_deviceUID,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;SCSI&nbsp;Primary&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IRQTrigger::LEVEL,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;&nbsp;//&nbsp;Not&nbsp;shareable</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Configure&nbsp;routing</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IrqRoutingConfig&nbsp;cfg;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cfg.policy&nbsp;=&nbsp;IRQRoutingPolicy::FIXED_CPU;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cfg.affinityCpu&nbsp;=&nbsp;0;&nbsp;&nbsp;//&nbsp;Always&nbsp;CPU&nbsp;0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.setIRQRouting(m_primaryVector,&nbsp;cfg);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;SCSI:&nbsp;Registered&nbsp;vector&nbsp;0x%1,&nbsp;IPL&nbsp;%2&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(m_primaryVector,&nbsp;8,&nbsp;16,&nbsp;QChar('0'))</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(m_primaryIPL));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;====================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Interrupt&nbsp;Assertion</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;====================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;completeOperation()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;operation&nbsp;logic&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Assert&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.assertIRQ(m_primaryVector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;SCSI:&nbsp;Operation&nbsp;complete,&nbsp;interrupt&nbsp;asserted&quot;));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;====================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Interrupt&nbsp;Service&nbsp;Routine&nbsp;(called&nbsp;from&nbsp;PAL)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;====================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;serviceInterrupt()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Read&nbsp;device&nbsp;status</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;status&nbsp;=&nbsp;readDeviceStatus();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Handle&nbsp;completion</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(status&nbsp;&amp;&nbsp;STATUS_COMPLETE)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handleCompletion();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Clear&nbsp;interrupt&nbsp;condition</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearInterrupt();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Acknowledge&nbsp;to&nbsp;IRQ&nbsp;controller</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.acknowledgeInterrupt(m_targetCpu,&nbsp;m_primaryIPL);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(&quot;SCSI:&nbsp;Interrupt&nbsp;serviced&quot;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">private:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;m_primaryVector;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;&nbsp;m_primaryIPL;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint16&nbsp;m_hoseId;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;m_deviceUID;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;CPUIdType&nbsp;m_targetCpu;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Ethernet Controller Example (Round-Robin Routing)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">class EthernetController</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal">public:</p>
+<p class="p_Normal"> &nbsp; &nbsp;void initialize() {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;auto&amp; irqCtrl = global_IRQController();</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Register RX interrupt</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;m_rxVector = 0x810;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;m_rxIPL = 20;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;irqCtrl.registerIRQVector(</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;m_rxVector,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;m_rxIPL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;m_hoseId,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;m_deviceUID,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&quot;Ethernet RX&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IRQTrigger::LEVEL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;false</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Configure round-robin across all CPUs</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;IrqRoutingConfig cfg;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;cfg.policy = IRQRoutingPolicy::ROUND_ROBIN;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;irqCtrl.setIRQRouting(m_rxVector, cfg);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;DEBUG_LOG(&quot;Ethernet: Round-robin routing configured&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;void receivePacket() {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// ... receive logic ...</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Assert interrupt (will rotate across CPUs)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;auto&amp; irqCtrl = global_IRQController();</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;irqCtrl.assertIRQ(m_rxVector);</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> IPI Integration</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> TLB Shootdown Example</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;In&nbsp;PAL&nbsp;DTB_MISS&nbsp;handler&nbsp;after&nbsp;inserting&nbsp;PTE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;PAL_DTB_MISS_Handler_EV6::handle(...)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;page&nbsp;table&nbsp;walk&nbsp;and&nbsp;validation&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Insert&nbsp;PTE&nbsp;into&nbsp;local&nbsp;TLB</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;insertSuccess&nbsp;=&nbsp;globalSPAM(cpuId).tlbInsert(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cpuId,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Realm::D,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;faultVA,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;asn,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pte</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!insertSuccess)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Handle&nbsp;error</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;✅&nbsp;Send&nbsp;TLB&nbsp;shootdown&nbsp;to&nbsp;other&nbsp;CPUs</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(isMultiCPU())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTLBShootdown(cpuId,&nbsp;faultVA,&nbsp;asn,&nbsp;Realm::D);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;TLB&nbsp;Shootdown&nbsp;Helper</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;sendTLBShootdown(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;CPUIdType&nbsp;sourceCpu,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;va,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;ASNType&nbsp;asn,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;Realm&nbsp;realm)&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;smpMgr&nbsp;=&nbsp;global_SMPManager();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Only&nbsp;send&nbsp;if&nbsp;multi-CPU&nbsp;system</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(smpMgr.cpuCount()&nbsp;&lt;=&nbsp;1)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Encode&nbsp;parameters&nbsp;for&nbsp;IPI</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;vaHigh&nbsp;=&nbsp;static_cast&lt;quint32&gt;(va&nbsp;&gt;&gt;&nbsp;32);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;vaLow&nbsp;=&nbsp;static_cast&lt;quint32&gt;(va&nbsp;&amp;&nbsp;0xFFFFFFFF);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;asnRealm&nbsp;=&nbsp;(static_cast&lt;quint64&gt;(asn)&nbsp;&lt;&lt;&nbsp;32)&nbsp;|&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(static_cast&lt;quint64&gt;(realm)&nbsp;&amp;&nbsp;0xFF);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Broadcast&nbsp;to&nbsp;all&nbsp;CPUs&nbsp;except&nbsp;source</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint16&nbsp;successCount&nbsp;=&nbsp;smpMgr.broadcastIPI(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sourceCpu,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IPIQueue::MessageType::TLB_SHOOTDOWN,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vaHigh,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vaLow,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;asnRealm</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(successCount&nbsp;==&nbsp;0&nbsp;&amp;&amp;&nbsp;smpMgr.cpuCount()&nbsp;&gt;&nbsp;1)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WARN_LOG(QString(&quot;CPU%1:&nbsp;TLB&nbsp;shootdown&nbsp;broadcast&nbsp;failed&quot;).arg(sourceCpu));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> IPI Handling in AlphaCPU</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;In&nbsp;AlphaCPU::pollIPIs()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">AXP_ALWAYS_INLINE&nbsp;void&nbsp;pollIPIs()&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;smpMgr&nbsp;=&nbsp;global_SMPManager();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;IPIQueue*&nbsp;queue&nbsp;=&nbsp;smpMgr.getIPIQueue(m_cpuId);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!queue&nbsp;||&nbsp;queue-&gt;isEmpty())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Process&nbsp;all&nbsp;pending&nbsp;IPIs&nbsp;(bounded)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;constexpr&nbsp;int&nbsp;MAX_IPIS_PER_POLL&nbsp;=&nbsp;16;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;processed&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;IPIQueue::MessageType&nbsp;type;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;p1,&nbsp;p2;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;p3;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(processed&nbsp;&lt;&nbsp;MAX_IPIS_PER_POLL&nbsp;&amp;&amp;&nbsp;queue-&gt;tryDequeue(type,&nbsp;p1,&nbsp;p2,&nbsp;p3))&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processIPI(type,&nbsp;p1,&nbsp;p2,&nbsp;p3);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed++;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Handle&nbsp;TLB&nbsp;shootdown&nbsp;IPI</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">AXP_ALWAYS_INLINE&nbsp;void&nbsp;handleTLBShootdown(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;vaHigh,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;vaLow,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;asnRealm)&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Reconstruct&nbsp;VA&nbsp;from&nbsp;parameters</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;quint64&nbsp;va&nbsp;=&nbsp;(static_cast&lt;quint64&gt;(vaHigh)&nbsp;&lt;&lt;&nbsp;32)&nbsp;|&nbsp;vaLow;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Extract&nbsp;ASN&nbsp;and&nbsp;realm</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;ASNType&nbsp;asn&nbsp;=&nbsp;static_cast&lt;ASNType&gt;(asnRealm&nbsp;&gt;&gt;&nbsp;32);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;Realm&nbsp;realm&nbsp;=&nbsp;static_cast&lt;Realm&gt;(asnRealm&nbsp;&amp;&nbsp;0xFF);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Invalidate&nbsp;TLB&nbsp;entry</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;globalSPAM(m_cpuId).tbisInvalidate(m_cpuId,&nbsp;va,&nbsp;asn);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;CPU%1:&nbsp;TLB&nbsp;shootdown&nbsp;VA=0x%2&nbsp;ASN=%3&nbsp;realm=%4&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(m_cpuId)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(va,&nbsp;16,&nbsp;16,&nbsp;QChar('0'))</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(asn)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(realm&nbsp;==&nbsp;Realm::D&nbsp;?&nbsp;&quot;D&quot;&nbsp;:&nbsp;&quot;I&quot;));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> PAL Integration</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Entering PAL Mode</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;In&nbsp;PalService::enterPALVector()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;PalService::enterPALVector(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;PalVectorId&nbsp;vecId,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;exceptionPC,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;PalArgumentPack&amp;&nbsp;args)&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;existing&nbsp;PAL&nbsp;entry&nbsp;logic&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Enter&nbsp;PAL&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;globalIPRHot(m_cpuId).setInPalMode(true);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Notify&nbsp;IRQ&nbsp;controller&nbsp;(blocks&nbsp;interrupts)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.setCPUPalMode(m_cpuId,&nbsp;true);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Force&nbsp;kernel&nbsp;mode&nbsp;(CM=0)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;setCM_Active(m_cpuId,&nbsp;0);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Set&nbsp;IPL&nbsp;to&nbsp;7&nbsp;(block&nbsp;all&nbsp;maskable&nbsp;interrupts)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;setIPL_Active(m_cpuId,&nbsp;7);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;rest&nbsp;of&nbsp;PAL&nbsp;entry&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Exiting PAL Mode (HW_REI)</span></h3>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;In&nbsp;PalService::hwrei()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;PalService::hwrei()&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;restore&nbsp;context&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Exit&nbsp;PAL&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;globalIPRHot(m_cpuId).setInPalMode(false);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Notify&nbsp;IRQ&nbsp;controller&nbsp;(resumes&nbsp;interrupt&nbsp;delivery)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.setCPUPalMode(m_cpuId,&nbsp;false);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Restore&nbsp;PS&nbsp;(includes&nbsp;IPL,&nbsp;CM)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;restoredPS&nbsp;=&nbsp;getPS_Active(m_cpuId);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;setPS(restoredPS);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;rest&nbsp;of&nbsp;HW_REI&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> PAL INTERRUPT Handler</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;PAL&nbsp;INTERRUPT&nbsp;handler&nbsp;(simplified)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;PAL_INTERRUPT_Handler::handle(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;CPUIdType&nbsp;cpuId,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;AlphaProcessorContext&amp;&nbsp;ctx,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;IFaultSink&amp;&nbsp;faultSink)&nbsp;noexcept</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Get&nbsp;interrupt&nbsp;vector&nbsp;and&nbsp;IPL</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;vector&nbsp;=&nbsp;irqCtrl.getInterruptVector(cpuId);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;ipl&nbsp;=&nbsp;irqCtrl.getHighestPendingIPL(cpuId);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(vector&nbsp;==&nbsp;0)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Spurious&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;PAL&nbsp;INTERRUPT:&nbsp;vector=0x%1,&nbsp;IPL=%2&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(vector,&nbsp;8,&nbsp;16,&nbsp;QChar('0'))</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(ipl));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Route&nbsp;to&nbsp;device&nbsp;ISR&nbsp;based&nbsp;on&nbsp;vector</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(vector&nbsp;&gt;=&nbsp;0x800&nbsp;&amp;&amp;&nbsp;vector&nbsp;&lt;&nbsp;0x900)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;SCSI&nbsp;interrupts</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scsiController-&gt;serviceInterrupt();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(vector&nbsp;&gt;=&nbsp;0x810&nbsp;&amp;&amp;&nbsp;vector&nbsp;&lt;&nbsp;0x820)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Ethernet&nbsp;interrupts</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ethernetController-&gt;serviceInterrupt();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;other&nbsp;devices&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Acknowledge&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.acknowledgeInterrupt(cpuId,&nbsp;ipl);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Return&nbsp;via&nbsp;HW_REI</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Software Interrupts</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Requesting Software Interrupt (MTPR_SIRR)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;In&nbsp;EBox::executeMTPR_SIRR()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;EBox::executeMTPR_SIRR(quint8&nbsp;ipl)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(ipl&nbsp;==&nbsp;0&nbsp;||&nbsp;ipl&nbsp;&gt;=&nbsp;16)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Invalid&nbsp;IPL&nbsp;for&nbsp;software&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raiseFault(makeIllegalInstructionFault());</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.requestSoftwareInterrupt(m_cpuId,&nbsp;ipl);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;CPU%1:&nbsp;MTPR_SIRR&nbsp;IPL=%2&quot;).arg(m_cpuId).arg(ipl));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Handling Software Interrupt</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Software interrupts use the same mechanism as hardware interrupts:</p>
+<p class="p_Normal">- Vector: `0x1000 + ipl` (e.g., 0x1005 for IPL 5)</p>
+<p class="p_Normal">- IPL: 1-15</p>
+<p class="p_Normal">- Routing: Round-robin (default)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL INTERRUPT handler receives them like any other interrupt.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Advanced Topics</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Custom Routing Policies</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Implement&nbsp;custom&nbsp;routing&nbsp;in&nbsp;selectTargetCPU()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">qint32&nbsp;IRQController::selectTargetCPU(IRQState&amp;&nbsp;irqState)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(irqState.routingPolicy)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;IRQRoutingPolicy::LOWEST_IPL:&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;qint32&nbsp;bestCPU&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;lowestIPL&nbsp;=&nbsp;m_cpuStates[0].currentIPL;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(qint32&nbsp;cpuId&nbsp;=&nbsp;1;&nbsp;cpuId&nbsp;&lt;&nbsp;m_numCpus;&nbsp;++cpuId)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;CPUIRQState&amp;&nbsp;cpu&nbsp;=&nbsp;m_cpuStates[cpuId];</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool&nbsp;enabled&nbsp;=&nbsp;cpu.interruptsEnabled.load(std::memory_order_acquire);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(enabled&nbsp;&amp;&amp;&nbsp;cpu.currentIPL&nbsp;&lt;&nbsp;lowestIPL)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lowestIPL&nbsp;=&nbsp;cpu.currentIPL;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bestCPU&nbsp;=&nbsp;cpuId;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqState.lastServicedCPU&nbsp;=&nbsp;bestCPU;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;bestCPU;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;other&nbsp;policies&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Interrupt Coalescing</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Device-side&nbsp;interrupt&nbsp;coalescing</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">class&nbsp;CoalescedDevice</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">public:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;completeOperation()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_completedOps++;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Coalesce&nbsp;interrupts&nbsp;(raise&nbsp;every&nbsp;16&nbsp;completions)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(m_completedOps&nbsp;&gt;=&nbsp;16)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.assertIRQ(m_interruptVector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_completedOps&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">private:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;m_completedOps&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;m_interruptVector;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Interrupt Affinity Hints</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Pin&nbsp;high-bandwidth&nbsp;device&nbsp;to&nbsp;specific&nbsp;CPU</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;optimizeDeviceAffinity()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Pin&nbsp;SCSI&nbsp;to&nbsp;CPU&nbsp;0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;IrqRoutingConfig&nbsp;scsiCfg;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;scsiCfg.policy&nbsp;=&nbsp;IRQRoutingPolicy::FIXED_CPU;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;scsiCfg.affinityCpu&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.setIRQRouting(SCSI_VECTOR,&nbsp;scsiCfg);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Pin&nbsp;Ethernet&nbsp;to&nbsp;CPU&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;IrqRoutingConfig&nbsp;ethCfg;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;ethCfg.policy&nbsp;=&nbsp;IRQRoutingPolicy::FIXED_CPU;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;ethCfg.affinityCpu&nbsp;=&nbsp;1;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.setIRQRouting(ETH_VECTOR,&nbsp;ethCfg);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(&quot;Interrupt&nbsp;affinity&nbsp;optimized&quot;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Performance Tuning</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Hot Path Optimization</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The hot path (`hasPendingInterrupt`) is already optimized:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;~5&nbsp;cycles&nbsp;total</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">bool&nbsp;hasPendingInterrupt(qint32&nbsp;cpuId,&nbsp;quint8&nbsp;currentIPL)&nbsp;const&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;cycle:&nbsp;range&nbsp;check</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(cpuId&nbsp;&lt;&nbsp;0&nbsp;||&nbsp;cpuId&nbsp;&gt;=&nbsp;m_numCpus)&nbsp;return&nbsp;false;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;CPUIRQState&amp;&nbsp;cpuIRQState&nbsp;=&nbsp;m_cpuStates[cpuId];</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;cycle:&nbsp;load&nbsp;interruptsEnabled&nbsp;(cached)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!cpuIRQState.interruptsEnabled.load(std::memory_order_acquire))</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;false;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;cycle:&nbsp;load&nbsp;inPalMode&nbsp;(same&nbsp;cache&nbsp;line)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(cpuIRQState.inPalMode.load(std::memory_order_acquire))</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;false;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;cycle:&nbsp;load&nbsp;pendingIPLMask&nbsp;(atomic)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;quint32&nbsp;mask&nbsp;=&nbsp;cpuIRQState.pendingIPLMask.load(std::memory_order_acquire);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;cycle:&nbsp;bit&nbsp;manipulation</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;quint32&nbsp;eligibleMask&nbsp;=&nbsp;mask&nbsp;&amp;&nbsp;~((1u&nbsp;&lt;&lt;&nbsp;(currentIPL&nbsp;+&nbsp;1))&nbsp;-&nbsp;1);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;eligibleMask&nbsp;!=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">**Performance tips:**</span></p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Keep `CPUIRQState` cache-aligned (already done with `alignas(64)`)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Use `std::memory_order_relaxed` for non-critical loads</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Minimize calls to `getNextInterrupt()` (uses mutex)</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Reducing Interrupt Latency</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;1.&nbsp;Use&nbsp;FIXED_CPU&nbsp;routing&nbsp;for&nbsp;latency-critical&nbsp;devices</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">IrqRoutingConfig&nbsp;cfg;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">cfg.policy&nbsp;=&nbsp;IRQRoutingPolicy::FIXED_CPU;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">cfg.affinityCpu&nbsp;=&nbsp;0;&nbsp;&nbsp;//&nbsp;Pin&nbsp;to&nbsp;CPU&nbsp;0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">irqCtrl.setIRQRouting(CRITICAL_DEVICE_VECTOR,&nbsp;cfg);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;2.&nbsp;Use&nbsp;higher&nbsp;IPL&nbsp;for&nbsp;critical&nbsp;interrupts</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">irqCtrl.registerIRQVector(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;CRITICAL_DEVICE_VECTOR,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;30,&nbsp;&nbsp;//&nbsp;High&nbsp;IPL&nbsp;(near&nbsp;maximum)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;other&nbsp;params&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;3.&nbsp;Poll&nbsp;more&nbsp;frequently&nbsp;in&nbsp;CPU&nbsp;run&nbsp;loop</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;(Already&nbsp;happening&nbsp;every&nbsp;instruction&nbsp;cycle)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">&nbsp;</span></h2>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Debugging and Diagnostics</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Interrupt Eligibility Check</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Dump&nbsp;interrupt&nbsp;eligibility&nbsp;for&nbsp;debugging</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">QString&nbsp;eligibility&nbsp;=&nbsp;irqCtrl.formatInterruptEligibility(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;cpuId,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;interruptIPL,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;vector</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">DEBUG_LOG(eligibility);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Output:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Interrupt&nbsp;eligibility&nbsp;for&nbsp;CPU&nbsp;0:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;&nbsp;&nbsp;Vector:&nbsp;0x00000800</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;&nbsp;&nbsp;Interrupt&nbsp;IPL:&nbsp;20</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;&nbsp;&nbsp;Current&nbsp;IPL:&nbsp;7</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;&nbsp;&nbsp;In&nbsp;PAL&nbsp;mode:&nbsp;No</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;&nbsp;&nbsp;Critical:&nbsp;No</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;&nbsp;&nbsp;Status:&nbsp;ELIGIBLE</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Dumping CPU Interrupt State</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Custom&nbsp;diagnostic&nbsp;function</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;dumpCPUInterruptState(CPUIdType&nbsp;cpuId)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;CPUIRQState&amp;&nbsp;cpuState&nbsp;=&nbsp;irqCtrl.getCPUState(cpuId);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;CPU%1&nbsp;Interrupt&nbsp;State:&quot;).arg(cpuId));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;&nbsp;&nbsp;Current&nbsp;IPL:&nbsp;%1&quot;).arg(cpuState.currentIPL));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;&nbsp;&nbsp;Interrupts&nbsp;enabled:&nbsp;%1&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(cpuState.interruptsEnabled.load()&nbsp;?&nbsp;&quot;Yes&quot;&nbsp;:&nbsp;&quot;No&quot;));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;&nbsp;&nbsp;In&nbsp;PAL&nbsp;mode:&nbsp;%1&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(cpuState.inPalMode.load()&nbsp;?&nbsp;&quot;Yes&quot;&nbsp;:&nbsp;&quot;No&quot;));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;&nbsp;&nbsp;Pending&nbsp;IPL&nbsp;mask:&nbsp;0x%1&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(cpuState.pendingIPLMask.load(),&nbsp;8,&nbsp;16,&nbsp;QChar('0')));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Dump&nbsp;per-IPL&nbsp;queues</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;ipl&nbsp;=&nbsp;0;&nbsp;ipl&nbsp;&lt;&nbsp;NUM_IPL_LEVELS;&nbsp;++ipl)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!cpuState.vectors[ipl].isEmpty())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;&nbsp;&nbsp;IPL&nbsp;%1:&nbsp;%2&nbsp;pending&nbsp;vectors&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(ipl)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(cpuState.vectors[ipl].size()));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Tracking Interrupt Counts</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Add&nbsp;counters&nbsp;to&nbsp;IRQState</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">struct&nbsp;IRQState&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;assertCount{&nbsp;0&nbsp;};</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;deliveryCount{&nbsp;0&nbsp;};</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;acknowledgeCount{&nbsp;0&nbsp;};</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;existing&nbsp;fields&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Increment&nbsp;in&nbsp;appropriate&nbsp;places</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;assertIRQ(quint32&nbsp;vector)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;QMutexLocker&nbsp;locker(&amp;m_lock);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&nbsp;it&nbsp;=&nbsp;m_irqStates.find(vector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(it&nbsp;!=&nbsp;m_irqStates.end())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it-&gt;assertCount++;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...&nbsp;delivery&nbsp;logic&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Dump&nbsp;statistics</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;dumpInterruptStatistics()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(auto&nbsp;it&nbsp;=&nbsp;m_irqStates.begin();&nbsp;it&nbsp;!=&nbsp;m_irqStates.end();&nbsp;++it)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG_LOG(QString(&quot;Vector&nbsp;0x%1:&nbsp;asserted=%2,&nbsp;delivered=%3,&nbsp;ack=%4&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(it.key(),&nbsp;8,&nbsp;16,&nbsp;QChar('0'))</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(it-&gt;assertCount)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(it-&gt;deliveryCount)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.arg(it-&gt;acknowledgeCount));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Complete Examples</span></h2>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Example 1: Simple Device with Single Interrupt</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_CodeExample"><span class="f_CodeExample">class&nbsp;SerialPort</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">public:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;initialize()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_vector&nbsp;=&nbsp;0x820;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_ipl&nbsp;=&nbsp;21;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.registerIRQVector(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_vector,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_ipl,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0,&nbsp;&nbsp;//&nbsp;hoseId</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getDeviceUID(),</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Serial&nbsp;Port&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IRQTrigger::EDGE,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IrqRoutingConfig&nbsp;cfg;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cfg.policy&nbsp;=&nbsp;IRQRoutingPolicy::FIXED_CPU;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cfg.affinityCpu&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.setIRQRouting(m_vector,&nbsp;cfg);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;onByteReceived()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Byte&nbsp;received,&nbsp;assert&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.assertIRQ(m_vector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;serviceInterrupt()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Read&nbsp;received&nbsp;byte</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;byte&nbsp;=&nbsp;readDataRegister();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Process&nbsp;byte</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_receiveBuffer.append(byte);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Clear&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearInterruptFlag();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Acknowledge</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.acknowledgeInterrupt(0,&nbsp;m_ipl);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">private:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;m_vector;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;m_ipl;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;QByteArray&nbsp;m_receiveBuffer;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Example 2: Multi-CPU Load Balancing</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">class&nbsp;NetworkController</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">public:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;initialize()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;RX&nbsp;interrupts&nbsp;use&nbsp;round-robin</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_rxVector&nbsp;=&nbsp;0x900;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_rxIPL&nbsp;=&nbsp;20;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.registerIRQVector(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_rxVector,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_rxIPL,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getDeviceUID(),</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Network&nbsp;RX&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IRQTrigger::LEVEL,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IrqRoutingConfig&nbsp;cfg;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cfg.policy&nbsp;=&nbsp;IRQRoutingPolicy::ROUND_ROBIN;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.setIRQRouting(m_rxVector,&nbsp;cfg);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;TX&nbsp;interrupts&nbsp;pinned&nbsp;to&nbsp;CPU&nbsp;0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_txVector&nbsp;=&nbsp;0x901;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_txIPL&nbsp;=&nbsp;20;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.registerIRQVector(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_txVector,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_txIPL,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getDeviceUID(),</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Network&nbsp;TX&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IRQTrigger::LEVEL,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IrqRoutingConfig&nbsp;txCfg;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txCfg.policy&nbsp;=&nbsp;IRQRoutingPolicy::FIXED_CPU;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txCfg.affinityCpu&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.setIRQRouting(m_txVector,&nbsp;txCfg);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;receivePacket()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;RX&nbsp;interrupt&nbsp;(will&nbsp;rotate&nbsp;across&nbsp;CPUs)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.assertIRQ(m_rxVector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;transmitComplete()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;TX&nbsp;interrupt&nbsp;(always&nbsp;CPU&nbsp;0)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.assertIRQ(m_txVector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3"> Example 3: Software Interrupt IPC</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;CPU&nbsp;0&nbsp;sends&nbsp;work&nbsp;to&nbsp;CPU&nbsp;1&nbsp;via&nbsp;software&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;sendWorkToCPU1()&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Enqueue&nbsp;work&nbsp;item</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;workQueue.enqueue(workItem);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Raise&nbsp;software&nbsp;interrupt&nbsp;on&nbsp;CPU&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.requestSoftwareInterrupt(1,&nbsp;5);&nbsp;&nbsp;//&nbsp;CPU&nbsp;1,&nbsp;IPL&nbsp;5</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;CPU&nbsp;1&nbsp;handles&nbsp;software&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;PAL_INTERRUPT_Handler::handle(...)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;auto&amp;&nbsp;irqCtrl&nbsp;=&nbsp;global_IRQController();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;quint32&nbsp;vector&nbsp;=&nbsp;irqCtrl.getInterruptVector(cpuId);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(irqCtrl.isSoftwareInterruptVector(vector))&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint8&nbsp;ipl&nbsp;=&nbsp;irqCtrl.getSoftwareInterruptIPL(vector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Process&nbsp;work&nbsp;queue</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(!workQueue.isEmpty())&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WorkItem&nbsp;item&nbsp;=&nbsp;workQueue.dequeue();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processWorkItem(item);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Acknowledge</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irqCtrl.acknowledgeInterrupt(cpuId,&nbsp;ipl);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2"> Conclusion</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The `IRQController` provides a complete, production-ready interrupt management system for Alpha AXP emulation. Key takeaways:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>Use lock-free polling** for hot path performance</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">2.</span>Configure routing policies** based on device characteristics</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">3.</span>Integrate with PAL mode** for architectural correctness</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">4.</span>Use IPIs** for inter-CPU communication (TLB shootdown, barriers)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">5.</span>Monitor and tune** using diagnostic functions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For additional support, see:</p>
+<p class="p_Normal">- `IRQController.h` - Full implementation</p>
+<p class="p_Normal">- `IRQ_core.h` - Data structures and constants</p>
+<p class="p_Normal">- Alpha Architecture Reference Manual - Interrupt semantics</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**End of Integration Guide**</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

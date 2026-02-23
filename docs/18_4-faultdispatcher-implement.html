@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 18 – Fault Dispatcher &amp; Precise Exceptions &gt; 18.4 FaultDispatcher Implementation</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="18.4.1 Per-CPU Authority &nbsp;There is one FaultDispatcher per CPU, accessed via globalFaultDispatcher(cpuId). The FaultDispatcher is the central authority for managing exceptional..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "18_4-faultdispatcher-implement.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">18.4 FaultDispatcher Implementation</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?18_4-faultdispatcher-implement.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-18---fault-dispatcher-.html">Chapter 18 – Fault Dispatcher &amp; Precise Exceptions</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">18.4 FaultDispatcher Implementation</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="18_3-exceptionfactory.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-18---fault-dispatcher-.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="18_5-exception-to-pal-vector-m.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">18.4.1 Per-CPU Authority</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">There is one <span class="f_CodeExample">FaultDispatcher</span> per CPU, accessed via <span class="f_CodeExample">globalFaultDispatcher(cpuId)</span>. The FaultDispatcher is the central authority for managing exceptional events on its CPU. It decouples detection from delivery: faults are queued when detected (in EX stage) and delivered when the pipeline reaches a safe state (in WB stage). No other component may deliver exceptions or modify event state.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">18.4.2 Pending Flags (Hot Path)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The FaultDispatcher's <span class="f_CodeExample">eventPending()</span> method is the hottest path in the emulator — it is called every cycle by the CPU run loop. The implementation uses a simple bitfield check with no atomics (the FaultDispatcher is per-CPU and only accessed by its owning CPU thread):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">bool&nbsp;eventPending()&nbsp;const&nbsp;noexcept&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;return&nbsp;m_pendingFlags&nbsp;!=&nbsp;0;&nbsp;//&nbsp;~1&nbsp;cycle,&nbsp;no&nbsp;atomic</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The pending flags are a bitmask tracking event categories:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">FLAG_NONE&nbsp;=&nbsp;0x00</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">FLAG_EXCEPTION&nbsp;=&nbsp;0x01&nbsp;//&nbsp;Generic&nbsp;exception</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">FLAG_ARITHMETIC_TRAP&nbsp;=&nbsp;0x02&nbsp;//&nbsp;Arithmetic&nbsp;trap&nbsp;(for&nbsp;TRAPB)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">FLAG_DTB_MISS&nbsp;=&nbsp;0x04&nbsp;//&nbsp;Data&nbsp;TLB&nbsp;miss</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">FLAG_ITB_MISS&nbsp;=&nbsp;0x08&nbsp;//&nbsp;Instruction&nbsp;TLB&nbsp;miss</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">FLAG_INTERRUPT&nbsp;=&nbsp;0x10&nbsp;//&nbsp;Interrupt&nbsp;pending</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">FLAG_MACHINE_CHECK&nbsp;=&nbsp;0x20&nbsp;//&nbsp;Machine&nbsp;check&nbsp;(highest)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Specialized query methods test individual flags: <span class="f_CodeExample">hasPendingArithmeticTraps()</span> (FLAG_ARITHMETIC_TRAP, used by TRAPB), <span class="f_CodeExample">hasPendingTLBFaults()</span> (DTB/ITB), <span class="f_CodeExample">hasPendingInterrupt()</span>, <span class="f_CodeExample">hasPendingMachineCheck()</span>. These provide zero-cost queries for barrier release decisions without examining the full PendingEvent structure.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">18.4.3 Event Queueing and Clearing</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">setPendingEvent(event)</span> stores the PendingEvent and sets the appropriate flag bits. If a higher-priority event is already pending, the lower-priority event is held until the higher-priority event clears. <span class="f_CodeExample">clearPendingEvents()</span> resets both the PendingEvent structure and the flag bitmask to zero. <span class="f_CodeExample">clearArithmeticTrap()</span> selectively clears only the arithmetic trap flag and, if the pending event is of <span class="f_CodeExample">Arithmetic</span> class, clears the event as well — this allows TRAPB to drain arithmetic traps while leaving other events pending.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">18.4.4 Delivery Preparation</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When the pipeline is ready to deliver an event (faulting instruction at WB stage, or interrupt sampling point), the FaultDispatcher performs delivery preparation:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;1.&nbsp;Map&nbsp;ExceptionClass&nbsp;→&nbsp;PalVectorId</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">ev.palVectorId&nbsp;=&nbsp;ExceptionMapping_inl::mapClassToPalVector(ev);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;2.&nbsp;Validate&nbsp;mapping</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">if&nbsp;(ev.palVectorId&nbsp;==&nbsp;PalVectorId::INVALID)&nbsp;→&nbsp;internal&nbsp;error</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;3.&nbsp;Look&nbsp;up&nbsp;PAL&nbsp;vector&nbsp;entry</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">const&nbsp;PalVectorEntry*&nbsp;entry&nbsp;=&nbsp;globalPALVectorTable().lookup(ev.palVectorId);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;4.&nbsp;Enter&nbsp;PAL&nbsp;mode&nbsp;with&nbsp;resolved&nbsp;vector</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">enterPalMode(reason,&nbsp;entry-&gt;entryPC,&nbsp;ev.faultPC);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The vector resolution is a two-step lookup: <span class="f_CodeExample">ExceptionMapping_inl::mapClassToPalVector()</span> maps the <span class="f_CodeExample">ExceptionClass_EV6</span> to a <span class="f_CodeExample">PalVectorId_EV6</span>, and <span class="f_CodeExample">PalVectorTable::lookup()</span> returns the <span class="f_CodeExample">PalVectorEntry</span> containing the entry PC, target IPL, and entry conditions. This two-step design allows the classification and vector table to evolve independently.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: faultLib/FaultDispatcher.h (~449 lines); exceptionLib/ExceptionMapping_inl.h – mapClassToPalVector(); palLib_EV6/PalVectorId_refined.h – PalVectorId enumeration; palLib_EV6/PalVectorTable_final.h – PAL vector table.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

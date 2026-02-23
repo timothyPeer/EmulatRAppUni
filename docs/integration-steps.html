@@ -1,0 +1,577 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; Integration Steps</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="Phase 0 – Freeze the new “truths” &nbsp;Before touching call-sites, treat these as the canonical interfaces: &nbsp;Pipeline &amp; slots – AlphaPipeline and PipelineSlot &nbsp;AlphaPipeline &nbsp;P" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "integration-steps.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Integration Steps</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?integration-steps.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Integration Steps</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="automatic-generationgrains.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="alpha.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="interrupts-_-ipl-and-ast.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">Phase 0 – Freeze the new “truths”</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Before touching call-sites, treat these as the canonical interfaces:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Pipeline &amp; slots – AlphaPipeline and PipelineSlot</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaPipeline</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PipelineSlot now owns:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">pc, raw, valid</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DecodedInstruction di</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">decoded, executed, faultPending</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">DecodedInstruction / InstructionGrain – the slimmed structures you just finalized.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Exception carrier – PendingEvent</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PendingEvent_refined</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Exception mapping – ExceptionMapping_inl::mapClassToPalVector(const PendingEvent&amp;)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">ExceptionMapping_inl</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Vector table – PalVectorId_refined + PalVectorEntry + PalVectorTable</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Everything else should fold around those.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Phase 1 – InstructionGrain / DecodedInstruction integration</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Goal: make every grain and decode path speak the new DecodedInstruction without bloating it.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Lock down DecodedInstruction shape</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Confirm it has only:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">core fields: opcode, function, Ra/Rb/Rc, literal, branch displacement, isLoad/isStore/isBranch flags, etc.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">your bit-packed flags instead of booleans.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Mark its helpers AXP_ALWAYS_INLINE where they’re on the hot path.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Update the central decode function</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In the iGrain system, find decodeInstruction() used by AlphaPipeline (stage_EX) and GrainResolver.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaPipeline</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Make sure:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Input: quint32 raw, quint64 pc (and optionally a “context” for PAL vs native).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Output: a fully filled DecodedInstruction with:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">pre-decoded flags (branch / load / store / CALL_PAL)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">addressing mode classification (literal vs register)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CALL_PAL index pre-extracted if applicable.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Update all grain execute signatures</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Standardize to something like:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">void execute(const DecodedInstruction&amp; di,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AlphaProcessorContext&amp; ctx);</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For PAL grains, same idea, but they’ll be handed a context that already knows it’s in PALmode.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Clean up old “legacy” decode accessors</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Remove / deprecate:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Raw bit-twiddling in every grain.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Any grain that recomputes Ra/Rb/Rc from the raw op – always use di.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is where most of the “wide implications” will show. Do a quick sweep:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Integer grains</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">FP grains</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Memory grains</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">branch/misc grains</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Phase 2 – Wire the Boxes cleanly</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You’ve already moved ownership:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MBox: memory side, PTE staging, SafeMemory attachment, write buffer.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EBox: integer register file &amp; integer execute.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaPipeline</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">FBox: FP register file &amp; FPCR.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">IBox: PC pipeline, fetch, dual-issue scheduling, and now the integration point for AlphaPipeline.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Checklist:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Make Box interfaces take DecodedInstruction</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EBox:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">void executeInteger(const DecodedInstruction&amp; di);</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">FBox:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">void executeFP(const DecodedInstruction&amp; di);</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MBox:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">void executeMemory(const DecodedInstruction&amp; di);</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">IBox:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Front end: fetch, branch prediction, updating PC.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Back end: called from pipeline’s EX/MEM to route the grain to the correct box.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Move register banks completely</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Ensure RegisterBankInteger lives only in EBox.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Ensure RegisterBankFP + FPCR live only in FBox.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MBox should not own them anymore; it should ask EBox/FBox when needed.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory access</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MBox should be the only place that touches SafeMemory directly.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Other boxes go through MBox for loads/stores (or the existing load-silo semantics).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Phase 3 – Integrate AlphaPipeline into AlphaCPU</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Goal: AlphaCPU becomes the “traffic cop,” not the execution engine.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">From AlphaPipeline</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaPipeline</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">step() currently:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">WB → MEM → EX → IS → DE → IF</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">then advanceRing().</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Steps:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Create a member in AlphaCPU</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">class AlphaCPU final : public QObject, public AlphaProcessorContext {</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ...</p>
+<p class="p_Normal"> &nbsp; &nbsp;AlphaPipeline m_pipeline;</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Construct it in AlphaCPU ctor:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaCPU::AlphaCPU(...):</p>
+<p class="p_Normal"> &nbsp; &nbsp;QObject(parent),</p>
+<p class="p_Normal"> &nbsp; &nbsp;AlphaProcessorContext(cpuId),</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_family(family),</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_running(false),</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_mBox(new MBox(this)),</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_eBox(new EBox(this)),</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_fBox(new FBox(this)),</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_iBox(new IBox(this, m_mBox, m_eBox, m_fBox)),</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_pipeline(this, m_iBox)</p>
+<p class="p_Normal">{}</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Implement the main run loop</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">void AlphaCPU::executeNextInstruction()</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 1. Check async events (interrupts, AST) and raise PendingEvent if needed.</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 2. If there is a committed PendingEvent, deliver it (enter PAL) and return.</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 3. Otherwise, step the pipeline.</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_pipeline.step();</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Connect pipeline stages to boxes</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In stage_EX():</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If not decoded: call decodeInstruction() to fill slot.di.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Use slot.di to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">compute which box to use (integer / FP / memory / control / PAL).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">route to EBox, FBox, or MBox (or control path) for actual grain execution.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In stage_MEM():</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Use MBox if instruction is a load/store.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In stage_WB():</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Apply commit semantics, update PC for branches, check for exceptions.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Phase 4 – Exception model + PendingEvent pipeline</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You already have the refined model:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PendingEvent carrier</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PendingEvent_refined</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">mapClassToPalVector(const PendingEvent&amp;)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">ExceptionMapping_inl</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PalVectorId_refined &amp; PalVectorTable::lookup()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Design spec (as we discussed):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Creation (pipeline / helper)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When something goes wrong (SafeMemory status, illegal opcode, FEN, etc.), the pipeline does:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PendingEvent ev;</p>
+<p class="p_Normal">ev.kind &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; = PendingEventKind::Synchronous;</p>
+<p class="p_Normal">ev.exceptionClass = ExceptionClass::DTB_MISS_SINGLE; // example</p>
+<p class="p_Normal">ev.faultVA &nbsp; &nbsp; &nbsp; &nbsp;= faultVA;</p>
+<p class="p_Normal">ev.asn &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;= currentASN;</p>
+<p class="p_Normal">ev.Property_info.isInstruction = false;</p>
+<p class="p_Normal">ev.Property_info.faultType &nbsp; &nbsp; = MemoryFaultType::DTB_MISS;</p>
+<p class="p_Normal">// extraInfo, etc. as needed</p>
+<p class="p_Normal">faultDispatcher.setPendingEvent(ev);</p>
+<p class="p_Normal">slot.faultPending = true;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No PAL vector chosen here. No PC rewrite here. Just classification.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Preparation (FaultDispatcher)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Somewhere in a helper like preparePendingEventForDelivery(cpuId):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">void FaultDispatcher::preparePendingEventForDelivery(CPUIdType cpuId)</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;PendingEvent&amp; ev = m_pending[cpuId];</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!ev.isValid() || ev.isResolved())</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 1) Map ExceptionClass -&gt; PalVectorId</p>
+<p class="p_Normal"> &nbsp; &nbsp;ev.palVectorId = mapClassToPalVector(ev); // ExceptionMapping_inl.h</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 2) Compute entryPC:</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 entryPC = 0;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (ev.exceptionClass == ExceptionClass::CALL_PAL &amp;&amp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ev.palVectorId == PalVectorId::INVALID)</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Hardware CALL_PAL index → PAL_BASE+offset</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;entryPC = calculateCallPalEntryPC(ev.extraInfo /*CALL_PAL index*/);</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;else</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;auto&amp; table &nbsp; = globalPALVectorTable();</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;auto* entry &nbsp; = table.lookup(ev.palVectorId);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;Q_ASSERT(entry != nullptr);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;entryPC &nbsp; &nbsp; &nbsp; = entry-&gt;entryPC; // You’ll later add PAL_BASE</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;ev.extraInfo = entryPC; // or store separately in a small struct</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 3) Mark resolved</p>
+<p class="p_Normal"> &nbsp; &nbsp;Q_ASSERT(ev.isResolved());</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Delivery (entering PAL via MBox)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When the pipeline / CPU decides to actually take the exception:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">void FaultDispatcher::deliver(CPUIdType cpuId, AlphaProcessorContext&amp; ctx)</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;PendingEvent&amp; ev = m_pending[cpuId];</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!ev.isResolved()) return;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Save faulting PC, PS, etc. into HWPCB/IPRs here.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 entryPC = ev.extraInfo; // or however you carried it</p>
+<p class="p_Normal"> &nbsp; &nbsp;const PalVectorEntry* entry = globalPALVectorTable().lookup(ev.palVectorId);</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;PalArgumentPack args{};</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Fill args from ev, e.g.:</p>
+<p class="p_Normal"> &nbsp; &nbsp;// args.a0 = ev.faultVA; etc.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;ctx.mbox().enterPal(ev.palVectorId, entry, args);</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;ev.clear();</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MBox::enterPal(...) then:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">saves PC/PS into HWPCB,</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">sets PALmode in IPRs,</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">forces CM=kernel, updates IPL per PalVectorEntry::targetIPL,</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">loads R16–R20 with PAL args,</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">updates PC to entryPC.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Phase 5 – Hooking pipeline ↔ FaultDispatcher</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Tie it into the stages:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Before each pipeline step (or at WB)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Ask FaultDispatcher whether there is a ready event for this CPU that should interrupt normal flow:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For synchronous exceptions:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Only the slot that faulted should cause delivery.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On detection (slot.faultPending), flush the pipeline, call preparePendingEventForDelivery(), then deliver(), and start fetching from the PAL entry PC.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For asynchronous (interrupt) events:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You can check at WB boundary; if pendingInterrupt, you synthesize a PendingEvent with ExceptionClass::INTERRUPT, then prepare + deliver.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Pipeline flush semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On exception: flush all slots where pc &gt; faulting_pc (simplified: pipeline.flush()).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On non-exception aborts (branch mispredict, etc.) you also flush, but these do not go through PendingEvent.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The HRM makes the distinction between exceptions (drain pipeline fully) vs non-exception aborts (can restart immediately) – which you already captured in your mental model.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">21264ev6_hrm</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Phase 6 – CALL_PAL and CALLSYS</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Last piece: making CALL_PAL “just another exception class.”</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Decode stage</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">decodeInstruction sets:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">di.isCallPal = true for OPC_CALL_PAL.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">extracts the 7-bit CALL_PAL index, stores in di.callPalIndex.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Execute stage</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When the pipeline executes a CALL_PAL grain:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">create a PendingEvent:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PendingEvent ev;</p>
+<p class="p_Normal">ev.kind &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; = PendingEventKind::Synchronous;</p>
+<p class="p_Normal">ev.exceptionClass = ExceptionClass::CALL_PAL;</p>
+<p class="p_Normal">ev.extraInfo &nbsp; &nbsp; &nbsp;= di.callPalIndex;</p>
+<p class="p_Normal">faultDispatcher.setPendingEvent(ev);</p>
+<p class="p_Normal">slot.faultPending = true;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Don’t directly manipulate PC here – let the exception path handle it.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CALLSYS / system services</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For OS CALLSYS (e.g., OpenVMS), you can:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">treat them as CALL_PAL with special indices, or</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">classify as ExceptionClass::SystemService and map via mapClassToPalVector to PalVectorId::CALL_CENTRY_BEG, etc., as you’ve already sketched.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Phase 7 – Bring-up plan / tests</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When you start wiring tomorrow, I’d do it in this order:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Compile with all new headers wired:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Fix any obvious type drift (old TrapCode, old PalVectorId enums, etc.).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Trivial program with no exceptions:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A loop of ADDL, SUBQ, BR to itself.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Validate: pipeline fetches, decodes via new DecodedInstruction, routes through EBox, and keeps PC stable.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Intentional illegal opcode:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Confirm it creates PendingEvent{EC::ILLEGAL_OPCODE}, maps to PalVectorId::OPCDEC, calls enterPal, and branches to your (dummy) OPCDEC PAL entry.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Simple DTB miss:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Use handleDTBMiss.h path to produce a PendingEvent with EC::DTB_MISS_SINGLE and ensure it maps into DTB_MISS_SINGLE.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CALL_PAL BPT/GENTRAP:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Issue CALL_PAL 0x80 / 0xAA and confirm:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">exceptionClass::CALL_PAL</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">extraInfo == index</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">mapClassToPalVector returns INVALID for generic CALL_PAL but BREAKPOINT / GENTRAP for the named ones, as you’ve defined.</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

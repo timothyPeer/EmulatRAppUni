@@ -1,0 +1,1453 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Backup Gude Claude TODO</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="# MEMORY ARCHITECTURE REFACTORING - IMPLEMENTATION GUIDE" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "backup-gude-claude-todo.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Backup Gude Claude TODO</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?backup-gude-claude-todo.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Backup Gude Claude TODO</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="appendix---trait-examples.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="dependency-requirements.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal"># MEMORY ARCHITECTURE REFACTORING - IMPLEMENTATION GUIDE</p>
+<p class="p_Normal"># ASA Emulator (c) 2025 Timothy Peer / eNVy Systems, Inc.</p>
+<p class="p_Normal"># Date: 2025-01-28 (Tomorrow)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Objective**: Remove AlphaMemorySystem storage, implement Option A architecture</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Duration**: Estimated 4-6 hours</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Prerequisites**: </p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">- ✅ Contract finalized (done)</p>
+<p class="p_Normal">- ✅ Canonical PA routing table defined (done)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## TONIGHT: BACKUP CHECKLIST</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Critical Files to Back Up</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal"># Memory subsystems</p>
+<p class="p_Normal">memoryLib/SafeMemory.h</p>
+<p class="p_Normal">memoryLib/SafeMemory.cpp</p>
+<p class="p_Normal">memoryLib/SparseMemoryBacking.h</p>
+<p class="p_Normal">memoryLib/GuestMemory.h</p>
+<p class="p_Normal">memoryLib/GuestMemory.cpp</p>
+<p class="p_Normal">memoryLib/AlphaMemorySystem.h</p>
+<p class="p_Normal">memoryLib/AlphaMemorySystem.cpp</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># SRM firmware (if exists)</p>
+<p class="p_Normal">memoryLib/SRMFirmwareRegion.h</p>
+<p class="p_Normal">memoryLib/SRMFirmwareRegion.cpp</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># MMIO</p>
+<p class="p_Normal">mmioLib/mmio_Manager.h</p>
+<p class="p_Normal">mmioLib/mmio_Manager.cpp</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># CPU interfaces</p>
+<p class="p_Normal">cpuCoreLib/IBox.h</p>
+<p class="p_Normal">cpuCoreLib/IBox.cpp</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Initialization</p>
+<p class="p_Normal">initLib/EmulatR_init.cpp</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Configuration</p>
+<p class="p_Normal">configLib/EmulatorSettings.h</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Backup Commands</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal"># Option 1: Git commit</p>
+<p class="p_Normal">git add -A</p>
+<p class="p_Normal">git commit -m &quot;Pre-refactor backup: Before AlphaMemorySystem removal&quot;</p>
+<p class="p_Normal">git push</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Option 2: Manual backup</p>
+<p class="p_Normal">mkdir backups/2025-01-27-pre-refactor</p>
+<p class="p_Normal">cp -r memoryLib backups/2025-01-27-pre-refactor/</p>
+<p class="p_Normal">cp -r cpuCoreLib backups/2025-01-27-pre-refactor/</p>
+<p class="p_Normal">cp -r initLib backups/2025-01-27-pre-refactor/</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Option 3: Archive</p>
+<p class="p_Normal">tar -czf backup-2025-01-27-pre-refactor.tar.gz \</p>
+<p class="p_Normal"> &nbsp; &nbsp;memoryLib/ cpuCoreLib/ initLib/ mmioLib/ configLib/</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Verification</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal"># Verify backup exists</p>
+<p class="p_Normal">ls -lh backups/2025-01-27-pre-refactor/</p>
+<p class="p_Normal"># or</p>
+<p class="p_Normal">git log --oneline | head -5</p>
+<p class="p_Normal"># or</p>
+<p class="p_Normal">ls -lh *.tar.gz</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## TOMORROW MORNING: PRE-FLIGHT CHECK</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Before touching any code:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 1. Verify Backups (5 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal"># Can I restore from backup?</p>
+<p class="p_Normal"># Test: Extract to temp directory</p>
+<p class="p_Normal">mkdir /tmp/backup-test</p>
+<p class="p_Normal">tar -xzf backup-2025-01-27-pre-refactor.tar.gz -C /tmp/backup-test</p>
+<p class="p_Normal">ls /tmp/backup-test/memoryLib/</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Backup is good if you see all files</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 2. Inventory Current Code (10 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Create inventory of what needs to change:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal"># Find all references to AlphaMemorySystem</p>
+<p class="p_Normal">grep -r &quot;AlphaMemorySystem&quot; --include=&quot;*.cpp&quot; --include=&quot;*.h&quot; | wc -l</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Find all includes</p>
+<p class="p_Normal">grep -r &quot;#include.*AlphaMemorySystem&quot; --include=&quot;*.cpp&quot; --include=&quot;*.h&quot;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Find all usages</p>
+<p class="p_Normal">grep -r &quot;AlphaMemorySystem\*&quot; --include=&quot;*.cpp&quot; --include=&quot;*.h&quot;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Save to file for reference</p>
+<p class="p_Normal">grep -r &quot;AlphaMemorySystem&quot; --include=&quot;*.cpp&quot; --include=&quot;*.h&quot; &gt; /tmp/ams-references.txt</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 3. Build Baseline (5 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Ensure current code compiles:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal"># Clean build</p>
+<p class="p_Normal">make clean</p>
+<p class="p_Normal">make -j8</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Verify no errors</p>
+<p class="p_Normal"># This is your &quot;known good&quot; state</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If build fails, **STOP** and fix existing issues before refactoring.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## STEP 1: CREATE NEW STRUCTURES (30 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 1.1 Create Span Structure</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/MemorySpan.h` (NEW)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// ============================================================================</p>
+<p class="p_Normal">// &nbsp;ASA Emulator (c) 2025 Timothy Peer / eNVy Systems, Inc.</p>
+<p class="p_Normal">// ============================================================================</p>
+<p class="p_Normal">//</p>
+<p class="p_Normal">// &nbsp;MemorySpan.h - Contiguous memory span for safe cross-page access</p>
+<p class="p_Normal">//</p>
+<p class="p_Normal">// ============================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">#ifndef MEMORY_SPAN_H</p>
+<p class="p_Normal">#define MEMORY_SPAN_H</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">#include &lt;QtGlobal&gt;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">/**</p>
+<p class="p_Normal"> * @brief Access intent for span retrieval</p>
+<p class="p_Normal"> */</p>
+<p class="p_Normal">enum class AccessIntent : quint8 {</p>
+<p class="p_Normal"> &nbsp; &nbsp;ReadOnly,</p>
+<p class="p_Normal"> &nbsp; &nbsp;WriteOnly,</p>
+<p class="p_Normal"> &nbsp; &nbsp;ReadWrite</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">/**</p>
+<p class="p_Normal"> * @brief Contiguous memory span</p>
+<p class="p_Normal"> * </p>
+<p class="p_Normal"> * Represents a contiguous block of memory up to page boundary.</p>
+<p class="p_Normal"> * Used for safe buffer access across subsystems.</p>
+<p class="p_Normal"> */</p>
+<p class="p_Normal">struct MemorySpan {</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint8* data; &nbsp; &nbsp; &nbsp;// Pointer to memory (nullptr if invalid)</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 len; &nbsp; &nbsp; &nbsp; // Valid length (0 if error, may be &lt; requested)</p>
+<p class="p_Normal"> &nbsp; &nbsp;bool writable; &nbsp; &nbsp; // Read-only or read-write</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;/**</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @brief Check if span is valid</p>
+<p class="p_Normal"> &nbsp; &nbsp; */</p>
+<p class="p_Normal"> &nbsp; &nbsp;bool isValid() const noexcept {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return data != nullptr &amp;&amp; len &gt; 0;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;/**</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @brief Get const pointer (for read-only access)</p>
+<p class="p_Normal"> &nbsp; &nbsp; */</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint8* constData() const noexcept {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return data;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">#endif // MEMORY_SPAN_H</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 1.2 Update PARouteEntry Structure</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/GuestMemory.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Find this:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">struct alignas(8) PARouteEntry</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 &nbsp; &nbsp; startPA{ 0 };</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 &nbsp; &nbsp; endPA{ 0 };</p>
+<p class="p_Normal"> &nbsp; &nbsp;RouteTarget target{ RouteTarget::None };</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ... existing methods ...</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Change to:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">struct alignas(8) PARouteEntry</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 &nbsp; &nbsp; startPA{ 0 };</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 &nbsp; &nbsp; endPA{ 0 };</p>
+<p class="p_Normal"> &nbsp; &nbsp;RouteTarget target{ RouteTarget::None };</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 &nbsp; &nbsp; offsetBase{ 0 }; &nbsp;// NEW: Add this to (pa - startPA) for subsystem offset</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ... existing methods ...</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 1.3 Create SRMFirmwareRegion (if doesn't exist)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Check if exists:**</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal">ls memoryLib/SRMFirmwareRegion.h</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**If NOT exists, create it:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/SRMFirmwareRegion.h` (NEW)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// ============================================================================</p>
+<p class="p_Normal">// &nbsp;ASA Emulator (c) 2025 Timothy Peer / eNVy Systems, Inc.</p>
+<p class="p_Normal">// ============================================================================</p>
+<p class="p_Normal">//</p>
+<p class="p_Normal">// &nbsp;SRMFirmwareRegion.h - Read-only SRM firmware binary (clipper.bin)</p>
+<p class="p_Normal">//</p>
+<p class="p_Normal">// ============================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">#ifndef SRM_FIRMWARE_REGION_H</p>
+<p class="p_Normal">#define SRM_FIRMWARE_REGION_H</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">#include &lt;QtGlobal&gt;</p>
+<p class="p_Normal">#include &lt;QByteArray&gt;</p>
+<p class="p_Normal">#include &lt;QString&gt;</p>
+<p class="p_Normal">#include &quot;memory_core.h&quot;</p>
+<p class="p_Normal">#include &quot;MemorySpan.h&quot;</p>
+<p class="p_Normal">#include &quot;../coreLib/Axp_Attributes_core.h&quot;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">class SRMFirmwareRegion final</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal">public:</p>
+<p class="p_Normal"> &nbsp; &nbsp;SRMFirmwareRegion() = default;</p>
+<p class="p_Normal"> &nbsp; &nbsp;~SRMFirmwareRegion() = default;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;SRMFirmwareRegion(const SRMFirmwareRegion&amp;) = delete;</p>
+<p class="p_Normal"> &nbsp; &nbsp;SRMFirmwareRegion&amp; operator=(const SRMFirmwareRegion&amp;) = delete;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;/**</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @brief Load firmware from file</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @param path Path to clipper.bin</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @return true if loaded successfully</p>
+<p class="p_Normal"> &nbsp; &nbsp; */</p>
+<p class="p_Normal"> &nbsp; &nbsp;bool loadFromFile(const QString&amp; path) noexcept;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;/**</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @brief Read from firmware (offset-based)</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @param offset Offset into firmware (0-based)</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @param width Access width (1/2/4/8)</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @param outValue Output value</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @return MEM_STATUS</p>
+<p class="p_Normal"> &nbsp; &nbsp; */</p>
+<p class="p_Normal"> &nbsp; &nbsp;MEM_STATUS read(quint64 offset, quint8 width, quint64&amp; outValue) const noexcept;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;/**</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @brief Write to firmware (always fails - read-only)</p>
+<p class="p_Normal"> &nbsp; &nbsp; */</p>
+<p class="p_Normal"> &nbsp; &nbsp;MEM_STATUS write(quint64 offset, quint8 width, quint64 value) noexcept;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;/**</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @brief Get read-only span to firmware</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @param offset Offset into firmware</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @param requestedLen Requested length</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @return MemorySpan (truncated at firmware end)</p>
+<p class="p_Normal"> &nbsp; &nbsp; */</p>
+<p class="p_Normal"> &nbsp; &nbsp;MemorySpan getSpan(quint64 offset, quint64 requestedLen) const noexcept;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;/**</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @brief Get firmware size</p>
+<p class="p_Normal"> &nbsp; &nbsp; */</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 size() const noexcept { return m_firmware.size(); }</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;/**</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @brief Check if firmware is loaded</p>
+<p class="p_Normal"> &nbsp; &nbsp; */</p>
+<p class="p_Normal"> &nbsp; &nbsp;bool isLoaded() const noexcept { return !m_firmware.isEmpty(); }</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal">private:</p>
+<p class="p_Normal"> &nbsp; &nbsp;QByteArray m_firmware; &nbsp;// clipper.bin contents (read-only)</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">#endif // SRM_FIRMWARE_REGION_H</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/SRMFirmwareRegion.cpp` (NEW)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">#include &quot;SRMFirmwareRegion.h&quot;</p>
+<p class="p_Normal">#include &quot;../coreLib/LoggingMacros.h&quot;</p>
+<p class="p_Normal">#include &lt;QFile&gt;</p>
+<p class="p_Normal">#include &lt;QtEndian&gt;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">#define COMPONENT_NAME &quot;SRMFirmware&quot;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">bool SRMFirmwareRegion::loadFromFile(const QString&amp; path) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;QFile file(path);</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!file.open(QIODevice::ReadOnly)) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(QString(&quot;Failed to open SRM firmware: %1&quot;).arg(path));</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_firmware = file.readAll();</p>
+<p class="p_Normal"> &nbsp; &nbsp;file.close();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (m_firmware.isEmpty()) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(&quot;SRM firmware file is empty&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot;SRM firmware loaded: %1 bytes from %2&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.arg(m_firmware.size())</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.arg(path));</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return true;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MEM_STATUS SRMFirmwareRegion::read(quint64 offset, quint8 width, quint64&amp; outValue) const noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Validate offset</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (offset &gt;= static_cast&lt;quint64&gt;(m_firmware.size())) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::OutOfRange;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (offset + width &gt; static_cast&lt;quint64&gt;(m_firmware.size())) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::OutOfRange;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Read from firmware buffer</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint8* data = reinterpret_cast&lt;const quint8*&gt;(m_firmware.constData());</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;switch (width) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;case 1:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;outValue = data[offset];</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case 2:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;outValue = qFromLittleEndian&lt;quint16&gt;(data + offset);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case 4:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;outValue = qFromLittleEndian&lt;quint32&gt;(data + offset);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case 8:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;outValue = qFromLittleEndian&lt;quint64&gt;(data + offset);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p class="p_Normal"> &nbsp; &nbsp;default:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::OutOfRange;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return MEM_STATUS::Ok;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MEM_STATUS SRMFirmwareRegion::write(quint64 offset, quint8 width, quint64 value) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// SRM firmware is read-only</p>
+<p class="p_Normal"> &nbsp; &nbsp;WARN_LOG(QString(&quot;Attempt to write to read-only SRM firmware at offset 0x%1&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.arg(offset, 8, 16, QChar('0')));</p>
+<p class="p_Normal"> &nbsp; &nbsp;return MEM_STATUS::AccessViolation;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MemorySpan SRMFirmwareRegion::getSpan(quint64 offset, quint64 requestedLen) const noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Validate offset</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (offset &gt;= static_cast&lt;quint64&gt;(m_firmware.size())) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Truncate to firmware end</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 available = static_cast&lt;quint64&gt;(m_firmware.size()) - offset;</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 actualLen = std::min(requestedLen, available);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Get pointer</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint8* ptr = const_cast&lt;quint8*&gt;(</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;reinterpret_cast&lt;const quint8*&gt;(m_firmware.constData()) + offset</p>
+<p class="p_Normal"> &nbsp; &nbsp;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.data = ptr,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.len = actualLen,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.writable = false &nbsp;// Read-only</p>
+<p class="p_Normal"> &nbsp; &nbsp;};</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## STEP 2: UPDATE SAFEMEMORY (45 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 2.1 Add getSpan() Method</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/SafeMemory.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Add to public interface:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">#include &quot;MemorySpan.h&quot; &nbsp;// Add at top</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">class SafeMemory final</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal">public:</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ... existing methods ...</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;/**</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @brief Get contiguous span of memory</p>
+<p class="p_Normal"> &nbsp; &nbsp; * </p>
+<p class="p_Normal"> &nbsp; &nbsp; * Returns span up to page boundary (64 KB).</p>
+<p class="p_Normal"> &nbsp; &nbsp; * Truncates if requested length crosses page boundary.</p>
+<p class="p_Normal"> &nbsp; &nbsp; * </p>
+<p class="p_Normal"> &nbsp; &nbsp; * @param offset Offset into SafeMemory (0-based)</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @param requestedLen Requested length</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @param intent Read-only, write-only, or read-write</p>
+<p class="p_Normal"> &nbsp; &nbsp; * @return MemorySpan (may be shorter than requested)</p>
+<p class="p_Normal"> &nbsp; &nbsp; */</p>
+<p class="p_Normal"> &nbsp; &nbsp;MemorySpan getSpan(quint64 offset, quint64 requestedLen, AccessIntent intent) noexcept;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ... existing private members ...</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/SafeMemory.cpp`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Add implementation:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">MemorySpan SafeMemory::getSpan(quint64 offset, quint64 requestedLen, AccessIntent intent) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Validate backing</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!m_backing) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(&quot;SafeMemory: getSpan() called on uninitialized memory&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Validate offset</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (offset &gt;= m_sizeBytes) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;TRACE_LOG(QString(&quot;SafeMemory: getSpan() offset 0x%1 &gt;= size 0x%2&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(offset, 16, 16, QChar('0'))</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(m_sizeBytes, 16, 16, QChar('0')));</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Truncate to page boundary (64 KB)</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 pageSize = 64 * 1024;</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 offsetInPage = offset % pageSize;</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 bytesAvailInPage = pageSize - offsetInPage;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Also truncate to end of memory</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 bytesAvailTotal = m_sizeBytes - offset;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Actual length is minimum of: requested, page boundary, total available</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 actualLen = std::min({requestedLen, bytesAvailInPage, bytesAvailTotal});</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Get page index</p>
+<p class="p_Normal"> &nbsp; &nbsp;const qsizetype pageIdx = static_cast&lt;qsizetype&gt;(offset / pageSize);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Ensure page exists (allocate if needed)</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint8* page = m_backing-&gt;ensurePage(pageIdx);</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!page) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(QString(&quot;SafeMemory: Failed to ensure page %1&quot;).arg(pageIdx));</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Return span</p>
+<p class="p_Normal"> &nbsp; &nbsp;return {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.data = page + offsetInPage,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.len = actualLen,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.writable = (intent != AccessIntent::ReadOnly)</p>
+<p class="p_Normal"> &nbsp; &nbsp;};</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 2.2 Update SafeMemory Initialization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/SafeMemory.cpp`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Find `initialize()` method, update size calculation:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">bool SafeMemory::initialize(quint64 sizeBytes) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Expected size: Low 64 KB + Main RAM 32 GB</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 lowMemSize = 0x0001_0000; &nbsp; &nbsp; &nbsp;// 64 KB</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 mainRamSize = 0x8_0000_0000; &nbsp; // 32 GB</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 expectedSize = lowMemSize + mainRamSize;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (sizeBytes != expectedSize) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;WARN_LOG(QString(&quot;SafeMemory: Size mismatch: expected 0x%1, got 0x%2&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(expectedSize, 16, 16, QChar('0'))</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(sizeBytes, 16, 16, QChar('0')));</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Continue anyway - allow flexibility</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;TRACE_LOG(QString(&quot;SafeMemory: Initializing with %1 GB&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.arg(sizeBytes / (1024.0 * 1024.0 * 1024.0)));</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Create sparse backing</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_backing = std::make_unique&lt;SparseMemoryBacking&gt;();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!m_backing-&gt;allocate(sizeBytes)) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(&quot;SafeMemory: Failed to allocate sparse backing&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;m_backing.reset();</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;m_sizeBytes = 0;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_sizeBytes = sizeBytes;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot;SafeMemory: Initialized %1 GB (sparse backing)&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.arg(sizeBytes / (1024.0 * 1024.0 * 1024.0)));</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot; &nbsp;Low memory: 64 KB (offsets 0x0 - 0x10000)&quot;));</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot; &nbsp;Main RAM: &nbsp; 32 GB (offsets 0x10000 - 0x8_0001_0000)&quot;));</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return true;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## STEP 3: UPDATE GUESTMEMORY (60 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 3.1 Add SRMFirmwareRegion Member</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/GuestMemory.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Add includes:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">#include &quot;SRMFirmwareRegion.h&quot;</p>
+<p class="p_Normal">#include &quot;MemorySpan.h&quot;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Update attachSubsystems():**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">void attachSubsystems(</p>
+<p class="p_Normal"> &nbsp; &nbsp;SafeMemory* sm,</p>
+<p class="p_Normal"> &nbsp; &nbsp;MMIOManager* mmio,</p>
+<p class="p_Normal"> &nbsp; &nbsp;AlphaMemorySystem* ams = nullptr, &nbsp;// DEPRECATED - will be removed</p>
+<p class="p_Normal"> &nbsp; &nbsp;SRMFirmwareRegion* srm = nullptr &nbsp; // Add this</p>
+<p class="p_Normal">) noexcept;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Update private members:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">private:</p>
+<p class="p_Normal"> &nbsp; &nbsp;SafeMemory* m_safeMem{ nullptr };</p>
+<p class="p_Normal"> &nbsp; &nbsp;MMIOManager* m_mmio{ nullptr };</p>
+<p class="p_Normal"> &nbsp; &nbsp;AlphaMemorySystem* m_ams{ nullptr }; &nbsp;// DEPRECATED</p>
+<p class="p_Normal"> &nbsp; &nbsp;SRMFirmwareRegion* m_srm{ nullptr }; &nbsp;// Add this</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;QVector&lt;PARouteEntry&gt; m_routes;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 3.2 Update initDefaultPARoutes()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/GuestMemory.cpp`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Replace entire method:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">void GuestMemory::initDefaultPARoutes() noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.clear();</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.reserve(4); &nbsp;// Fixed size, no realloc</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;GuestMemory: Initializing PA routing table (Option A)&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// SafeMemory Region 1: Low 64 KB (PA 0x0 - 0x10000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.startPA &nbsp; &nbsp;= 0x0000000000000000ULL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.endPA &nbsp; &nbsp; &nbsp;= 0x0000000000010000ULL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.target &nbsp; &nbsp; = RouteTarget::SafeMemory,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.offsetBase = 0x0 &nbsp;// PA 0x0 → SafeMemory offset 0x0</p>
+<p class="p_Normal"> &nbsp; &nbsp;});</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot; &nbsp;[0x0000_0000 - 0x0001_0000) → SafeMemory (low 64 KB)&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot; &nbsp; &nbsp;HWRPB at PA 0x2000 (SafeMemory offset 0x2000)&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// SRM Firmware: Read-only clipper.bin (PA 0x2000_0000 - 0x2020_0000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.startPA &nbsp; &nbsp;= 0x0000000020000000ULL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.endPA &nbsp; &nbsp; &nbsp;= 0x0000000020200000ULL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.target &nbsp; &nbsp; = RouteTarget::SRMFirmware,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.offsetBase = 0x0 &nbsp;// PA 0x2000_0000 → SRM offset 0x0</p>
+<p class="p_Normal"> &nbsp; &nbsp;});</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot; &nbsp;[0x2000_0000 - 0x2020_0000) → SRMFirmware (2 MB)&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// SafeMemory Region 2: Main RAM (PA 0x8000_0000 - 0x8_8000_0000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.startPA &nbsp; &nbsp;= 0x0000000080000000ULL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.endPA &nbsp; &nbsp; &nbsp;= 0x0000000880000000ULL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.target &nbsp; &nbsp; = RouteTarget::SafeMemory,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.offsetBase = 0x0000000000010000ULL &nbsp;// PA 0x8000_0000 → SafeMemory offset 0x10000</p>
+<p class="p_Normal"> &nbsp; &nbsp;});</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot; &nbsp;[0x8000_0000 - 0x8_8000_0000) → SafeMemory (32 GB main RAM)&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// MMIO: Device registers (PA 0x10_0000_0000 - 0x20_0000_0000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_routes.append({</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.startPA &nbsp; &nbsp;= 0x0000001000000000ULL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.endPA &nbsp; &nbsp; &nbsp;= 0x0000002000000000ULL,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.target &nbsp; &nbsp; = RouteTarget::MMIOManager,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.offsetBase = 0x0 &nbsp;// MMIO uses absolute PA (no offset translation)</p>
+<p class="p_Normal"> &nbsp; &nbsp;});</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot; &nbsp;[0x10_0000_0000 - 0x20_0000_0000) → MMIOManager (64 GB MMIO)&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;GuestMemory: PA routing table initialized (4 regions)&quot;);</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 3.3 Update readRouted() to Use offsetBase</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/GuestMemory.cpp`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Find `readRouted()` method, update routing logic:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">MEM_STATUS GuestMemory::readRouted(quint64 pa, quint8 width, quint64&amp; outValue, AccessKind kind) const noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!m_safeMem || !m_mmio) return MEM_STATUS::AccessViolation;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Find route</p>
+<p class="p_Normal"> &nbsp; &nbsp;const PARouteEntry* route = nullptr;</p>
+<p class="p_Normal"> &nbsp; &nbsp;for (const auto&amp; r : m_routes) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (r.contains(pa)) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;route = &amp;r;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!route) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Unmapped PA</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;TRACE_LOG(QString(&quot;GuestMemory: Unmapped PA 0x%1&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(pa, 16, 16, QChar('0')));</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::AccessViolation;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Instruction fetch policy: MMIO is never executable</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (kind == AccessKind::InstructionFetch &amp;&amp; route-&gt;target == RouteTarget::MMIOManager) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::AccessViolation;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Route to appropriate subsystem</p>
+<p class="p_Normal"> &nbsp; &nbsp;switch (route-&gt;target)</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SafeMemory:</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Calculate SafeMemory offset using offsetBase</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;const quint64 offset = (pa - route-&gt;startPA) + route-&gt;offsetBase;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_safeMem-&gt;load(offset, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::MMIOManager:</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 v = 0;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;const MEM_STATUS st = m_mmio-&gt;handleRead(pa, width, v); &nbsp;// Pass PA directly</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (st != MEM_STATUS::Ok) return MEM_STATUS::BusError;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;outValue = v;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::Ok;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SRMFirmware:</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (!m_srm) return MEM_STATUS::AccessViolation;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Calculate SRM firmware offset</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;const quint64 offset = (pa - route-&gt;startPA) + route-&gt;offsetBase;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_srm-&gt;read(offset, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::AlphaMemorySystem:</p>
+<p class="p_Normal"> &nbsp; &nbsp;{</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// DEPRECATED - should not reach here after refactoring</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(&quot;GuestMemory: AlphaMemorySystem routing still active (should be removed)&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (!m_ams) return MEM_STATUS::AccessViolation;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_ams-&gt;read(pa, width, outValue);</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;default:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return MEM_STATUS::AccessViolation;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 3.4 Add getSpanToPA() Method</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/GuestMemory.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Add to public interface:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">/**</p>
+<p class="p_Normal"> * @brief Get contiguous span to physical address</p>
+<p class="p_Normal"> * </p>
+<p class="p_Normal"> * Returns span up to page boundary or region end.</p>
+<p class="p_Normal"> * Used for safe buffer access (e.g., CSERVE PUTS/GETS).</p>
+<p class="p_Normal"> * </p>
+<p class="p_Normal"> * @param pa Physical address</p>
+<p class="p_Normal"> * @param requestedLen Requested length</p>
+<p class="p_Normal"> * @param intent Read-only, write-only, or read-write</p>
+<p class="p_Normal"> * @return MemorySpan (may be shorter than requested)</p>
+<p class="p_Normal"> */</p>
+<p class="p_Normal">MemorySpan getSpanToPA(quint64 pa, quint64 requestedLen, AccessIntent intent) noexcept;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/GuestMemory.cpp`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Add implementation:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">MemorySpan GuestMemory::getSpanToPA(quint64 pa, quint64 requestedLen, AccessIntent intent) noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Find route</p>
+<p class="p_Normal"> &nbsp; &nbsp;const PARouteEntry* route = nullptr;</p>
+<p class="p_Normal"> &nbsp; &nbsp;for (const auto&amp; r : m_routes) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (r.contains(pa)) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;route = &amp;r;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!route) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Unmapped PA</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Check if target supports spans</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (route-&gt;target == RouteTarget::MMIOManager) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// MMIO doesn't support direct memory spans</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Calculate offset</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 offset = (pa - route-&gt;startPA) + route-&gt;offsetBase;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Truncate to region boundary</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 bytesAvailInRegion = route-&gt;endPA - pa;</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 truncatedLen = std::min(requestedLen, bytesAvailInRegion);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Route to subsystem</p>
+<p class="p_Normal"> &nbsp; &nbsp;switch (route-&gt;target) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SafeMemory:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (!m_safeMem) return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_safeMem-&gt;getSpan(offset, truncatedLen, intent);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;case RouteTarget::SRMFirmware:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (!m_srm) return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;if (intent != AccessIntent::ReadOnly) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// SRM is read-only</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return m_srm-&gt;getSpan(offset, truncatedLen);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;default:</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return {nullptr, 0, false};</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## STEP 4: REMOVE ALPHAMEMORY SYSTEM (30 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 4.1 Comment Out AlphaMemorySystem Includes</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/GuestMemory.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// #include &quot;AlphaMemorySystem.h&quot; &nbsp;// DEPRECATED - to be removed</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `memoryLib/GuestMemory.cpp`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// #include &quot;AlphaMemorySystem.h&quot; &nbsp;// DEPRECATED - to be removed</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 4.2 Remove AlphaMemorySystem from Initialization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `initLib/EmulatR_init.cpp`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Find AlphaMemorySystem initialization, comment out:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// Phase 4: Memory System Initialization</p>
+<p class="p_Normal">// ...</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">// DEPRECATED - AlphaMemorySystem removed</p>
+<p class="p_Normal">// auto&amp; ams = global_AlphaMemorySystem();</p>
+<p class="p_Normal">// ams.initialize();</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">// INSTEAD: Initialize HWRPB directly in SafeMemory</p>
+<p class="p_Normal">initializeHWRPB(); &nbsp;// See below</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 4.3 Update GuestMemory::attachSubsystems() Calls</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Find all calls to `attachSubsystems()`, remove AMS argument:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// OLD:</p>
+<p class="p_Normal">guestMemory-&gt;attachSubsystems(safeMem, mmio, ams, srm);</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">// NEW:</p>
+<p class="p_Normal">guestMemory-&gt;attachSubsystems(safeMem, mmio, nullptr, srm);</p>
+<p class="p_Normal">// or better:</p>
+<p class="p_Normal">guestMemory-&gt;attachSubsystems(safeMem, mmio, srm); &nbsp;// Update signature</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 4.4 Create New HWRPB Initialization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `initLib/EmulatR_init.cpp` or new file `initLib/HWRPBInitializer.cpp`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">bool EmulatR_init::initializeHWRPB() noexcept</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;Initializing HWRPB in SafeMemory at PA 0x2000&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// HWRPB is at PA 0x2000</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 hwrpbPA = 0x0000_2000;</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 hwrpbSize = 0x4000; &nbsp;// 16 KB</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Get span from GuestMemory (routes to SafeMemory)</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; guestMem = global_GuestMemory();</p>
+<p class="p_Normal"> &nbsp; &nbsp;MemorySpan hwrpbSpan = guestMem.getSpanToPA(hwrpbPA, hwrpbSize, AccessIntent::WriteOnly);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!hwrpbSpan.isValid() || hwrpbSpan.len &lt; hwrpbSize) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(QString(&quot;Failed to get HWRPB span: got %1 bytes, need %2&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(hwrpbSpan.len)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(hwrpbSize));</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Zero entire HWRPB region</p>
+<p class="p_Normal"> &nbsp; &nbsp;memset(hwrpbSpan.data, 0, hwrpbSize);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Cast to HWRPB structure (define this if needed)</p>
+<p class="p_Normal"> &nbsp; &nbsp;struct HWRPB {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 physicalBase;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 signature;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 revision;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 size;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 primaryCPU;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 pageSize;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 paSize;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 asnMax;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// ... more fields ...</p>
+<p class="p_Normal"> &nbsp; &nbsp;};</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;HWRPB* hwrpb = reinterpret_cast&lt;HWRPB*&gt;(hwrpbSpan.data);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Populate HWRPB fields</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;physicalBase = 0x2000;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;signature = 0x4250525748ULL; &nbsp;// &quot;HWRPB&quot;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;revision = 6;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;size = 0x4000;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;primaryCPU = 0;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;pageSize = 8192;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;paSize = 44;</p>
+<p class="p_Normal"> &nbsp; &nbsp;hwrpb-&gt;asnMax = 255;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;HWRPB initialized successfully in SafeMemory&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot; &nbsp;Physical base: 0x%1&quot;).arg(hwrpb-&gt;physicalBase, 4, 16, QChar('0')));</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot; &nbsp;Signature: 0x%1&quot;).arg(hwrpb-&gt;signature, 16, 16, QChar('0')));</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return true;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## STEP 5: UPDATE INITIALIZATION SEQUENCE (30 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 5.1 Update Phase Order</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**File**: `initLib/EmulatR_init.cpp`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">bool EmulatR_init::runAllPhases()</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ... existing phases ...</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Phase 4: Memory System</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!initializePhase4_MemorySystem()) return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Phase 4.5: HWRPB Initialization (NEW - after SafeMemory, before SRM)</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!initializePhase4_5_HWRPB()) return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Phase 5: Load SRM Firmware</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!initializePhase5_FirmwareLoading()) return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ... continue ...</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 5.2 Update Phase 4: Memory System</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">bool EmulatR_init::initializePhase4_MemorySystem()</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;=== PHASE 4: Memory System Initialization ===&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 4.1: Initialize SafeMemory</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; safeMem = global_SafeMemory();</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 lowMemSize = 0x0001_0000; &nbsp; &nbsp; &nbsp;// 64 KB</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 mainRamSize = 0x8_0000_0000; &nbsp; // 32 GB</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 totalSize = lowMemSize + mainRamSize;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!safeMem.initialize(totalSize)) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(&quot;Failed to initialize SafeMemory&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 4.2: Initialize MMIO Manager</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; mmio = global_MMIOManager();</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!mmio.initialize()) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(&quot;Failed to initialize MMIOManager&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 4.3: Create SRM Firmware Region</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; srm = global_SRMFirmwareRegion(); &nbsp;// Define this global</p>
+<p class="p_Normal"> &nbsp; &nbsp;// (Will be loaded in Phase 5)</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 4.4: Attach subsystems to GuestMemory</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; guestMem = global_GuestMemory();</p>
+<p class="p_Normal"> &nbsp; &nbsp;guestMem.attachSubsystems(&amp;safeMem, &amp;mmio, &amp;srm);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// 4.5: Initialize PA routing table</p>
+<p class="p_Normal"> &nbsp; &nbsp;guestMem.initDefaultPARoutes();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;Phase 4: Memory System initialized successfully&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;return true;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 5.3 Add Phase 4.5: HWRPB</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">bool EmulatR_init::initializePhase4_5_HWRPB()</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;=== PHASE 4.5: HWRPB Initialization ===&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!initializeHWRPB()) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(&quot;Failed to initialize HWRPB&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;Phase 4.5: HWRPB initialized successfully&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;return true;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 5.4 Update Phase 5: Load SRM Firmware</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">bool EmulatR_init::initializePhase5_FirmwareLoading()</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(&quot;=== PHASE 5: Firmware Loading ===&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Load clipper.bin</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; srm = global_SRMFirmwareRegion();</p>
+<p class="p_Normal"> &nbsp; &nbsp;QString firmwarePath = &quot;firmware/clipper.bin&quot;;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!srm.loadFromFile(firmwarePath)) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;ERROR_LOG(QString(&quot;Failed to load SRM firmware from %1&quot;).arg(firmwarePath));</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return false;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// CRITICAL: Patch embedded HWRPB in clipper.bin</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ========================================================================</p>
+<p class="p_Normal"> &nbsp; &nbsp;// clipper.bin has HWRPB at offset 0x2000 with physicalBase = 0x2000</p>
+<p class="p_Normal"> &nbsp; &nbsp;// When loaded at PA 0x2000_0000, it should be 0x2000_2000</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;MemorySpan hwrpbSpan = srm.getSpan(0x2000, 8); &nbsp;// First 8 bytes = physicalBase</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (hwrpbSpan.isValid()) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64* physicalBase = reinterpret_cast&lt;quint64*&gt;(hwrpbSpan.data);</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;quint64 oldValue = *physicalBase;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;*physicalBase = 0x20002000ULL; &nbsp;// Patch to correct PA</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;INFO_LOG(QString(&quot;Patched embedded HWRPB physicalBase: 0x%1 -&gt; 0x%2&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(oldValue, 16, 16, QChar('0'))</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.arg(*physicalBase, 16, 16, QChar('0')));</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Set entry point</p>
+<p class="p_Normal"> &nbsp; &nbsp;m_srmEntryPoint = 0x20010000; &nbsp;// Main SRM code (skip entry stub)</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;INFO_LOG(QString(&quot;SRM firmware loaded, entry point: 0x%1&quot;)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;.arg(m_srmEntryPoint, 16, 16, QChar('0')));</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return true;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## STEP 6: TESTING (60 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 6.1 Unit Tests</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Test 1: SafeMemory Offset Validation**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">void test_SafeMemory_Offsets()</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;SafeMemory sm;</p>
+<p class="p_Normal"> &nbsp; &nbsp;constexpr quint64 totalSize = 0x8_0001_0000; &nbsp;// 64 KB + 32 GB</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(sm.initialize(totalSize));</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Test low memory</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 val = 0;</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(sm.load(0x0, 8, val) == MEM_STATUS::Ok); &nbsp; &nbsp; &nbsp; &nbsp;// First byte</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(sm.load(0x2000, 8, val) == MEM_STATUS::Ok); &nbsp; &nbsp; // HWRPB</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(sm.load(0xFFFF, 1, val) == MEM_STATUS::Ok); &nbsp; &nbsp; // Last byte of low mem</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Test main RAM</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(sm.load(0x10000, 8, val) == MEM_STATUS::Ok); &nbsp; &nbsp;// First byte of RAM</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(sm.load(0x10100, 8, val) == MEM_STATUS::Ok); &nbsp; &nbsp;// Offset into RAM</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Test out of range</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(sm.load(totalSize, 1, val) != MEM_STATUS::Ok); &nbsp;// Beyond end</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;printf(&quot;✓ SafeMemory offset tests passed\n&quot;);</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Test 2: GuestMemory PA Routing**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">void test_GuestMemory_Routing()</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Initialize subsystems</p>
+<p class="p_Normal"> &nbsp; &nbsp;SafeMemory sm;</p>
+<p class="p_Normal"> &nbsp; &nbsp;sm.initialize(0x8_0001_0000);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;MMIOManager mmio;</p>
+<p class="p_Normal"> &nbsp; &nbsp;mmio.initialize();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;SRMFirmwareRegion srm;</p>
+<p class="p_Normal"> &nbsp; &nbsp;srm.loadFromFile(&quot;firmware/clipper.bin&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;GuestMemory gm;</p>
+<p class="p_Normal"> &nbsp; &nbsp;gm.attachSubsystems(&amp;sm, &amp;mmio, &amp;srm);</p>
+<p class="p_Normal"> &nbsp; &nbsp;gm.initDefaultPARoutes();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Test low memory routing (PA 0x0 - 0x10000 → SafeMemory offset 0x0)</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(gm.classifyPA(0x0) == RouteTarget::SafeMemory);</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(gm.classifyPA(0x2000) == RouteTarget::SafeMemory); &nbsp;// HWRPB</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Test SRM firmware routing (PA 0x2000_0000 - 0x2020_0000 → SRM offset 0x0)</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(gm.classifyPA(0x20000000) == RouteTarget::SRMFirmware);</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(gm.classifyPA(0x20010000) == RouteTarget::SRMFirmware); &nbsp;// Entry point</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Test main RAM routing (PA 0x8000_0000 → SafeMemory offset 0x10000)</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(gm.classifyPA(0x80000000) == RouteTarget::SafeMemory);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Test MMIO routing</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(gm.classifyPA(0x1000000000) == RouteTarget::MMIOManager);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Test unmapped</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(gm.classifyPA(0x1000) == RouteTarget::None); &nbsp;// Gap</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(gm.classifyPA(0x1000000) == RouteTarget::None); &nbsp;// Gap</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;printf(&quot;✓ GuestMemory routing tests passed\n&quot;);</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Test 3: Span Access**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">void test_Span_Access()</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;SafeMemory sm;</p>
+<p class="p_Normal"> &nbsp; &nbsp;sm.initialize(0x8_0001_0000);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Write test data</p>
+<p class="p_Normal"> &nbsp; &nbsp;const char* testData = &quot;Hello, World!&quot;;</p>
+<p class="p_Normal"> &nbsp; &nbsp;sm.writeBlock(0x2000, testData, strlen(testData));</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Get span</p>
+<p class="p_Normal"> &nbsp; &nbsp;MemorySpan span = sm.getSpan(0x2000, 13, AccessIntent::ReadOnly);</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(span.isValid());</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(span.len == 13);</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(memcmp(span.data, testData, 13) == 0);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;printf(&quot;✓ Span access tests passed\n&quot;);</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 6.2 Integration Test</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Test: Fetch Instruction from SRM**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">void test_SRM_Instruction_Fetch()</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Full initialization</p>
+<p class="p_Normal"> &nbsp; &nbsp;initializePhase4_MemorySystem();</p>
+<p class="p_Normal"> &nbsp; &nbsp;initializePhase4_5_HWRPB();</p>
+<p class="p_Normal"> &nbsp; &nbsp;initializePhase5_FirmwareLoading();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; guestMem = global_GuestMemory();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Fetch instruction from SRM entry point</p>
+<p class="p_Normal"> &nbsp; &nbsp;const quint64 entryPA = 0x20010000;</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint32 instruction = 0;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;MEM_STATUS status = guestMem.readInst32(entryPA, instruction);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(status == MEM_STATUS::Ok);</p>
+<p class="p_Normal"> &nbsp; &nbsp;assert(instruction != 0); &nbsp;// Should be valid instruction</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;printf(&quot;✓ SRM instruction fetch test passed\n&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;printf(&quot; &nbsp;Entry point PA: 0x%016llx\n&quot;, entryPA);</p>
+<p class="p_Normal"> &nbsp; &nbsp;printf(&quot; &nbsp;Instruction: 0x%08x\n&quot;, instruction);</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## STEP 7: BUILD AND VERIFY (30 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 7.1 Clean Build</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal">make clean</p>
+<p class="p_Normal">make -j8 2&gt;&amp;1 | tee build.log</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Check for errors</p>
+<p class="p_Normal">grep -i &quot;error:&quot; build.log</p>
+<p class="p_Normal"># Should be empty</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 7.2 Run Tests</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal">./emulator --run-tests</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Expected output:</p>
+<p class="p_Normal"># ✓ SafeMemory offset tests passed</p>
+<p class="p_Normal"># ✓ GuestMemory routing tests passed</p>
+<p class="p_Normal"># ✓ Span access tests passed</p>
+<p class="p_Normal"># ✓ SRM instruction fetch test passed</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 7.3 Verify Memory Map</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal">./emulator --dump-memory-map</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Expected output:</p>
+<p class="p_Normal"># PA Routing Table:</p>
+<p class="p_Normal"># &nbsp; [0x0000_0000 - 0x0001_0000) → SafeMemory (low 64 KB)</p>
+<p class="p_Normal"># &nbsp; [0x2000_0000 - 0x2020_0000) → SRMFirmware (2 MB)</p>
+<p class="p_Normal"># &nbsp; [0x8000_0000 - 0x8_8000_0000) → SafeMemory (32 GB main RAM)</p>
+<p class="p_Normal"># &nbsp; [0x10_0000_0000 - 0x20_0000_0000) → MMIOManager (64 GB MMIO)</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## STEP 8: CLEANUP (30 minutes)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 8.1 Remove AlphaMemorySystem Files</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Only after all tests pass:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal"># Move to archive (don't delete yet)</p>
+<p class="p_Normal">mkdir archive/deprecated-alphamemory</p>
+<p class="p_Normal">mv memoryLib/AlphaMemorySystem.h archive/deprecated-alphamemory/</p>
+<p class="p_Normal">mv memoryLib/AlphaMemorySystem.cpp archive/deprecated-alphamemory/</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Update any remaining references</p>
+<p class="p_Normal">grep -r &quot;AlphaMemorySystem&quot; --include=&quot;*.cpp&quot; --include=&quot;*.h&quot;</p>
+<p class="p_Normal"># Should find only commented-out lines</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 8.2 Update Documentation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Update architecture docs:**</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">docs/MEMORY_ARCHITECTURE.md</p>
+<p class="p_Normal">docs/ADDRESS_SPACE_CONTRACT.md</p>
+<p class="p_Normal">docs/PA_ROUTING_TABLE.md</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 8.3 Final Commit</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal">git add -A</p>
+<p class="p_Normal">git commit -m &quot;Refactor: Implement Option A memory architecture</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">- Remove AlphaMemorySystem storage duplication</p>
+<p class="p_Normal">- HWRPB now lives in SafeMemory at PA 0x2000</p>
+<p class="p_Normal">- Implement span-based access for CSERVE</p>
+<p class="p_Normal">- Add offsetBase to PA routing table</p>
+<p class="p_Normal">- SafeMemory handles two PA regions (low + main RAM)</p>
+<p class="p_Normal">- All tests passing&quot;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">git push</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## ROLLBACK PLAN (if needed)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**If something goes wrong:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Option 1: Git Revert</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal">git log --oneline | head -5</p>
+<p class="p_Normal">git revert HEAD</p>
+<p class="p_Normal"># or</p>
+<p class="p_Normal">git reset --hard &lt;backup-commit-hash&gt;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Option 2: Restore from Tar</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal">cd ..</p>
+<p class="p_Normal">tar -xzf backup-2025-01-27-pre-refactor.tar.gz</p>
+<p class="p_Normal"># Manually copy files back</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Option 3: Manual Restore</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```bash</p>
+<p class="p_Normal">cp backups/2025-01-27-pre-refactor/memoryLib/* memoryLib/</p>
+<p class="p_Normal">make clean &amp;&amp; make</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## SUCCESS CRITERIA</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">✅ All builds without errors &nbsp;</p>
+<p class="p_Normal">✅ All unit tests pass &nbsp;</p>
+<p class="p_Normal">✅ Integration test passes (SRM instruction fetch) &nbsp;</p>
+<p class="p_Normal">✅ No AlphaMemorySystem references in active code &nbsp;</p>
+<p class="p_Normal">✅ HWRPB accessible at PA 0x2000 via SafeMemory &nbsp;</p>
+<p class="p_Normal">✅ Memory map verified via dump &nbsp;</p>
+<p class="p_Normal">✅ Span pattern working for cross-page access &nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## TIME ESTIMATE</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">| Step | Task &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| Time &nbsp; |</p>
+<p class="p_Normal">|------|-------------------------------|--------|</p>
+<p class="p_Normal">| 0 &nbsp; &nbsp;| Backup verification &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 5 min &nbsp;|</p>
+<p class="p_Normal">| 1 &nbsp; &nbsp;| Create new structures &nbsp; &nbsp; &nbsp; &nbsp; | 30 min |</p>
+<p class="p_Normal">| 2 &nbsp; &nbsp;| Update SafeMemory &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 45 min |</p>
+<p class="p_Normal">| 3 &nbsp; &nbsp;| Update GuestMemory &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| 60 min |</p>
+<p class="p_Normal">| 4 &nbsp; &nbsp;| Remove AlphaMemorySystem &nbsp; &nbsp; &nbsp;| 30 min |</p>
+<p class="p_Normal">| 5 &nbsp; &nbsp;| Update initialization &nbsp; &nbsp; &nbsp; &nbsp; | 30 min |</p>
+<p class="p_Normal">| 6 &nbsp; &nbsp;| Testing &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 60 min |</p>
+<p class="p_Normal">| 7 &nbsp; &nbsp;| Build and verify &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| 30 min |</p>
+<p class="p_Normal">| 8 &nbsp; &nbsp;| Cleanup &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 30 min |</p>
+<p class="p_Normal">|------|-------------------------------|--------|</p>
+<p class="p_Normal">| &nbsp; &nbsp; &nbsp;| **TOTAL** &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | **5h** |</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Add 1-2 hours buffer for unexpected issues = **6-7 hours total**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## TOMORROW MORNING CHECKLIST</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">- [ ] Backups verified</p>
+<p class="p_Normal">- [ ] Coffee obtained ☕</p>
+<p class="p_Normal">- [ ] Implementation guide printed/visible</p>
+<p class="p_Normal">- [ ] Current code compiles (baseline)</p>
+<p class="p_Normal">- [ ] Git status clean</p>
+<p class="p_Normal">- [ ] Ready to refactor!</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Good luck tomorrow! The architecture will be much cleaner after this!** 🚀</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

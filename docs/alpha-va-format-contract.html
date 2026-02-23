@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 5 - Memory System Architecture &gt; 5.4.4 Alpha VA Field Boundary Reference</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="This section provides the normative bit-field boundary tables for all four Alpha AXP page size options. These are the decoding rules applied after the VA option is selected at..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "alpha-va-format-contract.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">5.4.4 Alpha VA Field Boundary Reference</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?alpha-va-format-contract.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-5---memory-system-arch.html">Chapter 5 - Memory System Architecture</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">5.4.4 Alpha VA Field Boundary Reference</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="chapter-5_4-virtual-addressing.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-5---memory-system-arch.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="chapter-5_5-guestmemory---shar.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">This section provides the normative bit-field boundary tables for all four Alpha AXP page size options. These are the decoding rules applied after the VA option is selected at CPU/board bring-up — they are not detectors. You cannot reliably distinguish 8K from 16K from 32K from 64K by examining a single VA; you must know the selected option.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Reference: Alpha AXP Architecture Reference Manual, Version 6 (1994), Memory Management chapter, &quot;Virtual Address Format&quot; (Figure 22-1, Table 22-2).</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Configuration Inputs</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These values are configuration inputs selected by the implementation, not derived from VA bits:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">pageShift — byte_within_page field width: 13, 14, 15, or 16 bits</p>
+<p class="p_Normal">levelBits — Level2 and Level3 field widths: 10, 11, 12, or 13 bits</p>
+<p class="p_Normal">vaBits — implemented VA width in bits (varies by page size; minimum 43)</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Derived Fields</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">offsetMask&nbsp;=&nbsp;(1ULL&nbsp;&lt;&lt;&nbsp;pageShift)&nbsp;-&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Segment&nbsp;=&nbsp;VA[vaBits-1&nbsp;:&nbsp;vaBits-2]&nbsp;//&nbsp;2&nbsp;bits,&nbsp;always</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;field&nbsp;=&nbsp;VA[vaBits-3&nbsp;:&nbsp;pageShift&nbsp;+&nbsp;2*levelBits]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;width&nbsp;=&nbsp;vaBits&nbsp;-&nbsp;2&nbsp;-&nbsp;(pageShift&nbsp;+&nbsp;2*levelBits)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L2&nbsp;field&nbsp;=&nbsp;VA[pageShift&nbsp;+&nbsp;2*levelBits&nbsp;-&nbsp;1&nbsp;:&nbsp;pageShift&nbsp;+&nbsp;levelBits]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L3&nbsp;field&nbsp;=&nbsp;VA[pageShift&nbsp;+&nbsp;levelBits&nbsp;-&nbsp;1&nbsp;:&nbsp;pageShift]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Offset&nbsp;=&nbsp;VA[pageShift&nbsp;-&nbsp;1&nbsp;:&nbsp;0]</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Constraints (ASA)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>VA space must be at least 43 bits</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>At least 2 bits of Level1 must be implemented</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>For reduced VA space, only a subset of low-order bits in Level1 are implemented</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Canonicality: in a 64-bit VA register, bits above (vaBits-1) must be a sign-extension of bit (vaBits-1)</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Option A: 8K Pages</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">pageShift=13, levelBits=10, vaBits=43 (fixed — only one width)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">vaTop&nbsp;=&nbsp;42</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Segment&nbsp;=&nbsp;VA[42:41]&nbsp;2&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;=&nbsp;VA[40:33]&nbsp;8&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L2&nbsp;=&nbsp;VA[32:23]&nbsp;10&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L3&nbsp;=&nbsp;VA[22:13]&nbsp;10&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Offset&nbsp;=&nbsp;VA[12:0]&nbsp;13&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Layout:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[42:41]&nbsp;[40:33]&nbsp;[32:23]&nbsp;[22:13]&nbsp;[12:0]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;SEG&nbsp;L1&nbsp;L2&nbsp;L3&nbsp;OFFSET(8K)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Option B: 16K Pages</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">pageShift=14, levelBits=11, vaBits=43..47</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">vaBits = 43 (minimum)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">vaTop&nbsp;=&nbsp;42</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Segment&nbsp;=&nbsp;VA[42:41]&nbsp;2&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;=&nbsp;VA[40:36]&nbsp;5&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L2&nbsp;=&nbsp;VA[35:25]&nbsp;11&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L3&nbsp;=&nbsp;VA[24:14]&nbsp;11&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Offset&nbsp;=&nbsp;VA[13:0]&nbsp;14&nbsp;bits</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">vaBits = 47 (maximum)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">vaTop&nbsp;=&nbsp;46</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Segment&nbsp;=&nbsp;VA[46:45]&nbsp;2&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;=&nbsp;VA[44:36]&nbsp;9&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L2&nbsp;=&nbsp;VA[35:25]&nbsp;11&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L3&nbsp;=&nbsp;VA[24:14]&nbsp;11&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Offset&nbsp;=&nbsp;VA[13:0]&nbsp;14&nbsp;bits</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Note: L2, L3, and Offset field positions are fixed regardless of vaBits. Only the Segment and L1 fields shift as vaBits increases.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Generic&nbsp;layout:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[vaTop:vaTop-1]&nbsp;[vaTop-2&nbsp;:&nbsp;36]&nbsp;[35:25]&nbsp;[24:14]&nbsp;[13:0]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;SEG&nbsp;L1(5..9)&nbsp;L2(11)&nbsp;L3(11)&nbsp;OFFSET(16K)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Option C: 32K Pages</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">pageShift=15, levelBits=12, vaBits=43..51</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">vaBits = 43 (minimum)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">vaTop&nbsp;=&nbsp;42</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Segment&nbsp;=&nbsp;VA[42:41]&nbsp;2&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;=&nbsp;VA[40:39]&nbsp;2&nbsp;bits&nbsp;(minimum&nbsp;allowed&nbsp;by&nbsp;ASA)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L2&nbsp;=&nbsp;VA[38:27]&nbsp;12&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L3&nbsp;=&nbsp;VA[26:15]&nbsp;12&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Offset&nbsp;=&nbsp;VA[14:0]&nbsp;15&nbsp;bits</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">vaBits = 51 (maximum)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">vaTop&nbsp;=&nbsp;50</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Segment&nbsp;=&nbsp;VA[50:49]&nbsp;2&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;=&nbsp;VA[48:39]&nbsp;10&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L2&nbsp;=&nbsp;VA[38:27]&nbsp;12&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L3&nbsp;=&nbsp;VA[26:15]&nbsp;12&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Offset&nbsp;=&nbsp;VA[14:0]&nbsp;15&nbsp;bits</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Generic&nbsp;layout:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[SEG]&nbsp;[L1&nbsp;variable&nbsp;2..10&nbsp;bits]&nbsp;[L2&nbsp;12]&nbsp;[L3&nbsp;12]&nbsp;[OFFSET&nbsp;15]</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Option D: 64K Pages</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">pageShift=16, levelBits=13, vaBits=46..55</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Note: The ASA states vaBits=44..55, but at vaBits=44 the L1 width is 0 bits, which violates the minimum-2-bits-of-L1 constraint. In practice, vaBits must be ≥ 46 for 64K pages:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;width&nbsp;=&nbsp;vaBits&nbsp;-&nbsp;2&nbsp;-&nbsp;(16&nbsp;+&nbsp;2*13)&nbsp;=&nbsp;vaBits&nbsp;-&nbsp;44</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Minimum&nbsp;L1&nbsp;≥&nbsp;2&nbsp;→&nbsp;vaBits&nbsp;≥&nbsp;46</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">vaBits = 46 (minimum satisfying L1 ≥ 2)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">vaTop&nbsp;=&nbsp;45</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Segment&nbsp;=&nbsp;VA[45:44]&nbsp;2&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;=&nbsp;VA[43:42]&nbsp;2&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L2&nbsp;=&nbsp;VA[41:29]&nbsp;13&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L3&nbsp;=&nbsp;VA[28:16]&nbsp;13&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Offset&nbsp;=&nbsp;VA[15:0]&nbsp;16&nbsp;bits</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">vaBits = 55 (maximum)</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">vaTop&nbsp;=&nbsp;54</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Segment&nbsp;=&nbsp;VA[54:53]&nbsp;2&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;=&nbsp;VA[52:42]&nbsp;11&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L2&nbsp;=&nbsp;VA[41:29]&nbsp;13&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L3&nbsp;=&nbsp;VA[28:16]&nbsp;13&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Offset&nbsp;=&nbsp;VA[15:0]&nbsp;16&nbsp;bits</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Generic&nbsp;layout:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[SEG]&nbsp;[L1&nbsp;variable&nbsp;2..11&nbsp;bits]&nbsp;[L2&nbsp;13]&nbsp;[L3&nbsp;13]&nbsp;[OFFSET&nbsp;16]</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">TLB Lookup Recommendation</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Do not scan VA options (8K/16K/32K/64K) on every lookup. Instead:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">1.</span>Select one option at CPU/board bring-up (configuration or CPU model default)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">2.</span>Decode VA fields according to that selected option</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">3.</span>TLB lookup uses VPN = VA &gt;&gt; pageShift, plus ASN, global flag, and mode checks</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 20px; margin-left: 0;"><span class="f_Normal" style="display:inline-block;width:20px;margin-left:-20px">4.</span>If later emulating mixed page sizes, page size becomes an attribute of the TLB entry (pageMask), not something inferred by reinterpreting VA field boundaries</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Summary Table</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Option&nbsp;Page&nbsp;pageShift&nbsp;levelBits&nbsp;vaBits&nbsp;L1&nbsp;width&nbsp;L2/L3&nbsp;bits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">------&nbsp;-----&nbsp;---------&nbsp;---------&nbsp;---------&nbsp;----------&nbsp;----------</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">A&nbsp;8K&nbsp;13&nbsp;10&nbsp;43&nbsp;8&nbsp;(fixed)&nbsp;10&nbsp;/&nbsp;10</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">B&nbsp;16K&nbsp;14&nbsp;11&nbsp;43..47&nbsp;5..9&nbsp;11&nbsp;/&nbsp;11</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">C&nbsp;32K&nbsp;15&nbsp;12&nbsp;43..51&nbsp;2..10&nbsp;12&nbsp;/&nbsp;12</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">D&nbsp;64K&nbsp;16&nbsp;13&nbsp;46..55&nbsp;2..11&nbsp;13&nbsp;/&nbsp;13</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter-5_4-virtual-addressing.html" class="topiclink">5.4.2 Virtual Addressing and Translation Responsibility</a>; pteLib/ev6Translation_struct.h; Alpha AXP Architecture Reference Manual v6, Chapter 22.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

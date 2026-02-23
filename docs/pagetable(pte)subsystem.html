@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha PTE Subsystem</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="alpha_pte_core.h,alpha_pte_traits.h,alpha_pte_traits_ev6_dtb.h,alpha_pte_traits_ev6_itb.h,alpha_pte_view.h,alpha_spam_bucket.h,alpha_spam_manager.h,AlphaPTE,DualDTBManagerInterface,DualDTBManagerInterface.h,EV6,Platform arthitecture,PTE,PTE Subsystem,PTETraits,PTEView,Space Management Pages, PTE,SPAM,SPAMShardManager,TemplatePolicyBase,TemplatePolicyBase.h,TLB,Traits,Translation Buffer,Usage Guide" />
+   <meta name="description" content="Overview &nbsp;Update: &nbsp; Because the SPAM/TLB subsystem acts like a 4-D associative array: CPU Realm SizeClass BucketIndex &nbsp;-------- The Alpha PTE subsystem manages the &quot;Tran" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "pagetable(pte)subsystem.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Alpha PTE Subsystem</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?pagetable(pte)subsystem.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Alpha PTE Subsystem</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="trait---ctor-usage-examples.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="spam---policies.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Overview</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Update: </p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Because the SPAM/TLB subsystem acts like a 4-D associative array:</p>
+<p class="p_Normal">CPU</p>
+<p class="p_Normal">Realm</p>
+<p class="p_Normal">SizeClass</p>
+<p class="p_Normal">BucketIndex</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">--------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">The Alpha PTE subsystem manages the &quot;Translation Buffer&quot; of virtual addresses to physical addresses in the Alpha processor architecture. It defines the layout and semantics of Page Table Entries (PTEs) and provides utilities for manipulating and querying PTEs. This subsystem supports multiple generations of the Alpha architecture, specifically</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">EV4, EV5, and EV6. It provides a canonical PTE representation (`AlphaPTE`) along with trait classes (`PTETraits`) that adapt the canonical form to the specific layouts used by each generation.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Subsystem Architecture</span></h3>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">----------------------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">The following describes the organization and dependencies of the PTE subsystem components:</h1>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;alpha_pte_core</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;alpha_pte_traits</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;alpha_pte_traits_ev6_dtb</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;alpha_pte_traits_ev6_itb</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;alpha_pte_view</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;alpha_spam_manager</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;alpha_spam_bucket</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;TemplatePolicyBase</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ReplacementPolicyEnum</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;DualDTBManagerInterface</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ev6_DtbPteTempRegister</span></p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Key Components</span></h3>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">--------------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">1. `alpha_pte_core.h`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Defines the canonical `AlphaPTE` structure and core PTE constants and helpers.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">2. `alpha_pte_traits.h`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Defines the `PTETraits` template for adapting the canonical PTE to generation-specific layouts.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">3. `alpha_pte_view.h`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Provides the `PTEView` class for convenient PTE access using trait-based accessors.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">4. `alpha_pte_traits_ev6_dtb.h`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - EV6-specific trait specialization for Data Translation Buffer (DTB) PTE handling.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">5. `alpha_pte_traits_ev6_itb.h`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - EV6-specific trait specialization for Instruction Translation Buffer (ITB) PTE handling.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">6. `alpha_spam_manager.h`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Defines the `SPAMShardManager` template for managing PTE caches (SPAM - Set Prediction and Access Memory).</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">7. `alpha_spam_bucket.h`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Defines the `SPAMBucket` template used by `SPAMShardManager` for PTE storage and lookup.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">8. `TemplatePolicyBase.h`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Defines base classes and policies for cache replacement and invalidation strategies.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">9. `ReplacementPolicyEnum` (in TemplatePolicyBase.h)</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Enumerates supported cache replacement policies.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">10. `DualDTBManagerInterface.h`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; &nbsp;- Defines the interface for managing dual DTBs in the EV6 architecture.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">11. `ev6_DtbPteTempRegister`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; &nbsp;- Utilities for manipulating the EV6 DTB PTE Temporary Register.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">AlphaPTE Structure</span></h3>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">------------------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">The `AlphaPTE` struct represents the canonical Page Table Entry format. It provides bit-level accessors for the architectural PTE fields:</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;V&nbsp;&nbsp;&nbsp;:&nbsp;Valid</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;FOE&nbsp;:&nbsp;Fault&nbsp;on&nbsp;Execute</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;FOW&nbsp;:&nbsp;Fault&nbsp;on&nbsp;Write</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;FOR&nbsp;:&nbsp;Fault&nbsp;on&nbsp;Read</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;ASM&nbsp;:&nbsp;Address&nbsp;Space&nbsp;Match</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;GH&nbsp;&nbsp;:&nbsp;Granularity&nbsp;Hint</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;UWE&nbsp;:&nbsp;User&nbsp;Write&nbsp;Enable</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;KWE&nbsp;:&nbsp;Kernel&nbsp;Write&nbsp;Enable</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;URE&nbsp;:&nbsp;User&nbsp;Read&nbsp;Enable</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;KRE&nbsp;:&nbsp;Kernel&nbsp;Read&nbsp;Enable</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">-&nbsp;PFN&nbsp;:&nbsp;Page&nbsp;Frame&nbsp;Number</span></p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">The structure provides higher-level accessors and mutators for permissions and PFN. </h1>
+<p class="p_Notes"><span class="f_Notes">Note that the permission model compresses the Executive (E) and Supervisor (S) modes into the Kernel (K) mode for implementation simplicity.</span></p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">See: alpha_pte_core.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">PTETraits</span></h3>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">---------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">The `PTETraits` template adapts the canonical `AlphaPTE` to the specific PTE layouts used by each Alpha generation (EV4, EV5, EV6). It provides static methods for decoding/encoding between the canonical form and the generation-specific IPR (Internal Processor Register) formats.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span style="font-weight: bold;">Key responsibilities:</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Extract the virtual address from IPR tag registers (ITB_TAG, DTB_TAG)</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Decode IPR write-format PTE images into `AlphaPTE`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Encode `AlphaPTE` into IPR read-format PTE images</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">Specializations of `PTETraits` are provided for the EV6 generation, specifically for handling ITB and DTB PTEs (`alpha_pte_traits_ev6_itb.h`, `alpha_pte_traits_ev6_dtb.h`).</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">See: alpha_pte_traits.h, alpha_pte_traits_ev6_itb.h, alpha_pte_traits_ev6_dtb.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">PTEView</span></h2>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">-------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">The `PTEView` class provides a convenient interface for working with PTEs using trait-based accessors. It wraps an `AlphaPTE` and forwards queries to the appropriate `PTETraits` methods based on the Alpha generation.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span style="font-weight: bold;">PTEView provides:</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Accessors: validity, global flag, PFN, page shift, protection flags</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Mutators: set validity, global flag, PFN, and protection</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">See: alpha_pte_view.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">SPAMShardManager</span></h2>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">----------------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">The `SPAMShardManager` template manages the PTE caches, known as SPAM (Set Prediction and Access Memory). It is responsible for PTE lookup, insertion, invalidation, and cache maintenance operations.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span style="font-weight: bold;">Key features:</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Sharded (partitioned) by CPU, realm (D/I), and size class</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Configurable number of buckets, associativity, and maximum ASNs (Address Space Numbers)</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Supports selective invalidation by ASN, VA (Virtual Address), or entire cache</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Maintenance interface for cache sweeps and ASN wraparound</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- Telemetry tracking for performance monitoring</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">See: alpha_spam_manager.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">SPAMBucket</span></h2>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">----------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">The `SPAMBucket` template is used by `SPAMShardManager` for actual PTE storage and lookup</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">within each shard.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">See: alpha_spam_bucket.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">TemplatePolicyBase and Replacement Policies</span></h2>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">-------------------------------------------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">`TemplatePolicyBase.h` defines base classes and policies for cache replacement and invalidation</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">strategies used by `SPAMShardManager` and `SPAMBucket`.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span style="font-weight: bold;">Key policy classes:</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- `ReplacementPolicyBase` &nbsp;: Base class for victim selection policies</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- `SRRIPPolicy` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: Static Re-Reference Interval Prediction policy</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- `ClockPolicy` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: Clock-based replacement policy</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- `RandomPolicy` &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : Random replacement policy</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- `DefaultInvalidationStrategy` : Default invalidation strategy</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">These policies allow customization of cache behavior to suit different workloads and requirements.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">See: TemplatePolicyBase.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">DualDTBManagerInterface</span></h2>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">-----------------------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">The `DualDTBManagerInterface` class defines the interface for managing dual DTBs (Data</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">Translation Buffers) in the EV6 architecture. It provides methods for DTB0/DTB1-specific</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">operations, invalidation, lookup, insertion, and occupancy queries.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">See: DualDTBManagerInterface.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">ev6_DtbPteTempRegister</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">----------------------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">Provides helpers for manipulating the EV6 DTB PTE Temporary Register. (Header file not shown in upload set.)</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">Usage Guide</span></h2>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">-----------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">To use the PTE subsystem in the emulator:</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">1. Choose the appropriate `PTETraits` specialization based on the target Alpha generation (e.g., `alpha_pte_traits_ev6_itb`, `alpha_pte_traits_ev6_dtb`).</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">2. Instantiate the `SPAMShardManager` template with the desired configuration parameters (number of buckets, associativity, etc.) and the chosen `PTETraits`.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">3. Use the `SPAMShardManager` instance to perform PTE cache operations:</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Lookup &nbsp; &nbsp;: `lookup()`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Insertion : `insert()`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Invalidation : `invalidateASN()`, `invalidateASN_AllShards()`, `tbis()`, `tbia()`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"> &nbsp; - Maintenance &nbsp;: `maintenanceTick()`</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">4. For EV6-specific dual DTB management, use the `DualDTBManagerInterface` methods &nbsp;(`invalidateDTB0()`, `lookupDTB1()`, etc.).</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">5. Use the `AlphaPTE` and `PTEView` classes for low-level PTE manipulation and trait-based access.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">6. Customize cache replacement and invalidation policies by providing alternative implementations of `ReplacementPolicyBase` and `DefaultInvalidationStrategy` &nbsp;if needed.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">Refer to the individual header files and class definitions for more detailed documentation</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">on specific types, methods, and parameters.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">References</span></h3>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">----------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- DEC Alpha Architecture Reference Manual (see especially Chapter 4, Address Translation)</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- EV6 Hardware Reference Manual (DTB/ITB and MMU sections)</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- alpha_pte_core.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- alpha_pte_traits.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- alpha_pte_traits_ev6_itb.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- alpha_pte_traits_ev6_dtb.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- alpha_pte_view.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- alpha_spam_bucket.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- alpha_spam_manager.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- TemplatePolicyBase.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">- DualDTBManagerInterface.h</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Revision</span></h3>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">--------</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">Generated by ChatGPT (ASA-EmulatR Project Assistant), 2025-11-14.</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">Project: ASA-EmulatR (https://timothypeer.github.io/ASA-EMulatR-Project)</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;">License: eNVy Systems Non-Commercial License v1.1</h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

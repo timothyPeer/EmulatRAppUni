@@ -1,0 +1,602 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; EmulatR Initialization&nbsp;</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="# EmulatR Initialization Architecture &nbsp;**Version:** 1.0 &nbsp; **Date:** December 2025 &nbsp; **Pattern:** QScopedPointer + Meyer's Singleton &nbsp;--- &nbsp;## Overview &nbsp;The EmulatR initial" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "emulatr-initialization-.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">EmulatR Initialization </span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?emulatr-initialization-.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">EmulatR Initialization </span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="flow-chart-runloop.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="introduction.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="directory-structure.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal"># EmulatR Initialization Architecture</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Version:** 1.0 &nbsp;</p>
+<p class="p_Normal">**Date:** December 2025 &nbsp;</p>
+<p class="p_Normal">**Pattern:** QScopedPointer + Meyer's Singleton</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Overview</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The EmulatR initialization subsystem uses a **hidden initialization pattern** where:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. **QScopedPointer** manages object lifetime (automatic cleanup)</p>
+<p class="p_Normal">2. **Meyer's Singleton** provides global access</p>
+<p class="p_Normal">3. **main.cpp** only tracks initialization, doesn't perform it</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This provides:</p>
+<p class="p_Normal">- ✅ Clean separation of concerns</p>
+<p class="p_Normal">- ✅ Automatic resource cleanup</p>
+<p class="p_Normal">- ✅ Single point of initialization</p>
+<p class="p_Normal">- ✅ Easy testing and mock injection</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Architecture Diagram</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample">```</p>
+<p class="p_CodeExample"><span class="f_CodeExample">┌─────────────────────────────────────────────────────────────┐</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;main.cpp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;┌─────────────────────────────────────────────────────┐&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;auto&amp;&nbsp;init&nbsp;=&nbsp;global_EmulatR_init();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;init.initializeSystem();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;init.initializeDeviceInterrupts();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;app.exec();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─────────────────────────────────────────────────────┘&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└─────────────────────────────────────────────────────────────┘</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">┌─────────────────────────────────────────────────────────────┐</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EmulatR_init&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;┌─────────────────────────────────────────────────────┐&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;QScopedPointer&lt;IRQController&gt;&nbsp;m_irqController&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;QScopedPointer&lt;SafeMemory&gt;&nbsp;m_safeMemory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;QScopedPointer&lt;GuestMemory&gt;&nbsp;m_guestMemory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;QScopedPointer&lt;PlatformAddressMap&gt;&nbsp;m_platformMap&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─────────────────────────────────────────────────────┘&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;┌─────────────────────────────────────────────────────┐&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;initializeSystem()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;Load&nbsp;config&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;Create&nbsp;IRQController&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;Create&nbsp;SafeMemory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;Create&nbsp;GuestMemory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;Initialize&nbsp;TLB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└─&nbsp;Bind&nbsp;to&nbsp;SMPManager&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;initializeDeviceInterrupts()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;Register&nbsp;SCSI&nbsp;interrupt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;Register&nbsp;Ethernet&nbsp;interrupt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└─&nbsp;Register&nbsp;Serial&nbsp;interrupt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─────────────────────────────────────────────────────┘&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└─────────────────────────────────────────────────────────────┘</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">┌─────────────────────────────────────────────────────────────┐</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Global&nbsp;Accessor&nbsp;Functions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;┌─────────────────────────────────────────────────────┐&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;global_IRQController()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└─&gt;&nbsp;global_EmulatR_init().irqController()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&gt;&nbsp;m_irqController.data()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;global_SafeMemory()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└─&gt;&nbsp;global_EmulatR_init().safeMemory()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&gt;&nbsp;m_safeMemory.data()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;global_GuestMemory()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└─&gt;&nbsp;global_EmulatR_init().guestMemory()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&gt;&nbsp;m_guestMemory.data()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;└─────────────────────────────────────────────────────┘&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└─────────────────────────────────────────────────────────────┘</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">```</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## File Structure</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">project/</p>
+<p class="p_Normal">├── main.cpp &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;# Entry point (tracking only)</p>
+<p class="p_Normal">├── EmulatR_init.h &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;# Hidden initialization subsystem</p>
+<p class="p_Normal">└── globals/</p>
+<p class="p_Normal"> &nbsp; &nbsp;├── global_IRQController.h &nbsp; &nbsp; &nbsp; &nbsp;# Wired to QScopedPointer</p>
+<p class="p_Normal"> &nbsp; &nbsp;├── global_SafeMemory.h &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; # Wired to QScopedPointer</p>
+<p class="p_Normal"> &nbsp; &nbsp;├── global_GuestMemory.h &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;# Wired to QScopedPointer</p>
+<p class="p_Normal"> &nbsp; &nbsp;├── global_ReservationManager.h &nbsp; # Meyer's Singleton (unchanged)</p>
+<p class="p_Normal"> &nbsp; &nbsp;├── global_MMIOManager.h &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;# Meyer's Singleton (unchanged)</p>
+<p class="p_Normal"> &nbsp; &nbsp;└── global_PALVectorTable.h &nbsp; &nbsp; &nbsp; # Meyer's Singleton (unchanged)</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Key Components</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 1. **EmulatR_init** (Hidden Initialization)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Location:** `EmulatR_init.h`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Responsibilities:**</p>
+<p class="p_Normal">- Load configuration from INI file</p>
+<p class="p_Normal">- Create and own subsystems via QScopedPointer</p>
+<p class="p_Normal">- Initialize subsystems in correct order</p>
+<p class="p_Normal">- Wire subsystems to SMPManager</p>
+<p class="p_Normal">- Provide accessors for global_*() functions</p>
+<p class="p_Normal">- Automatic cleanup on destruction</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Key Methods:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">bool initializeSystem(const QString&amp; configPath);</p>
+<p class="p_Normal">void initializeDeviceInterrupts();</p>
+<p class="p_Normal">void initializeDevices();</p>
+<p class="p_Normal">void shutdown();</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">IRQController* irqController() const;</p>
+<p class="p_Normal">SafeMemory* safeMemory() const;</p>
+<p class="p_Normal">GuestMemory* guestMemory() const;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 2. **QScopedPointer Members**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Owned by EmulatR_init:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">QScopedPointer&lt;IRQController&gt; m_irqController;</p>
+<p class="p_Normal">QScopedPointer&lt;SafeMemory&gt; m_safeMemory;</p>
+<p class="p_Normal">QScopedPointer&lt;GM_ALPHA::GuestMemory&gt; m_guestMemory;</p>
+<p class="p_Normal">QScopedPointer&lt;PlatformAddressMap&gt; m_platformAddressMap;</p>
+<p class="p_Normal">QScopedPointer&lt;IDeviceEmulator&gt; m_deviceEmulator;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Benefits:**</p>
+<p class="p_Normal">- Automatic deletion when EmulatR_init is destroyed</p>
+<p class="p_Normal">- No manual delete required</p>
+<p class="p_Normal">- Exception-safe (RAII pattern)</p>
+<p class="p_Normal">- Clear ownership semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 3. **Global Accessor Wiring**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Pattern:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// global_IRQController.h</p>
+<p class="p_Normal">inline IRQController&amp; global_IRQController() noexcept {</p>
+<p class="p_Normal"> &nbsp; &nbsp;IRQController* irqCtrl = global_EmulatR_init().irqController();</p>
+<p class="p_Normal"> &nbsp; &nbsp;Q_ASSERT(irqCtrl); &nbsp;// Ensure initialized</p>
+<p class="p_Normal"> &nbsp; &nbsp;return *irqCtrl;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Flow:**</p>
+<p class="p_Normal">1. User calls `global_IRQController()`</p>
+<p class="p_Normal">2. Function calls `global_EmulatR_init()` (Meyer's Singleton)</p>
+<p class="p_Normal">3. Returns `m_irqController.data()` from QScopedPointer</p>
+<p class="p_Normal">4. Assert ensures initialization happened</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Initialization Sequence</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Phase 1: System Initialization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">auto&amp; init = global_EmulatR_init();</p>
+<p class="p_Normal">bool success = init.initializeSystem(&quot;Z:/EmulatR/CONFIG&quot;);</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Steps:**</p>
+<p class="p_Normal">1. Load `ASAEmulatR.ini` configuration</p>
+<p class="p_Normal">2. Extract CPU count, memory size, system type</p>
+<p class="p_Normal">3. Validate configuration</p>
+<p class="p_Normal">4. Initialize `GlobalCPUCount`</p>
+<p class="p_Normal">5. Create `IRQController` (QScopedPointer)</p>
+<p class="p_Normal">6. Create `SafeMemory` (QScopedPointer)</p>
+<p class="p_Normal">7. Create `PlatformAddressMap` (QScopedPointer)</p>
+<p class="p_Normal">8. Create `GuestMemory` (QScopedPointer)</p>
+<p class="p_Normal">9. Initialize TLB system (`initializeGlobalPTE()`)</p>
+<p class="p_Normal">10. Initialize `ReservationManager`</p>
+<p class="p_Normal">11. Bind all subsystems to `SMPManager`</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Phase 2: Device Interrupt Registration</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">init.initializeDeviceInterrupts();</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Registers:**</p>
+<p class="p_Normal">- SCSI controller → vector 0x800, IPL 20, CPU 0 (FIXED_CPU)</p>
+<p class="p_Normal">- Ethernet controller → vector 0x810, IPL 20 (ROUND_ROBIN)</p>
+<p class="p_Normal">- Serial port → vector 0x820, IPL 21, CPU 0 (FIXED_CPU)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Phase 3: Device Initialization (Future)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">init.initializeDevices();</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Will create:**</p>
+<p class="p_Normal">- Device emulators (SCSI, Ethernet, Serial)</p>
+<p class="p_Normal">- Timer devices</p>
+<p class="p_Normal">- DMA controllers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Usage Examples</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Example 1: Simple Initialization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">int main(int argc, char *argv[]) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;QCoreApplication app(argc, argv);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; init = global_EmulatR_init();</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!init.initializeSystem()) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return 1;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;init.initializeDeviceInterrupts();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return app.exec();</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Example 2: Using Global Accessors</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// After initialization, anywhere in code:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">void someFunction() {</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Access IRQ controller</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; irqCtrl = global_IRQController();</p>
+<p class="p_Normal"> &nbsp; &nbsp;irqCtrl.assertIRQ(0x800); &nbsp;// SCSI interrupt</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Access memory</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; safeMem = global_SafeMemory();</p>
+<p class="p_Normal"> &nbsp; &nbsp;safeMem.write64(0x1000, 0xDEADBEEF);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Access guest memory</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; guestMem = global_GuestMemory();</p>
+<p class="p_Normal"> &nbsp; &nbsp;MEM_STATUS status = guestMem.read64(0x2000, data);</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Example 3: Custom Configuration Path</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">int main(int argc, char *argv[]) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;QCoreApplication app(argc, argv);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Parse command line args</p>
+<p class="p_Normal"> &nbsp; &nbsp;QString configPath = argc &gt; 1 </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;? QString(argv[1]) </p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;: &quot;Z:/EmulatR/CONFIG&quot;;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; init = global_EmulatR_init();</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!init.initializeSystem(configPath)) {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;qCritical() &lt;&lt; &quot;Failed to initialize with config:&quot; &lt;&lt; configPath;</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return 1;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;init.initializeDeviceInterrupts();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return app.exec();</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Testing and Mocking</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Mock Initialization for Unit Tests</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">class EmulatR_init_Mock : public EmulatR_init {</p>
+<p class="p_Normal">public:</p>
+<p class="p_Normal"> &nbsp; &nbsp;bool initializeSystem(const QString&amp; configPath) override {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;// Mock implementation</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;m_irqController.reset(new IRQController_Mock(4));</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;m_safeMemory.reset(new SafeMemory_Mock());</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;return true;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">};</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">// In test:</p>
+<p class="p_Normal">TEST_F(EmulatorTest, TestInterrupts) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; init = global_EmulatR_init_Mock();</p>
+<p class="p_Normal"> &nbsp; &nbsp;init.initializeSystem();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; irqCtrl = global_IRQController();</p>
+<p class="p_Normal"> &nbsp; &nbsp;EXPECT_TRUE(irqCtrl.assertIRQ(0x800));</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Shutdown and Cleanup</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Automatic cleanup when application exits:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// No manual cleanup needed!</p>
+<p class="p_Normal">// QScopedPointer automatically deletes:</p>
+<p class="p_Normal">// &nbsp; - IRQController</p>
+<p class="p_Normal">// &nbsp; - SafeMemory</p>
+<p class="p_Normal">// &nbsp; - GuestMemory</p>
+<p class="p_Normal">// &nbsp; - PlatformAddressMap</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">// EmulatR_init destructor also calls:</p>
+<p class="p_Normal">// &nbsp; - shutdownGlobalPTE()</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Migration from Old main.cpp</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Old main.cpp (manual initialization):**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">int main(int argc, char *argv[]) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;QCoreApplication app(argc, argv);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;// Manual initialization (50+ lines)</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; config = global_EmulatorSettingsInline();</p>
+<p class="p_Normal"> &nbsp; &nbsp;config.loadFromIni(&quot;Z:/EmulatR/CONFIG/ASAEmulatR.ini&quot;);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint8 cpuCount = config.data.system.processorCount;</p>
+<p class="p_Normal"> &nbsp; &nbsp;quint64 ramSize = config.data.system.memorySizeGB * GB;</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;global_SafeMemory().initialize(ramSize);</p>
+<p class="p_Normal"> &nbsp; &nbsp;GlobalCPUCount::initialize(cpuCount);</p>
+<p class="p_Normal"> &nbsp; &nbsp;global_ReservationManager().initialize();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; smpMgr = SMPManager::instance();</p>
+<p class="p_Normal"> &nbsp; &nbsp;smpMgr.setCpuCount(cpuCount);</p>
+<p class="p_Normal"> &nbsp; &nbsp;smpMgr.bindSafeMemory(&amp;global_SafeMemory());</p>
+<p class="p_Normal"> &nbsp; &nbsp;smpMgr.bindIRQController(&amp;global_IRQController());</p>
+<p class="p_Normal"> &nbsp; &nbsp;// ... 20 more lines ...</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return app.exec();</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**New main.cpp (clean tracking):**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">int main(int argc, char *argv[]) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;QCoreApplication app(argc, argv);</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;auto&amp; init = global_EmulatR_init();</p>
+<p class="p_Normal"> &nbsp; &nbsp;if (!init.initializeSystem()) return 1;</p>
+<p class="p_Normal"> &nbsp; &nbsp;init.initializeDeviceInterrupts();</p>
+<p class="p_Normal"> &nbsp; &nbsp;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return app.exec();</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Reduction:** 50+ lines → 6 lines ✅</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Benefits Summary</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">| Aspect | Benefit |</p>
+<p class="p_Normal">|--------|---------|</p>
+<p class="p_Normal">| **Code Clarity** | main.cpp is 6 lines, easy to understand |</p>
+<p class="p_Normal">| **Separation of Concerns** | Initialization hidden in EmulatR_init |</p>
+<p class="p_Normal">| **Ownership** | QScopedPointer manages lifetime |</p>
+<p class="p_Normal">| **Safety** | Automatic cleanup, no leaks |</p>
+<p class="p_Normal">| **Testing** | Easy to mock and inject dependencies |</p>
+<p class="p_Normal">| **Maintenance** | Single place to change initialization order |</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Troubleshooting</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Problem: Assertion failure in global_IRQController()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">Q_ASSERT(irqCtrl); &nbsp;// Fails!</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Cause:** `initializeSystem()` was not called before accessing global.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Solution:**</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">// WRONG:</p>
+<p class="p_Normal">auto&amp; irq = global_IRQController(); &nbsp;// No init!</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">// CORRECT:</p>
+<p class="p_Normal">auto&amp; init = global_EmulatR_init();</p>
+<p class="p_Normal">init.initializeSystem();</p>
+<p class="p_Normal">auto&amp; irq = global_IRQController(); &nbsp;// ✅ Works</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### Problem: QScopedPointer is null</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">SafeMemory* mem = global_EmulatR_init().safeMemory();</p>
+<p class="p_Normal">// mem is nullptr!</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Cause:** Initialization failed silently.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Solution:** Check return value:</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">if (!init.initializeSystem()) {</p>
+<p class="p_Normal"> &nbsp; &nbsp;qCritical() &lt;&lt; &quot;Initialization failed!&quot;;</p>
+<p class="p_Normal"> &nbsp; &nbsp;return 1;</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## Conclusion</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The EmulatR hidden initialization pattern provides:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. ✅ **Clean main.cpp** - tracks initialization, doesn't perform it</p>
+<p class="p_Normal">2. ✅ **Automatic cleanup** - QScopedPointer handles destruction</p>
+<p class="p_Normal">3. ✅ **Single source of truth** - EmulatR_init owns initialization</p>
+<p class="p_Normal">4. ✅ **Easy testing** - mockable dependencies</p>
+<p class="p_Normal">5. ✅ **Production-ready** - error handling, validation, logging</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**Result:** A professional, maintainable initialization architecture.</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

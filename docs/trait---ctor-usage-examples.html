@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Trait - CTOR Usage Examples</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="Constructor pattern,CPUStateIPRInterface,CPUStateIPRInterface CTOR,CPUStateIPRInterface per-CPU instantiation,CPUStateIPRInterface SPAMShardManager pointer,CPUStateIPRInterface SPAMShardManager reference,DefaultInvalidationStrategy,DTBManagerType,InvalidationPolicy,ITBManagerType,Manager pattern,MyDTBTraits,MyITBTraits,SPAMShardManager,SPAMShardManager best practice,SPAMShardManager code sample,SPAMShardManager configuration,SPAMShardManager constructor,SPAMShardManager constructor injection,SPAMShardManager CPUStateIPRInterface,SPAMShardManager CTOR,SPAMShardManager dependent class,SPAMShardManager direct pass,SPAMShardManager DTB,SPAMShardManager dynamic allocation,SPAMShardManager example,SPAMShardManager fast lookup,SPAMShardManager idiom,SPAMShardManager index,SPAMShardManager initialization,SPAMShardManager instantiation,SPAMShardManager interface,SPAMShardManager invalidation policy,SPAMShardManager ITB,SPAMShardManager lifetime,SPAMShardManager manager vector,SPAMShardManager member variable,SPAMShardManager per-CPU,SPAMShardManager per-system,SPAMShardManager pointer passing,SPAMShardManager reference,SPAMShardManager reference passing,SPAMShardManager retrieval,SPAMShardManager shared_ptr,SPAMShardManager SMP support,SPAMShardManager storage,SPAMShardManager system-level storage,SPAMShardManager template alias,SPAMShardManager template parameters,SPAMShardManager TLB manager,SPAMShardManager traits,SPAMShardManager traits specialization,SPAMShardManager type alias,SPAMShardManager unique_ptr,SPAMShardManager usage,SPAMShardManager victim policy,SPAMShardManager wiring,SRRIPPolicy,TLB interface wiring,TLB manager instantiation,TLB manager pattern,Traits template,Traits type alias,Traits-based manager,VictimPolicy" />
+   <meta name="description" content="Passing SPAMShardManager With Traits to Dependent Class Constructors" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "trait---ctor-usage-examples.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Trait - CTOR Usage Examples</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?trait---ctor-usage-examples.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Trait - CTOR Usage Examples</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="trait-examples.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="pagetable(pte)subsystem.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">Passing SPAMShardManager With Traits to Dependent Class Constructors</p>
+<p class="p_Normal">====================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Overview</span></h3>
+<p class="p_Normal">--------</p>
+<p class="p_Normal">The `SPAMShardManager` template is parameterized on a traits type (such as `PTETraits&lt;CPUFamily::EV6, 44U&gt;` for ITB, or `Ev6_DtbPteTraits&lt;CPUFamily::EV6, 44U&gt;` for DTB) and a set of configuration parameters (ways, ASN, buckets, etc.).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">To use in a class such as `CPUStateIPRInterface`, you typically:</p>
+<p class="p_Normal">1. Define concrete type aliases for each TLB (ITB, DTB).</p>
+<p class="p_Normal">2. Construct the `SPAMShardManager` instances.</p>
+<p class="p_Normal">3. Pass them by reference (or pointer) to your dependent class's constructor.</p>
+<p class="p_Normal">4. Store as reference (or pointer/reference) members for use.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">------------------------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 1: Define Concrete Type Aliases for Each SPAMShardManager</span></p>
+<p class="p_Normal">--------------------------------------------------------------</p>
+<p class="p_Normal">Example for an EV6 system (see alpha_pte_traits_ev6_itb.h, alpha_pte_traits_ev6_dtb.h):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;44-bit&nbsp;VA,&nbsp;EV6,&nbsp;4-way&nbsp;associative,&nbsp;256&nbsp;ASN,&nbsp;1024&nbsp;buckets,&nbsp;sharded&nbsp;by&nbsp;size</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;MyITBTraits&nbsp;=&nbsp;PTETraits&lt;CPUFamily::EV6,&nbsp;44U&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;MyDTBTraits&nbsp;=&nbsp;Ev6_DtbPteTraits&lt;CPUFamily::EV6,&nbsp;44U&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;constexpr&nbsp;unsigned&nbsp;AssocWays&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;4;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;constexpr&nbsp;unsigned&nbsp;MaxASN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;256;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;constexpr&nbsp;unsigned&nbsp;BucketCount&nbsp;&nbsp;=&nbsp;1024;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;constexpr&nbsp;bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShardBySize&nbsp;&nbsp;=&nbsp;true;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Victim/invalidation&nbsp;policies&nbsp;(optional:&nbsp;SRRIPPolicy,&nbsp;DefaultInvalidationStrategy)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;MyITBVictimPolicy&nbsp;=&nbsp;SRRIPPolicy&lt;typename&nbsp;SPAMBucket&lt;MyITBTraits,&nbsp;AssocWays,&nbsp;MaxASN&gt;::Entry,&nbsp;AssocWays&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;MyDTBVictimPolicy&nbsp;=&nbsp;SRRIPPolicy&lt;typename&nbsp;SPAMBucket&lt;MyDTBTraits,&nbsp;AssocWays,&nbsp;MaxASN&gt;::Entry,&nbsp;AssocWays&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;MyITBInvalidation&nbsp;=&nbsp;DefaultInvalidationStrategy&lt;typename&nbsp;SPAMBucket&lt;MyITBTraits,&nbsp;AssocWays,&nbsp;MaxASN&gt;::Entry&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;MyDTBInvalidation&nbsp;=&nbsp;DefaultInvalidationStrategy&lt;typename&nbsp;SPAMBucket&lt;MyDTBTraits,&nbsp;AssocWays,&nbsp;MaxASN&gt;::Entry&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;ITBManagerType&nbsp;=&nbsp;SPAMShardManager&lt;MyITBTraits,&nbsp;AssocWays,&nbsp;MaxASN,&nbsp;BucketCount,&nbsp;ShardBySize,&nbsp;MyITBVictimPolicy,&nbsp;MyITBInvalidation&gt;;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;DTBManagerType&nbsp;=&nbsp;SPAMShardManager&lt;MyDTBTraits,&nbsp;AssocWays,&nbsp;MaxASN,&nbsp;BucketCount,&nbsp;ShardBySize,&nbsp;MyDTBVictimPolicy,&nbsp;MyDTBInvalidation&gt;;</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">------------------------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 2: Instantiate Managers in the System/SoC/CPU Setup Code</span></p>
+<p class="p_Normal">-------------------------------------------------------------</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;cpuCount&nbsp;=&nbsp;4;&nbsp;&nbsp;//&nbsp;Number&nbsp;of&nbsp;CPUs/cores&nbsp;you&nbsp;want&nbsp;to&nbsp;support</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;ITBManagerType&nbsp;myItbManager(cpuCount);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;DTBManagerType&nbsp;myDtbManager(cpuCount);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">------------------------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 3: Pass Managers by Reference to Dependent Class Constructors</span></p>
+<p class="p_Normal">-----------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Suppose your interface class is templated as follows:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;<span class="f_CodeExample">template&lt;typename&nbsp;ITBShardManagerType,&nbsp;typename&nbsp;DTBShardManagerType&gt;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;class&nbsp;CPUStateIPRInterface&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;public:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CPUStateIPRInterface(ITBShardManagerType&amp;&nbsp;itbMgr,&nbsp;DTBShardManagerType&amp;&nbsp;dtbMgr)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;m_itbManager(itbMgr),&nbsp;m_dtbManager(dtbMgr)&nbsp;{&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Now instantiate and wire up:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;In&nbsp;your&nbsp;main&nbsp;or&nbsp;system&nbsp;init:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;CPUStateIPRInterface&lt;ITBManagerType,&nbsp;DTBManagerType&gt;&nbsp;cpuIPR(myItbManager,&nbsp;myDtbManager);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">------------------------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 4: Store and Use in Your Class</span></p>
+<p class="p_Normal">-----------------------------------</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;class&nbsp;CPUStateIPRInterface&lt;ITBManagerType,&nbsp;DTBManagerType&gt;&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;private:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ITBManagerType&amp;&nbsp;m_itbManager;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DTBManagerType&amp;&nbsp;m_dtbManager;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;public:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Access&nbsp;or&nbsp;call:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;exampleInsert(quint64&nbsp;va,&nbsp;quint8&nbsp;asn,&nbsp;const&nbsp;AlphaPTE&amp;&nbsp;pte,&nbsp;bool&nbsp;global)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_dtbManager.tlbInsert(0,&nbsp;Realm::D,&nbsp;0,&nbsp;va,&nbsp;asn,&nbsp;global,&nbsp;pte);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">------------------------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Best Practice: System-Oriented Construction</span></h3>
+<p class="p_Normal">-------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>You can construct your ITB/DTB managers once per system or per-CPU (per your SMP/SMPManager pattern).</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>If the managers are shared (one instance per many CPU objects), store them at the system-level and pass references/pointers to each CPU/CPUStateIPRInterface.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">------------------------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Optional: Smart Pointer, Singleton, or Per-CPU Storage</span></h3>
+<p class="p_Normal">------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Use std::unique_ptr, std::shared_ptr, or raw pointers if you need heap-allocation or dynamic lifespan.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>For true per-CPU isolation, construct one manager per CPU and pass a reference to the appropriate instance.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Example (unique per CPU):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample">&nbsp;<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;std::vector&lt;ITBManagerType&gt;&nbsp;itbManagers(cpuCount,&nbsp;ITBManagerType(1));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;std::vector&lt;DTBManagerType&gt;&nbsp;dtbManagers(cpuCount,&nbsp;DTBManagerType(1));</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;CPUStateIPRInterface&lt;ITBManagerType,&nbsp;DTBManagerType&gt;&nbsp;cpu0IPR(itbManagers[0],&nbsp;dtbManagers[0]);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;CPUStateIPRInterface&lt;ITBManagerType,&nbsp;DTBManagerType&gt;&nbsp;cpu1IPR(itbManagers[1],&nbsp;dtbManagers[1]);</span></p>
+<p class="p_Normal"> &nbsp; &nbsp;// ...</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">------------------------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">FAQ</span></h3>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Q: Can I pass by pointer instead of reference?</p>
+<p class="p_Normal">A: Yes, but references are idiomatic in C++ for managers with global or shared lifetime. Use pointers if you need optional/nullable or runtime replacement.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Q: Should I store the managers as values, pointers, or references?</p>
+<p class="p_Normal">A: Prefer references or pointers. Managers are large; avoid unnecessary copies.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Q: Can I use traits-based managers in containers?</p>
+<p class="p_Normal">A: Yes. All template parameters must be fully resolved at compile time.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Q: Can I switch traits or managers at runtime?</p>
+<p class="p_Normal">A: No. Traits and manager types are chosen at compile time. To support multiple generations, use templates, type-erasure, or a factory.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">------------------------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">References</span></h3>
+<p class="p_Normal">----------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>alpha_pte_traits_ev6_itb.h, alpha_pte_traits_ev6_dtb.h</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>alpha_spam_manager.h (SPAMShardManager)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>CPUStateIPRInterface.h (see CTOR and member types)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">------------------------------------------------------------------------------</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Generated for ASA-EmulatR Project - 2025-11-14.</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

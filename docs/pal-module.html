@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Dependency Requirements &gt; PAL Module</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="COW is triggered by a write-fault → PAL → kernel trap handler" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "pal-module.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">PAL Module</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?pal-module.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="dependency-requirements.html">Dependency Requirements</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">PAL Module</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="systems-integration.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="dependency-requirements.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="ev6ptecache.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">COW is triggered by a write-fault → PAL → kernel trap handler</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; width:113px; padding:0; border:none"><p class="p_Normal">PAL Queues</p>
+</td>
+<td style="vertical-align:top; width:2266px; padding:0; border:none"><p class="p_Normal">Add to PAL Grains: &nbsp;TBIA, TBIAP, TBIS, Changing SCBB, Changing PTBR, HALT others, GLOBAL barrier (MB, WMB, MB2 operations)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">serveral types </p>
+<p class="p_Normal">PALcode defines several queue-related concepts:</p>
+<p class="p_Normal">Interrupt queues</p>
+<p class="p_Normal">AST queues</p>
+<p class="p_Normal">Soft interrupt / software trap queues</p>
+<p class="p_Normal">Machine check logout queues</p>
+<p class="p_Normal">Instruction restart queues (EV6 only)</p>
+<p class="p_Normal">Memory barrier / IPI rendezvous queues</p>
+<p class="p_Normal">Process control block / context queues</p>
+<p class="p_Normal">But architecturally:</p>
+<p class="p_Normal">📌 Each CPU has its own private PAL queue structures.</p>
+<p class="p_Normal">This includes:</p>
+<p class="p_Normal">✔ Per-CPU Interrupt Queue</p>
+<p class="p_Normal">The interrupt dispatch sequence is defined in PAL, and the vector logic is per CPU:</p>
+<p class="p_Normal">Device IRQ → delivered to target CPU</p>
+<p class="p_Normal">CPU stores it in its PAL temp/queue region</p>
+<p class="p_Normal">PAL checks and drains that CPU’s queue</p>
+<p class="p_Normal">✔ Per-CPU AST Queue</p>
+<p class="p_Normal">ASTs do not cross CPUs; the OS arranges delivery to a specific CPU.</p>
+<p class="p_Normal">✔ Per-CPU Machine Check Logout Frame Queue</p>
+<p class="p_Normal">Each CPU maintains its own logout area (in memory) and PAL uses it during trap entry.</p>
+<p class="p_Normal">✔ Per-CPU IPR queue semantics</p>
+<p class="p_Normal">Many PAL instructions access per-CPU IPR banks; no IPR queues are shared.</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:113px; padding:0; border:none"><br />
+</td>
+<td style="vertical-align:top; width:2266px; padding:0; border:none"><p class="p_Normal">DRIVERSCHED is OS-level, implemented using PAL + IPIs.</p>
+<p class="p_Normal">This is not a hardware instruction.</p>
+<p class="p_Normal">This is not a public PALcall.</p>
+<p class="p_Normal">This is not a documented IPR.</p>
+<p class="p_Normal">It is a process used by OSF/1 and OpenVMS kernels.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">🟦 2. What is a Rendezvous Operation?</p>
+<p class="p_Normal">Rendezvous in Alpha SMP means:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">“Force all CPUs to enter a known PAL state, wait until all are present, perform a global action, then release them.”</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is used for operations that must be globally consistent, such as:</p>
+<p class="p_Normal">✔ TBIA / TBIAP (global TLB invalidation)</p>
+<p class="p_Normal">✔ SCB / vector table replacement</p>
+<p class="p_Normal">✔ ASN epoch rollover</p>
+<p class="p_Normal">✔ Global memory barriers</p>
+<p class="p_Normal">✔ Rebalancing AST queues</p>
+<p class="p_Normal">✔ Reprogramming clock sources</p>
+<p class="p_Normal">✔ Rescheduling the processor sets</p>
+<p class="p_Normal">Rendezvous looks like a global lock, but at the PAL level.</p>
+<p class="p_Normal">The OS essentially says:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CPU0 broadcasts a special IPI (“enter rendezvous”).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Every CPU traps into PAL, executing the rendezvous entrypoint.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CPU0 waits until all CPUs are in rendezvous.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CPU0 performs the global action (such as TBIA).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CPU0 signals “exit rendezvous.”</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All CPUs return back to the OS kernel.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This guarantees global consistency.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">📌 3. DRIVERSCHED + Rendezvous together</p>
+<p class="p_Normal">DRIVERSCHED is one of the subtypes of SMP rendezvous operations.</p>
+<p class="p_Normal">It is used when the OS scheduler (e.g., on OpenVMS) must reconfigure:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Run queues</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Global scheduling parameters</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Quantum expiration models</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">System timebase interactions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Process set redistribution</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CPU affinity adjustments</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Because scheduling changes involve keeping all CPU run queues coherent, you cannot change scheduling policies or queue structure on one CPU without quiescing the others.</p>
+<p class="p_Normal">Thus:</p>
+<p class="p_Normal">✔ DRIVERSCHED calls → trigger a Rendezvous</p>
+<p class="p_Normal">✔ Rendezvous forces all CPUs into a known state</p>
+<p class="p_Normal">✔ PAL and OS coordinate the schedule change</p>
+<p class="p_Normal">✔ CPUs resume normal operation after synchronization</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">📚 4. PAL’s Role in DRIVERSCHED / Rendezvous</p>
+<p class="p_Normal">The PALcode provides:</p>
+<p class="p_Normal">A. IPI delivery for rendezvous</p>
+<p class="p_Normal">A standard “rendezvous IPI vector” is delivered to all CPUs.</p>
+<p class="p_Normal">B. PAL-level enter/exit handlers</p>
+<p class="p_Normal">PAL traps the CPU into a known state (mode, IPL, PC shadowing).</p>
+<p class="p_Normal">C. Register shadowing</p>
+<p class="p_Normal">PAL shadow registers preserve state while the CPU is quiesced.</p>
+<p class="p_Normal">D. Synchronization flags</p>
+<p class="p_Normal">PAL uses per-CPU flags to indicate:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">“I have entered rendezvous”</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">“I am ready to be released”</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">E. Micro-barriers</p>
+<p class="p_Normal">PAL ensures no CPU continues until the global action is complete.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">🧩 5. Does DRIVERSCHED matter for your emulator?</p>
+<p class="p_Normal">Mostly no, unless:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You want to emulate VMS or Tru64 kernel-level scheduling behavior, or</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You want to fully support OpenVMS SMP boot.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">But emulator-level consequences are useful:</p>
+<p class="p_Normal">✔ When an OS broadcasts TBIA, you must use IPI rendezvous</p>
+<p class="p_Normal">✔ When an OS changes scheduling parameters, CPUs must quiesce</p>
+<p class="p_Normal">✔ When an OS enters certain critical regions, all CPUs must sync</p>
+<p class="p_Normal">✔ Rendezvous is the mechanism for global TLB invalidation</p>
+<p class="p_Normal">✔ PAL TBIS/TBIAP grains cooperate with it</p>
+<p class="p_Normal">So while DRIVERSCHED itself does not need to be implemented as a separate command, rendezvous semantics absolutely do.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">🧱 6. For ASA-EmulatR, how to represent this?</p>
+<p class="p_Normal">You don’t need to emulate the actual &quot;DRIVERSCHED&quot; function.</p>
+<p class="p_Normal">But you must implement:</p>
+<p class="p_Normal">📌 IPI-based SMP rendezvous API inside IRQController</p>
+<p class="p_Normal">void sendRendezvousIPI(cpuId);</p>
+<p class="p_Normal">void broadcastRendezvousIPI();</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">📌 Per-CPU rendezvous flags inside AlphaCPU</p>
+<p class="p_Normal">std::atomic&lt;bool&gt; inRendezvous;</p>
+<p class="p_Normal">std::atomic&lt;bool&gt; rendezvousAck;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">📌 Global synchronization barrier</p>
+<p class="p_Normal">Inside IRQController:</p>
+<p class="p_Normal">void waitForAllCPUsInRendezvous();</p>
+<p class="p_Normal">void releaseRendezvous();</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">📌 Use case: TBIA / TBIAP</p>
+<p class="p_Normal">This is the most common rendezvous action:</p>
+<p class="p_Normal">broadcastIPI(REND_IPI);</p>
+<p class="p_Normal">waitForAllCPUsInRendezvous();</p>
+<p class="p_Normal">ev6PteCache.invalidateAll();</p>
+<p class="p_Normal">releaseRendezvous();</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is how TBIA/TBIAP really work at OS level.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">🧠 7. Clear one-liner definition</p>
+<p class="p_Normal">DRIVERSCHED:</p>
+<p class="p_Normal">A kernel-level rendezvous operation used by OpenVMS and OSF/1 to synchronize all CPUs while reorganizing scheduling data structures.</p>
+<p class="p_Normal">Rendezvous:</p>
+<p class="p_Normal">A PAL-assisted SMP synchronization mechanism ensuring all CPUs enter a safe state before executing global actions like TLB invalidation or scheduling reconfiguration.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If you want next:</p>
+<p class="p_Normal">I can generate:</p>
+<p class="p_Normal">✔ An SMP Rendezvous Layer for IRQController</p>
+<p class="p_Normal">✔ A “global_rendezvous.h” header using Meyers singleton</p>
+<p class="p_Normal">✔ CPU-side logic for entering/exiting PAL rendezvous</p>
+<p class="p_Normal">✔ How TBIA/TBIAP grains should use rendezvous</p>
+<p class="p_Normal">Just tell me.</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:113px; padding:0; border:none"><p class="p_Normal">ReservationManager</p>
+</td>
+<td style="vertical-align:top; width:2266px; padding:0; border:none"><p class="p_Normal">step 1. hostClearReservation(cpuState); // which calls -&gt; cpuState-&gt;clearReservationSet() -- PAL events like:</p>
+<p class="p_Normal">HALT</p>
+<p class="p_Normal">DRAINA</p>
+<p class="p_Normal">CFLUSH</p>
+<p class="p_Normal">BPT / BUGCHK</p>
+<p class="p_Normal">EXCB, MB, WMB, MB2</p>
+<p class="p_Normal">step 2. &nbsp;CPUStateIPRInterface calls clearreservation(cpuid)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:113px; padding:0; border:none"><br />
+</td>
+<td style="vertical-align:top; width:2266px; padding:0; border:none"><br />
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:113px; padding:0; border:none"><br />
+</td>
+<td style="vertical-align:top; width:2266px; padding:0; border:none"><br />
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Pal counters - when entering pal mode, suspend counter incrementing.</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

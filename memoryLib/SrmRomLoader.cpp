@@ -14,7 +14,7 @@
 // ============================================================================
 
 #include "SrmRomLoader.h"
-#include "../coreLib/LoggingMacros.h"
+#include "coreLib/LoggingMacros.h"
 #include <QFile>
 #include <cstring>
 

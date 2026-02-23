@@ -1,0 +1,469 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; IPR &gt; R31 Usage</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="Rule R31-DST-1,Rule WB-R31-5" />
+   <meta name="description" content="R31_USAGE_AND_WRITEBACK_SPEC.txt - (ASCII, UTF-8 noBOM)" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "r31-usage.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">R31 Usage</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?r31-usage.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a> &gt; <a href="ipr.html">IPR</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">R31 Usage</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="ev6.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="ipr.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="r31-profiling.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">R31_USAGE_AND_WRITEBACK_SPEC.txt - (ASCII, UTF-8 noBOM)</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">1. Purpose</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This specification defines how Alpha integer register R31 is consumed, produced, and modeled in the AlphaPipeline (including stage_WB), with special &nbsp;attention to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* R31 as a source operand (RAZ semantics: reads as zero)</p>
+<p class="p_Normal">* R31 as a destination operand (writes discarded)</p>
+<p class="p_Normal">* Corner cases where use of R31 as a destination produces UNPREDICTABLE &nbsp;architectural state (notably LDx_L / STx_C)</p>
+<p class="p_Normal">* Corner cases where R31 is required in Ra or Rb fields (CTLZ/CTPOP/CTTZ, &nbsp;SEXTx, AMASK, IMPLVER, ITOFx, etc.)</p>
+<p class="p_Normal">* Implications for trap-shadow qualification and exception signaling</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Primary reference: Alpha Architecture rules as summarized in your notes, including Section 4.7.3 (&quot;true zero&quot;), Appendix A timing/atomic notes, and the operand constraints described in the ISA text.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Scope: Integer register R31. (F31 rules are similar but more severe and are not normative for this document except where noted for contrast.)</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">2. Definitions and Terms</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">R31:</p>
+<p class="p_Normal">The architected integer register with special behavior:</p>
+<p class="p_Normal">- As a source operand: supplies integer zero (0).</p>
+<p class="p_Normal">- As a destination operand: discards the computed result (no register write).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">RAZ:</p>
+<p class="p_Normal">&quot;Reads As Zero&quot; - any read of R31 returns 0.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">WB:</p>
+<p class="p_Normal">Writeback stage in AlphaPipeline that commits register and other architectural results.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">UNPREDICTABLE:</span></h3>
+<p class="p_Normal">Architecturally permitted behavior where the hardware may produce arbitrary</p>
+<p class="p_Normal">results or state, and software must not rely on any particular outcome.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">NOTE: &quot;UNPREDICTABLE&quot; is NOT &quot;UNDEFINED&quot; in the C sense; it means software may</p>
+<p class="p_Normal">not assume any defined outcome, but implementations may choose a deterministic</p>
+<p class="p_Normal">behavior for practicality. Your emulator must decide and document a policy.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">===============================================================================</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">3. Architectural Rules for R31</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">3.1 R31 as a Source Operand (RA or RB)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rule R31-SRC-1:</p>
+<p class="p_Normal">If an instruction reads R31 as an operand (Ra or Rb), the operand value is 0.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Implementation requirement:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* readIntReg(31) must always return 0 regardless of any internal storage.</p>
+<p class="p_Normal">* No scoreboard dependency should ever be introduced for R31 reads.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">3.2 R31 as a Destination Operand (Rc / Ra in some formats)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rule R31-DST-1:</p>
+<p class="p_Normal">If an instruction specifies R31 as a destination integer register, the</p>
+<p class="p_Normal">computed integer result is discarded (no architectural register update).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Implementation requirement:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* stage_WB must suppress writes to integer register 31.</p>
+<p class="p_Normal">* The instruction is otherwise executed normally UNLESS the ISA explicitly</p>
+<p class="p_Normal"> &nbsp;states reduced execution or UNPREDICTABLE side effects.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">3.3 &quot;May Not Execute&quot; Note for R31/F31 as Destination</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Your notes include:</p>
+<p class="p_Normal">&quot;Because Alpha implementations need not execute instructions that have R31 or</p>
+<p class="p_Normal">F31 as the destination operand, instructions with such a destination should</p>
+<p class="p_Normal">not be thought to end a trap shadow.&quot;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rule R31-DST-2 (Trap shadow qualification):</p>
+<p class="p_Normal">An instruction with destination R31 must not be used by the OS/compiler as a</p>
+<p class="p_Normal">reliable trap-shadow terminator.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Emulator policy:</p>
+<p class="p_Normal">For correctness, your emulator SHOULD still execute the instruction and</p>
+<p class="p_Normal">preserve normal exception behavior, except for cases explicitly stated as</p>
+<p class="p_Normal">UNPREDICTABLE or prefetch-hint forms.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Practical outcome:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* stage_WB discards the register write</p>
+<p class="p_Normal">* earlier pipeline stages still perform the access/operation</p>
+<p class="p_Normal">* but do not assume it ends a trap shadow in PAL modeling</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">&nbsp;</span></h1>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">4. Specific Instruction-Class Rules Involving R31</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">4.1 Branch and Jump Link Semantics with R31 as Ra</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rule R31-BR-1:</p>
+<p class="p_Normal">BR/BSR and JMP/JSR/RET/JSR_COROUTINE execute normally when Ra=R31, but no link</p>
+<p class="p_Normal">value (return PC) can be saved because the destination is discarded.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Pipeline implication:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Control transfer proceeds normally.</p>
+<p class="p_Normal">* Any &quot;link&quot; writeback to Ra is suppressed by stage_WB due to R31-DST-1.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Qualifiable behavior:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Treat link-write to R31 exactly as any other write to R31: discard.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">4.2 Atomic Reservation Instructions: LDx_L / STx_C with R31 as destination</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* STx_C R31, disp(Rb): lock_flag and location become UNPREDICTABLE.</p>
+<p class="p_Normal">* LDx_L R31, disp(Rb): lock_flag and locked_physical_address become &nbsp;UNPREDICTABLE.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rule R31-ATOMIC-1:</p>
+<p class="p_Normal">If LDx_L targets R31, the reservation state becomes UNPREDICTABLE.</p>
+<p class="p_Normal">Rule R31-ATOMIC-2:</p>
+<p class="p_Normal">If STx_C targets R31, the reservation state and location become UNPREDICTABLE.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Emulator must choose a deterministic policy. Recommended policy for a qualifiable emulator:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Policy ATOMIC-R31-DET (Deterministic, conservative, safe):</p>
+<p class="p_Normal">A) LDx_L with Rc=31:</p>
+<p class="p_Normal">- Perform the load's address translation and memory read exactly as normal (so faults still occur normally).</p>
+<p class="p_Normal">- Do NOT create or update a reservation (do not set lock_flag and do not set locked_physical_address).</p>
+<p class="p_Normal">- Discard loaded value (since Rc=31).</p>
+<p class="p_Normal">- Record a trace/counter: &quot;LDx_L to R31 encountered&quot;.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">B) STx_C with Rc=31:</p>
+<p class="p_Normal">- Perform address translation exactly as normal (so faults still occur).</p>
+<p class="p_Normal">- Do NOT perform the conditional store (treat as &quot;failed conditional&quot;).</p>
+<p class="p_Normal">- Invalidate any existing reservation for this CPU (clear lock_flag).</p>
+<p class="p_Normal">- Discard success/failure result (since Rc=31).</p>
+<p class="p_Normal">- Record a trace/counter: &quot;STx_C to R31 encountered&quot;.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Rationale:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Prevents corrupting shared locations.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Avoids fabricating reservation state that the ISA calls UNPREDICTABLE.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Preserves fault behavior and pipeline ordering.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Produces stable behavior for debugging and qualification.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Important:</p>
+<p class="p_Normal">This policy must be documented as an emulator-defined resolution of</p>
+<p class="p_Normal">UNPREDICTABLE behavior.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">4.3 &quot;Must be R31&quot; operand constraints (CTLZ/CTPOP/CTTZ, SEXTx, etc.)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Your notes include constraints such as:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* CTLZ/CTPOP/CTTZ: Ra must be R31.</p>
+<p class="p_Normal">* SEXTx: Ra must be R31.</p>
+<p class="p_Normal">* ITOFx: Rb must be R31.</p>
+<p class="p_Normal">* AMASK: Ra must be R31 or result is UNPREDICTABLE.</p>
+<p class="p_Normal">* IMPLVER: Ra must be R31 and Rb must be literal #1 or UNPREDICTABLE.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Two valid emulator approaches exist:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Approach A (Strict, diagnostic-friendly):</p>
+<p class="p_Normal">If a &quot;must be R31&quot; constraint is violated, raise an Illegal Operand / Reserved Instruction style exception via FaultDispatcher.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Approach B (Literal ISA wording, UNPREDICTABLE):</p>
+<p class="p_Normal">If violated, produce an arbitrary result and possibly arbitrary exception behavior.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Recommended for qualification:</p>
+<p class="p_Normal">Use Approach A for deterministic behavior, unless you have evidence that the target firmware/OS depends on UNPREDICTABLE outcomes (unlikely).</p>
+<p class="p_Normal">Document that this is an emulator-defined tightening of operand constraints.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Pipeline implication:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* These checks should occur during decode or execute, not WB.</p>
+<p class="p_Normal">* <span style="text-decoration: underline;">WB still discards writes to R31 where applicable.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">4.4 Logical idioms using R31 as constant zero</span></h2>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">&nbsp;</span></h2>
+<p class="p_Normal">Examples from your notes:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* ORNOT with Ra=R31 performs NOT.</p>
+<p class="p_Normal">* BIS R31, R31, Rx clears Rx (CLR).</p>
+<p class="p_Normal">* CMPBGE R31, Rb, Rc uses zero for Ra.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rule R31-LOGIC-1:</p>
+<p class="p_Normal">Treat R31 reads as 0; these idioms naturally fall out.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No special WB action beyond normal &quot;discard if Rc==31&quot;.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">4.5 Prefetch / Hint idioms using R31 (and F31)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Your notes include prefetch idioms:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* LDL R31, disp(Rb) &nbsp;(prefetch)</p>
+<p class="p_Normal">* LDQ R31, disp(Rb) &nbsp;(prefetch enable)</p>
+<p class="p_Normal">* LDS F31, disp(Rb) &nbsp;(prefetch M)</p>
+<p class="p_Normal">* LDT F31, disp(Rb) &nbsp;(prefetch M enable)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rule R31-PREF-1 (Integer side):</p>
+<p class="p_Normal">Loads to R31 may be treated as hints and &quot;may not be executed&quot; by some</p>
+<p class="p_Normal">implementations. Exceptions are still always signaled for instruction fetch.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Emulator policy recommendation:</p>
+<p class="p_Normal">For now (as you requested: &quot;let PAL handle complexity&quot;):</p>
+<p class="p_Normal">- Execute loads normally for correctness.</p>
+<p class="p_Normal">- Discard destination write due to R31.</p>
+<p class="p_Normal">- Add trace counters so you can later decide whether to convert these into</p>
+<p class="p_Normal">non-faulting prefetch behavior for performance.</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">5. AlphaPipeline / stage_WB Requirements</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.1 Core WB rule</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">WB-R31-1:</p>
+<p class="p_Normal">If slot.destIntReg == 31 then:</p>
+<p class="p_Normal">- Do not write to the integer register file</p>
+<p class="p_Normal">- Do not mark reg31 as &quot;dirty&quot;</p>
+<p class="p_Normal">- Do not generate reg-write trace events (except optional &quot;discarded write&quot;</p>
+<p class="p_Normal">diagnostics)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">WB-R31-2:</p>
+<p class="p_Normal">Source reads of register 31 must never take dependencies and must always read</p>
+<p class="p_Normal">0.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.2 Link writeback handling</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">WB-R31-3:</p>
+<p class="p_Normal">For branch/jump with link destination Ra:</p>
+<p class="p_Normal">- If Ra==31, discard link write.</p>
+<p class="p_Normal">- Control transfer still commits normally (PC update is not suppressed).</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.3 Reservation/atomic integration point</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">WB-R31-4:</p>
+<p class="p_Normal">Reservation state (lock_flag / locked_physical_address) must NOT be updated</p>
+<p class="p_Normal">in stage_WB based on a destination register write.</p>
+<p class="p_Normal">Reservation state is a side effect of the memory operation itself and must</p>
+<p class="p_Normal">be committed by the memory/atomic stage.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is important for the R31 atomic UNPREDICTABLE cases:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* The atomic stage must detect Rc==31 and apply policy ATOMIC-R31-DET.</p>
+<p class="p_Normal">* WB simply discards the (already meaningless) result.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.4 Exception / fault sequencing</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">WB-R31-5:</p>
+<p class="p_Normal">WB does not suppress exceptions. If earlier stages produced a PendingEvent,</p>
+<p class="p_Normal">WB must not &quot;complete&quot; a discarded register write.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">(Your &quot;do nothing now; PAL handles it&quot; plan aligns with this.)</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">6. Initialization Rules</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">INIT-R31-1:</p>
+<p class="p_Normal">On CPU reset, R31 reads as 0.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">INIT-R31-2:</p>
+<p class="p_Normal">R31 must remain 0 for the lifetime of the CPU, because writes are discarded.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Implementation best practice:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Do not store a backing value for R31 at all.</p>
+<p class="p_Normal">* readIntReg(31) returns 0.</p>
+<p class="p_Normal">* writeIntReg(31, x) is a no-op.</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">7. Trace/Profiling Requirements (recommended)</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Since you intend to let PAL handle alignment/complexity initially, add low-cost</p>
+<p class="p_Normal">counters so you can profile and revisit later.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Counters (per CPU recommended):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* r31_discarded_writes_total</p>
+<p class="p_Normal">* r31_discarded_link_writes</p>
+<p class="p_Normal">* r31_atomic_ldl_to_r31</p>
+<p class="p_Normal">* r31_atomic_stc_to_r31</p>
+<p class="p_Normal">* r31_prefetch_loads_to_r31</p>
+<p class="p_Normal">* r31_operand_constraint_violations (if you implement Approach A)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Event logging:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Keep it conditional (compile-time or runtime flag)</p>
+<p class="p_Normal">* Avoid logging in the hot path unless tracing enabled</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">8. Summary of Qualifiable Emulator Policy</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* R31 reads supply 0 always.</p>
+<p class="p_Normal">* R31 writes are always discarded in stage_WB.</p>
+<p class="p_Normal">* Branch/jump with Ra=R31 works, link value is discarded.</p>
+<p class="p_Normal">* LDx_L/STx_C with Rc=31 are architecturally UNPREDICTABLE; emulator chooses a</p>
+<p class="p_Normal"> &nbsp;documented deterministic behavior (ATOMIC-R31-DET) that is safe and stable.</p>
+<p class="p_Normal">* &quot;Ra must be R31&quot; style constraints: prefer deterministic faulting (Approach A)</p>
+<p class="p_Normal"> &nbsp;for qualification and debugging.</p>
+<p class="p_Normal">* Prefetch idioms using loads to R31: execute normally now, add profiling.</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">9. Implementation Checklist for a Dedicated R31 Handler</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">To build a &quot;qualifiable R31 handler&quot; for AlphaPipeline:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">[ ] Provide readIntReg(31) -&gt; 0 fast-path (no backing storage needed).</p>
+<p class="p_Normal">[ ] Provide writeIntReg(31, x) -&gt; no-op.</p>
+<p class="p_Normal">[ ] In stage_WB:</p>
+<p class="p_Normal">- if dest==31: skip writeback</p>
+<p class="p_Normal">- if linkDest==31: skip link write</p>
+<p class="p_Normal">- still commit PC updates and other side effects</p>
+<p class="p_Normal">[ ] In atomic memory stage:</p>
+<p class="p_Normal">- detect LDx_L/STx_C with Rc==31 and apply ATOMIC-R31-DET policy</p>
+<p class="p_Normal">[ ] Add trace counters for discarded writes and R31-atomic cases</p>
+<p class="p_Normal">[ ] Document operand-constraint enforcement choice (Approach A recommended)</p>
+<p class="p_Normal">&nbsp;</p>
+<h1 class="p_Heading1Black" style="page-break-after: avoid;"><span class="f_Heading1Black">10. Notes on F31 (non-normative here)</span></h1>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">F31 rules are more severe than R31:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>F31 as source supplies &quot;true zero&quot; (see Section 4.7.3).</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>F31 as destination discards results AND it is UNPREDICTABLE whether other destination operands are changed or whether exceptions are signaled for many operations.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Loads to F31 do not signal MM/alignment exceptions; FP disabled exception is &nbsp;UNPREDICTABLE.</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

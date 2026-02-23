@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; Load - Silos&nbsp;</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="The Abox contains a memory reference pipeline that can accept a new load or store instruction every cycle until a Dcache fill is required. Since the Dcache lines are only..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "load---silos-.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Load - Silos </span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?load---silos-.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Load - Silos </span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="exceptions.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="alpha.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="hwpcb-.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">The Abox contains a memory reference pipeline that can accept a new load or store instruction every cycle until a Dcache fill is required. Since the Dcache lines are only allocated on load misses, the Abox can accept a new instruction every cycle until a load miss occurs. When a load miss occurs the Ibox stops issuing all instructions that use the load port of the register file or</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">are otherwise handled by the Abox.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">These instructions include LDL_L/LDQ_L, STL_C/STQ_C, HW_MTPR, HW_MFPR, FETCH, FETCH_M, RPCC, RS, RC, and MB. It also includes all memory format branch instructions, JMP, JSR, JSR_COROUTINE, and RET.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">However, a JSR with a destination of R31 may be issued.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">Because the result of each Dcache lookup is known late in the pipeline (stage [6]) and instructions are issued in pipe stage [3], there can be two instructions in the Abox pipeline behind a load instruction that misses the Dcache. These two instructions are handled as follows: </span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">• Loads that hit the Dcache are allowed to complete—hit under miss.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">• Load misses are placed in a silo and replayed in order after the first load miss completes.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">• Store instructions are presented to the Dcache at their normal time with respect to the pipeline. They are placed in the silo and presented to the write buffer in order with respect to load misses.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">To improve performance, the Ibox is allowed to restart the execution of Abox directed instructions before the last pending Dcache fill is complete. Dcache fill transactions result in four data transfers from the BIU to the Dcache. These transfers can each be separated by one or more cycles depending on the characteristics of the external cache and memory subsystems. The BIU attempts to send the quadword of the fill block that the CPU originally</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">requested in the first of these four transfers (it is always able to accomplish this for reads that hit in the external cache). Therefore, the pending load instruction that requested the Dcache fill can complete before the Dcache fill finishes. Dcache fill data accumulates one quadword at a time into a &quot;pending fill&quot; latch, rather than being written into the cache array as it is received from the BIU. When the load miss silo is empty and the requested quadword</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">for the last outstanding load miss is received, the Ibox resumes execution of Abox-directed instructions despite the still-pending Dcache fill. When the entire cache line has been received from the BIU, it is written into the Dcache data array whenever the array is not busy with a load or a store.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 16px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">2.5.4 Write Buffer</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">The Abox contains a write buffer for two purposes.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">• To minimize the number of CPU stall cycles by providing a high bandwidth (but finite) resource for receiving store data. This is required since the 21064/21064A can generate store data at the peak rate of one quadword every CPU cycle, which is greater than the rate at which the external cache subsystem can accept the data. </span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">• To attempt to aggregate-store data into aligned 32-byte cache blocks to maximize the rate at which data may be written from the BIU into the external cache.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">The write-merging operation of the write buffer can result in the order of offchip</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">writes being different from the order in which their corresponding store</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">instructions were executed. Further, the write buffer may collapse multiple</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">stores to the same location into a single off-chip write transaction. Software</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">that requires strict write ordering, or that multiple stores to the same location</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">result in multiple off-chip write sequences, must insert a memory barrier</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">instruction between the store instructions of interest.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">In addition to store instructions, MB, STQ_C, STL_C, FETCH, and FETCH_M</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">instructions are also written into the write buffer and sent off-chip. Unlike</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">stores, however, these write buffer-directed instructions are never merged into</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">a write buffer entry with other instructions.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">The write buffer has four entries; each has storage for up to 32 bytes. The</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">buffer has a &quot;head&quot; pointer and &quot;tail&quot; pointer. The buffer puts new commands</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">into empty tail entries and takes commands out of nonempty head entries.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">The head pointer increments when an entry is unloaded to the BIU, and the</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">tail pointer increments when new data is put into the tail entry. The head</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">and tail pointers only point to the same entry when the buffer has zero or four</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">nonempty entries. If no writes ever merge with existing nonempty entries,</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">the ordering of writes with respect to other writes will be maintained. The</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">write buffer never reorders writes except to merge them into nonempty entries.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">Once a write merges into a nonempty slot, its &quot;programmed&quot; order is lost with</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">respect to both writes in the same slot and writes in other slots.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">The write buffer attempts to send its head entry off-chip by requesting the BIU</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">when one of the following conditions is met:</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">• The write buffer contains at least two valid entries.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">• The write buffer contains one valid entry and at least 256 CPU cycles have</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">elapsed since the execution of the last write buffer-directed instruction.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">The 8-bit counter is cleared when one of the following conditions is met.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">The write buffer is empty.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">The write buffer unloads an entry.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold;">21064 only</span><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">—A write-merge operation is executed.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">• The write buffer contains an MB, STQ_C or STL_C instruction.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">• A load miss is pending to an address currently valid in the write buffer</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">that requires the write buffer to be flushed. The write buffer is completely</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: 'Times New Roman',Times,Georgia,serif;">flushed regardless of which entry matches the address.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

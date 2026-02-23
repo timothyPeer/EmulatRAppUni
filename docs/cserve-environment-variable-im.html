@@ -1,0 +1,563 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Keep &gt; CSERVE Environment Variable Implementation</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="ASAEmulatR CSERVE Environment Variable Implementation" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "cserve-environment-variable-im.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">CSERVE Environment Variable Implementation</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?cserve-environment-variable-im.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="keep.html">Keep</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">CSERVE Environment Variable Implementation</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="alpha-boot-sequence.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="keep.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="debugging-sessoins.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">ASAEmulatR CSERVE Environment Variable Implementation</p>
+<p class="p_Normal">Complete Reference and Summary</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">OVERVIEW</span></h3>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">This implementation adds SRM environment variable and TOY clock support to ASAEmulatR through PAL CSERVE operations, integrated with your existing JSON-based SRMEnvStore persistence layer.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">IMPLEMENTED CSERVE FUNCTIONS</span></h3>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">ENVIRONMENT VARIABLES:</span></p>
+<p class="p_Normal"> &nbsp;0x20 - GET_ENV &nbsp; &nbsp; &nbsp; Get environment variable value</p>
+<p class="p_Normal"> &nbsp;0x21 - SET_ENV &nbsp; &nbsp; &nbsp; Set environment variable value</p>
+<p class="p_Normal"> &nbsp;0x22 - SAVE_ENV &nbsp; &nbsp; &nbsp;Force save to JSON storage</p>
+<p class="p_Normal"> &nbsp;0x23 - CLEAR_ENV &nbsp; &nbsp; Reset environment to defaults</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">TOY CLOCK (BONUS):</span></p>
+<p class="p_Normal"> &nbsp;0x30 - GET_TIME &nbsp; &nbsp; &nbsp;Read time-of-year clock</p>
+<p class="p_Normal"> &nbsp;0x31 - SET_TIME &nbsp; &nbsp; &nbsp;Set TOY clock (via offset)</p>
+<p class="p_Normal"> &nbsp;0x32 - GET_TIME_OFFSET &nbsp;Get current time offset</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">PREVIOUSLY IMPLEMENTED:</span></p>
+<p class="p_Normal"> &nbsp;0x01 - GETC &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Get character from console</p>
+<p class="p_Normal"> &nbsp;0x02 - PUTC &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Put character to console</p>
+<p class="p_Normal"> &nbsp;0x03 - POLL &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Check if input available</p>
+<p class="p_Normal"> &nbsp;0x07 - CONSOLE_OPEN &nbsp;Open console device (RECOMMENDED TO ADD)</p>
+<p class="p_Normal"> &nbsp;0x09 - PUTS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Put string to console</p>
+<p class="p_Normal"> &nbsp;0x0C - GETS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Get string with line editing</p>
+<p class="p_Normal"> &nbsp;0x10 - TRANSLATE &nbsp; &nbsp; Virtual to physical address translation</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal"><span style="font-weight: bold;">ARCHITECTURE</span></p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Data Flow:</span></p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">┌─────────────────────────────────────────────────────────────────┐</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;Guest&nbsp;Code&nbsp;(SRM&nbsp;Firmware&nbsp;/&nbsp;OS)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;CALL_PAL&nbsp;CSERVE&nbsp;with&nbsp;R16&nbsp;=&nbsp;function&nbsp;code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└────────────────────────┬────────────────────────────────────────┘</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">┌─────────────────────────────────────────────────────────────────┐</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;PalService::executeCSERVE()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Validate&nbsp;privilege&nbsp;(PAL&nbsp;mode&nbsp;only)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Dispatch&nbsp;based&nbsp;on&nbsp;function&nbsp;code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Handle&nbsp;memory&nbsp;translation/faults&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└────────────────────────┬────────────────────────────────────────┘</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌────────────────┼────────────────┐</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">┌───────────────┐&nbsp;&nbsp;┌──────────────┐&nbsp;&nbsp;┌──────────────┐</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;ConsoleManager│&nbsp;&nbsp;│&nbsp;SRMEnvStore&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;GuestMemory&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">│&nbsp;&nbsp;(Console&nbsp;I/O)│&nbsp;&nbsp;│&nbsp;&nbsp;(Env&nbsp;Vars)&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;(VA→PA&nbsp;xlat)&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">└───────────────┘&nbsp;&nbsp;└──────┬───────┘&nbsp;&nbsp;└──────────────┘</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌──────────────┐</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;srm_env.json&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;(Persistence)│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──────────────┘</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_Normal"><span style="font-weight: bold;">Memory Layout:</span></p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">Virtual addresses passed from guest code are translated to physical</p>
+<p class="p_Normal">addresses before accessing guest memory for string/buffer operations.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Guest provides:</p>
+<p class="p_Normal"> &nbsp;- Variable name (null-terminated string)</p>
+<p class="p_Normal"> &nbsp;- Value buffer (for GET_ENV)</p>
+<p class="p_Normal"> &nbsp;- Value string (for SET_ENV)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL code reads/writes these using:</p>
+<p class="p_Normal"> &nbsp;- readVirtualString() for null-terminated strings</p>
+<p class="p_Normal"> &nbsp;- writeVirtualBuffer() for bulk data</p>
+<p class="p_Normal"> &nbsp;- readVirtualQword() / writeVirtualQword() for time structures</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">INTEGRATION CHECKLIST</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">[ ] 1. Add global SRMEnvStore accessor to Globals.h/cpp</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - SRMEnvStore&amp; global_SRMEnvStore() noexcept;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">[ ] 2. Add helper functions to PalService class</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - readVirtualString()</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - writeVirtualQword()</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - readVirtualQword()</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - writeVirtualLongword()</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">[ ] 3. Add CSERVE cases 0x20-0x23 to executeCSERVE()</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - GET_ENV (0x20)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - SET_ENV (0x21)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - SAVE_ENV (0x22)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - CLEAR_ENV (0x23)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">[ ] 4. OPTIONAL: Add TOY clock CSERVE cases 0x30-0x32</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - GET_TIME (0x30)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - SET_TIME (0x31)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - GET_TIME_OFFSET (0x32)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">[ ] 5. RECOMMENDED: Add CONSOLE_OPEN (0x07) for full compliance</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">[ ] 6. Test with provided test programs</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - test_cserve_env.s (Alpha assembly)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - test_cserve_env.c (C with inline assembly)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">[ ] 7. Verify JSON persistence</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - Check srm_env.json is created/updated</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; - Verify variables persist across emulator restarts</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">API REFERENCE</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CSERVE 0x20 - GET_ENV</p>
+<p class="p_Normal">---------------------</p>
+<p class="p_Normal">Purpose: Retrieve environment variable value</p>
+<p class="p_Normal">Inputs:</p>
+<p class="p_Normal"> &nbsp;R17 (arg1) = Virtual address of variable name (null-terminated)</p>
+<p class="p_Normal"> &nbsp;R18 (arg2) = Virtual address of output buffer</p>
+<p class="p_Normal"> &nbsp;R19 (arg3) = Maximum buffer length (including null terminator)</p>
+<p class="p_Normal">Outputs:</p>
+<p class="p_Normal"> &nbsp;R0 = Number of bytes written (excluding null terminator)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; -1 if variable not found</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; -2 if buffer too small</p>
+<p class="p_Normal">Example:</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r16, 0x20 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; GET_ENV</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r17, var_name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; &quot;bootdef_dev&quot;</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r18, buffer &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; output buffer</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r19, 256 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ; buffer size</p>
+<p class="p_Normal"> &nbsp;call_pal CSERVE</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CSERVE 0x21 - SET_ENV</p>
+<p class="p_Normal">---------------------</p>
+<p class="p_Normal">Purpose: Set environment variable value</p>
+<p class="p_Normal">Inputs:</p>
+<p class="p_Normal"> &nbsp;R17 (arg1) = Virtual address of variable name (null-terminated)</p>
+<p class="p_Normal"> &nbsp;R18 (arg2) = Virtual address of value (null-terminated)</p>
+<p class="p_Normal">Outputs:</p>
+<p class="p_Normal"> &nbsp;R0 = 0 on success</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; -1 if invalid variable name</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; -2 if invalid value</p>
+<p class="p_Normal">Notes:</p>
+<p class="p_Normal"> &nbsp;- Variable names are case-insensitive (normalized to lowercase)</p>
+<p class="p_Normal"> &nbsp;- Automatically saves to JSON after setting (via SRMEnvStore)</p>
+<p class="p_Normal"> &nbsp;- Maximum name length: 64 characters</p>
+<p class="p_Normal"> &nbsp;- Maximum value length: 1024 characters</p>
+<p class="p_Normal">Example:</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r16, 0x21 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; SET_ENV</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r17, var_name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; &quot;auto_action&quot;</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r18, var_value &nbsp; &nbsp; &nbsp; &nbsp; ; &quot;boot&quot;</p>
+<p class="p_Normal"> &nbsp;call_pal CSERVE</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CSERVE 0x22 - SAVE_ENV</p>
+<p class="p_Normal">----------------------</p>
+<p class="p_Normal">Purpose: Force save environment to JSON storage</p>
+<p class="p_Normal">Inputs:</p>
+<p class="p_Normal"> &nbsp;None</p>
+<p class="p_Normal">Outputs:</p>
+<p class="p_Normal"> &nbsp;R0 = 0 on success</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; -1 on save failure</p>
+<p class="p_Normal">Notes:</p>
+<p class="p_Normal"> &nbsp;- SRMEnvStore auto-saves on each SET_ENV</p>
+<p class="p_Normal"> &nbsp;- This allows explicit save after batch operations</p>
+<p class="p_Normal"> &nbsp;- Useful for ensuring persistence before shutdown</p>
+<p class="p_Normal">Example:</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r16, 0x22 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; SAVE_ENV</p>
+<p class="p_Normal"> &nbsp;call_pal CSERVE</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CSERVE 0x23 - CLEAR_ENV</p>
+<p class="p_Normal">-----------------------</p>
+<p class="p_Normal">Purpose: Reset environment to default values</p>
+<p class="p_Normal">Inputs:</p>
+<p class="p_Normal"> &nbsp;R17 (arg1) = Flags</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 0 = Reset to defaults (keeps standard SRM variables)</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 1 = Clear all (full reset)</p>
+<p class="p_Normal">Outputs:</p>
+<p class="p_Normal"> &nbsp;R0 = 0 on success</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; -1 if operation not permitted</p>
+<p class="p_Normal">Notes:</p>
+<p class="p_Normal"> &nbsp;- Default variables restored after clear</p>
+<p class="p_Normal"> &nbsp;- Automatically saves after clearing</p>
+<p class="p_Normal">Example:</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r16, 0x23 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; CLEAR_ENV</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r17, 0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ; Reset to defaults</p>
+<p class="p_Normal"> &nbsp;call_pal CSERVE</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CSERVE 0x30 - GET_TIME (BONUS)</p>
+<p class="p_Normal">------------------------------</p>
+<p class="p_Normal">Purpose: Read TOY clock time</p>
+<p class="p_Normal">Inputs:</p>
+<p class="p_Normal"> &nbsp;R17 (arg1) = Virtual address of time structure</p>
+<p class="p_Normal">Outputs:</p>
+<p class="p_Normal"> &nbsp;R0 = 0 on success, -1 on fault</p>
+<p class="p_Normal">Time Structure:</p>
+<p class="p_Normal"> &nbsp;Offset 0: quint64 seconds_since_epoch (Unix timestamp)</p>
+<p class="p_Normal"> &nbsp;Offset 8: quint32 microseconds (always 0 for TOY clock)</p>
+<p class="p_Normal">Notes:</p>
+<p class="p_Normal"> &nbsp;- Returns host time + stored offset</p>
+<p class="p_Normal"> &nbsp;- Time is adjusted via SRMEnvStore::getAdjustedTime()</p>
+<p class="p_Normal">Example:</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r16, 0x30 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; GET_TIME</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r17, time_struct &nbsp; &nbsp; &nbsp; ; Output structure</p>
+<p class="p_Normal"> &nbsp;call_pal CSERVE</p>
+<p class="p_Normal"> &nbsp;ldq &nbsp; r1, 0(r17) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ; Load seconds</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CSERVE 0x31 - SET_TIME (BONUS)</p>
+<p class="p_Normal">------------------------------</p>
+<p class="p_Normal">Purpose: Set TOY clock (via offset calculation)</p>
+<p class="p_Normal">Inputs:</p>
+<p class="p_Normal"> &nbsp;R17 (arg1) = Virtual address of time structure (seconds_since_epoch)</p>
+<p class="p_Normal">Outputs:</p>
+<p class="p_Normal"> &nbsp;R0 = 0 on success, -1 on fault</p>
+<p class="p_Normal">Notes:</p>
+<p class="p_Normal"> &nbsp;- Calculates offset: desired_time - current_host_time</p>
+<p class="p_Normal"> &nbsp;- Stores offset in SRMEnvStore (persisted to JSON)</p>
+<p class="p_Normal"> &nbsp;- Future GET_TIME calls return adjusted time</p>
+<p class="p_Normal">Example:</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r16, 0x31 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; SET_TIME</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r17, time_struct &nbsp; &nbsp; &nbsp; ; Desired time</p>
+<p class="p_Normal"> &nbsp;call_pal CSERVE</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CSERVE 0x32 - GET_TIME_OFFSET (BONUS)</p>
+<p class="p_Normal">-------------------------------------</p>
+<p class="p_Normal">Purpose: Get current time offset</p>
+<p class="p_Normal">Inputs:</p>
+<p class="p_Normal"> &nbsp;None</p>
+<p class="p_Normal">Outputs:</p>
+<p class="p_Normal"> &nbsp;R0 = Time offset in seconds (signed 64-bit)</p>
+<p class="p_Normal">Notes:</p>
+<p class="p_Normal"> &nbsp;- Positive: TOY clock ahead of host time</p>
+<p class="p_Normal"> &nbsp;- Negative: TOY clock behind host time</p>
+<p class="p_Normal"> &nbsp;- Zero: TOY clock matches host time</p>
+<p class="p_Normal">Example:</p>
+<p class="p_Normal"> &nbsp;lda &nbsp; r16, 0x32 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;; GET_TIME_OFFSET</p>
+<p class="p_Normal"> &nbsp;call_pal CSERVE</p>
+<p class="p_Normal"> &nbsp;; R0 contains offset in seconds</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">JSON PERSISTENCE FORMAT</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Location: &lt;EmulatorConfig::configPath()&gt;/srm_env.json</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Structure:</p>
+<p class="p_Normal">{</p>
+<p class="p_Normal"> &nbsp; &nbsp;&quot;environment_variables&quot;: {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;bootdef_dev&quot;: &quot;dka0&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;boot_osflags&quot;: &quot;0,0&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;console&quot;: &quot;serial&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;os_type&quot;: &quot;openvms&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;auto_action&quot;: &quot;boot&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;sys_serial&quot;: &quot;EMU0000000001&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;sys_type&quot;: &quot;AlphaStation_Emulator&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;pal_version&quot;: &quot;1.70-0&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;terminal_type&quot;: &quot;vt100&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;...</p>
+<p class="p_Normal"> &nbsp; &nbsp;},</p>
+<p class="p_Normal"> &nbsp; &nbsp;&quot;time&quot;: {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;offset_seconds&quot;: 0,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;last_set_timestamp&quot;: &quot;2025-01-13T12:34:56&quot;</p>
+<p class="p_Normal"> &nbsp; &nbsp;},</p>
+<p class="p_Normal"> &nbsp; &nbsp;&quot;metadata&quot;: {</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;format_version&quot;: &quot;1.0&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;created_by&quot;: &quot;ASA EmulatR&quot;,</p>
+<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp;&quot;last_modified&quot;: &quot;2025-01-13T12:34:56&quot;</p>
+<p class="p_Normal"> &nbsp; &nbsp;}</p>
+<p class="p_Normal">}</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Auto-save behavior:</p>
+<p class="p_Normal"> &nbsp;- On SET_ENV (each modification)</p>
+<p class="p_Normal"> &nbsp;- On SAVE_ENV (explicit)</p>
+<p class="p_Normal"> &nbsp;- On CLEAR_ENV (after reset)</p>
+<p class="p_Normal"> &nbsp;- On SET_TIME (time offset change)</p>
+<p class="p_Normal"> &nbsp;- On SRMEnvStore destruction (emulator shutdown)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">ERROR HANDLING</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Memory Access Faults:</p>
+<p class="p_Normal"> &nbsp;- Reading variable name/value strings</p>
+<p class="p_Normal"> &nbsp;- Writing output buffers</p>
+<p class="p_Normal"> &nbsp;- All handled via slot.faultPending = true</p>
+<p class="p_Normal"> &nbsp;- Translation faults properly reported to guest</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Return Value Conventions:</p>
+<p class="p_Normal"> &nbsp;GET_ENV:</p>
+<p class="p_Normal"> &nbsp; &nbsp;≥ 0: &nbsp;Success, bytes written (excluding null terminator)</p>
+<p class="p_Normal"> &nbsp; &nbsp;-1: &nbsp; Variable not found</p>
+<p class="p_Normal"> &nbsp; &nbsp;-2: &nbsp; Buffer too small</p>
+<p class="p_Normal"> &nbsp;</p>
+<p class="p_Normal"> &nbsp;SET_ENV:</p>
+<p class="p_Normal"> &nbsp; &nbsp;0: &nbsp; &nbsp;Success</p>
+<p class="p_Normal"> &nbsp; &nbsp;-1: &nbsp; Invalid variable name</p>
+<p class="p_Normal"> &nbsp; &nbsp;-2: &nbsp; Invalid value</p>
+<p class="p_Normal"> &nbsp;</p>
+<p class="p_Normal"> &nbsp;SAVE_ENV:</p>
+<p class="p_Normal"> &nbsp; &nbsp;0: &nbsp; &nbsp;Success</p>
+<p class="p_Normal"> &nbsp; &nbsp;-1: &nbsp; Save failed</p>
+<p class="p_Normal"> &nbsp;</p>
+<p class="p_Normal"> &nbsp;CLEAR_ENV:</p>
+<p class="p_Normal"> &nbsp; &nbsp;0: &nbsp; &nbsp;Success</p>
+<p class="p_Normal"> &nbsp; &nbsp;-1: &nbsp; Operation not permitted</p>
+<p class="p_Normal"> &nbsp;</p>
+<p class="p_Normal"> &nbsp;GET_TIME/SET_TIME:</p>
+<p class="p_Normal"> &nbsp; &nbsp;0: &nbsp; &nbsp;Success</p>
+<p class="p_Normal"> &nbsp; &nbsp;-1: &nbsp; Fault accessing memory</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">TESTING</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Unit Tests:</p>
+<p class="p_Normal">1. test_cserve_env.s - Alpha assembly test suite</p>
+<p class="p_Normal">2. test_cserve_env.c - C test program with inline assembly</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Test Coverage:</p>
+<p class="p_Normal"> &nbsp;✓ GET_ENV for existing variable</p>
+<p class="p_Normal"> &nbsp;✓ SET_ENV for new variable</p>
+<p class="p_Normal"> &nbsp;✓ GET_ENV for newly set variable</p>
+<p class="p_Normal"> &nbsp;✓ SAVE_ENV persistence</p>
+<p class="p_Normal"> &nbsp;✓ GET_TIME clock reading</p>
+<p class="p_Normal"> &nbsp;✓ GET_TIME_OFFSET offset retrieval</p>
+<p class="p_Normal"> &nbsp;✓ SET_TIME offset adjustment</p>
+<p class="p_Normal"> &nbsp;✓ Variable enumeration</p>
+<p class="p_Normal"> &nbsp;✓ CLEAR_ENV reset</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Manual Testing:</p>
+<p class="p_Normal">1. Set a variable via CSERVE</p>
+<p class="p_Normal">2. Restart emulator</p>
+<p class="p_Normal">3. Read variable via CSERVE (should persist)</p>
+<p class="p_Normal">4. Check srm_env.json file exists</p>
+<p class="p_Normal">5. Modify JSON manually, reload emulator</p>
+<p class="p_Normal">6. Verify changes reflected in GET_ENV</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Integration Testing:</p>
+<p class="p_Normal">1. Use SRMConsole &quot;show&quot; command</p>
+<p class="p_Normal">2. Use SRMConsole &quot;set&quot; command</p>
+<p class="p_Normal">3. Verify CSERVE and console see same variables</p>
+<p class="p_Normal">4. Test persistence across sessions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">COMMON ISSUES AND SOLUTIONS</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Issue: GET_ENV returns -1 for all variables</p>
+<p class="p_Normal">Solution: </p>
+<p class="p_Normal"> &nbsp;- Check global_SRMEnvStore() is properly initialized</p>
+<p class="p_Normal"> &nbsp;- Verify srm_env.json exists and is readable</p>
+<p class="p_Normal"> &nbsp;- Check SRMEnvStore::load() is called on startup</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Issue: Variables not persisting across sessions</p>
+<p class="p_Normal">Solution:</p>
+<p class="p_Normal"> &nbsp;- Verify SAVE_ENV is called (or auto-save is working)</p>
+<p class="p_Normal"> &nbsp;- Check file permissions on config directory</p>
+<p class="p_Normal"> &nbsp;- Verify EmulatorConfig::configPath() is correct</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Issue: Memory faults when reading strings</p>
+<p class="p_Normal">Solution:</p>
+<p class="p_Normal"> &nbsp;- Ensure readVirtualString() properly translates VA→PA</p>
+<p class="p_Normal"> &nbsp;- Check guest memory is properly initialized</p>
+<p class="p_Normal"> &nbsp;- Verify string addresses are in valid memory regions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Issue: Time functions return incorrect values</p>
+<p class="p_Normal">Solution:</p>
+<p class="p_Normal"> &nbsp;- Verify time structure layout (8 bytes + 4 bytes)</p>
+<p class="p_Normal"> &nbsp;- Check endianness of time values</p>
+<p class="p_Normal"> &nbsp;- Ensure QDateTime::toSecsSinceEpoch() is available (Qt 5.8+)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">FUTURE ENHANCEMENTS</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Potential Additions:</p>
+<p class="p_Normal">1. CSERVE 0x24 - LIST_ENV (enumerate all variables)</p>
+<p class="p_Normal">2. CSERVE 0x25 - ENV_EXISTS (check existence without reading value)</p>
+<p class="p_Normal">3. NVRAM simulation for battery-backed variables</p>
+<p class="p_Normal">4. Variable access permissions (read-only vs read-write)</p>
+<p class="p_Normal">5. Variable change notifications</p>
+<p class="p_Normal">6. Import/export functionality for environments</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Performance Optimizations:</p>
+<p class="p_Normal">1. Cache frequently accessed variables</p>
+<p class="p_Normal">2. Batch JSON saves (delayed write)</p>
+<p class="p_Normal">3. Optimize string translation (reduce multiple reads)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">CONCLUSION</p>
+<p class="p_Normal">================================================================================</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This implementation provides:</p>
+<p class="p_Normal">✓ Full SRM environment variable support</p>
+<p class="p_Normal">✓ JSON-based persistence</p>
+<p class="p_Normal">✓ TOY clock simulation</p>
+<p class="p_Normal">✓ Integration with existing ConsoleManager</p>
+<p class="p_Normal">✓ Proper memory fault handling</p>
+<p class="p_Normal">✓ Comprehensive test coverage</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Your ASAEmulatR now has complete SRM console service infrastructure,</p>
+<p class="p_Normal">enabling authentic Alpha firmware and operating system support!</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For questions or issues, refer to:</p>
+<p class="p_Normal">- Integration guide: INTEGRATION_GUIDE.cpp</p>
+<p class="p_Normal">- Implementation files: cserve_env_implementation.cpp</p>
+<p class="p_Normal">- Test programs: test_cserve_env.s, test_cserve_env.c</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">================================================================================</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

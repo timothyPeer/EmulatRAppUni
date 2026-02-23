@@ -1,0 +1,593 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Python Scripts &gt; generate_cmakelists.py</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="Command Line: py generate_cmakelists.py Z:\EmulatRAppUni\" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "generate_cmakelists_py-appendix.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">generate_cmakelists.py</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?generate_cmakelists_py-appendix.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="python-scripts.html">Python Scripts</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">generate_cmakelists.py</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="generate_all_grains_py-appendix.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="python-scripts.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="check_circular_py-appendix.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal"><span style="font-weight: bold;">Command Line: </span>py generate_cmakelists.py Z:\EmulatRAppUni\</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_CodeExample"><span class="f_CodeExample">#!/usr/bin/env&nbsp;python3</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">generate_cmakelists.py&nbsp;-&nbsp;Auto-generate&nbsp;CMakeLists.txt&nbsp;from&nbsp;directory&nbsp;structure</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">import&nbsp;os</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">import&nbsp;sys</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">from&nbsp;pathlib&nbsp;import&nbsp;Path</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">from&nbsp;typing&nbsp;import&nbsp;List,&nbsp;Set</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;CONFIGURATION</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PROJECT_NAME&nbsp;=&nbsp;&quot;EmulatRAppUni&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CMAKE_MIN_VERSION&nbsp;=&nbsp;&quot;3.16&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CXX_STANDARD&nbsp;=&nbsp;&quot;20&quot;&nbsp;&nbsp;#&nbsp;C++20&nbsp;for&nbsp;std::cmp_less</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Qt&nbsp;modules&nbsp;needed</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">QT_MODULES&nbsp;=&nbsp;[</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;Core&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;Network&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;Concurrent&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Compiler&nbsp;flags</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">COMPILER_FLAGS&nbsp;=&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;MSVC&quot;:&nbsp;[</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/W4&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/permissive-&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/Zc:__cplusplus&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/MP&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/EHsc&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/bigobj&quot;,&nbsp;&nbsp;#&nbsp;Required&nbsp;for&nbsp;files&nbsp;with&nbsp;many&nbsp;grains/templates</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/Gy&quot;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Enable&nbsp;function-level&nbsp;linking</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;],</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;GCC&quot;:&nbsp;[</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wall&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wextra&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-pedantic&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wno-unused-parameter&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-ffunction-sections&quot;,&nbsp;&nbsp;#&nbsp;Enable&nbsp;function-level&nbsp;linking</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-fdata-sections&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;],</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;Clang&quot;:&nbsp;[</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wall&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wextra&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-pedantic&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wno-unused-parameter&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-ffunction-sections&quot;,&nbsp;&nbsp;#&nbsp;Enable&nbsp;function-level&nbsp;linking</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-fdata-sections&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Linker&nbsp;flags</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">LINKER_FLAGS&nbsp;=&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;MSVC&quot;:&nbsp;[</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/OPT:REF&quot;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Remove&nbsp;unreferenced&nbsp;functions</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/VERBOSE:REF&quot;,&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Print&nbsp;what's&nbsp;being&nbsp;removed</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;/OPT:ICF&quot;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Identical&nbsp;COMDAT&nbsp;folding</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;],</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;GCC&quot;:&nbsp;[</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wl,--gc-sections&quot;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Garbage&nbsp;collect&nbsp;unused&nbsp;sections</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wl,--print-gc-sections&quot;,&nbsp;&nbsp;&nbsp;#&nbsp;Print&nbsp;removed&nbsp;sections</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;],</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;Clang&quot;:&nbsp;[</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wl,--gc-sections&quot;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Garbage&nbsp;collect&nbsp;unused&nbsp;sections</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;-Wl,--print-gc-sections&quot;,&nbsp;&nbsp;&nbsp;#&nbsp;Print&nbsp;removed&nbsp;sections</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Preprocessor&nbsp;definitions</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">DEFINITIONS&nbsp;=&nbsp;[</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;EXECTRACE_ENABLED&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;QT_DEPRECATED_WARNINGS&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;QT_DISABLE_DEPRECATED_BEFORE=0x060000&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;AXP_DEBUG_PIPELINE&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;AXP_DEBUG_DECODE&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;AXP_DEBUG_FETCH&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Specific&nbsp;files&nbsp;to&nbsp;deploy&nbsp;to&nbsp;output&nbsp;directory&nbsp;during&nbsp;build</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Format:&nbsp;(source_file,&nbsp;dest_subdir,&nbsp;dest_filename)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">DEPLOY_FILES&nbsp;=&nbsp;[</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;(&quot;configLib/ASAEmulatR.ini&quot;,&nbsp;&quot;config&quot;,&nbsp;&quot;ASAEmulatR.ini&quot;),</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;(&quot;firmware/clipper.bin&quot;,&nbsp;&quot;firmware&quot;,&nbsp;&quot;clipper.bin&quot;),</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Directories&nbsp;to&nbsp;exclude</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">EXCLUDE_DIRS&nbsp;=&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;.git&quot;,&nbsp;&quot;.vs&quot;,&nbsp;&quot;build&quot;,&nbsp;&quot;out&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;cmake-build-debug&quot;,&nbsp;&quot;cmake-build-release&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;__pycache__&quot;,&nbsp;&quot;.idea&quot;,&nbsp;&quot;CMakeFiles&quot;,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;File&nbsp;extensions</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SOURCE_EXTENSIONS&nbsp;=&nbsp;{&quot;.cpp&quot;,&nbsp;&quot;.cc&quot;,&nbsp;&quot;.cxx&quot;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">HEADER_EXTENSIONS&nbsp;=&nbsp;{&quot;.h&quot;,&nbsp;&quot;.hpp&quot;,&nbsp;&quot;.hxx&quot;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">MAIN_SOURCE&nbsp;=&nbsp;&quot;main.cpp&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;HELPER&nbsp;FUNCTIONS</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">def&nbsp;normalize_path(path:&nbsp;str)&nbsp;-&gt;&nbsp;str:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;Convert&nbsp;Windows&nbsp;backslashes&nbsp;to&nbsp;forward&nbsp;slashes&nbsp;for&nbsp;CMake.&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;path.replace(&quot;\\&quot;,&nbsp;&quot;/&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">def&nbsp;find_sources(root_dir:&nbsp;Path,&nbsp;exclude_dirs:&nbsp;Set[str])&nbsp;-&gt;&nbsp;tuple[List[Path],&nbsp;List[Path]]:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;Find&nbsp;all&nbsp;source&nbsp;and&nbsp;header&nbsp;files.&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;sources&nbsp;=&nbsp;[]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;headers&nbsp;=&nbsp;[]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;item&nbsp;in&nbsp;root_dir.rglob(&quot;*&quot;):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;any(excluded&nbsp;in&nbsp;item.parts&nbsp;for&nbsp;excluded&nbsp;in&nbsp;exclude_dirs):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;item.is_file():</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suffix&nbsp;=&nbsp;item.suffix.lower()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;suffix&nbsp;in&nbsp;SOURCE_EXTENSIONS:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sources.append(item)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elif&nbsp;suffix&nbsp;in&nbsp;HEADER_EXTENSIONS:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headers.append(item)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;sources,&nbsp;headers</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">def&nbsp;make_relative(paths:&nbsp;List[Path],&nbsp;base:&nbsp;Path)&nbsp;-&gt;&nbsp;List[str]:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;Convert&nbsp;to&nbsp;relative&nbsp;paths&nbsp;with&nbsp;forward&nbsp;slashes.&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[normalize_path(str(p.relative_to(base)))&nbsp;for&nbsp;p&nbsp;in&nbsp;paths]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">def&nbsp;generate_cmake(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;project_name:&nbsp;str,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;sources:&nbsp;List[str],</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;headers:&nbsp;List[str],</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;main_source:&nbsp;str</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">)&nbsp;-&gt;&nbsp;str:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;Generate&nbsp;CMakeLists.txt&nbsp;content.&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;main_source&nbsp;not&nbsp;in&nbsp;sources:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sources.insert(0,&nbsp;main_source)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Build&nbsp;content&nbsp;using&nbsp;.format()&nbsp;to&nbsp;avoid&nbsp;brace&nbsp;escaping&nbsp;issues</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content&nbsp;=&nbsp;[]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Header</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(f&quot;&quot;&quot;#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Auto-generated&nbsp;CMakeLists.txt&nbsp;for&nbsp;{project_name}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Generated&nbsp;by:&nbsp;generate_cmakelists.py</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">cmake_minimum_required(VERSION&nbsp;{CMAKE_MIN_VERSION})</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">project({project_name}&nbsp;LANGUAGES&nbsp;CXX)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;C++&nbsp;Standard</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set(CMAKE_CXX_STANDARD&nbsp;{CXX_STANDARD})</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set(CMAKE_CXX_STANDARD_REQUIRED&nbsp;ON)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set(CMAKE_CXX_EXTENSIONS&nbsp;OFF)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Qt&nbsp;Configuration</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set(CMAKE_AUTOMOC&nbsp;ON)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set(CMAKE_AUTORCC&nbsp;ON)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set(CMAKE_AUTOUIC&nbsp;ON)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">find_package(Qt6&nbsp;REQUIRED&nbsp;COMPONENTS&nbsp;{'&nbsp;'.join(QT_MODULES)})</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Preprocessor&nbsp;Definitions</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">add_compile_definitions(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;definition&nbsp;in&nbsp;DEFINITIONS:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f&quot;&nbsp;&nbsp;&nbsp;&nbsp;{definition}\n&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Compiler&nbsp;Flags</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">if(MSVC)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;flag&nbsp;in&nbsp;COMPILER_FLAGS[&quot;MSVC&quot;]:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f'&nbsp;&nbsp;&nbsp;&nbsp;add_compile_options(&quot;{flag}&quot;)\n')</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;elseif(CMAKE_CXX_COMPILER_ID&nbsp;MATCHES&nbsp;&quot;GNU&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;flag&nbsp;in&nbsp;COMPILER_FLAGS[&quot;GCC&quot;]:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f'&nbsp;&nbsp;&nbsp;&nbsp;add_compile_options(&quot;{flag}&quot;)\n')</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;elseif(CMAKE_CXX_COMPILER_ID&nbsp;MATCHES&nbsp;&quot;Clang&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;flag&nbsp;in&nbsp;COMPILER_FLAGS[&quot;Clang&quot;]:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f'&nbsp;&nbsp;&nbsp;&nbsp;add_compile_options(&quot;{flag}&quot;)\n')</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;endif()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Linker&nbsp;Flags</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">if(MSVC)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;flag&nbsp;in&nbsp;LINKER_FLAGS[&quot;MSVC&quot;]:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f'&nbsp;&nbsp;&nbsp;&nbsp;add_link_options(&quot;{flag}&quot;)\n')</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;elseif(CMAKE_CXX_COMPILER_ID&nbsp;MATCHES&nbsp;&quot;GNU&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;flag&nbsp;in&nbsp;LINKER_FLAGS[&quot;GCC&quot;]:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f'&nbsp;&nbsp;&nbsp;&nbsp;add_link_options(&quot;{flag}&quot;)\n')</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;elseif(CMAKE_CXX_COMPILER_ID&nbsp;MATCHES&nbsp;&quot;Clang&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;flag&nbsp;in&nbsp;LINKER_FLAGS[&quot;Clang&quot;]:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f'&nbsp;&nbsp;&nbsp;&nbsp;add_link_options(&quot;{flag}&quot;)\n')</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;endif()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Include&nbsp;Directories</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">include_directories(${CMAKE_CURRENT_SOURCE_DIR})</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Source&nbsp;Files</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set(PROJECT_SOURCES</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;src&nbsp;in&nbsp;sorted(sources):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;comment&nbsp;=&nbsp;&quot;&nbsp;&nbsp;#&nbsp;Entry&nbsp;point&quot;&nbsp;if&nbsp;src&nbsp;==&nbsp;main_source&nbsp;else&nbsp;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f'&nbsp;&nbsp;&nbsp;&nbsp;&quot;{src}&quot;{comment}\n')</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Header&nbsp;Files&nbsp;(for&nbsp;IDE&nbsp;organization)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set(PROJECT_HEADERS</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;hdr&nbsp;in&nbsp;sorted(headers):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f'&nbsp;&nbsp;&nbsp;&nbsp;&quot;{hdr}&quot;\n')</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Executable&nbsp;Target</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">add_executable(${PROJECT_NAME}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;${PROJECT_SOURCES}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;${PROJECT_HEADERS}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Link&nbsp;Qt&nbsp;Libraries</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">target_link_libraries(${PROJECT_NAME}&nbsp;PRIVATE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;module&nbsp;in&nbsp;QT_MODULES:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f&quot;&nbsp;&nbsp;&nbsp;&nbsp;Qt6::{module}\n&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Qt&nbsp;Deployment&nbsp;(Copy&nbsp;DLLs&nbsp;to&nbsp;output&nbsp;directory)&nbsp;-&nbsp;WINDOWS&nbsp;ONLY</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">if(WIN32)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Find&nbsp;windeployqt&nbsp;executable</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;get_target_property(_qmake_executable&nbsp;Qt6::qmake&nbsp;IMPORTED_LOCATION)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;get_filename_component(_qt_bin_dir&nbsp;&quot;${_qmake_executable}&quot;&nbsp;DIRECTORY)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;find_program(WINDEPLOYQT_EXECUTABLE&nbsp;windeployqt&nbsp;HINTS&nbsp;&quot;${_qt_bin_dir}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if(WINDEPLOYQT_EXECUTABLE)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Run&nbsp;windeployqt&nbsp;after&nbsp;each&nbsp;build</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_custom_command(TARGET&nbsp;${PROJECT_NAME}&nbsp;POST_BUILD</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COMMAND&nbsp;&quot;${WINDEPLOYQT_EXECUTABLE}&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--verbose&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--no-translations</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--no-system-d3d-compiler</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--no-opengl-sw</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--no-compiler-runtime</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;$&lt;TARGET_FILE:${PROJECT_NAME}&gt;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COMMENT&nbsp;&quot;Deploying&nbsp;Qt&nbsp;libraries&nbsp;with&nbsp;windeployqt...&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message(STATUS&nbsp;&quot;✓&nbsp;Qt&nbsp;deployment&nbsp;configured:&nbsp;windeployqt&nbsp;will&nbsp;run&nbsp;after&nbsp;build&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;else()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message(WARNING&nbsp;&quot;⚠&nbsp;windeployqt&nbsp;not&nbsp;found&nbsp;-&nbsp;Qt&nbsp;DLLs&nbsp;must&nbsp;be&nbsp;manually&nbsp;deployed!&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;endif()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">endif()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Deploy&nbsp;Configuration&nbsp;and&nbsp;Firmware&nbsp;Files</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Get&nbsp;unique&nbsp;subdirectories&nbsp;that&nbsp;need&nbsp;to&nbsp;be&nbsp;created</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;subdirs&nbsp;=&nbsp;set(dest_subdir&nbsp;for&nbsp;_,&nbsp;dest_subdir,&nbsp;_&nbsp;in&nbsp;DEPLOY_FILES)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Generate&nbsp;directory&nbsp;creation&nbsp;commands</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;subdirs:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Create&nbsp;runtime&nbsp;directory&nbsp;structure</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">add_custom_command(TARGET&nbsp;${PROJECT_NAME}&nbsp;POST_BUILD</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;subdir&nbsp;in&nbsp;sorted(subdirs):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f&quot;&quot;&quot;&nbsp;&nbsp;&nbsp;&nbsp;COMMAND&nbsp;${{CMAKE_COMMAND}}&nbsp;-E&nbsp;make_directory</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;$&lt;TARGET_FILE_DIR:${{PROJECT_NAME}}&gt;/{subdir}&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;&nbsp;&nbsp;&nbsp;&nbsp;COMMENT&nbsp;&quot;Creating&nbsp;runtime&nbsp;directory&nbsp;structure&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Generate&nbsp;file&nbsp;copy&nbsp;commands&nbsp;with&nbsp;existence&nbsp;checks</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;source_file,&nbsp;dest_subdir,&nbsp;dest_filename&nbsp;in&nbsp;DEPLOY_FILES:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content.append(f&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Copy&nbsp;{source_file}&nbsp;to&nbsp;{dest_subdir}/{dest_filename}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">if(EXISTS&nbsp;&quot;${{CMAKE_CURRENT_SOURCE_DIR}}/{source_file}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;add_custom_command(TARGET&nbsp;${{PROJECT_NAME}}&nbsp;POST_BUILD</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COMMAND&nbsp;${{CMAKE_COMMAND}}&nbsp;-E&nbsp;copy_if_different</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;${{CMAKE_CURRENT_SOURCE_DIR}}/{source_file}&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;$&lt;TARGET_FILE_DIR:${{PROJECT_NAME}}&gt;/{dest_subdir}/{dest_filename}&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COMMENT&nbsp;&quot;Deploying&nbsp;{source_file}&nbsp;to&nbsp;{dest_subdir}/&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">else()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;message(WARNING&nbsp;&quot;⚠&nbsp;{source_file}&nbsp;not&nbsp;found&nbsp;-&nbsp;skipping&nbsp;deployment&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">endif()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;content.append(&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Set&nbsp;Startup&nbsp;Project&nbsp;(Visual&nbsp;Studio)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set_property(DIRECTORY&nbsp;${CMAKE_CURRENT_SOURCE_DIR}&nbsp;PROPERTY&nbsp;VS_STARTUP_PROJECT&nbsp;${PROJECT_NAME})</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">set_target_properties(${PROJECT_NAME}&nbsp;PROPERTIES</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;VS_DEBUGGER_WORKING_DIRECTORY&nbsp;&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;WIN32_EXECUTABLE&nbsp;FALSE&nbsp;&nbsp;#&nbsp;Console&nbsp;application</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Installation</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">install(TARGETS&nbsp;${PROJECT_NAME}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;BUNDLE&nbsp;DESTINATION&nbsp;.</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;LIBRARY&nbsp;DESTINATION&nbsp;${CMAKE_INSTALL_LIBDIR}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;RUNTIME&nbsp;DESTINATION&nbsp;${CMAKE_INSTALL_BINDIR}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Print&nbsp;Configuration&nbsp;Summary</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;&quot;========================================&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;\&quot;&quot;&quot;&quot;&nbsp;+&nbsp;project_name&nbsp;+&nbsp;&quot;&quot;&quot;&nbsp;Configuration&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;&quot;========================================&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;&quot;C++&nbsp;Standard:&nbsp;${CMAKE_CXX_STANDARD}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;&quot;Compiler:&nbsp;${CMAKE_CXX_COMPILER_ID}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;&quot;Build&nbsp;Type:&nbsp;${CMAKE_BUILD_TYPE}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;&quot;Qt&nbsp;Version:&nbsp;${Qt6_VERSION}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;&quot;Entry&nbsp;Point:&nbsp;&quot;&quot;&quot;&nbsp;+&nbsp;main_source&nbsp;+&nbsp;&quot;&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;&quot;Definitions:&nbsp;&quot;&quot;&quot;&nbsp;+&nbsp;',&nbsp;'.join(DEFINITIONS)&nbsp;+&nbsp;&quot;&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">message(STATUS&nbsp;&quot;========================================&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&quot;&quot;&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;''.join(content)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;MAIN</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;============================================================================</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">def&nbsp;main():</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;Main&nbsp;entry&nbsp;point.&quot;&quot;&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;len(sys.argv)&nbsp;&gt;&nbsp;1:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;project_root&nbsp;=&nbsp;Path(sys.argv[1]).resolve()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;else:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;project_root&nbsp;=&nbsp;Path.cwd()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;project_root.is_dir():</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;Error:&nbsp;{project_root}&nbsp;is&nbsp;not&nbsp;a&nbsp;directory&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sys.exit(1)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;Scanning&nbsp;{project_root}...&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;sources_abs,&nbsp;headers_abs&nbsp;=&nbsp;find_sources(project_root,&nbsp;EXCLUDE_DIRS)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;sources_rel&nbsp;=&nbsp;make_relative(sources_abs,&nbsp;project_root)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;headers_rel&nbsp;=&nbsp;make_relative(headers_abs,&nbsp;project_root)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;Found&nbsp;{len(sources_rel)}&nbsp;source&nbsp;files&nbsp;and&nbsp;{len(headers_rel)}&nbsp;header&nbsp;files&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;MAIN_SOURCE&nbsp;not&nbsp;in&nbsp;sources_rel:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;⚠&nbsp;Warning:&nbsp;{MAIN_SOURCE}&nbsp;not&nbsp;found!&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;cmake_content&nbsp;=&nbsp;generate_cmake(</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROJECT_NAME,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sources_rel,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headers_rel,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAIN_SOURCE</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;output_path&nbsp;=&nbsp;project_root&nbsp;/&nbsp;&quot;CMakeLists.txt&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;Writing&nbsp;{output_path}...&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;output_path.write_text(cmake_content,&nbsp;encoding='utf-8')</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;\n✓&nbsp;Generated:&nbsp;{output_path}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;✓&nbsp;Entry&nbsp;point:&nbsp;{MAIN_SOURCE}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;✓&nbsp;C++&nbsp;Standard:&nbsp;{CXX_STANDARD}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;✓&nbsp;Qt&nbsp;deployment:&nbsp;Enabled&nbsp;(windeployqt)&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;✓&nbsp;File&nbsp;deployment:&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;source_file,&nbsp;dest_subdir,&nbsp;dest_filename&nbsp;in&nbsp;DEPLOY_FILES:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;&nbsp;&nbsp;-&nbsp;{source_file}&nbsp;→&nbsp;build/{dest_subdir}/{dest_filename}&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;✓&nbsp;Linker&nbsp;optimization:&nbsp;Enabled&nbsp;(/OPT:REF,&nbsp;/VERBOSE:REF)&quot;)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">if&nbsp;__name__&nbsp;==&nbsp;&quot;__main__&quot;:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;main()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

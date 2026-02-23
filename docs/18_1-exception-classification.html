@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 18 – Fault Dispatcher &amp; Precise Exceptions &gt; 18.1 Exception Classification</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="18.1.1 Two-Level Classification &nbsp;Every exceptional event in ASA-EmulatR carries a two-level classification. The high-level PendingEventKind (exceptionLib/PendingEventKind.h)..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "18_1-exception-classification.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">18.1 Exception Classification</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?18_1-exception-classification.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-18---fault-dispatcher-.html">Chapter 18 – Fault Dispatcher &amp; Precise Exceptions</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">18.1 Exception Classification</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="chapter-18---fault-dispatcher-.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-18---fault-dispatcher-.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="18_2-pendingevent-structure.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">18.1.1 Two-Level Classification</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Every exceptional event in ASA-EmulatR carries a two-level classification. The high-level <span class="f_CodeExample">PendingEventKind</span> (<span class="f_CodeExample">exceptionLib/PendingEventKind.h</span>) distinguishes the broad event category:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">enum&nbsp;class&nbsp;PendingEventKind&nbsp;:&nbsp;quint8&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;None&nbsp;=&nbsp;0,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Exception,&nbsp;//&nbsp;Synchronous&nbsp;fault/trap</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Interrupt,&nbsp;//&nbsp;Asynchronous&nbsp;interrupt</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Ast,&nbsp;//&nbsp;Asynchronous&nbsp;System&nbsp;Trap</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;MachineCheck,&nbsp;//&nbsp;Machine&nbsp;check&nbsp;(non-maskable)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Reset,&nbsp;//&nbsp;Reset/wakeup</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;PalCall&nbsp;//&nbsp;CALL_PAL&nbsp;event</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The fine-grained <span class="f_CodeExample">ExceptionClass_EV6</span> (<span class="f_CodeExample">exceptionLib/ExceptionClass_EV6.h</span>) carries 32 values that determine the specific PAL vector and delivery semantics. The full enumeration includes: <span class="f_CodeExample">Reset</span>, <span class="f_CodeExample">MachineCheck</span>, <span class="f_CodeExample">InternalProcessorError</span>, <span class="f_CodeExample">BugCheck</span>, <span class="f_CodeExample">Arithmetic</span>, <span class="f_CodeExample">Interrupt</span>, <span class="f_CodeExample">DStream</span>, <span class="f_CodeExample">ItbMiss</span>, <span class="f_CodeExample">ItbAcv</span>, <span class="f_CodeExample">OpcDec</span>, <span class="f_CodeExample">Fen</span>, <span class="f_CodeExample">Unalign</span>, <span class="f_CodeExample">Dfault</span>, <span class="f_CodeExample">DtbAcv</span>, <span class="f_CodeExample">Dtb_miss_double_4</span>, <span class="f_CodeExample">Dtb_miss_single</span>, <span class="f_CodeExample">Dtb_miss_native</span>, <span class="f_CodeExample">MT_FPCR</span>, <span class="f_CodeExample">IllegalInstruction</span>, <span class="f_CodeExample">MemoryFault</span>, <span class="f_CodeExample">SoftwareTrap</span>, <span class="f_CodeExample">BreakPoint</span>, <span class="f_CodeExample">Panic</span>, <span class="f_CodeExample">PrivilegeViolation</span>, <span class="f_CodeExample">ReservedOperand</span>, <span class="f_CodeExample">CallPal</span>, and others.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The design principle: pipeline code creates a <span class="f_CodeExample">PendingEvent</span> with an <span class="f_CodeExample">ExceptionClass</span>. The <span class="f_CodeExample">FaultDispatcher</span> resolves the <span class="f_CodeExample">PalVectorId</span> during delivery preparation. Detection and delivery are decoupled — the same <span class="f_CodeExample">PendingEvent</span> structure flows through both phases.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">18.1.2 EventPriority</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each event carries an <span class="f_CodeExample">EventPriority</span> that determines dispatch order when multiple events are pending simultaneously:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Priority</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Event Types</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Reset (highest)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">System/CPU reset</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Critical</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Machine check, internal processor error</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">High</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Arithmetic exceptions, alignment faults, TLB faults, access violations</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Normal</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Illegal instruction, software traps, CALL_PAL</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Low (lowest)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Hardware interrupts, IPIs, device completion — maskable by IPL</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When multiple events are pending, the FaultDispatcher delivers the highest-priority event first. Lower-priority events remain queued until the higher-priority event is resolved.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: exceptionLib/PendingEventKind.h; exceptionLib/ExceptionClass_EV6.h; <a href="chapter-7_2-terminology-and-cl.html" class="topiclink">7.2 Terminology and Classification</a>; <a href="chapter-7_6-precise-exception-.html" class="topiclink">7.7 Priority Ordering</a>.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

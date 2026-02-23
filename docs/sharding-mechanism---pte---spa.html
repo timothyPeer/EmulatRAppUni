@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Sharding Mechanism - PTE - SPAMShardManager</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="address space partitioning,address space sharding,broadcast invalidation,bucket,bucket index,bucketed lookup,cache consistency,cache flush sharding,cache invalidation sharding,cache isolation,cache locality,cache parallelism,cache partitioning,cache scalability,cache sharding,cache subset,fine-grained sharding,hash bucket,IPI-based invalidation,lock-free sharding,mini-cache,multicore sharding,parallel cache,partitioned cache,partitioned data structure,per-CPU invalidation,per-CPU shard,per-CPU TLB,per-realm shard,per-size-class shard,shard,shard dimensioning,shard index,sharded cache benefits,sharded cache requirements,sharding,sharding concurrency,sharding consistency,sharding implementation,sharding isolation,sharding locality,sharding mechanism,sharding parallelism,sharding scalability,shards,SMP sharding,SPAM manager shards,SPAM sharding,SPAMShardManager sharding,system-wide sharding,thread sharding,TLB isolation,TLB parallelism,TLB sharding" />
+   <meta name="description" content="What is Sharding? ----------------- Sharding is the process of partitioning a large set of cache (TLB/PTE) entries into smaller, semi-independent subsets called &quot;shards.&quot; &nbsp;Each..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "sharding-mechanism---pte---spa.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Sharding Mechanism - PTE - SPAMShardManager</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?sharding-mechanism---pte---spa.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Sharding Mechanism - PTE - SPAMShardManager</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="spam---policies.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="shard-scaffolding-ownership.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal"><span style="font-style: italic;">What is Sharding?</span></p>
+<p class="p_Normal">-----------------</p>
+<p class="p_Normal">Sharding is the process of partitioning a large set of cache (TLB/PTE) entries into smaller, semi-independent subsets called &quot;shards.&quot; &nbsp;Each shard operates like a mini-cache, responsible for a subset of addresses, CPUs, realms, or size classes.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In the Alpha PTE subsystem, the SPAMShardManager implements sharding along several axes:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>**By CPU**: Each logical CPU (core/thread) receives its own slice of the TLB cache.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>**By Realm**: Separate shards are maintained for instruction (ITB) and data (DTB) translation.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>**By Size Class**: If enabled (ShardBySize=true), entries can be grouped by page size (e.g., 8K, 64K).</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>**By Bucket Index**: Each shard subdivides its set into hash buckets for fast lookup.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">How Sharding Works</span></p>
+<p class="p_Normal">------------------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The system allocates a multidimensional array of shards (e.g., [CPU][Realm][SizeClass][BucketIndex]).</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Each CPU/thread works primarily with its own shard(s), reducing contention.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>When a translation (TLB) operation occurs, SPAMShardManager computes which shard/bucket should handle the VA+ASN based on the CPU, realm (I/D), and size class.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Entries are inserted, looked up, and invalidated only within their target shard, making operations more scalable and cache-efficient.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Configuration Example:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;4&nbsp;CPUs,&nbsp;2&nbsp;realms&nbsp;(ITB/DTB),&nbsp;2&nbsp;size&nbsp;classes,&nbsp;1024&nbsp;buckets:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;m_buckets.resize(4);&nbsp;//&nbsp;CPUs</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;c&nbsp;=&nbsp;0;&nbsp;c&nbsp;&lt;&nbsp;4;&nbsp;++c)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;r&nbsp;=&nbsp;0;&nbsp;r&nbsp;&lt;&nbsp;2;&nbsp;++r)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;s&nbsp;=&nbsp;0;&nbsp;s&nbsp;&lt;&nbsp;2;&nbsp;++s)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_buckets[c][r][s].resize(1024);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Benefits of Sharding</span></h3>
+<p class="p_Normal">--------------------</p>
+<p class="p_Normal">1. **Scalability**: Each CPU or thread has its own subset of entries, minimizing contention and lock overhead in multicore (SMP) systems.</p>
+<p class="p_Normal">2. **Parallelism**: TLB fills, lookups, and invalidations can occur in parallel on different CPUs without interference.</p>
+<p class="p_Normal">3. **Cache Locality**: Per-CPU shards improve CPU cache usage, as each thread tends to access its own recently used entries.</p>
+<p class="p_Normal">4. **Lock-Free or Fine-Grained Locking**: With per-shard or per-bucket synchronization, global locks are not needed.</p>
+<p class="p_Normal">5. **Isolation**: One CPU or realm's flush or invalidation affects only its shard, reducing unnecessary global invalidations.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Requirements and Design Considerations</span></h3>
+<p class="p_Normal">--------------------------------------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>**Shard Dimensioning**: Must allocate enough shards to match the CPU count, realms (usually 2: ITB and DTB), and size classes required by the hardware and OS.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>**Bucket Count**: Each shard subdivides into hash buckets for fast lookup; bucket count should be a power of two for efficient hashing.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>**ASN Management**: Each shard maintains its own Address Space Number (ASN) epochs for efficient per-ASN invalidation.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>**Concurrency**: If CPUs/threads operate in parallel, per-shard or per-bucket data must be thread-safe (e.g., atomic counters, QAtomicInteger, per-bucket locks).</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>**Consistency**: Broadcast invalidation (e.g., TBIA, TBIAP) may need to coordinate across all shards, such as via IPI messages in SMP.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Notes on Implementation</span></h3>
+<p class="p_Normal">-----------------------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The SPAMShardManager uses Qt containers (QVector, etc.) and static arrays for fast access.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Bucket index calculation is typically based on VA, realm, and size class (hashing).</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Per-CPU ASN epochs enable instant invalidation of all entries for a given ASN (no scanning required).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Example (Index Calculation):</span></p>
+<p class="p_CodeExample">&nbsp;&nbsp;&nbsp;<span class="f_CodeExample">&nbsp;//&nbsp;Tag&nbsp;struct&nbsp;contains&nbsp;vpn,&nbsp;realm,&nbsp;sizeClass.</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Hash&nbsp;tag&nbsp;to&nbsp;pick&nbsp;a&nbsp;bucket&nbsp;inside&nbsp;a&nbsp;CPU/realm/size&nbsp;shard.</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;inline&nbsp;unsigned&nbsp;bucketIndex(const&nbsp;Tag&amp;&nbsp;t)&nbsp;noexcept&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quint64&nbsp;x&nbsp;=&nbsp;t.vpn&nbsp;^&nbsp;(quint64(t.realm)&nbsp;&lt;&lt;&nbsp;1)&nbsp;^&nbsp;(quint64(t.sizeClass)&nbsp;&lt;&lt;&nbsp;2);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;^=&nbsp;x&nbsp;&gt;&gt;&nbsp;33;&nbsp;x&nbsp;*=&nbsp;0xff51afd7ed558ccdULL;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;^=&nbsp;x&nbsp;&gt;&gt;&nbsp;33;&nbsp;x&nbsp;*=&nbsp;0xc4ceb9fe1a85ec53ULL;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;^=&nbsp;x&nbsp;&gt;&gt;&nbsp;33;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;unsigned(x)&nbsp;&amp;&nbsp;(BucketCount&nbsp;-&nbsp;1);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Caveats and Best Practices</span></h3>
+<p class="p_Normal">--------------------------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Make sure all CPUs and realms have correctly dimensioned shards on initialization.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Sharding should match the parallelism and address space requirements of your target hardware.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Fine-grained sharding is more important as CPU count increases (e.g., &gt;2 CPUs).</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>For uniprocessor simulation, sharding can be simplified, but keeping the structure aids future SMP support.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Summary</span></h3>
+<p class="p_Normal">-------</p>
+<p class="p_Normal">Sharding is a core scalability and efficiency feature in the PTE/TLB subsystem, enabling per-CPU, per-realm, and per-size class caches that work in parallel and with minimal contention.</p>
+<p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">References</span></h3>
+<p class="p_Normal">----------</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>SPAMShardManager class (alpha_spam_manager.h)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Alpha AXP System Reference Manual: MMU/TLB implementation notes</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>ASA-EmulatR Project Documentation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Generated for ASA-EmulatR Project, 2025-11-14.</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

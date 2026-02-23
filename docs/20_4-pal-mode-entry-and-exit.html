@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 20 – Boot Sequence, PAL, and SRM Integration &gt; 20.4 PAL Mode Entry and Exit</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="20.4.1 enterPal() Entry Sequence &nbsp;PalBoxBase::enterPal() performs the complete PAL mode transition in a fixed sequence: &nbsp;BoxResult enterPal(PalEntryReason reason, quint64 vecto" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "20_4-pal-mode-entry-and-exit.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">20.4 PAL Mode Entry and Exit</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?20_4-pal-mode-entry-and-exit.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-20---boot-sequence_-pa.html">Chapter 20 – Boot Sequence, PAL, and SRM Integration</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">20.4 PAL Mode Entry and Exit</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="20_3-call_pal-dispatch-and-vec.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-20---boot-sequence_-pa.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="20_5-shadow-registers-and-hwpc.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">20.4.1 enterPal() Entry Sequence</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">PalBoxBase::enterPal()</span> performs the complete PAL mode transition in a fixed sequence:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">BoxResult&nbsp;enterPal(PalEntryReason&nbsp;reason,&nbsp;quint64&nbsp;vectorOrSelector,&nbsp;quint64&nbsp;faultPC)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;1.&nbsp;Record&nbsp;metadata&nbsp;(entry&nbsp;reason,&nbsp;vector,&nbsp;fault&nbsp;PC)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_entryReason&nbsp;=&nbsp;reason;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_entryVector&nbsp;=&nbsp;vectorOrSelector;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_faultPC&nbsp;=&nbsp;faultPC;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;2.&nbsp;Save&nbsp;complete&nbsp;context&nbsp;(UNIFIED&nbsp;—&nbsp;same&nbsp;for&nbsp;all&nbsp;entry&nbsp;types)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;saveContext();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;3.&nbsp;Compute&nbsp;entry&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;if&nbsp;(reason&nbsp;==&nbsp;PalEntryReason::CALL_PAL_INSTRUCTION)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;entryPC&nbsp;=&nbsp;computeCallPalEntry(vectorOrSelector);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;else</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;entryPC&nbsp;=&nbsp;vectorOrSelector;&nbsp;//&nbsp;Direct&nbsp;vector&nbsp;for&nbsp;faults/interrupts</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;4.&nbsp;Set&nbsp;EXC_ADDR&nbsp;to&nbsp;faulting/return&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;h-&gt;exc_addr&nbsp;=&nbsp;faultPC;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;5.&nbsp;Enter&nbsp;PAL&nbsp;mode:&nbsp;PC&nbsp;=&nbsp;vector&nbsp;|&nbsp;0x1,&nbsp;IPL&nbsp;=&nbsp;7,&nbsp;CM&nbsp;=&nbsp;KERNEL</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;h-&gt;pc&nbsp;=&nbsp;entryPC&nbsp;|&nbsp;0x1ULL;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;h-&gt;setIPL_Unsynced(7);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;h-&gt;setCM(CM_KERNEL);</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;6.&nbsp;Activate&nbsp;shadow&nbsp;registers</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_shadowRegsActive&nbsp;=&nbsp;true;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;7.&nbsp;Return&nbsp;flush&nbsp;request</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;return&nbsp;BoxResult().flushPipeline();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The low bit of PC (<span class="f_CodeExample">| 0x1</span>) is the architectural PAL mode indicator checked by the execution engine on every instruction. <span class="f_CodeExample">saveContext()</span> captures the full register-context snapshot including integer registers, floating-point registers, PS, IPL, PC, and relevant execution state for later restoration by HW_REI.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">20.4.2 PalEntryReason</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">PalEntryReason</span> classifies why PAL mode was entered, which determines how the entry vector is computed:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Reason</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Vector Source</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">CALL_PAL_INSTRUCTION</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Computed dispatch offset from PAL_BASE</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">FAULT_DTBM</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct vector: DTB miss</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">FAULT_ITB</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct vector: ITB miss</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">FAULT_ARITH</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct vector: arithmetic exception</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">FAULT_UNALIGNED</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct vector: alignment fault</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">FAULT_ACV</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct vector: access violation</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">INTERRUPT</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct vector: hardware/software interrupt</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">AST</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct vector: asynchronous system trap</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">MACHINE_CHECK</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct vector: machine check</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">TRAP</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Direct vector: software trap</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">20.4.3 HW_REI Exit Sequence</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">HW_REI</span> (Hardware Return from Exception/Interrupt) is the only architecturally legal exit from PAL mode. <span class="f_CodeExample">AlphaCPU::executeREI()</span> performs a complete architectural state restore:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">BoxResult&nbsp;executeREI(PipelineSlot&amp;&nbsp;slot)&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;1.&nbsp;Restore&nbsp;COMPLETE&nbsp;context&nbsp;(HWPCB&nbsp;+&nbsp;registers)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_iprGlobalMaster-&gt;restoreContext();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;2.&nbsp;Get&nbsp;return&nbsp;PC&nbsp;(now&nbsp;restored)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;returnPC&nbsp;=&nbsp;m_iprGlobalMaster-&gt;h-&gt;pc;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;3.&nbsp;Setup&nbsp;pipeline&nbsp;redirect</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;slot.reiTarget&nbsp;=&nbsp;returnPC;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;slot.pcModified&nbsp;=&nbsp;true;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;4.&nbsp;Flush&nbsp;pipeline</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;return&nbsp;BoxResult().flushPipeline();</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">restoreContext()</span> performs a full vector copy from the saved register-context snapshot back into the active processor state: integer registers, floating-point registers (if enabled), PS, IPL, PC, and relevant execution state. HW_REI is an implicit serialization point — before execution resumes, write buffers are drained if required, LL/SC reservations are cleared, the pipeline is flushed, and instruction fetch restarts at the restored PC. No speculative instruction may execute across an HW_REI boundary.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The design choice to restore the full register context (rather than selectively restoring fields) provides stronger correctness guarantees and ensures no residual PAL state leaks into non-PAL execution.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: PalBoxLib/PalBoxBase.h – enterPal(); cpuCoreLib/AlphaCPU.h – executeREI(); <a href="chapter-8_4-call_pal---enterin.html" class="topiclink">8.4 CALL_PAL - Entering the Privileged Boundary</a>; <a href="chapter-8_9-hw_rei---exiting-p.html" class="topiclink">8.9 HW_REI - Exiting PAL Mode</a> .</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

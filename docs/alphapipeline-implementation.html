@@ -1,0 +1,499 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 13 – AlphaPipeline Implementation</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="Below is a **clean, final, drop-in Chapter 13 – AlphaPipeline Implementation**, written in the same tone, rigor, and discipline as Chapter 12." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "alphapipeline-implementation.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Chapter 13 – AlphaPipeline Implementation</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?alphapipeline-implementation.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Chapter 13 – AlphaPipeline Implementation</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="12_13-summary.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="architecture-overview.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="13_1-purpose-of-this-chapter.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">Below is a **clean, final, drop-in Chapter 13 – AlphaPipeline Implementation**, written in the same tone, rigor, and discipline as Chapter 12.</p>
+<p class="p_Normal">This chapter is **mechanical and implementation-oriented**, not conceptual. It explains *exactly how the pipeline works, how stalls propagate, and how correctness is enforced*.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># Chapter 13 – AlphaPipeline Implementation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.1 Purpose of This Chapter</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This chapter documents the **AlphaPipeline** implementation: the internal execution conveyor that moves decoded instructions (“grains”) from fetch through architectural retirement.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This chapter answers:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* How instructions flow through the pipeline</p>
+<p class="p_Normal">* How stalls, flushes, and serialization are enforced</p>
+<p class="p_Normal">* Where architectural state becomes visible</p>
+<p class="p_Normal">* How correctness is guaranteed in the presence of speculation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This chapter does **not** define instruction semantics — those live in grains and execution boxes.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.2 Pipeline Role in EmulatR</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The AlphaPipeline is a **single-issue, in-order, cycle-driven pipeline** that models Alpha AXP execution behavior with weak ordering and precise exceptions.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Key principles:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* One instruction may retire per cycle</p>
+<p class="p_Normal">* Instructions advance one stage per cycle unless stalled</p>
+<p class="p_Normal">* All execution happens in **EX stage**</p>
+<p class="p_Normal">* Commit occurs only in **WB stage**</p>
+<p class="p_Normal">* Pipeline state is owned exclusively by AlphaCPU</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.3 Pipeline Structure</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.3.1 Pipeline Stages</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The pipeline consists of **six fixed stages**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">| Stage | Name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Responsibility &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| ----: | -------------- | ----------------------------------------- |</p>
+<p class="p_Normal">| &nbsp; &nbsp; 0 | Fetch (IF) &nbsp; &nbsp; | Fetch instruction, resolve branch targets |</p>
+<p class="p_Normal">| &nbsp; &nbsp; 1 | Decode (ID) &nbsp; &nbsp;| Attach decoded grain (mostly bookkeeping) |</p>
+<p class="p_Normal">| &nbsp; &nbsp; 2 | Issue (IS) &nbsp; &nbsp; | Operand readiness &amp; hazard checks &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| &nbsp; &nbsp; 3 | Execute (EX) &nbsp; | **All real work occurs here** &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| &nbsp; &nbsp; 4 | Memory (MEM) &nbsp; | Advancement only (execution already done) |</p>
+<p class="p_Normal">| &nbsp; &nbsp; 5 | Writeback (WB) | Architectural commit &amp; PC update &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The pipeline advances **backward (WB → IF)** each cycle to prevent data hazards.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.4 PipelineSlot Structure</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each stage holds a **PipelineSlot**, which represents one in-flight instruction.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.4.1 Slot Contents</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A PipelineSlot contains:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Decoded instruction metadata (`DecodedInstruction`)</p>
+<p class="p_Normal">* Pointer to resolved grain</p>
+<p class="p_Normal">* Operand values</p>
+<p class="p_Normal">* Execution results (payload)</p>
+<p class="p_Normal">* Branch target (if applicable)</p>
+<p class="p_Normal">* Stall flags</p>
+<p class="p_Normal">* Serialization type</p>
+<p class="p_Normal">* Exception / fault metadata</p>
+<p class="p_Normal">* Valid / invalid state</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Slots are lightweight and reused aggressively.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.5 Instruction Lifetime</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.5.1 Fetch → Decode</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* IF fetches raw instruction</p>
+<p class="p_Normal">* IBox resolves or creates grain</p>
+<p class="p_Normal">* Grain pointer is attached to slot</p>
+<p class="p_Normal">* Slot becomes valid in Decode stage</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No execution occurs here.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.5.2 Decode → Issue</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Slot metadata is validated</p>
+<p class="p_Normal">* Privilege checks may enqueue exceptions</p>
+<p class="p_Normal">* Functional requirements are identified</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Decode is intentionally minimal.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.5.3 Issue → Execute</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Source operands are read</p>
+<p class="p_Normal">* Register hazards are checked</p>
+<p class="p_Normal">* Forwarding may occur</p>
+<p class="p_Normal">* If operands unavailable → stall</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is the **last gate before execution**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.5.4 Execute Stage (Critical)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**All instruction semantics occur here.**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In EX:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```cpp</p>
+<p class="p_Normal">slot.di.grain-&gt;execute(slot);</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The grain:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Performs arithmetic or logical work</p>
+<p class="p_Normal">* Executes memory accesses</p>
+<p class="p_Normal">* Calls EBox / FBox / MBox / CBox</p>
+<p class="p_Normal">* Detects exceptions</p>
+<p class="p_Normal">* Sets stall or serialization flags</p>
+<p class="p_Normal">* Produces result payload</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Multi-cycle operations **block EX** until complete.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.5.5 Memory Stage</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Despite the name:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* No memory access occurs here</p>
+<p class="p_Normal">* Memory was already accessed in EX</p>
+<p class="p_Normal">* MEM stage exists for structural completeness</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MEM may queue faults or propagate stalls.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.5.6 Writeback Stage (Commit Point)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">WB is the **only architectural commit point**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Actions:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Write registers</p>
+<p class="p_Normal">* Commit stores</p>
+<p class="p_Normal">* Update PC</p>
+<p class="p_Normal">* Retire instruction</p>
+<p class="p_Normal">* Clear slot validity</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If an instruction reaches WB, it is guaranteed to be precise.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.6 Stall Mechanics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.6.1 Stall Sources</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A PipelineSlot may stall due to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Operand unavailability</p>
+<p class="p_Normal">* Multi-cycle FP execution</p>
+<p class="p_Normal">* Memory barrier</p>
+<p class="p_Normal">* Exception barrier</p>
+<p class="p_Normal">* Pending fault delivery</p>
+<p class="p_Normal">* Device backpressure</p>
+<p class="p_Normal">* Write buffer saturation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.6.2 Stall Propagation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Stalls propagate **forward only**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If stage N stalls:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Stage N-1 cannot advance</p>
+<p class="p_Normal">* Earlier stages remain frozen</p>
+<p class="p_Normal">* Later stages continue draining</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This guarantees forward progress.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.7 Serialization and Barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Barrier instructions do **not** execute work — they enforce ordering.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.7.1 Barrier Types</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">| Barrier &nbsp;| Effect &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| -------- | ----------------------- |</p>
+<p class="p_Normal">| EXCB &nbsp; &nbsp; | Exception serialization |</p>
+<p class="p_Normal">| TRAPB &nbsp; &nbsp;| Trap serialization &nbsp; &nbsp; &nbsp;|</p>
+<p class="p_Normal">| MB &nbsp; &nbsp; &nbsp; | Full memory ordering &nbsp; &nbsp;|</p>
+<p class="p_Normal">| WMB &nbsp; &nbsp; &nbsp;| Store ordering only &nbsp; &nbsp; |</p>
+<p class="p_Normal">| CALL_PAL | Privileged boundary &nbsp; &nbsp; |</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.7.2 Barrier Implementation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In EX stage:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Grain sets `slot.stalled = true`</p>
+<p class="p_Normal">* Sets `slot.serializationType`</p>
+<p class="p_Normal">* Prevents fetch and issue</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Release occurs only when AlphaCPU confirms:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Pipeline drained</p>
+<p class="p_Normal">* Buffers flushed</p>
+<p class="p_Normal">* Faults delivered</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.8 Flush Semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.8.1 Flush Causes</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Pipeline flush occurs when:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Branch misprediction</p>
+<p class="p_Normal">* Exception delivery</p>
+<p class="p_Normal">* Interrupt delivery</p>
+<p class="p_Normal">* CALL_PAL</p>
+<p class="p_Normal">* HW_REI</p>
+<p class="p_Normal">* Fatal fault</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.8.2 Flush Behavior</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On flush:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* All speculative slots invalidated</p>
+<p class="p_Normal">* WB state preserved</p>
+<p class="p_Normal">* PC reset to correct target</p>
+<p class="p_Normal">* Fetch restarts cleanly</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Flushes are **precise and deterministic**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.9 Branch Handling</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Branches are resolved in EX stage.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.9.1 Prediction</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* IBox predicts target during fetch</p>
+<p class="p_Normal">* Branch target stored in slot</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">### 13.9.2 Resolution</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In EX:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Actual condition evaluated</p>
+<p class="p_Normal">* Mismatch triggers flush</p>
+<p class="p_Normal">* Correct PC supplied to WB</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PC is updated **only in WB**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.10 LL/SC Interaction</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The pipeline enforces LL/SC semantics by:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Allowing speculation between LDL_L and STL_C</p>
+<p class="p_Normal">* Clearing reservations on:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Exceptions</p>
+<p class="p_Normal"> &nbsp;* Interrupts</p>
+<p class="p_Normal"> &nbsp;* Barriers</p>
+<p class="p_Normal"> &nbsp;* PAL entry</p>
+<p class="p_Normal">* Ensuring STL_C retires atomically</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">No reservation survives a pipeline flush.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.11 Exception Precision</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Exceptions are detected early but delivered late.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Rules:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Exception detected in EX</p>
+<p class="p_Normal">* Fault queued</p>
+<p class="p_Normal">* Instruction allowed to reach safe point</p>
+<p class="p_Normal">* Pipeline flushed</p>
+<p class="p_Normal">* PAL entered</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This guarantees **precise exceptions**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.12 Determinism Guarantees</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The pipeline guarantees:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* In-order retirement</p>
+<p class="p_Normal">* One architectural commit per cycle</p>
+<p class="p_Normal">* No speculative side effects</p>
+<p class="p_Normal">* No privilege leakage</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All behavior is replayable and debuggable.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 13.13 Summary</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The AlphaPipeline is:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Simple in structure</p>
+<p class="p_Normal">* Strict in correctness</p>
+<p class="p_Normal">* Aggressively deterministic</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Key takeaways:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. **EX does everything**</p>
+<p class="p_Normal">2. **WB is the only commit**</p>
+<p class="p_Normal">3. **MEM is a misnomer**</p>
+<p class="p_Normal">4. **Barriers stall, not execute**</p>
+<p class="p_Normal">5. **Flushes are precise**</p>
+<p class="p_Normal">6. **Speculation never leaks**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

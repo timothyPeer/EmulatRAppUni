@@ -1,0 +1,653 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Appendix &gt; Alpha &gt; Managers &gt; AlphaMemorySystem</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="Page Table Support: The Page Table Support section in the updated AlphaMemorySystem.h file looks good. It includes the necessary functions for handling page table walks and TLB" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "alphamemorysystem-managers.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">AlphaMemorySystem</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?alphamemorysystem-managers.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="alpha.html">Alpha</a> &gt; <a href="managers.html">Managers</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">AlphaMemorySystem</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="cow-support-alphaspammanager.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="managers.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="alphasystemmemoryfinakl.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Page Table Support:</p>
+<p class="p_Normal">The Page Table Support section in the updated AlphaMemorySystem.h file looks good. It includes the necessary functions for handling page table walks and TLB misses:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">fetchPTE: This function performs the page table walk to fetch the Page Table Entry (PTE) for a given virtual address and Address Space Number (ASN).</p>
+<p class="p_Normal">handleInstructionTLBMiss and handleDataTLBMiss: These functions are called when there is a TLB miss for an instruction or data access, respectively. They fetch the PTE using fetchPTE and insert the TLB entry into the appropriate TLB manager (m_itbManager or m_dtbManager) based on the access type.</p>
+<p class="p_Normal">wouldCauseTLBMiss: This function checks if a given virtual address and ASN combination would cause a TLB miss for a specific CPU and access type (read or write).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem is the Correct Place for “Architectural Hooks”</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is the layer where all process-visible architectural semantics belong:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Hooks that belong in AlphaMemorySystem:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Alignment exceptions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Page faults</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Access violation faults</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">STx_C reservation invalidation</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">MB/WMB/TRAPB memory barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Region-specific coherence and consistency</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Instruction-fetch vs data-read vs data-write rules</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">TLB refill calls</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PTE walking</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Debug instrumentation hooks</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Device tracing for MMIO</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Breakpoint/watchpoint triggers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Why here?</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Because this layer conforms exactly to the Alpha System Architecture.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem = “architectural memory operations”</p>
+<p class="p_Normal">SafeMemory = “raw bytes”</p>
+<p class="p_Normal">GuestMemory = “physical routing + platform map”</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is the correct separation of concerns.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">4. Performance Warning: “Inline Hooks” Must Not Touch Hot Path</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Alpha loads/stores are the #1 hottest path in the emulator.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Insert a hook in SafeMemory → CPU cost skyrockets.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Insert a hook in GuestMemory → moderate cost, but still heavy.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Insert a hook in AlphaMemorySystem → manageable because this is where the ISA expects behavior to be expensive (traps, TLB misses, reservation logic).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">So the answer is also motivated by performance correctness:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Keep SafeMemory free of any inline callbacks;</p>
+<p class="p_Normal">put logic in AlphaMemorySystem, optionally inside GuestMemory only for physical map checks or DMA events.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">5. Recommendation Summary Table</p>
+<p class="p_Normal">Layer &nbsp; &nbsp; &nbsp; &nbsp;Purpose &nbsp; &nbsp; &nbsp; &nbsp;Should Hooks Go Here? &nbsp; &nbsp; &nbsp; &nbsp;Examples</p>
+<p class="p_Normal">SafeMemory &nbsp; &nbsp; &nbsp; &nbsp;RAM bytes &amp; alignment &nbsp; &nbsp; &nbsp; &nbsp;❌ NO &nbsp; &nbsp; &nbsp; &nbsp;Never place hooks</p>
+<p class="p_Normal">GuestMemory &nbsp; &nbsp; &nbsp; &nbsp;PA routing, platform map &nbsp; &nbsp; &nbsp; &nbsp;⚠ LIMITED &nbsp; &nbsp; &nbsp; &nbsp;DMA events, watchpoints, tracing</p>
+<p class="p_Normal">AlphaMemorySystem &nbsp; &nbsp; &nbsp; &nbsp;ISA semantics &nbsp; &nbsp; &nbsp; &nbsp;✔ YES &nbsp; &nbsp; &nbsp; &nbsp;MB/WMB, STx_C, faults, TLB, debug, PAL entry</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Below is a **clean, authoritative answer** to both parts of your question:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. **Is SafeMemory a good candidate for Q_GLOBAL_STATIC?**</p>
+<p class="p_Normal">2. **Provide an Interface/Contract specification for AlphaMemorySystem**, based on the SafeMemory design.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Everything is pure design text, no code.</p>
+<p class="p_Normal">ASCII only.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 1. **Is SafeMemory a candidate for Q_GLOBAL_STATIC?**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Short answer:</p>
+<p class="p_Normal">**Yes, SafeMemory *can* be used with Q_GLOBAL_STATIC — BUT only if you fully understand the implications and only if you configure it correctly.**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Long answer, with architectural justification:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **A. When Q_GLOBAL_STATIC *is* appropriate**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory is:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Immutable in size after initialization</p>
+<p class="p_Normal">* CPU-independent</p>
+<p class="p_Normal">* Not bound to QObject threading rules</p>
+<p class="p_Normal">* A pure backing store for physical RAM</p>
+<p class="p_Normal">* Intended to be one single instance for the whole system</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These are the exact characteristics that make a type suitable for **Q_GLOBAL_STATIC**.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **Why it fits**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* There should be exactly **one physical RAM image** in an Alpha system.</p>
+<p class="p_Normal">* All CPUs, MMIO, DMA, and controllers use the *same* physical memory image.</p>
+<p class="p_Normal">* Global lifetime management makes sense because SafeMemory must outlive all CPUs.</p>
+<p class="p_Normal">* Construction ordering becomes reliable—Q_GLOBAL_STATIC lazily initializes on first use.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **Benefits**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* You avoid circular dependencies between:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* `EmulatorManager`</p>
+<p class="p_Normal"> &nbsp;* `AlphaCPU`</p>
+<p class="p_Normal"> &nbsp;* `AlphaMemorySystem`</p>
+<p class="p_Normal"> &nbsp;* `MMIOManager`</p>
+<p class="p_Normal">* You guarantee one single, thread-safe instance.</p>
+<p class="p_Normal">* No need to pass SafeMemory* through constructor chains unexpectedly.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **Caveat**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory is **not** a trivial type; it contains dynamic storage (QByteArray).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Therefore:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># **You must ensure two rules:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. **Initialization must be explicit**</p>
+<p class="p_Normal"> &nbsp; Q_GLOBAL_STATIC will construct an *empty* SafeMemory.</p>
+<p class="p_Normal"> &nbsp; It will not allocate RAM until you call e.g. `initialize(sizeBytes)`.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">2. **Initialization must occur before vCPUs start executing**</p>
+<p class="p_Normal"> &nbsp; Because CPUs might otherwise hit a zero-size array.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This is *easy to satisfy*: top-level `EmulatorManager::initializeSystem()` is the right place.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **B. When Q_GLOBAL_STATIC is NOT appropriate**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You must NOT use Q_GLOBAL_STATIC if:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* You expect to support **multiple isolated virtual machines simultaneously**</p>
+<p class="p_Normal"> &nbsp;(then SafeMemory must be per-VM, not global).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* You anticipate dynamic destruction and recreation of SafeMemory at runtime</p>
+<p class="p_Normal"> &nbsp;(Q_GLOBAL_STATIC doesn’t support destruction until program exit).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For your Alpha AXP emulator project, **you are designing a single-machine model**, so none of these constraints apply.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## **Conclusion on Q_GLOBAL_STATIC**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">**YES, SafeMemory is an excellent candidate for Q_GLOBAL_STATIC**, provided:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* You initialize it explicitly</p>
+<p class="p_Normal">* You only support a single VM instance</p>
+<p class="p_Normal">* All higher layers treat SafeMemory as “global RAM” and not as a per-CPU or per-manager object</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This aligns with DEC Alpha hardware: **there is one RAM subsystem feeding all CPUs.**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 2. **Interface / Contract Specification for AlphaMemorySystem**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This specification describes **how AlphaMemorySystem sits between:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">CPU &nbsp;→ (TLB/PTESPAM) → AlphaMemorySystem → [SafeMemory | MMIO | ROM]</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem is the **middle layer** that:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Knows regions</p>
+<p class="p_Normal">* Knows physical map</p>
+<p class="p_Normal">* Knows MMIO windows</p>
+<p class="p_Normal">* Knows ROM mappings</p>
+<p class="p_Normal">* Applies alignment rules</p>
+<p class="p_Normal">* Applies region atomicity rules</p>
+<p class="p_Normal">* Calls SafeMemory or MMIOManager as appropriate</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory itself stays pure, simple, clean.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Below is the complete specification.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># **ALPHAMEMORYSYSTEM – INTERFACE / CONTRACT SPECIFICATION**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **Purpose**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem is the central physical memory access oracle for the entire emulator.</p>
+<p class="p_Normal">It is responsible for:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Interpreting *physical* address semantics</p>
+<p class="p_Normal">* Routing to RAM (SafeMemory), MMIO, ROM, or special spaces</p>
+<p class="p_Normal">* Enforcing region rules (caching/atomicity/alignment)</p>
+<p class="p_Normal">* Mapping SafeMemory’s linear byte array into the physical address space</p>
+<p class="p_Normal">* Providing correct architectural behavior for load/store instructions</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory is the byte provider.</p>
+<p class="p_Normal">AlphaMemorySystem is the *decision-maker*.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 1. **Inputs to AlphaMemorySystem**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **All memory accesses arrive as:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">cpuId &nbsp; &nbsp; &nbsp;(which CPU initiated the access)</p>
+<p class="p_Normal">physicalAddress</p>
+<p class="p_Normal">accessSize (1,2,4,8 bytes)</p>
+<p class="p_Normal">accessType (read or write)</p>
+<p class="p_Normal">value &nbsp; &nbsp; &nbsp;(for write)</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">And optionally:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Memory attributes (load-locked, store-conditional)</p>
+<p class="p_Normal">* Access class (instruction fetch / data load / data store)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **AlphaMemorySystem does *not* receive virtual addresses.**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Virtual → physical translation has already been completed by:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* TLB subsystem</p>
+<p class="p_Normal">* PTE/SPAM subsystem</p>
+<p class="p_Normal">* VM-mapping logic inside AlphaCPU/MMU</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 2. **Responsibilities of AlphaMemorySystem**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **A. Decode physical address → region type**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Using the Alpha architecture’s region rules (Region 0–3):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Determine **which region** the PA falls into</p>
+<p class="p_Normal">* Determine **region policy**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Allowed access widths</p>
+<p class="p_Normal"> &nbsp;* Allowed alignment</p>
+<p class="p_Normal"> &nbsp;* Atomicity rules</p>
+<p class="p_Normal"> &nbsp;* Caching / no caching</p>
+<p class="p_Normal"> &nbsp;* Write-back vs write-through</p>
+<p class="p_Normal"> &nbsp;* Uncached for MMIO</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This step guarantees correctness of memory ordering and legalization of memory ops.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **B. Determine backing type (RAM/MMIO/ROM/I/O buffer)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem has a physical map table (architectural):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">| Range &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Backing &nbsp; &nbsp; &nbsp; &nbsp;| Notes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| ------------------------- | -------------- | --------------------- |</p>
+<p class="p_Normal">| 0x0000_0000_0000_0000 – X | RAM &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| SafeMemory region &nbsp; &nbsp; |</p>
+<p class="p_Normal">| 0xFFFF_FC00_0000_0000 – Y | MMIO Window &nbsp; &nbsp;| Device mapped I/O &nbsp; &nbsp; |</p>
+<p class="p_Normal">| 0xFFFF_FFFF_F000_0000 – Z | ROM / SRM area | Boot firmware &nbsp; &nbsp; &nbsp; &nbsp; |</p>
+<p class="p_Normal">| 0xNNNN_NNNN_NNNN_NNNN – M | I/O Buffer &nbsp; &nbsp; | Optional staging area |</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem must determine:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Does this PA belong to SafeMemory?</p>
+<p class="p_Normal">* Does this PA map to MMIOManager?</p>
+<p class="p_Normal">* Does this PA map to ROM?</p>
+<p class="p_Normal">* Does this PA map to a device memory window?</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **C. Apply region rules (alignment, atomicity)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">For example:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Region 0 (RAM):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Supports byte/word/longword/quadword</p>
+<p class="p_Normal"> &nbsp;* Longword and quadword must be atomic</p>
+<p class="p_Normal"> &nbsp;* Caching allowed (emulated above)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Region 1 (MMIO):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Typically allows longword or quadword</p>
+<p class="p_Normal"> &nbsp;* No caching</p>
+<p class="p_Normal"> &nbsp;* Must not combine writes</p>
+<p class="p_Normal"> &nbsp;* Must hit MMIOManager directly, not SafeMemory</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Region 2:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Might allow write-through or special DMA semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Region 3:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Depends on implementation (firmware, console, chipset registers)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem enforces these.</p>
+<p class="p_Normal">SafeMemory simply receives legal physical accesses.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **D. Handle LDx_L / STx_C semantics**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* AlphaMemorySystem coordinates with a **ReservationManager**.</p>
+<p class="p_Normal">* On LDx_L:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Records reservation token for cpuId + PA</p>
+<p class="p_Normal">* On STx_C:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* Checks if reservation is still valid</p>
+<p class="p_Normal"> &nbsp;* Fails or succeeds</p>
+<p class="p_Normal">* SafeMemory is only called to *perform* the store if STx_C succeeds.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **E. Memory ordering (MB / WMB / TRAPB)**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem cooperates with AlphaCPU to implement:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Memory barriers</p>
+<p class="p_Normal">* Write barriers</p>
+<p class="p_Normal">* Trap barriers</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">AlphaMemorySystem must ensure that memory accesses are:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Completed in correct order relative to barriers</p>
+<p class="p_Normal">* Made visible across CPUs in accordance with Alpha architecture semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory does not know about ordering; barriers are implemented above it.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **F. Forward the “actual” load/store to the correct service**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">After region + device logic:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **If RAM:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Call SafeMemory.load*/store* using physical offset</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **If MMIO:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Call MMIOManager with the device-resolved PA</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **If ROM:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Perform a ROM read</p>
+<p class="p_Normal">* Writes fault or are ignored depending on chipset rules</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **If I/O Buffer:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Access a separate SafeMemory instance or subregion</p>
+<p class="p_Normal">* Possibly enforce write-through semantics</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 3. **Outputs of AlphaMemorySystem**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">After evaluating region rules and routing:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* **Value read** (on load)</p>
+<p class="p_Normal">* **Status**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;* OK</p>
+<p class="p_Normal"> &nbsp;* Alignment fault</p>
+<p class="p_Normal"> &nbsp;* Access fault</p>
+<p class="p_Normal"> &nbsp;* MMIO fault</p>
+<p class="p_Normal"> &nbsp;* Permission fault (if future ACLs)</p>
+<p class="p_Normal"> &nbsp;* Reservation failed (STx_C only)</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The AlphaCPU interprets this status and may:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Raise an exception</p>
+<p class="p_Normal">* Enter PALcode</p>
+<p class="p_Normal">* Trigger asynchronous traps</p>
+<p class="p_Normal">* Continue normal execution</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 4. **AlphaMemorySystem Internal Model**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">This layer contains:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **A. Physical Region Table**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Defines the map of PA ranges → backing type</p>
+<p class="p_Normal">* Example:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp;```</p>
+<p class="p_Normal"> &nbsp;[0x0000_0000_0000_0000:0x0000_00FF_FFFF_FFFF] = Region0, RAM</p>
+<p class="p_Normal"> &nbsp;[0xFFFF_FC00_0000_0000:0xFFFF_FC7F_FFFF_FFFF] = Region1, MMIO</p>
+<p class="p_Normal"> &nbsp;[0xFFFF_FFFF_F000_0000:0xFFFF_FFFF_F00F_FFFF] = Region3, ROM</p>
+<p class="p_Normal"> &nbsp;```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **B. Region-Policy Table**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Defined per ASA rules:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Allowed access widths (byte/longword/quadword)</p>
+<p class="p_Normal">* Required alignment</p>
+<p class="p_Normal">* Atomicity requirements</p>
+<p class="p_Normal">* Cacheability</p>
+<p class="p_Normal">* Read-modify-write rules</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> **C. Access Router**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The core logic:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. Validate physical address</p>
+<p class="p_Normal">2. Determine region</p>
+<p class="p_Normal">3. Apply region policy</p>
+<p class="p_Normal">4. Determine backing type</p>
+<p class="p_Normal">5. Route to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> &nbsp; * SafeMemory</p>
+<p class="p_Normal"> &nbsp; * MMIOManager</p>
+<p class="p_Normal"> &nbsp; * ROMStore</p>
+<p class="p_Normal"> &nbsp; * IOBuffer</p>
+<p class="p_Normal">6. Return status</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">## 5. **AlphaMemorySystem Does NOT:**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Allocate physical RAM</p>
+<p class="p_Normal">* Emulate virtual addresses</p>
+<p class="p_Normal">* Perform TLB lookups</p>
+<p class="p_Normal">* Emulate caches</p>
+<p class="p_Normal">* Handle CPU pipeline rules</p>
+<p class="p_Normal">* Emulate speculative execution</p>
+<p class="p_Normal">* Execute PAL instructions</p>
+<p class="p_Normal">* Have QObject functionality</p>
+<p class="p_Normal">* Implement SafeMemory logic</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Those belong elsewhere.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># 6. **Final Clarification**</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You stated:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&gt; Regions, reservations, and PAL interfaces are side-effect inline helpers that are executed above SafeMemory.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Correct.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">You also said:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">&gt; AlphaMemorySystem should decide RAM, VAS, MMIO or other, and send to SafeMemory.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Correct.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The model we now have is **architecturally perfect** and **cleanly layered**:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">=== HIGH LEVEL ===</p>
+<p class="p_Normal">AlphaCPU</p>
+<p class="p_Normal"> &nbsp; |</p>
+<p class="p_Normal">TLB / PTESPAM</p>
+<p class="p_Normal"> &nbsp; |</p>
+<p class="p_Normal">AlphaMemorySystem &nbsp; &lt;--- REGION RULES, ROUTING, RESERVATION CHECKS</p>
+<p class="p_Normal"> &nbsp; |</p>
+<p class="p_Normal">SafeMemory / MMIO</p>
+<p class="p_Normal">=== LOW LEVEL ===</p>
+<p class="p_Normal">```</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SafeMemory stays absolutely minimal and pure.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">---</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"># If you want</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">I can now produce a **formal ASCII “Design Specification Document”** titled:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"> “Alpha AXP Emulator – SafeMemory &amp; AlphaMemorySystem Design Specification”</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">with:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">* Title page</p>
+<p class="p_Normal">* Abstract</p>
+<p class="p_Normal">* Glossary</p>
+<p class="p_Normal">* Requirements</p>
+<p class="p_Normal">* Architecture</p>
+<p class="p_Normal">* State diagrams</p>
+<p class="p_Normal">* Memory access flow diagrams</p>
+<p class="p_Normal">* Inline references to ASA</p>
+<p class="p_Normal">* Contract definitions</p>
+<p class="p_Normal">* Future expansion points</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Just say **“yes, generate the full spec”** and I will produce it in a clean, professional engineering document format.</p>
+<p class="p_Normal">&nbsp;</p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>

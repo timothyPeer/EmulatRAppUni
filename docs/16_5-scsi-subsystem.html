@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Introduction &gt; Architecture Overview &gt; Chapter 16 – Device Model &amp; DMA &gt; 16.5 SCSI Subsystem</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta name="description" content="16.5.1 SCSI Architecture in ASA-EmulatR &nbsp;The SCSI subsystem follows a layered structure that separates protocol types from bus controllers and from virtual device backends: &nbsp;Gu" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        height:auto; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { background: #2C5D88; min-height: 59px }             
+      #idheader h1 { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 126px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "16_5-scsi-subsystem.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">16.5 SCSI Subsystem</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:bottom">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?16_5-scsi-subsystem.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-16---device-model--dma.html">Chapter 16 – Device Model &amp; DMA</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">16.5 SCSI Subsystem</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="16_4-asynchronous-device-threa.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="chapter-16---device-model--dma.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="16_6-tape-drive-emulation-and-.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.5.1 SCSI Architecture in ASA-EmulatR</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The SCSI subsystem follows a layered structure that separates protocol types from bus controllers and from virtual device backends:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Guest&nbsp;OS&nbsp;SCSI&nbsp;Driver</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SCSI&nbsp;HBA&nbsp;Controller&nbsp;(e.g.,&nbsp;ScsiControllerKzpba)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;├──&nbsp;MMIO&nbsp;registers&nbsp;(command,&nbsp;status,&nbsp;DMA&nbsp;descriptors)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;├──&nbsp;Owns&nbsp;SCSIBus&nbsp;instance</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;└──&nbsp;Dispatches&nbsp;SCSI&nbsp;commands&nbsp;to&nbsp;target&nbsp;LUNs</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SCSIBus&nbsp;→&nbsp;LUN&nbsp;routing</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;│</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;▼</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Virtual&nbsp;SCSI&nbsp;Devices</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;├──&nbsp;SCSIDisk&nbsp;(block&nbsp;storage)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;├──&nbsp;SCSITape&nbsp;(sequential&nbsp;access,&nbsp;tape&nbsp;format&nbsp;variants)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;└──&nbsp;SCSICDROM&nbsp;(read-only,&nbsp;ISO&nbsp;backing)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The SCSI protocol core headers reside in <span class="f_CodeExample">deviceLib/</span>: <span class="f_CodeExample">ISCSIDevice.h</span> (interface), <span class="f_CodeExample">SCSIDisk.h</span>, <span class="f_CodeExample">SCSITape.h</span>, <span class="f_CodeExample">SCSIBus.h</span>, and <span class="f_CodeExample">SCSI_helpers.h</span>. These headers define SCSI types, opcodes, CDB structures, and sense data formats. They depend only on Qt containers and basic types — they have no dependency on AlphaCPU, PAL, or the pipeline.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Bus-facing controllers (KZPBA, QLogic ISP1020) reside in <span class="f_CodeExample">mmioLib/</span> alongside other MMIO devices. The controller owns the <span class="f_CodeExample">SCSIBus</span> instance, translates MMIO register writes into SCSI commands, performs DMA between GuestMemory and the device data buffers, and asserts interrupts upon command completion.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.5.2 SCSI Command Flow</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A typical SCSI disk read proceeds as follows: the guest OS driver writes DMA descriptor addresses and a command doorbell to the HBA's MMIO registers. The <span class="f_CodeExample">onWrite()</span> handler (executing in the CPU thread) queues the command to the device's I/O worker thread and returns immediately. The I/O worker thread decodes the CDB, routes the command via SCSIBus to the target LUN, the virtual SCSI device performs host-side I/O (file read for container-backed, block read for RAW-backed), data is written into GuestMemory via DMA (through <span class="f_CodeExample">DMACoherencyManager</span>), and the device asserts an interrupt to signal completion.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.5.3 Supported SCSI Operations</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The SCSI protocol core provides CDB decoding for standard SCSI command sets: 6-byte CDBs (READ6, WRITE6, INQUIRY, MODE_SENSE6), 10-byte CDBs (READ10, WRITE10, READ_CAPACITY, MODE_SENSE10), and extended formats (12-byte, 16-byte) for large LBA addressing. Sense data generation covers common conditions: NOT_READY, MEDIUM_ERROR, ILLEGAL_REQUEST, UNIT_ATTENTION, and CHECK_CONDITION.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: deviceLib/SCSIDisk.h; deviceLib/SCSITape.h; deviceLib/SCSIBus.h; mmioLib/ScsiControllerKzpba.h – KZPBA HBA controller.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  
+
+  $(document).ready(function(){
+    $(window).bind('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+	$('.hmanchor').css('padding-top', y+20);
+      }
+    });
+    
+    $(window).resize(); //trigger event for initially small displays
+  });
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+
+</script>
+</body>
+</html>
