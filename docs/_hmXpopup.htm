@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<title>Popup Window Template</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name='viewport' content='width=device-width, initial-scale=1, minimal-ui'/>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta name="generator" content="Help &amp; Manual" />
+	<meta name="robots" content="noindex, nofollow" />
+	<meta name="viewport" id="pageviewport" content="width=device-width, initial-scale=1, user-scalable=yes, minimal-ui" />
+	<link id="pagestylesheet" type="text/css" href="./css/hmprojectstyles.css" rel="stylesheet" />
+	<script type="text/javascript" src="./js/jquery.js"></script>
+	<style type="text/css">
+	html { overflow-x: auto; overflow-y: scroll;}
+	body { overflow: hidden; }
+	html, body {
+		margin: 0; padding: 0;
+	}
+	div#hmxpopupbody  {
+		margin: 0; padding: 5px 10px;
+	}
+	
+</style> 
+<script type="text/javascript">
+	function HMTrackTopiclink() {
+		return;
+	}
+	
+	$(document).ready(function(){
+	
+	// Open topic and web links on the page in a new tab/window
+	$("div#hmxpopupbody").on(
+	"click", 
+	"a.topiclink,a.weblink,a.topichotspot,a.webhotspot",
+	function(event){
+		$(this).attr("target","_blank");
+		if ($(this).attr("class").indexOf("topiclink") > -1)
+			$(this).attr("href",$(this).attr("href").replace(/\#/,"?anchor="));
+		});
+		
+	// Open popup links on the page in the current popup window
+	$("div#hmxpopupbody").on(
+	"click", 
+	"a.popuplink,a.popuphotspot,a.topichotspot[href^='javascript:void']",
+	function(event){
+		event.preventDefault();
+		var target = $(this).attr("data-target");
+		if (target && typeof parent.window.hmXPopup === "object"){
+			parent.window.hmXPopup.loadPopup(event, target);
+			}
+		else 
+			alert("Invalid popup link!")
+		});
+	});
+	</script>
+</head>
+<body>
+<div id="hmxpopupbody">
+<p>Popup body text will be inserted here</p> 
+</div> 
+</body>
+</html>

@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="16.1.1 Device Classes &nbsp;ASA-EmulatR distinguishes devices by function, bus attachment, and I/O characteristics. The mmio_DeviceClass enumeration in coreLib/mmio_core.h provides..." />
+   <meta name="description" content="16.1.1 Device Classes &nbsp;EMulatR distinguishes devices by function, bus attachment, and I/O characteristics. The mmio_DeviceClass enumeration in coreLib/mmio_core.h provides the..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,13 +24,13 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #2C5D88;
+        background: #F0F0F0;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #FFF }     
+      #idheader h1 span { color: #000000 }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_white.png');
+        background-image:url('hm_webhelp_buttons_grey.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_orange.png');
+        background-image:url('hm_webhelp_buttons_yellow.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #FFF; }
+      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #000000; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -129,7 +129,7 @@
 <!--ZOOMRESTART-->
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.1.1 Device Classes</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR distinguishes devices by function, bus attachment, and I/O characteristics. The <span class="f_CodeExample">mmio_DeviceClass</span> enumeration in <span class="f_CodeExample">coreLib/mmio_core.h</span> provides the primary classification:</p>
+<p class="p_Normal">EMulatR distinguishes devices by function, bus attachment, and I/O characteristics. The <span class="f_CodeExample">mmio_DeviceClass</span> enumeration in <span class="f_CodeExample">coreLib/mmio_core.h</span> provides the primary classification:</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_CodeExample"><span class="f_CodeExample">enum&nbsp;class&nbsp;mmio_DeviceClass&nbsp;:&nbsp;quint8&nbsp;{</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">&nbsp;INVALID&nbsp;=&nbsp;0,&nbsp;UNKNOWN,</span></p>
@@ -219,7 +219,7 @@
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.1.3 Storage Device Differentiation</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Storage devices in ASA-EmulatR support multiple backing strategies, selectable per device instance:</p>
+<p class="p_Normal">Storage devices in EMulatR support multiple backing strategies, selectable per device instance:</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-weight: bold;">Direct RAW Partition Access</span> — The device emulator maps a host-side raw disk partition (or raw disk image file) directly as the guest storage medium. Reads and writes translate 1:1 to host-side block I/O. This mode provides the highest fidelity to real hardware behavior and is the preferred mode for production guest OS installations. RAW access implies no metadata overhead and no container format translation.</p>
 <p class="p_Normal">&nbsp;</p>
@@ -227,14 +227,13 @@
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-weight: bold;">Fibre Channel / FG Storage</span> — Fibre Channel devices present storage via the FCP (Fibre Channel Protocol) command set. The <span class="f_CodeExample">FibreDeviceManager</span> emulates FC port login, fabric topology, and FCP command routing. Backing storage may be either RAW or container, but the guest sees an FC-attached LUN with FC-specific inquiry data and error recovery semantics. This path is structurally complete at the manager level but requires further FCP command coverage.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">All three modes present the same SCSI or IDE command interface to the guest — the backing strategy is transparent to guest software. The device manager selects the appropriate host-side I/O path based on configuration in <span class="f_CodeExample">ASA-EmulatR.ini</span>.</p>
+<p class="p_Normal">All three modes present the same SCSI or IDE command interface to the guest — the backing strategy is transparent to guest software. The device manager selects the appropriate host-side I/O path based on configuration in <span class="f_CodeExample">EMulatR.ini</span>.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: mmioLib/IDeviceEmulator.h (~266 lines) – Device interface contract; coreLib/mmio_core.h (~405 lines) – mmio_DeviceClass enumeration, MMIOWindow attributes; mmioLib/mmio_DeviceCatalog.h (~130 lines) – Template database.</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
-
 
 
 

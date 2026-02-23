@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="The ASA EmulatR processor model is organized into six discrete execution domains, each implemented as a self-contained C++ class known as a &quot;Box.&quot; This architecture mirrors the..." />
+   <meta name="description" content="The EMulatR processor model is organized into six discrete execution domains, each implemented as a self-contained C++ class known as a &quot;Box.&quot; This architecture mirrors the..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,13 +24,13 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #2C5D88;
+        background: #F0F0F0;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #FFF }     
+      #idheader h1 span { color: #000000 }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_white.png');
+        background-image:url('hm_webhelp_buttons_grey.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_orange.png');
+        background-image:url('hm_webhelp_buttons_yellow.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #FFF; }
+      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #000000; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -127,7 +127,7 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">The ASA EmulatR processor model is organized into six discrete execution domains, each implemented as a self-contained C++ class known as a &quot;Box.&quot; This architecture mirrors the physical partitioning of the Alpha 21264 (EV6) silicon, where independent functional blocks communicate through well-defined interfaces. Each box owns its own execution logic, scoreboard state, and fault reporting path, and interacts with other boxes only through explicit shared resources such as the PipelineSlot, GuestMemory, and the IPR state views.</p>
+<p class="p_Normal">The EMulatR processor model is organized into six discrete execution domains, each implemented as a self-contained C++ class known as a &quot;Box.&quot; This architecture mirrors the physical partitioning of the Alpha 21264 (EV6) silicon, where independent functional blocks communicate through well-defined interfaces. Each box owns its own execution logic, scoreboard state, and fault reporting path, and interacts with other boxes only through explicit shared resources such as the PipelineSlot, GuestMemory, and the IPR state views.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">All box classes are declared <span style="font-weight: bold;">final</span> (non-inheritable), constructed per-CPU via <span class="f_CodeExample">CPUIdType</span>, and implemented as header-only compilation units with aggressive inlining (<span class="f_CodeExample">AXP_HOT</span>, <span class="f_CodeExample">AXP_ALWAYS_INLINE</span>, <span class="f_CodeExample">AXP_FLATTEN</span>) for cycle-level performance.</p>
 <p class="p_Normal">&nbsp;</p>
@@ -214,7 +214,6 @@
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
-
 
 
 

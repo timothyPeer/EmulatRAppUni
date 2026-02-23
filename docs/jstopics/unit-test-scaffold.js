@@ -1,0 +1,12 @@
+hmLoadTopic({
+hmKeywords:"",
+hmTitle:"Unit Test Scaffold",
+hmDescription:"Data Types\t Test Box SubProject IEEE T_floating MBox",
+hmPrevLink:"",
+hmNextLink:"",
+hmParentLink:"appendix---trait-examples.html",
+hmBreadCrumbs:"",
+hmTitlePath:"Introduction > Appendix > Appendix I – Global Singletons",
+hmHeader:"<h1 class=\"p_Heading1\" style=\"page-break-after: avoid;\"><span class=\"f_Heading1\">Unit Test Scaffold<\/span><\/h1>\n\r",
+hmBody:"<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">Data Types &nbsp; &nbsp; &nbsp; &nbsp;<\/p>\n\r<div style=\"text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;\"><table style=\"border:none; border-spacing:0; border-collapse:collapse;\">\n\r<thead>\n\r<tr>\n\r<th style=\"vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;\" scope=\"col\"><p class=\"p_Normal\"><span style=\"font-weight: bold;\">Test<\/span><\/p>\n\r<\/th>\n\r<th style=\"vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;\" scope=\"col\"><p class=\"p_Normal\"><span style=\"font-weight: bold;\">Box<\/span><\/p>\n\r<\/th>\n\r<th style=\"vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;\" scope=\"col\"><p class=\"p_Normal\"><span style=\"font-weight: bold;\">SubProject<\/span><\/p>\n\r<\/th>\n\r<\/tr>\n\r<\/thead>\n\r<tbody>\n\r<tr>\n\r<td style=\"vertical-align:top; padding:0; border:solid thin #000000;\"><p class=\"p_Normal\">IEEE T_floating<\/p>\n\r<\/td>\n\r<td style=\"vertical-align:top; padding:0; border:solid thin #000000;\"><p class=\"p_Normal\">MBox<\/p>\n\r<\/td>\n\r<td style=\"vertical-align:top; padding:0; border:solid thin #000000;\"><br \/>\n\r<\/td>\n\r<\/tr>\n\r<tr>\n\r<td style=\"vertical-align:top; padding:0; border:solid thin #000000;\"><br \/>\n\r<\/td>\n\r<td style=\"vertical-align:top; padding:0; border:solid thin #000000;\"><br \/>\n\r<\/td>\n\r<td style=\"vertical-align:top; padding:0; border:solid thin #000000;\"><br \/>\n\r<\/td>\n\r<\/tr>\n\r<tr>\n\r<td style=\"vertical-align:top; padding:0; border:solid thin #000000;\"><br \/>\n\r<\/td>\n\r<td style=\"vertical-align:top; padding:0; border:solid thin #000000;\"><br \/>\n\r<\/td>\n\r<td style=\"vertical-align:top; padding:0; border:solid thin #000000;\"><br \/>\n\r<\/td>\n\r<\/tr>\n\r<\/tbody>\n\r<\/table>\n\r<\/div>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r"
+})

@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="This chapter describes the implementation of address translation in ASA-EmulatR: how virtual addresses are converted to physical addresses, how TLB caches are organized and..." />
+   <meta name="description" content="This chapter describes the implementation of address translation in EMulatR: how virtual addresses are converted to physical addresses, how TLB caches are organized and..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,13 +24,13 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #2C5D88;
+        background: #F0F0F0;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #FFF }     
+      #idheader h1 span { color: #000000 }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_white.png');
+        background-image:url('hm_webhelp_buttons_grey.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_orange.png');
+        background-image:url('hm_webhelp_buttons_yellow.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #FFF; }
+      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #000000; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -127,7 +127,7 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">This chapter describes the implementation of address translation in ASA-EmulatR: how virtual addresses are converted to physical addresses, how TLB caches are organized and managed, how Page Table Entries (PTEs) are represented and manipulated, and how SMP coherence is maintained across per-CPU translation buffers. Where Chapter 5 defines the architectural contract for the memory system and Chapter 14 describes MBox as the execution domain that initiates translation, this chapter covers the concrete classes and data structures that implement the VA→PA path.</p>
+<p class="p_Normal">This chapter describes the implementation of address translation in EMulatR: how virtual addresses are converted to physical addresses, how TLB caches are organized and managed, how Page Table Entries (PTEs) are represented and manipulated, and how SMP coherence is maintained across per-CPU translation buffers. Where Chapter 5 defines the architectural contract for the memory system and Chapter 14 describes MBox as the execution domain that initiates translation, this chapter covers the concrete classes and data structures that implement the VA→PA path.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The translation subsystem is organized in three layers. Layer 0 (<span style="font-weight: bold;">silicon</span>) provides the raw TLB storage and lookup via <span class="f_CodeExample">SPAMShardManager</span> and <span class="f_CodeExample">SPAMBucket</span> — these know nothing about page tables or miss handling. Layer 1 (<span style="font-weight: bold;">TLB interface</span>) wraps Layer 0 with the <span class="f_CodeExample">Ev6SiliconTLB</span> and <span class="f_CodeExample">Ev6TLBInterface</span> classes, providing lookup, insert, and invalidate operations without trait or page-table knowledge. Layer 2 (<span style="font-weight: bold;">PAL / MMU / miss handling</span>) performs page table walks on TLB miss, raises translation faults (TNV, FOE, FOW, FOR), and calls Layer 1 insert to refill the TLB.</p>
 <p class="p_Normal">&nbsp;</p>
@@ -138,7 +138,6 @@
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
-
 
 
 

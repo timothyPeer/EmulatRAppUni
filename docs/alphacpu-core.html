@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="Excellent — here is **Chapter 12**, written as the **first chapter of Group 2 (Core Processor Implementation)**. This chapter is intentionally *mechanical, ownership-focused,..." />
+   <meta name="description" content="Introduction &nbsp;The AlphaCPU Core represents the central execution engine of EMulatR. It is responsible for maintaining architectural state, coordinating instruction execution,..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,13 +24,13 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #2C5D88;
+        background: #F0F0F0;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #FFF }     
+      #idheader h1 span { color: #000000 }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_white.png');
+        background-image:url('hm_webhelp_buttons_grey.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_orange.png');
+        background-image:url('hm_webhelp_buttons_yellow.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #FFF; }
+      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #000000; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -127,273 +127,127 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">Excellent — here is **Chapter 12**, written as the **first chapter of Group 2 (Core Processor Implementation)**. This chapter is intentionally *mechanical, ownership-focused, and code-oriented*, not conceptual. It answers *“who owns what and who drives execution.”*</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Introduction</span></h3>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">You can drop this in verbatim.</p>
+<p class="p_Normal">The AlphaCPU Core represents the central execution engine of EMulatR. It is responsible for maintaining architectural state, coordinating instruction execution, managing traps and interrupts, and enforcing the behavioral guarantees defined by the Alpha AXP System Architecture.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
+<p class="p_Normal">This component does not model physical silicon or pipeline timing at the microarchitectural level. Instead, it implements the architectural contract of the Alpha processor — ensuring that all visible state transitions, exceptions, memory ordering semantics, and privilege boundaries conform to the specification.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"># Chapter 12 – AlphaCPU Core</p>
+<p class="p_Normal">The AlphaCPU Core serves as the authoritative owner of:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.1 Purpose of This Chapter</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Program Counter (PC) state</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Integer and floating-point register files</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Processor Status and mode control</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Trap and exception dispatch</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Interrupt level management (IPL)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Memory ordering and barrier semantics</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Per-CPU execution lifecycle</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This chapter defines the **AlphaCPU core object** and its responsibilities within EmulatR.</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Architectural Responsibilities</span></h3>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU is the **unit of execution**. It owns:</p>
+<p class="p_Normal">The AlphaCPU Core performs the following major functions:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* The processor run loop</p>
-<p class="p_Normal">* Pipeline state</p>
-<p class="p_Normal">* Architectural registers</p>
-<p class="p_Normal">* Per-CPU execution context</p>
-<p class="p_Normal">* Interaction with SMP, interrupts, and PAL</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Instruction Lifecycle Management</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The CPU core controls the per-cycle execution loop, including:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Instruction fetch coordination</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Decode dispatch routing</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Execution domain selection (Integer, FP, Vector, Control)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Writeback and architectural state update</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Precise exception tracking</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This chapter does **not** redefine architectural rules (those are in Group 1).</p>
-<p class="p_Normal">Instead, it explains **how those rules are enforced in code**.</p>
+<p class="p_Normal">Each instruction must either complete fully or generate a precise trap as defined by the Alpha architecture.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Architectural State Authority</span></h3>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.2 AlphaCPU as the Unit of Execution</p>
+<p class="p_Normal">The AlphaCPU Core is the single authoritative owner of architectural state for a processor instance. This includes:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Each AlphaCPU instance represents **one physical Alpha processor**.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>32 integer registers</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>32 floating-point registers</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Program counter and next-PC sequencing</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Processor mode and privilege transitions</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Interrupt Priority Level (IPL)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Trap state</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Key properties:</p>
+<p class="p_Normal">State transitions occur only through well-defined execution paths to preserve determinism and correctness.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* One AlphaCPU = one hardware CPU</p>
-<p class="p_Normal">* Each AlphaCPU runs independently</p>
-<p class="p_Normal">* All AlphaCPUs execute concurrently in SMP</p>
-<p class="p_Normal">* AlphaCPU owns *all* per-CPU state</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Trap and Exception Control</span></h3>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">There is no shared CPU object and no master CPU.</p>
+<p class="p_Normal">The Alpha architecture requires precise exception behavior. The AlphaCPU Core ensures that:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Exceptions are reported in architectural order</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Faulting instructions do not partially commit state</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Barrier instructions enforce ordering guarantees</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Trap vectors are dispatched correctly</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>PAL entry and return sequences preserve architectural integrity</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Trap handling is deterministic and SMP-safe.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.3 Ownership Model</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Memory Ordering Enforcement</span></h3>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### 12.3.1 AlphaCPU Owns</p>
+<p class="p_Normal">Alpha’s weak memory ordering model requires explicit enforcement of barrier semantics. The CPU Core ensures that:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU directly owns or controls:</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>MB, WMB, and related instructions serialize operations appropriately</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Memory operations obey architectural visibility rules</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>SMP interactions remain race-free and deterministic</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* AlphaPipeline</p>
-<p class="p_Normal">* Register banks (integer, FP)</p>
-<p class="p_Normal">* Processor status (PS, IPL)</p>
-<p class="p_Normal">* TLBs (ITB / DTB)</p>
-<p class="p_Normal">* Write buffers</p>
-<p class="p_Normal">* LL/SC reservation state (via GuestMemory hooks)</p>
-<p class="p_Normal">* FaultDispatcher (per-CPU view)</p>
-<p class="p_Normal">* PalBox execution context</p>
-<p class="p_Normal">* CPU-local interrupt state</p>
+<p class="p_Normal">The CPU does not speculate beyond architectural guarantees.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">No other subsystem may mutate this state directly.</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">SMP Awareness</span></h3>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
+<p class="p_Normal">Each AlphaCPU instance represents a single logical processor. In multiprocessor configurations:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### 12.3.2 AlphaCPU Does *Not* Own</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Each CPU maintains independent architectural state</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Inter-processor interrupts (IPI) are delivered via the interrupt subsystem</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Memory visibility and barrier semantics are preserved</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Trap and interrupt resolution remains per-CPU</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The AlphaCPU Core is therefore both isolated and coordinated.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU does **not** own:</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Design Philosophy</span></h3>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* GuestMemory (shared)</p>
-<p class="p_Normal">* SafeMemory (shared)</p>
-<p class="p_Normal">* Devices or MMIO</p>
-<p class="p_Normal">* DeviceManager</p>
-<p class="p_Normal">* MMIOManager</p>
-<p class="p_Normal">* SMPManager</p>
-<p class="p_Normal">* Global interrupt controller</p>
+<p class="p_Normal">The AlphaCPU Core is designed according to the following principles:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">These are accessed via defined interfaces only.</p>
+<p class="p_Normal">Architectural correctness over microarchitectural mimicry</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Explicit control over state transitions</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Clear separation of concerns</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Deterministic execution behavior</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Strict privilege boundary enforcement</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.4 CPU Lifecycle</p>
+<p class="p_Normal">It intentionally avoids modeling speculative execution or cache timing characteristics that are not architecturally visible.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### 12.4.1 Creation</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Role Within the Emulator Stack</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<p class="p_Normal">Within the EMulatR layered architecture, the AlphaCPU Core sits between:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPUs are created by **SMPManager**.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The execution domain layers (IntegerExecutor, FloatingPointExecutor, VectorExecutor, ControlExecutor)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The memory subsystem</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The interrupt controller</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The PAL interface layer</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">During creation:</p>
+<p class="p_Normal">It orchestrates these subsystems while remaining the single point of truth for processor state.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* CPUId is assigned</p>
-<p class="p_Normal">* Architectural state is initialized</p>
-<p class="p_Normal">* Pipeline is reset</p>
-<p class="p_Normal">* TLBs are cleared</p>
-<p class="p_Normal">* PAL mode is inactive</p>
-<p class="p_Normal">* Interrupts are masked</p>
-<p class="p_Normal">* PC is set to reset vector</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Chapter Scope</span></h3>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">No execution occurs during construction.</p>
+<p class="p_Normal">This chapter describes:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>The structure and responsibilities of the AlphaCPU class</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Execution loop design</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Trap dispatch mechanics</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Interaction with the executor hierarchy</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Memory ordering integration</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>SMP coordination mechanisms</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### 12.4.2 Startup</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Execution begins when:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* SMPManager starts the CPU run loop</p>
-<p class="p_Normal">* Initial PC is valid</p>
-<p class="p_Normal">* Reset state is complete</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Each AlphaCPU enters its own run loop.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### 12.4.3 Shutdown</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU exits its run loop when:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* HALT instruction retires</p>
-<p class="p_Normal">* Fatal exception occurs</p>
-<p class="p_Normal">* External shutdown signal is received</p>
-<p class="p_Normal">* Simulation ends</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Shutdown is graceful:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Pipeline drains or flushes</p>
-<p class="p_Normal">* Device state remains intact</p>
-<p class="p_Normal">* Other CPUs continue unless directed otherwise</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.5 The AlphaCPU Run Loop</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### 12.5.1 Role of the Run Loop</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The run loop is the **clocked execution engine**.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Each iteration represents **one hardware cycle**.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Responsibilities per cycle:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">1. Pre-cycle checks (halt, interrupts, exceptions)</p>
-<p class="p_Normal">2. Pipeline advancement</p>
-<p class="p_Normal">3. Barrier release evaluation</p>
-<p class="p_Normal">4. Exception / interrupt delivery</p>
-<p class="p_Normal">5. Housekeeping and statistics</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### 12.5.2 Run Loop Invariants</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The run loop must enforce:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* One cycle per iteration</p>
-<p class="p_Normal">* Deterministic ordering</p>
-<p class="p_Normal">* No mid-instruction interruption</p>
-<p class="p_Normal">* No speculative privilege leakage</p>
-<p class="p_Normal">* Precise exception semantics</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The run loop is the *only* place where execution advances.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.6 Pipeline Integration</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU owns the **AlphaPipeline** and drives it explicitly.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Responsibilities:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Advance pipeline stages</p>
-<p class="p_Normal">* Handle stalls and flushes</p>
-<p class="p_Normal">* Coordinate serialization</p>
-<p class="p_Normal">* Commit architectural state in WB</p>
-<p class="p_Normal">* Restart fetch after control flow changes</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU does **not** execute instructions directly — it delegates execution to the pipeline and grains.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.7 Interaction with FaultDispatcher</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU is responsible for:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Polling pending faults and interrupts</p>
-<p class="p_Normal">* Determining delivery timing</p>
-<p class="p_Normal">* Initiating pipeline flushes</p>
-<p class="p_Normal">* Entering PAL on delivery</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Fault detection may occur anywhere, but **delivery is centralized in AlphaCPU**.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.8 Interrupt Handling Responsibility</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Samples interrupt state during pre-cycle phase</p>
-<p class="p_Normal">* Applies masking and IPL rules</p>
-<p class="p_Normal">* Selects highest-priority pending interrupt</p>
-<p class="p_Normal">* Initiates PAL entry when delivered</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Interrupts never interrupt instruction execution mid-cycle.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.9 PAL Integration</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU enforces PAL semantics by:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Serializing CALL_PAL</p>
-<p class="p_Normal">* Clearing LL/SC reservations on PAL entry</p>
-<p class="p_Normal">* Capturing register-context snapshots</p>
-<p class="p_Normal">* Blocking speculative execution</p>
-<p class="p_Normal">* Enforcing HW_REI restore semantics</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">PAL execution is coordinated, not special-cased.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.10 SMP Awareness</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Each AlphaCPU:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Knows its CPUId</p>
-<p class="p_Normal">* Participates in SMP coordination</p>
-<p class="p_Normal">* Receives IPIs as interrupts</p>
-<p class="p_Normal">* Performs local TLB invalidation</p>
-<p class="p_Normal">* Enforces per-CPU privilege boundaries</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU never directly modifies another CPU’s state.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.11 Timing and Determinism</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU guarantees:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Deterministic execution per CPU</p>
-<p class="p_Normal">* Deterministic interaction ordering</p>
-<p class="p_Normal">* Explicit visibility boundaries</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">All nondeterminism is **intentional and observable**.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.12 Error Handling Policy</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU responds to errors by:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Raising precise exceptions</p>
-<p class="p_Normal">* Entering PAL</p>
-<p class="p_Normal">* Halting execution if unrecoverable</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Undefined behavior is not permitted.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 12.13 Summary</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaCPU is:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* The sole execution authority</p>
-<p class="p_Normal">* The owner of per-CPU architectural state</p>
-<p class="p_Normal">* The driver of the pipeline</p>
-<p class="p_Normal">* The arbiter of exceptions and interrupts</p>
-<p class="p_Normal">* The enforcer of privilege boundaries</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Nothing executes unless AlphaCPU allows it.</p>
+<p class="p_Normal">The AlphaCPU Core forms the architectural nucleus of EMulatR and provides the foundation upon which firmware bring-up and operating system execution are built.</p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
-
 
 
 

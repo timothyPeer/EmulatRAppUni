@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<title>Print Version Template</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name='viewport' content='width=device-width, initial-scale=1, minimal-ui'/>
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+	<meta name="generator" content="Help &amp; Manual" />
+	<meta name="robots" content="noindex, nofollow" />
+	<link id="pagestylesheet" type="text/css" href="./css/hmprojectstyles.css" rel="stylesheet" />
+	<link type="text/css" href="./css/hmwebhelp_main_print.css" rel="stylesheet" />
+	<script type="text/javascript" src="./js/jquery.js"></script>
+<script type="text/javascript">
+	
+	function hmLoadTopic(topicObj) {
+		$("title").text(topicObj.hmTitle);	
+		$("p#topictitle").html(topicObj.hmTitle);
+		$("div#topicbody").html(topicObj.hmBody);
+	}
+
+	$(document).ready(function(){
+		var printTopic = document.location.search;
+		printTopic = "jstopics/" + printTopic.substr(1,printTopic.lastIndexOf("\.")) + "js";
+		$.getScript(printTopic,function() {
+			$("a").attr("href","javascript:void(0);").on("click",function(event){
+				event.preventDefault();
+				event.stopPropagation();
+				});
+			$("img.dropdown-toggle-icon").parent("td").hide();
+			$("div.dropdown-toggle-body").each(function(){
+				$(this).show();
+				});
+			setTimeout(function(){
+			window.print();
+			},300);
+			});
+	});
+	</script>
+</head>
+<body>
+<div id="topicheader"><p id="topictitle" class="topictitle"></p></div>
+<div id="topicbody">
+
+</div> 
+
+</body>
+</html>

@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="EmulatR Alpha/Tru64 emulation. &nbsp; &nbsp; Architecture Overview What kind of machine is this? It defines what must be true, not how it’s implemented. Core Processor Implementation" />
+   <meta name="description" content="Alpha AXP System Architecture Emulator &nbsp;EMulatR is a high-fidelity architectural emulator of the DEC Alpha AXP processor family. It is designed to faithfully reproduce the..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,13 +24,13 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #2C5D88;
+        background: #F0F0F0;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #FFF }     
+      #idheader h1 span { color: #000000 }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_white.png');
+        background-image:url('hm_webhelp_buttons_grey.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_orange.png');
+        background-image:url('hm_webhelp_buttons_yellow.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #FFF; }
+      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #000000; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -127,78 +127,87 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
+<p class="p_Normal">Alpha AXP System Architecture Emulator</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">EmulatR Alpha/Tru64 emulation. </p>
+<p class="p_Normal">EMulatR is a high-fidelity architectural emulator of the DEC Alpha AXP processor family. It is designed to faithfully reproduce the architectural behavior of Alpha systems while running efficiently on modern hardware.</p>
 <p class="p_Normal">&nbsp;</p>
-<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0;">
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><br />
-</td>
-<td style="vertical-align:top; padding:0; border:none"><br />
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal"><a href="architecture-overview.html" class="topiclink">Architecture Overview</a></p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">What kind of machine is this? It defines what must be true, <span style="font-style: italic;">not how it’s implemented.</span></p>
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal"><a href="core-processor-implementation.html" class="topiclink">Core Processor Implementation</a></p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">How the CPU is built?</p>
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal"><a href="memory--synchronization-intern.html" class="topiclink">Memory &amp; Synchronization Internals</a></p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">How memory really works</p>
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal"><a href="device-subsystem.html" class="topiclink">Device Subsystem</a></p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">How the outside world connects</p>
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal"><a href="debugging_-tracing_-and-valida.html" class="topiclink">Debugging, Tracing, and Validation</a></p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">How you prove it’s correct</p>
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><br />
-</td>
-<td style="vertical-align:top; padding:0; border:none"><br />
-</td>
-</tr>
-</table>
-</div>
+<p class="p_Normal">The project focuses on correctness, determinism, and structural clarity rather than cycle-exact microarchitectural simulation. Its goal is to provide a robust execution environment capable of booting and operating historical operating systems such as:</p>
 <p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>OpenVMS</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Tru64 UNIX (DIGITAL UNIX)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Linux for Alpha</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>SRM firmware environments</p>
 <p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Design Philosophy</span></h3>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">It defines what must be true, not how it’s implemented.</p>
+<p class="p_Normal">EMulatR follows a layered architectural model. Each subsystem has a clearly defined responsibility and communicates through explicit contracts. The emulator prioritizes:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">AlphaPipeLine</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>PC</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>RAW</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Valid State</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Architectural correctness over microarchitectural timing</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Deterministic execution</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Explicit memory ordering semantics</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Precise exception and trap behavior</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>SMP safety and race-free interaction</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Clear separation of CPU, memory, and device domains</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">DecodedInstruction</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Decoded State</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Executed State</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Fault Pending State</p>
+<p class="p_Normal">The project does not attempt to replicate gate-level timing differences between EV4, EV5, EV6, or EV67 silicon revisions. Instead, it models the architectural guarantees defined by the Alpha System Architecture (ASA).</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Exception Carrier</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Pending Event</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Exception mapping – ExceptionMapping_inl::mapClassToPalVector(const PendingEvent&amp;)</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 26px; margin-left: 0;"><span class="f_Normal" style="font-family: 'Courier New';display:inline-block;width:13px;margin-left:-13px">o</span>ExceptionMapping_inl</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Vector table – PalVectorId_refined + PalVectorEntry + PalVectorTable</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">&nbsp;</span></h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Architectural Scope</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EMulatR implements:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Alpha AXP instruction decoding and execution</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>PALcode interface handling</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Integer, floating-point, vector, and control instruction classes</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Precise trap and exception handling</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Memory ordering semantics (MB, WMB, RMB, etc.)</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>SMP-aware CPU execution model</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Device abstraction and MMIO handling</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Firmware bring-up targeting SRM boot</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The system is structured to mirror Alpha’s conceptual hardware components, including execution domains such as I-Box, E-Box, F-Box, M-Box, and control layers.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Project Goals</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The primary objectives of EMulatR are:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Achieve architectural correctness as defined by the Alpha AXP specification.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Boot to the SRM console prompt.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Support multiprocessor (SMP) configurations.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Provide a structured and maintainable emulator framework.</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Enable long-term preservation and experimentation with Alpha software ecosystems.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Non-Goals</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EMulatR explicitly does not aim to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Provide cycle-perfect silicon modeling</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Implement speculative out-of-order execution beyond architectural requirements</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Model hardware-accurate cache latencies</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Reproduce undocumented vendor behavior</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>These constraints preserve maintainability and verifiability.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h3 class="p_Heading3" style="page-break-after: avoid;"><span class="f_Heading3">Intended Audience</span></h3>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">EMulatR is intended for:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Systems engineers and architecture enthusiasts</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Researchers exploring Alpha AXP systems</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Developers interested in firmware bring-up and OS porting</p>
+<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>Preservation efforts for legacy Alpha software</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_Heading3">Current Status</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The project is under active development and progressing toward full SRM boot support. Major architectural components are implemented, with ongoing refinement of trap handling, firmware integration, and device modeling.</p>
+
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
-
 
 
 

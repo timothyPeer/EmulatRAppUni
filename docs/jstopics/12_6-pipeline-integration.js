@@ -1,0 +1,12 @@
+hmLoadTopic({
+hmKeywords:"",
+hmTitle:"12.6 Pipeline Integration",
+hmDescription:"AlphaCPU owns the AlphaPipeline and drives it explicitly. The pipeline is initialized when executeLoop() calls injectOtherBoxes() to connect all execution boxes. Each cycle,...",
+hmPrevLink:"12_5-the-alphacpu-run-loop.html",
+hmNextLink:"12_7-interrupt-and-exception-h.html",
+hmParentLink:"alphacpu-core.html",
+hmBreadCrumbs:"<a href=\"index.html\">Introduction<\/a> &gt; <a href=\"architecture-overview.html\">Architecture Overview<\/a> &gt; <a href=\"alphacpu-core.html\">Chapter 12 – AlphaCPU Core<\/a>",
+hmTitlePath:"Introduction > Architecture Overview > Chapter 12 – AlphaCPU Core > 12.6 Pipeline Integration",
+hmHeader:"<h1 class=\"p_Heading1\" style=\"page-break-after: avoid;\"><span class=\"f_Heading1\">12.6 Pipeline Integration<\/span><\/h1>\n\r",
+hmBody:"<p class=\"p_Normal\">AlphaCPU owns the AlphaPipeline and drives it explicitly. The pipeline is initialized when executeLoop() calls injectOtherBoxes() to connect all execution boxes. Each cycle, AlphaCPU calls m_alphaPipeline→tick(fetchResult), which advances all six stages (WB→MEM→EX→IS→ID→IF in reverse order to prevent data hazards) and returns a BoxResult.<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">AlphaCPU\'s responsibilities toward the pipeline: advance pipeline stages (via tick()), handle stalls (pipeline self-manages via slot.stalled), handle flushes (m_alphaPipeline→flush() called from enterPalMode, executeREI, handleInterrupt, handleRedirect), coordinate serialization (CBox barrier flags in pipeline slots), and commit architectural state in WB (pipeline writes register payloads during stage_WB).<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">AlphaCPU does not execute instructions directly — it delegates execution to the pipeline and grains. The grain→execute() call happens inside AlphaPipeline::stage_EX(), not in AlphaCPU code.<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_SeeAlso\" style=\"page-break-after: avoid;\"><span class=\"f_SeeAlso\">See Also: <a href=\"chapter-3---pipeline-architect.html\" class=\"topiclink\">Chapter 3 - Pipeline Architecture<\/a>; <a href=\"alphapipeline-implementation.html\" class=\"topiclink\">Chapter 13 – AlphaPipeline Implementation<\/a>.<\/span><\/p>\n\r"
+})

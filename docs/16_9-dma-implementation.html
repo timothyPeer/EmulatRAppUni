@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="16.9.1 DMA Data Flow &nbsp;DMA (Direct Memory Access) allows devices to read from and write to GuestMemory directly, without CPU intervention for each byte transferred. In..." />
+   <meta name="description" content="16.9.1 DMA Data Flow &nbsp;DMA (Direct Memory Access) allows devices to read from and write to GuestMemory directly, without CPU intervention for each byte transferred. In EMulatR,..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,13 +24,13 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #2C5D88;
+        background: #F0F0F0;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #FFF }     
+      #idheader h1 span { color: #000000 }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_white.png');
+        background-image:url('hm_webhelp_buttons_grey.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_orange.png');
+        background-image:url('hm_webhelp_buttons_yellow.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #FFF; }
+      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #000000; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -129,7 +129,7 @@
 <!--ZOOMRESTART-->
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.9.1 DMA Data Flow</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">DMA (Direct Memory Access) allows devices to read from and write to GuestMemory directly, without CPU intervention for each byte transferred. In ASA-EmulatR, DMA operations are performed by device I/O threads and route through <span class="f_CodeExample">GuestMemory</span> using the <span class="f_CodeExample">AccessKind::DMARead</span> and <span class="f_CodeExample">AccessKind::DMAWrite</span> designators, which enables GuestMemory to apply DMA-specific access policies.</p>
+<p class="p_Normal">DMA (Direct Memory Access) allows devices to read from and write to GuestMemory directly, without CPU intervention for each byte transferred. In EMulatR, DMA operations are performed by device I/O threads and route through <span class="f_CodeExample">GuestMemory</span> using the <span class="f_CodeExample">AccessKind::DMARead</span> and <span class="f_CodeExample">AccessKind::DMAWrite</span> designators, which enables GuestMemory to apply DMA-specific access policies.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The typical DMA write path (device → GuestMemory): the device I/O thread fills a local data buffer from host-side I/O (e.g., disk read), calls <span class="f_CodeExample">DMACoherencyManager</span> to prepare the transfer (RX path: DeviceToRAM), writes data into GuestMemory via <span class="f_CodeExample">writeBlock()</span> with <span class="f_CodeExample">AccessKind::DMAWrite</span>, and signals coherency completion. The typical DMA read path (GuestMemory → device) follows the TX path: <span class="f_CodeExample">DMACoherencyManager</span> flushes CPU caches for the region (RAMToDevice), reads data from GuestMemory, and delivers it to the host-side I/O path.</p>
 <p class="p_Normal">&nbsp;</p>
@@ -138,7 +138,7 @@
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span class="f_CodeExample">DMACoherencyManager</span> (<span class="f_CodeExample">mmio_DMACoherencyManager.h</span>, ~579 lines) ensures that DMA transfers observe correct memory ordering with respect to CPU operations. It manages three coherency concerns:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-weight: bold;">TX path (RAMToDevice):</span> Before a device reads from GuestMemory (e.g., to fetch DMA descriptors or transmit buffer data), <span class="f_CodeExample">DMACoherencyManager</span> ensures that all prior CPU writes to the affected memory region are visible. In a real Alpha system, this would involve cache flush operations; in ASA-EmulatR, it involves draining the affected CPU's write buffer entries that overlap the DMA region.</p>
+<p class="p_Normal"><span style="font-weight: bold;">TX path (RAMToDevice):</span> Before a device reads from GuestMemory (e.g., to fetch DMA descriptors or transmit buffer data), <span class="f_CodeExample">DMACoherencyManager</span> ensures that all prior CPU writes to the affected memory region are visible. In a real Alpha system, this would involve cache flush operations; in EMulatR, it involves draining the affected CPU's write buffer entries that overlap the DMA region.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-weight: bold;">RX path (DeviceToRAM):</span> After a device writes to GuestMemory (e.g., depositing received network packets or disk read data), <span class="f_CodeExample">DMACoherencyManager</span> ensures that subsequent CPU reads from the affected region see the device-written data, not stale cached values. This involves invalidating any overlapping write buffer entries and, in SMP configurations, coordinating across multiple CPUs.</p>
 <p class="p_Normal">&nbsp;</p>
@@ -156,7 +156,6 @@
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
-
 
 
 

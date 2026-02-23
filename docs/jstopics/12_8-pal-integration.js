@@ -1,0 +1,12 @@
+hmLoadTopic({
+hmKeywords:"",
+hmTitle:"12.8 PAL Integration",
+hmDescription:"AlphaCPU provides two overloads of enterPalMode() — one for simple vector+faultPC entry, one for classified entry with PalEntryReason. Both follow the same core sequence:...",
+hmPrevLink:"12_7-interrupt-and-exception-h.html",
+hmNextLink:"12_9-smp-awareness.html",
+hmParentLink:"alphacpu-core.html",
+hmBreadCrumbs:"<a href=\"index.html\">Introduction<\/a> &gt; <a href=\"architecture-overview.html\">Architecture Overview<\/a> &gt; <a href=\"alphacpu-core.html\">Chapter 12 – AlphaCPU Core<\/a>",
+hmTitlePath:"Introduction > Architecture Overview > Chapter 12 – AlphaCPU Core > 12.8 PAL Integration",
+hmHeader:"<h1 class=\"p_Heading1\" style=\"page-break-after: avoid;\"><span class=\"f_Heading1\">12.8 PAL Integration<\/span><\/h1>\n\r",
+hmBody:"<p class=\"p_Normal\">AlphaCPU provides two overloads of enterPalMode() — one for simple vector+faultPC entry, one for classified entry with PalEntryReason. Both follow the same core sequence: saveContext(), set EXC_ADDR = faultPC, set PC = entryPC | 0x1, set IPL = 7, set CM = KERNEL, activate shadow registers (for CALL_PAL), flush pipeline.<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">executeREI() handles PAL exit: restoreContext() performs full register-context vector copy, return PC is extracted from restored state, slot.reiTarget and slot.pcModified direct the pipeline redirect, and flushPipeline() restarts execution at the restored PC.<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">commitPalReturnValue(PalResult) writes the PAL return value to the destination register after PAL call completion. contextSwitch(cpuId) breaks the LL\/SC reservation for the specified CPU — the minimal action required for a context switch.<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">Both enterPalMode() and executeREI() are AXP_HOT AXP_ALWAYS_INLINE — they are on the critical path for every exception, interrupt, and PAL call.<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_SeeAlso\" style=\"page-break-after: avoid;\"><span class=\"f_SeeAlso\">See Also: <a href=\"chapter-8---pal-and-privleged-.html\" class=\"topiclink\">Chapter 8 - PAL and Privileged Boundary<\/a>; <a href=\"chapter-8_4-call_pal---enterin.html\" class=\"topiclink\">8.4 CALL_PAL - Entering the Privileged Boundary (PalBox::enterPal)<\/a>; <a href=\"chapter-8_9-hw_rei---exiting-p.html\" class=\"topiclink\">8.9 HW_REI - Exiting PAL Mode<\/a> .<\/span><\/p>\n\r"
+})

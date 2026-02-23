@@ -1,0 +1,12 @@
+hmLoadTopic({
+hmKeywords:"",
+hmTitle:"22.3 Determinism as a Validation Tool",
+hmDescription:"Determinism is not merely a debugging aid — it is a validation instrument. By enforcing deterministic execution (Chapter 21), the emulator gains capabilities essential for...",
+hmPrevLink:"22_2-layered-validation-strate.html",
+hmNextLink:"22_4-exception-and-fault-valid.html",
+hmParentLink:"chapter-22---testing_-validati.html",
+hmBreadCrumbs:"<a href=\"index.html\">Introduction<\/a> &gt; <a href=\"architecture-overview.html\">Architecture Overview<\/a> &gt; <a href=\"chapter-22---testing_-validati.html\">Chapter 22 – Testing, Validation, and Architectural Compliance<\/a>",
+hmTitlePath:"Introduction > Architecture Overview > Chapter 22 – Testing, Validation, and Architectural Compliance > 22.3 Determinism as a Validation Tool",
+hmHeader:"<h1 class=\"p_Heading1\" style=\"page-break-after: avoid;\"><span class=\"f_Heading1\">22.3 Determinism as a Validation Tool<\/span><\/h1>\n\r",
+hmBody:"<p class=\"p_Normal\">Determinism is not merely a debugging aid — it is a validation instrument. By enforcing deterministic execution (Chapter 21), the emulator gains capabilities essential for verification:<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">Bugs are reproducible — any failing test can be re-run with identical results, eliminating the &quot;works on my machine&quot; problem. SMP races are observable — deterministic scheduling mode makes race conditions repeatable, converting heisenbugs into reproducible failures. Regressions are detectable — identical inputs across emulator versions must produce identical outputs; any divergence indicates a regression. Behavioral drift is measurable — long-running tests can be compared across builds to detect subtle changes in execution ordering or exception delivery.<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">All compliance testing assumes deterministic mode. Tests run without deterministic scheduling enabled are useful for performance characterization but do not constitute compliance evidence.<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_SeeAlso\" style=\"page-break-after: avoid;\"><span class=\"f_SeeAlso\">See Also: <a href=\"21_1-determinism-as-a-design-g.html\" class=\"topiclink\">21.1 Determinism as a Design Goal<\/a>; <a href=\"21_8-deterministic-replay.html\" class=\"topiclink\">21.8 Deterministic Replay<\/a>.<\/span><\/p>\n\r"
+})

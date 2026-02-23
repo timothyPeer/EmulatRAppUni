@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="16.6.1 Virtual Tape Architecture &nbsp;ASA-EmulatR emulates SCSI tape drives via the SCSITape class, which presents standard sequential-access SCSI semantics to the guest OS. The..." />
+   <meta name="description" content="16.6.1 Virtual Tape Architecture &nbsp;EMulatR emulates SCSI tape drives via the SCSITape class, which presents standard sequential-access SCSI semantics to the guest OS. The guest..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,13 +24,13 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #2C5D88;
+        background: #F0F0F0;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #FFF }     
+      #idheader h1 span { color: #000000 }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_white.png');
+        background-image:url('hm_webhelp_buttons_grey.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_orange.png');
+        background-image:url('hm_webhelp_buttons_yellow.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #FFF; }
+      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #000000; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -129,9 +129,9 @@
 <!--ZOOMRESTART-->
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.6.1 Virtual Tape Architecture</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR emulates SCSI tape drives via the <span class="f_CodeExample">SCSITape</span> class, which presents standard sequential-access SCSI semantics to the guest OS. The guest sees a tape device that responds to SCSI tape commands (READ, WRITE, WRITE_FILEMARKS, SPACE, REWIND, ERASE, LOAD/UNLOAD) and maintains tape position state (BOT, EOT, file mark positions, block count).</p>
+<p class="p_Normal">EMulatR emulates SCSI tape drives via the <span class="f_CodeExample">SCSITape</span> class, which presents standard sequential-access SCSI semantics to the guest OS. The guest sees a tape device that responds to SCSI tape commands (READ, WRITE, WRITE_FILEMARKS, SPACE, REWIND, ERASE, LOAD/UNLOAD) and maintains tape position state (BOT, EOT, file mark positions, block count).</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">On the host side, the virtual tape is backed by a disk file that stores tape data in a structured container format. ASA-EmulatR supports two — and possibly three — variant formats for guest virtual tape to disk storage:</p>
+<p class="p_Normal">On the host side, the virtual tape is backed by a disk file that stores tape data in a structured container format. EMulatR supports two — and possibly three — variant formats for guest virtual tape to disk storage:</p>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.6.2 Supported Tape Container Formats</span></h2>
@@ -145,7 +145,7 @@
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">16.6.3 Format Selection and Tape Operations</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The tape container format is selected per device instance in <span class="f_CodeExample">ASA-EmulatR.ini</span> and is detected by the <span class="f_CodeExample">SCSITape</span> class at device initialization by inspecting the file header. All tape operations — read, write, space, rewind — are translated into host-side file seek and read/write operations against the container file, with the container format handling record framing and file mark encoding.</p>
+<p class="p_Normal">The tape container format is selected per device instance in <span class="f_CodeExample">EMulatR.ini</span> and is detected by the <span class="f_CodeExample">SCSITape</span> class at device initialization by inspecting the file header. All tape operations — read, write, space, rewind — are translated into host-side file seek and read/write operations against the container file, with the container format handling record framing and file mark encoding.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The guest OS is unaware of the host-side container format. It sees a standard SCSI sequential-access device responding to standard SCSI tape commands. The container format is an emulator implementation detail that affects only host-side storage layout and interoperability with other emulator platforms.</p>
 <p class="p_Normal">&nbsp;</p>
@@ -154,7 +154,6 @@
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
-
 
 
 

@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="This chapter defines how ASA-EmulatR enables systematic debugging, high-fidelity tracing, and repeatable deterministic execution across single-CPU and SMP configurations...." />
+   <meta name="description" content="This chapter defines how EMulatR enables systematic debugging, high-fidelity tracing, and repeatable deterministic execution across single-CPU and SMP configurations...." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,13 +24,13 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #2C5D88;
+        background: #F0F0F0;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #FFF }     
+      #idheader h1 span { color: #000000 }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_white.png');
+        background-image:url('hm_webhelp_buttons_grey.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_orange.png');
+        background-image:url('hm_webhelp_buttons_yellow.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #FFF; }
+      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #000000; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -127,18 +127,17 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">This chapter defines how ASA-EmulatR enables systematic debugging, high-fidelity tracing, and repeatable deterministic execution across single-CPU and SMP configurations. Everything before this chapter defines behavior; this chapter defines how that behavior is proved, reproduced, and understood when failures occur.</p>
+<p class="p_Normal">This chapter defines how EMulatR enables systematic debugging, high-fidelity tracing, and repeatable deterministic execution across single-CPU and SMP configurations. Everything before this chapter defines behavior; this chapter defines how that behavior is proved, reproduced, and understood when failures occur.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-weight: bold;">Core Principle:</span> An emulator that cannot explain why something happened is not finished. ASA-EmulatR treats debugging and determinism as first-class architectural features, not optional tooling layered on afterward.</p>
+<p class="p_Normal"><span style="font-weight: bold;">Core Principle:</span> An emulator that cannot explain why something happened is not finished. EMulatR treats debugging and determinism as first-class architectural features, not optional tooling layered on afterward.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-weight: bold;">Scope:</span> This chapter covers determinism guarantees and their enforcement, nondeterminism identification and control, the EXECTRACE macro instrumentation system, DEBUG_LOG subsystem logging, instruction/pipeline/exception/interrupt/memory tracing, the LogReader diagnostic application, breakpoints and watchpoints, deterministic replay, SMP debugging considerations, and the performance-vs-observability trade-off. It does not cover the testing and validation strategy (Chapter 22) or the architectural invariant definitions themselves (Chapter 11).</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter_11___architectural_invabec0da0.html" class="topiclink">Chapter 11 – Architectural Invariants</a> (determinism and observability invariants); <a href="chapter_22___testing__validati1a2b3c4d.html" class="topiclink">Chapter 22 – Testing, Validation, and Architectural Compliance</a> (verification strategy).</span></p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter-11---architectural-inv.html" class="topiclink">Chapter 11 - Architectural Invariants</a> (determinism and observability invariants); <a href="chapter-22---testing_-validati.html" class="topiclink">Chapter 22 – Testing, Validation, and Architectural Compliance</a> (verification strategy).</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
-
 
 
 

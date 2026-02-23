@@ -1,0 +1,12 @@
+hmLoadTopic({
+hmKeywords:"",
+hmTitle:"globalEv6PteCache",
+hmDescription:"Implementation:  Put the SPAMManager singleton into Layer 0 (silicon). ✔ Initialize it once at emulator boot through a static initialize() method. ✔ Access it only through Ev6T",
+hmPrevLink:"",
+hmNextLink:"",
+hmParentLink:"appendix---trait-examples.html",
+hmBreadCrumbs:"",
+hmTitlePath:"Introduction > Appendix > Appendix I – Global Singletons",
+hmHeader:"<h1 class=\"p_Heading1\" style=\"page-break-after: avoid;\"><span class=\"f_Heading1\">globalEv6PteCache<\/span><\/h1>\n\r",
+hmBody:"<p class=\"p_Normal\">Implementation:<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">Put the SPAMManager singleton into Layer 0 (silicon).<\/p>\n\r<p class=\"p_Normal\">✔ Initialize it once at emulator boot through a static initialize() method.<\/p>\n\r<p class=\"p_Normal\">✔ Access it only through Ev6TLBInterface in Layer 1.<\/p>\n\r<p class=\"p_Normal\">✔ Layer 2 (PAL\/API) should not know that templates or traits even exist.<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\"><span style=\"font-weight: bold;\">initialization: <\/span><\/p>\n\r<p class=\"p_CodeExample\"><span class=\"f_CodeExample\">Ev6VMConfig&nbsp;cfg{};<\/span><\/p>\n\r<p class=\"p_CodeExample\"><span class=\"f_CodeExample\">cfg.basePageSize&nbsp;=&nbsp;systemConfig.vm.pageSize;&nbsp;&nbsp;&nbsp;\/\/&nbsp;8K,&nbsp;16K,&nbsp;32K,&nbsp;64K<\/span><\/p>\n\r<p class=\"p_CodeExample\"><span class=\"f_CodeExample\">cfg.enableSuperpage64K&nbsp;=&nbsp;systemConfig.vm.enable64K;<\/span><\/p>\n\r<p class=\"p_CodeExample\"><span class=\"f_CodeExample\">&nbsp;<\/span><\/p>\n\r<p class=\"p_CodeExample\"><span class=\"f_CodeExample\">Ev6SiliconTLB_Singleton::initialize(cpuCount,&nbsp;cfg);<\/span><\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">Ev6SiliconTLB_Singleton::instance().spam()<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">bool Ev6TLBInterface::lookupDTB(...) {<\/p>\n\r<p class=\"p_Normal\"> &nbsp; &nbsp;auto &amp;spam = Ev6SiliconTLB_Singleton::instance().spam();<\/p>\n\r<p class=\"p_Normal\"> &nbsp; &nbsp;return spam.tlbLookup(...);<\/p>\n\r<p class=\"p_Normal\">}<\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">AlphaCPU: <\/p>\n\r<p class=\"p_Normal\">&nbsp;<\/p>\n\r<p class=\"p_Normal\">Ev6TLBInterface g_tlbInterface(cpuCount);<\/p>\n\r"
+})

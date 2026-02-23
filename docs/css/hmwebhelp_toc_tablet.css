@@ -1,0 +1,137 @@
+/* Reset Styles for Consistency */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+	}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+	}
+html {
+	-webkit-text-size-adjust: 100%;
+}
+html, body {
+	font-size: 110%;
+	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+	color: #000000;
+	background-color:transparent;
+	overflow: hidden;
+	}
+* {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+	}
+div#hmpageheader {
+	position: absolute;
+	top: 0; left: 0.313rem; right: 0.313rem;
+	background-color: transparent;
+	}
+div#hmpagebody {
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0;
+	background-color: #e8eafd;
+	overflow-y: auto; overflow-x: hidden;
+	border-style: solid;
+	border-color: #888888;
+	border-width: thin thin 0 0;
+	border-radius: 0 0 0 0;
+	padding: 0;
+	margin: 0 0 0 0;
+	-webkit-overflow-scrolling: touch;
+	}
+
+p#tocnavbar { display: table-cell;}
+
+/* General */
+.desktop {
+	display: none !important;
+	}
+.phone {
+	display: none !important;
+	}
+.noscript { 
+	display: none !important;
+	}
+.scripted {
+	
+	}
+.tablet {
+	
+	}
+.desk_tablet {
+	
+	}
+
+.navbar { font-size: 120%; }
+
+/* TOC LIST CSS */
+div#hmtoctree {
+	position: absolute;
+	left: 0; right: 0; bottom: 0; top: 0.2rem;
+	}
+ul#toc, ul#toc ul { 
+	padding: 0; margin: 0;
+	list-style-type: none;
+	}
+ul#toc li { 
+	cursor: pointer;
+	padding: 0;
+	background-repeat: no-repeat;
+	}
+
+ul#toc li > span {
+	display: block;
+	padding: 0.143rem 0.143rem 0.143rem 1.850rem;
+	background-repeat: no-repeat;
+	background-position: 0.5rem 0.4rem;
+	background-size: 1.1rem;
+	color: #444444;
+	}
+ul#toc li.lv2 span{
+	background-position: 1.3rem 0.4rem;
+	padding-left: 2.50rem;
+	}
+
+ul#toc li.lv3 span {
+	background-position: 2rem 0.4rem;
+	padding-left: 3.214rem;
+	}
+ul#toc li.lv4 span {
+	background-position: 2.70rem 0.4rem;
+	padding-left: 3.929rem;
+	}
+ul#toc li.lv5 span {
+	background-position: 3.4rem 0.4rem;
+	padding-left: 4.643rem;
+	}
+ul#toc li.lv6 span {
+	background-position: 4.2rem 0.4rem;
+	padding-left: 5.357rem;
+	}
+ul#toc li.lv7 span {
+	background-position: 4.9rem 0.4rem;
+	padding-left: 6.071rem;
+	}
+ul#toc li.current {
+	z-index: 10000;
+	}
+ul#toc li span.current {
+	background-color: transparent;
+	color: #000000;
+	font-weight: bold;
+	text-decoration: underline;
+	outline: thin solid transparent;
+	}
+ul#toc ul { 
+	
+	}
+	
+/* TOC LIST CSS */
