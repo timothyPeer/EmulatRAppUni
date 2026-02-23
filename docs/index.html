@@ -14,7 +14,6 @@
   <script type="text/javascript" src="helpman_navigation.js"></script>
   <script type="text/javascript" src="hmcontextids.js"></script>
   <link type="text/css" href="default.css" rel="stylesheet" />
-  <link type="text/css" href="style_header.css" rel="stylesheet" />
 
   <style type="text/css">
     html {
@@ -33,24 +32,42 @@
       right: 0px;
       top: 0px;
       height: 130px;
-      background: #2C5D88;  /* Header blue background */
+      text-align: center;   /* Project title in header centered, for left-align, change to "left" */
+      vertical-align: top;  
       }
-    #hmheadbox .mobilemenu {
-      width: 32px;
-      height: 32px;
-      /* Mobile menu color: change the background-url to switch */
+    #mainheader {
+	  height: 69px;
+	  background: #2C5D88;
+	}
+    #hmheadbox a {
+      display: inline-block;
+      margin: 10px;
+      }
+    #hmheadbox a.logo {  /* Your logo in the top-left corner  */
+      float: left;
+      max-height: 60px;
+      }
+    #hmheadbox span.title {  /* Project title in the header  */
+		display: inline-block;
+		margin-top: 0.5em;
+		margin-right: 32px; /* center title in header properly */
+		padding: 0;
+		font-size: 1.8em;
+		font-weight: bold;
+		color: #FFF;
+		white-space: nowrap;
+		max-width: 80%;
+		overflow: hidden;
+		text-overflow: ellipsis
+      }
+    #hmheadbox a.mobilemenu {  /* Mobile menu: change background-url to switch color */
+      float: left;
+      width: 16px;
+      height: 16px;
       background:url('hm_webhelp_buttons_white.png') top left no-repeat;
-      background-position: 0 0;
-      margin-right: 20px;
-      opacity: 0.7;
-      transition: opacity 0.3s ease;
+      background-position: -112px -37px;
       display: none;
-    }
-    #hmheadbox .mobilemenu:hover {
-      /* Mobile menu highlight color: change the background-url to switch */
-      background:url('hm_webhelp_buttons_orange.png') top left no-repeat;
-      opacity: 1;
-    }
+      }
     #hmcontentslider {
       position: absolute;
       left: 0;
@@ -67,13 +84,25 @@
       display: block; 
     }
     #navbar {    /* This is the small bar above TOC/index with 3 icons: TOC|Index|Search */
-      height: 60px;	
+      height: 60px;
+	  padding-top: 0;
+      background: #2C5D88;	
     }
+	/* Fake (pseudo) element, enables vertical-align */
+	#navbar:before {
+	content: "";
+	display: inline-block;
+	vertical-align: middle;
+	height: 100%;
+	}
+	#navbar > * {
+	  vertical-align: middle;
+	}
     #navbar a {  /* Navigation buttons: change background-url to switch color */
       display: inline-block;
       width: 32px;
       height: 32px;
-      margin: 10px 14px 0 10px;
+      margin: 0px 14px 0 10px;
       background:url('hm_webhelp_buttons_white.png') top left no-repeat;
 	  opacity: 0.7;
     } 
@@ -96,7 +125,7 @@
       position: absolute;
       left: 0;
       width: 29.7%;
-      min-width: 100px;
+      min-width: 200px;
       height: 100%;
       }
     #hmnavframe {
@@ -111,12 +140,10 @@
       top: 0;
       right: 0;
       bottom: 0;
-      left: 30%;      
+      left: calc(30% - 1px);      
       background: #FFF;
       border-left: 1px dashed #ccc;
     }
-
-    nav #menu-wrapper { max-width: 100% }
 
     iframe { left:0;top:0;width:100%;height:100%;border:none;background:#ffffff; }
     #hmcontentbox iframe { position: absolute }
@@ -130,8 +157,8 @@
          display: none;
       }
       #hmcontentslider { 
-        /*top: 35px;      /* when you change the header height, changes this as well */ 
-        right: 0;
+        top: 35px;      /* when you change the header height, changes this as well */ 
+      right: 0;
 	  overflow-y: hidden;
 	  overflow-x: hidden;
 	  -webkit-overflow-scrolling: touch;
@@ -157,14 +184,17 @@
 	overflow: auto;
 	border: none;
       }
-      #hmheadbox .fullmenu {
-	display: none;
-      }
-      #hmheadbox .mobilemenu {
+      #hmheadbox a.mobilemenu {
 	display: inline-block;
+	padding: 3px;
+      }
+      #hmheadbox span.title {  /* Project title in the header  */
+        margin-right: 0; /* center title in header properly */
+		margin-top: 2px;
       }
     }
   </style>
+	
   <script type="text/javascript">
   var oldWwidth = $(window).width(), 
       newWwidth = oldWwidth,
@@ -284,6 +314,7 @@
 		}
 		
 	manageScrollbar();
+
 	});
 	
   </script>
@@ -292,102 +323,11 @@
 <body>
 <!-- Begin of header  --> 
 <div id="hmheadbox">
-<!-- Begin of EC Software Menu --> 
-  <nav id="main-nav">
-    <div id="menu-wrapper">
-      <ul>
-        <li id="homebutton"><a href="http://www.helpandmanual.com/index.html">&nbsp;</a></li>
-	<li class="fullmenu"><a href="http://www.helpandmanual.com/products_hm_overview.html">Products</a>
-	<ul>
-          <div class="mega-menu" id="menu-hm">
-	    <div class="mega-left">
-	         <span class="mmh1">Online help made easy</span>
-                 <li><a href="http://www.helpandmanual.com/products_hm_overview.html"><span class="mmicon" id="h-multi"></span><span class="mmh2">Multi-Channel Publishing</span></a></li>
-	         <li><a href="http://www.helpandmanual.com/products_hm_features.html"><span class="mmicon" id="h-team"></span><span class="mmh2">Teamwork Features</span></a></li>
-	    </div>
-	    <div class="mega-middle">
-	         <span class="mmh1">Power features</span>
-		 <li><a href="http://www.helpandmanual.com/products_hm_templates.html"><span class="mmicon" id="h-skins"></span><span class="mmh2">Templates + Skins</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/products_hm_pluspack.html"><span class="mmicon" id="h-star"></span><span class="mmh2">H+M Premium Pack</span></a></li>
-	    </div>
-	    <div class="mega-right">
-	         <li><a href="http://www.helpandmanual.com/products_hm_screenshots.html"><span class="mmsmall">Screenshots</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/products_hm_new.html"><span class="mmsmall">New in H+M 7</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/products_hm_case.html"><span class="mmsmall">Customer Case Studies</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/products_hm_quotes.html"><span class="mmsmall">User Quotes</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/products_hm_matrix.html"><span class="mmsmall">Compare Versions</span></a></li>
-	    </div>
-	  </div>
-	</ul>
-        </li>
-        <li class="fullmenu"><a href="http://www.helpandmanual.com/downloads.html">Free Trial</a>
-	<ul>
-          <div class="mega-menu" id="menu-download">
-            <div class="mega-left">
-	         <li><a href="http://www.helpandmanual.com/downloads.html"><span class="mmicon" id="d-hm"></span><span class="mmh1">Help+Manual</span><span class="mmh2">Free Trial Version</span><span class="mmsmall">30 days fully functional</span></a></li>
-            </div>
-	    <div class="mega-right">
-		 <span class="mmh2">More Downloads</span>
-		 <div class="mega-right-sub">
-		      <li><a href="http://www.helpandmanual.com/downloads_mscomp.html"><span class="mmsmall">HTML Help Compiler</span></a></li>
-		      <li><a href="http://www.helpandmanual.com/downloads.html#spell"><span class="mmsmall">Spell Checker Dictionarites</span></a></li>
-		      <li><a href="http://www.helpandmanual.com/downloads.html#oldver"><span class="mmsmall">Older Versions of H+M</span></a></li>
-		      <li><a href="http://www.helpandmanual.com/hm2go.html"><span class="mmsmall">HM2Go Webserver</span></a></li>
-		      <li><a href="http://www.helpandmanual.com/products_hhreg.html"><span class="mmsmall">HHReg Utility</span></a></li>
-		      <li><a href="http://www.helpandmanual.com/downloads_delphi.html"><span class="mmsmall">Delphi Components</span></a></li>
-		 </div>
-	    </div>
-	  </div>
-        </ul>
-	</li>
-	<li class="fullmenu"><a href="http://www.helpandmanual.com/order.html">Buy</a>
-	<ul>
-	  <div class="mega-menu" id="menu-shop">
-	    <div class="mega-left">
-	         <li><a href="order.html"><span class="mmicon" id="b-cart"></span><span class="mmh1">Buy Online</span><span class="mmsmall">Get started with Help+Manual now and unlock your trial version within minutes!</a></li>
-            </div>
-	    <div class="mega-right">
-	         <li><a href="http://www.helpandmanual.com/order.html?promotion=upgrade"><span class="mmicon" id="b-upgrade"></span><span class="mmh2">Upgrade from older versions</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/partner_resellers.html"><span class="mmicon" id="b-reseller"></span><span class="mmh2">Purchase from a reseller</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/partner_training.html"><span class="mmicon" id="b-training"></span><span class="mmh2">Training on Help+Manual</span></a></li>
-	    </div>
- 	  </div>
-	</ul>
-	</li>
-        <li class="fullmenu"><a class="selected" href="http://www.helpandmanual.com/support_help.html">Support</a>
-	<ul>
-	  <div class="mega-menu" id="menu-support">
-            <div class="mega-left">
-	         <li><a href="http://www.helpandmanual.com/help/"><span class="mmicon" id="s-doc"></span><span class="mmh1">Documentation</span><span class="mmsmall">The complete guide to Help+Manual online</span></a></li>
-            </div>
-	    <div class="mega-middle">
-		 <li><a href="http://www.helpandmanual.com/support_help.html"><span class="mmicon" id="s-help"></span><span class="mmh2">Help &amp; Support</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/support_forum.html"><span class="mmicon" id="s-forum"></span><span class="mmh2">Community &amp; Forums</span></a></li>
-            </div>
-	    <div class="mega-right">
-	         <li><a href="http://www.helpandmanual.com/support_tutorials.html"><span class="mmh2">Programming Tutorials</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/partner_training.html"><span class="mmh2">Training</span></a></li>
-		 <li><a href="http://www.helpandmanual.com/partner_translation.html"><span class="mmh2">Translation Services</span></a></li>
-	    </div>
-	  </div>
-	</ul>
-	</li>
-	<li class="fullmenu"><a href="http://www.helpandmanual.com/company_about.html">Company</a>
-	<ul>
-	  <div class="mega-menu" id="menu-company">
-	       <li><a href="http://www.helpandmanual.com/company_about.html"><span id="c-about"></span><span>About us</span></a></li>
-	       <li><a href="http://www.helpandmanual.com/company_contact.html"><span id="c-contact"></span><span>Contact</span></a></li>
-	       <li><a href="http://news.helpandmanual.com"><span id="c-news"></span><span>News Blog</span></a></li>
-	  </div>
-	</ul>
-        </li>
-
-        <!-- this is the lonely burger menu that switches the navigation panel -->
-        <li class="mobilemenu"><a href="javascript:showNav('toggle')" title="Show navigation"></a></li>
-      </ul>
-    </div>
-  </nav>
-<!-- End of EC Software Menu --> 
+     <div id="mainheader"> 
+     <a class="logo" href="http://www.helpandmanual.com"><img src="company-logo.png" style="border:none" /></a>
+     <a class="mobilemenu" title="Show Navigation"></a>
+     <span class="title">ASA-EmulatR Developer Guide</span>
+     </div>
 </div>
 <!-- end of header  --> 
 

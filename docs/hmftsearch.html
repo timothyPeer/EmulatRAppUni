@@ -53,6 +53,7 @@
    </style>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript">
+
 var parentScope = (parent.hmNavigationFrame);
 $(document).ready(function(){
 	if (parentScope) parent.currentNav("search");
@@ -76,5 +77,14 @@ $(document).ready(function(){
   <noscript>
     <p>You must have JavaScript enabled to use this version of the search engine.</p>
   </noscript>
+  <script type="text/javascript">
+  if (parentScope && /^https??:\/\//im.test(document.location)) {
+		var inputs = document.getElementsByTagName("input");
+		for (var i = 0; i < inputs.length; i++) {
+		  if (inputs[i].className=="zoom_button") { var btn = inputs[i]; }
+		  else if (inputs[i].className=="zoom_searchbox") { var sbx = inputs[i]; }
+		}
+  }
+  </script>
 </body>
 </html>

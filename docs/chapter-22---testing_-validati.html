@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="Excellent — **Chapter 22** is the capstone. This chapter is not about features; it is about **credibility**. It explains *how you know the emulator is correct*, *how..." />
+   <meta name="description" content="This chapter defines the verification strategy for ASA-EmulatR. It explains how correctness is tested, how regressions are prevented, and how architectural compliance with..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -19,17 +19,18 @@
       div#printheader { display: none; }
       #idheader { 
         width:100%; 
-        height:auto; 
+        min-height: 60px; 
         padding: 0; 
         margin: 0;
         position: fixed;
         top: 0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
-      #idheader table { background: #2C5D88; min-height: 59px }             
-      #idheader h1 { color: #FFF }     
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -63,17 +64,22 @@
       #overview-table a {text-decoration: none; color: black;}
       #overview-table a:visited {text-decoration: none; color: black;}
       #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
-      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
       .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
       .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
       .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
-      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
    </style>
    <style TYPE="text/css" media="print">
       div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
    </style>
+   
    <script type="text/javascript" src="jquery.js"></script>
    <script type="text/javascript" src="helpman_settings.js"></script>
    <script type="text/javascript" src="helpman_topicinit.js"></script>
@@ -95,7 +101,7 @@
 <div id="idheaderbg">
 <table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
   <tr>
-    <td class="topichead" style="text-align:left; vertical-align:bottom">
+    <td class="topichead" style="text-align:left; vertical-align:middle">
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?chapter-22---testing_-validati.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
@@ -106,9 +112,9 @@
     </td>
     <td class="topichead" id="idnav">
       
-      <a href="chapter-21---debugging_-tracin.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="21_11-repository-directory-map.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
       <a href="architecture-overview.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
-      <a href="next-steps.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      <a href="22_1-definition-of-correctness.html" title="Next Topic"><span class="hmbtnnext"></span></a>
       
     </td>
   </tr>  
@@ -121,409 +127,42 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">Excellent — **Chapter 22** is the capstone. This chapter is not about features; it is about **credibility**. It explains *how you know the emulator is correct*, *how regressions are prevented*, and *how architectural claims are defended*.</p>
+<p class="p_Normal">This chapter defines the verification strategy for ASA-EmulatR. It explains how correctness is tested, how regressions are prevented, and how architectural compliance with Alpha AXP is asserted and defended. This is the capstone chapter — it is not about features but about credibility.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Below is a **clean, final, publication-ready Chapter 22 – Testing, Validation, and Architectural Compliance**, written to close the document with authority and intellectual honesty.</p>
+<p class="p_Normal"><span style="font-weight: bold;">Core Principle:</span> Architectural claims must be provable, not aspirational. If behavior cannot be tested, it is not considered correct. ASA-EmulatR treats testing and validation as first-class architectural concerns, not post-hoc activities.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
+<p class="p_Normal"><span style="font-weight: bold;">Scope:</span> This chapter covers the definition of correctness, the five-layer validation strategy (unit → instruction → pipeline → SMP → system), determinism as a validation instrument, subsystem-specific validation (exceptions, memory ordering, LL/SC, PAL, devices), regression testing policy, the architectural compliance matrix, known deviations and non-goals, and the final compliance statement. It does not cover the tracing infrastructure (Chapter 21) except where tracing supports validation.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"># Chapter 22 – Testing, Validation, and Architectural Compliance</p>
+<p class="p_Normal">This chapter should be treated as a correctness checklist, a validation guide, a regression test oracle, and a contributor contract.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.1 Purpose and Scope</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This chapter defines the **verification strategy** for ASA-EmulatR. It explains how correctness is tested, how regressions are prevented, and how architectural compliance with Alpha AXP is asserted and defended.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&gt; **Core Principle:**</p>
-<p class="p_Normal">&gt; Architectural claims must be *provable*, not aspirational.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR treats testing and validation as **first-class architectural concerns**, not post-hoc activities.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.2 What “Correctness” Means in ASA-EmulatR</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Correctness is defined **architecturally**, not microarchitecturally.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR claims correctness when:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Architectural state transitions match Alpha AXP rules</p>
-<p class="p_Normal">* Exceptions are precise and ordered</p>
-<p class="p_Normal">* Memory ordering semantics are preserved</p>
-<p class="p_Normal">* SMP interactions are race-free and deterministic</p>
-<p class="p_Normal">* Privileged boundaries are enforced</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR does **not** claim:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Cycle-exact microarchitectural modeling</p>
-<p class="p_Normal">* Hardware-accurate cache timing</p>
-<p class="p_Normal">* Vendor-specific undocumented behavior</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This distinction is intentional and explicit.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.3 Layered Validation Strategy</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Validation is structured in layers, each with a clear responsibility.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### Layer 1 – Unit Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Purpose:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Verify correctness of individual components</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Targets:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Instruction grains</p>
-<p class="p_Normal">* Register banks</p>
-<p class="p_Normal">* FP operations</p>
-<p class="p_Normal">* Address translation helpers</p>
-<p class="p_Normal">* LL/SC reservation logic</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Methods:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Deterministic inputs</p>
-<p class="p_Normal">* Expected architectural outputs</p>
-<p class="p_Normal">* Exhaustive edge-case testing</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&gt; Unit tests must be independent of pipeline timing.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### Layer 2 – Instruction-Level Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Purpose:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Verify instruction semantics in isolation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Targets:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Integer instructions</p>
-<p class="p_Normal">* Floating-point instructions</p>
-<p class="p_Normal">* Memory instructions</p>
-<p class="p_Normal">* Branch and control instructions</p>
-<p class="p_Normal">* PAL instructions</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Validation criteria:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Correct result values</p>
-<p class="p_Normal">* Correct flag behavior</p>
-<p class="p_Normal">* Correct exception behavior</p>
-<p class="p_Normal">* Correct side effects</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### Layer 3 – Pipeline and Ordering Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Purpose:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Verify interaction between instructions</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Targets:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Hazard handling</p>
-<p class="p_Normal">* Stall and release behavior</p>
-<p class="p_Normal">* Barrier enforcement</p>
-<p class="p_Normal">* Exception precision</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Methods:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Synthetic instruction sequences</p>
-<p class="p_Normal">* Forced stalls</p>
-<p class="p_Normal">* Deliberate fault injection</p>
-<p class="p_Normal">* Barrier stress tests</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### Layer 4 – SMP Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Purpose:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Verify multi-CPU correctness</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Targets:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* LL/SC behavior under contention</p>
-<p class="p_Normal">* TLB shootdown correctness</p>
-<p class="p_Normal">* Inter-processor interrupt handling</p>
-<p class="p_Normal">* Memory visibility guarantees</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Methods:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Deterministic SMP workloads</p>
-<p class="p_Normal">* Artificial contention patterns</p>
-<p class="p_Normal">* Repeatable race scenarios</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&gt; SMP correctness is proven through **repetition and determinism**, not probability.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### Layer 5 – System-Level Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Purpose:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Validate full-system behavior</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Targets:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* PAL entry/exit correctness</p>
-<p class="p_Normal">* Interrupt delivery</p>
-<p class="p_Normal">* Device/DMA interaction</p>
-<p class="p_Normal">* Console services (CSERVE)</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Methods:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Controlled boot sequences</p>
-<p class="p_Normal">* Diagnostic programs</p>
-<p class="p_Normal">* Long-running stress tests</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.4 Determinism as a Validation Tool</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Determinism is not just a debugging aid — it is a **validation instrument**.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">By enforcing deterministic execution:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Bugs are reproducible</p>
-<p class="p_Normal">* SMP races are observable</p>
-<p class="p_Normal">* Regressions are detectable</p>
-<p class="p_Normal">* Behavioral drift is measurable</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">All compliance testing assumes deterministic mode.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.5 Fault and Exception Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Exception correctness is validated by:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Triggering known fault conditions</p>
-<p class="p_Normal">* Verifying correct exception class</p>
-<p class="p_Normal">* Verifying precise delivery point</p>
-<p class="p_Normal">* Verifying correct PAL vector selection</p>
-<p class="p_Normal">* Verifying correct architectural state on entry</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Key invariants tested:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* No younger instruction commits</p>
-<p class="p_Normal">* No partial memory effects survive</p>
-<p class="p_Normal">* LL/SC reservations are cleared</p>
-<p class="p_Normal">* HW_REI restores state exactly</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.6 Memory Ordering and Barrier Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Memory model validation focuses on:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Visibility ordering</p>
-<p class="p_Normal">* Store buffering behavior</p>
-<p class="p_Normal">* Barrier enforcement</p>
-<p class="p_Normal">* Cross-CPU ordering</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Tests include:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Store-load reordering scenarios</p>
-<p class="p_Normal">* Barrier release edge cases</p>
-<p class="p_Normal">* DMA vs CPU ordering</p>
-<p class="p_Normal">* False sharing scenarios</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Failures in this area are considered **critical correctness violations**.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.7 LL/SC Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">LL/SC validation verifies:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Reservation granularity</p>
-<p class="p_Normal">* Reservation invalidation rules</p>
-<p class="p_Normal">* Failure semantics</p>
-<p class="p_Normal">* SMP contention behavior</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Specific tests:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Multiple CPUs contending on same cache line</p>
-<p class="p_Normal">* False sharing on adjacent addresses</p>
-<p class="p_Normal">* Exception-induced reservation clearing</p>
-<p class="p_Normal">* Barrier-induced clearing</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">LL/SC correctness is mandatory for OS-level correctness.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.8 PAL and Privilege Boundary Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">PAL validation ensures:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Only PAL instructions access privileged state</p>
-<p class="p_Normal">* Illegal access traps correctly</p>
-<p class="p_Normal">* CALL_PAL semantics are enforced</p>
-<p class="p_Normal">* HW_REI is the only exit path</p>
-<p class="p_Normal">* Pipeline serialization occurs correctly</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Tests explicitly attempt:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Privilege violations</p>
-<p class="p_Normal">* Speculative PAL bypass</p>
-<p class="p_Normal">* Illegal register access</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">All must fail safely.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.9 Device and DMA Validation</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Device validation focuses on:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* MMIO ordering</p>
-<p class="p_Normal">* DMA correctness</p>
-<p class="p_Normal">* Interrupt signaling</p>
-<p class="p_Normal">* Memory visibility</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Tests include:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* DMA completion ordering</p>
-<p class="p_Normal">* DMA + barrier interactions</p>
-<p class="p_Normal">* Interrupt masking behavior</p>
-<p class="p_Normal">* SMP DMA visibility</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Devices must never:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Stall the CPU pipeline</p>
-<p class="p_Normal">* Bypass memory ordering rules</p>
-<p class="p_Normal">* Inject interrupts out of band</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.10 Regression Testing</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Every validated behavior becomes a **regression test**.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Regression policy:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Tests are never removed</p>
-<p class="p_Normal">* Failures block integration</p>
-<p class="p_Normal">* Deterministic replay required</p>
-<p class="p_Normal">* Version-to-version comparison supported</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This prevents architectural drift.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.11 Architectural Compliance Tracking</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR maintains a living **compliance matrix** mapping:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Alpha AXP architectural requirements</p>
-<p class="p_Normal">* PAL specifications</p>
-<p class="p_Normal">* Memory ordering rules</p>
-<p class="p_Normal">* SMP guarantees</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Each item is tagged as:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Implemented</p>
-<p class="p_Normal">* Partially implemented</p>
-<p class="p_Normal">* Intentionally deferred</p>
-<p class="p_Normal">* Not applicable</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This matrix is part of the documentation set.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.12 Known Deviations and Non-Goals</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR explicitly documents:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Simplified cache modeling</p>
-<p class="p_Normal">* Synchronous FP execution</p>
-<p class="p_Normal">* Simplified MMU timing</p>
-<p class="p_Normal">* Partial SRM support</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">These are **documented choices**, not omissions.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.13 Confidence Through Transparency</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR does not claim:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Undocumented behavior support</p>
-<p class="p_Normal">* Vendor-specific quirks</p>
-<p class="p_Normal">* Microarchitectural fidelity</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">It claims:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Architectural correctness</p>
-<p class="p_Normal">* Deterministic behavior</p>
-<p class="p_Normal">* SMP safety</p>
-<p class="p_Normal">* Debuggable execution</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This transparency is itself a validation tool.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.14 Architectural Invariants (Normative)</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">1. All architectural claims must be testable</p>
-<p class="p_Normal">2. Determinism is required for validation</p>
-<p class="p_Normal">3. Exceptions must be precise</p>
-<p class="p_Normal">4. Memory ordering must be provable</p>
-<p class="p_Normal">5. SMP behavior must be repeatable</p>
-<p class="p_Normal">6. Privilege boundaries must be enforced</p>
-<p class="p_Normal">7. Regressions are unacceptable</p>
-<p class="p_Normal">8. Deviations must be documented</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Violating any invariant invalidates compliance claims.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 22.15 Final Statement</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR is not validated by optimism or anecdote.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">It is validated by:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Deterministic execution</p>
-<p class="p_Normal">* Layered testing</p>
-<p class="p_Normal">* Explicit invariants</p>
-<p class="p_Normal">* Architectural transparency</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&gt; **If behavior cannot be tested, it is not considered correct.**</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## Topic Page Breakdown (Recommended)</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Each should be a topic page:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">1. Validation Philosophy</p>
-<p class="p_Normal">2. Definition of Correctness</p>
-<p class="p_Normal">3. Unit Validation</p>
-<p class="p_Normal">4. Instruction Validation</p>
-<p class="p_Normal">5. Pipeline Validation</p>
-<p class="p_Normal">6. SMP Validation</p>
-<p class="p_Normal">7. Determinism as a Tool</p>
-<p class="p_Normal">8. Exception Validation</p>
-<p class="p_Normal">9. Memory Model Validation</p>
-<p class="p_Normal">10. LL/SC Validation</p>
-<p class="p_Normal">11. PAL Validation</p>
-<p class="p_Normal">12. Device &amp; DMA Validation</p>
-<p class="p_Normal">13. Regression Policy</p>
-<p class="p_Normal">14. Compliance Matrix</p>
-<p class="p_Normal">15. Known Deviations</p>
-<p class="p_Normal">16. Final Compliance Statement</p>
-<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter_21___debugging__tracin8a9b0c1d.html" class="topiclink">Chapter 21 – Debugging, Tracing, and Determinism</a> (tracing infrastructure supporting validation); <a href="chapter_11___architectural_invabec0da0.html" class="topiclink">Chapter 11 – Architectural Invariants</a> (invariant definitions that validation must verify).</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
 
-  
 
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
   $(document).ready(function(){
-    $(window).bind('resize', function() {
+    $(window).on('resize', function() {
       var y = $('#idheader').height(); 
       $('#idcontent').css('margin-top', y);
       var par = window.parent;
@@ -539,12 +178,15 @@
         $('#idcontent').css('margin-top', $('#idheader').height());
         $('#idbacktotop').css('display', 'none');
         $('.hmanchor').css('margin-top', -y-20);
-	$('.hmanchor').css('padding-top', y+20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
       }
+	normHeaders();
     });
     
-    $(window).resize(); //trigger event for initially small displays
+	 $(window).resize(); //trigger event for initially small displays
   });
+ 
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
 

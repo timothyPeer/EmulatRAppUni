@@ -7,7 +7,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="" />
-   <meta name="description" content="Excellent — **Chapter 21** is the chapter that makes ASA-EmulatR *trustworthy*. Everything before this defines behavior; this chapter defines how you **prove** that behavior,..." />
+   <meta name="description" content="This chapter defines how ASA-EmulatR enables systematic debugging, high-fidelity tracing, and repeatable deterministic execution across single-CPU and SMP configurations...." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -19,17 +19,18 @@
       div#printheader { display: none; }
       #idheader { 
         width:100%; 
-        height:auto; 
+        min-height: 60px; 
         padding: 0; 
         margin: 0;
         position: fixed;
         top: 0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
-      #idheader table { background: #2C5D88; min-height: 59px }             
-      #idheader h1 { color: #FFF }     
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -63,17 +64,22 @@
       #overview-table a {text-decoration: none; color: black;}
       #overview-table a:visited {text-decoration: none; color: black;}
       #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
-      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
       .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
       .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
       .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
-      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
    </style>
    <style TYPE="text/css" media="print">
       div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
    </style>
+   
    <script type="text/javascript" src="jquery.js"></script>
    <script type="text/javascript" src="helpman_settings.js"></script>
    <script type="text/javascript" src="helpman_topicinit.js"></script>
@@ -95,7 +101,7 @@
 <div id="idheaderbg">
 <table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
   <tr>
-    <td class="topichead" style="text-align:left; vertical-align:bottom">
+    <td class="topichead" style="text-align:left; vertical-align:middle">
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?chapter-21---debugging_-tracin.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
@@ -108,7 +114,7 @@
       
       <a href="20_11-repository-directory-map.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
       <a href="architecture-overview.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
-      <a href="chapter-22---testing_-validati.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      <a href="21_1-determinism-as-a-design-g.html" title="Next Topic"><span class="hmbtnnext"></span></a>
       
     </td>
   </tr>  
@@ -121,365 +127,40 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">Excellent — **Chapter 21** is the chapter that makes ASA-EmulatR *trustworthy*. Everything before this defines behavior; this chapter defines how you **prove** that behavior, **reproduce it**, and **understand failures without guessing**.</p>
+<p class="p_Normal">This chapter defines how ASA-EmulatR enables systematic debugging, high-fidelity tracing, and repeatable deterministic execution across single-CPU and SMP configurations. Everything before this chapter defines behavior; this chapter defines how that behavior is proved, reproduced, and understood when failures occur.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Below is a **clean, final, publication-ready Chapter 21 – Debugging, Tracing, and Determinism**, written to match your architecture, coding style, and stated goals. It is intentionally **normative**, explicit about guarantees, and honest about trade-offs.</p>
+<p class="p_Normal"><span style="font-weight: bold;">Core Principle:</span> An emulator that cannot explain why something happened is not finished. ASA-EmulatR treats debugging and determinism as first-class architectural features, not optional tooling layered on afterward.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
+<p class="p_Normal"><span style="font-weight: bold;">Scope:</span> This chapter covers determinism guarantees and their enforcement, nondeterminism identification and control, the EXECTRACE macro instrumentation system, DEBUG_LOG subsystem logging, instruction/pipeline/exception/interrupt/memory tracing, the LogReader diagnostic application, breakpoints and watchpoints, deterministic replay, SMP debugging considerations, and the performance-vs-observability trade-off. It does not cover the testing and validation strategy (Chapter 22) or the architectural invariant definitions themselves (Chapter 11).</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"># Chapter 21 – Debugging, Tracing, and Determinism</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.1 Purpose and Philosophy</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This chapter defines how ASA-EmulatR enables **systematic debugging**, **high-fidelity tracing**, and **repeatable deterministic execution** across single-CPU and SMP configurations.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&gt; **Core Principle:**</p>
-<p class="p_Normal">&gt; An emulator that cannot explain *why* something happened is not finished.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR treats debugging and determinism as **first-class architectural features**, not optional tooling layered on afterward.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.2 Determinism as a Design Goal</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### What Determinism Means Here</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Determinism means:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Given the same initial state</p>
-<p class="p_Normal">* With the same inputs</p>
-<p class="p_Normal">* And the same configuration</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">→ **The emulator produces the same architectural outcomes every time.**</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This includes:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Instruction retirement order</p>
-<p class="p_Normal">* Exception delivery order</p>
-<p class="p_Normal">* Interrupt timing (relative to cycles)</p>
-<p class="p_Normal">* DMA visibility</p>
-<p class="p_Normal">* SMP interactions</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Determinism is required for:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Debugging</p>
-<p class="p_Normal">* Regression testing</p>
-<p class="p_Normal">* Architectural validation</p>
-<p class="p_Normal">* Long-running SMP correctness</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.3 Sources of Nondeterminism (Identified and Controlled)</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR explicitly identifies potential nondeterminism sources:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">| Source &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Control Strategy &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |</p>
-<p class="p_Normal">| ------------------ | -------------------------------- |</p>
-<p class="p_Normal">| Device timing &nbsp; &nbsp; &nbsp;| Deterministic scheduling modes &nbsp; |</p>
-<p class="p_Normal">| Interrupt arrival &nbsp;| Sampled at fixed run-loop points |</p>
-<p class="p_Normal">| DMA completion &nbsp; &nbsp; | Explicit completion events &nbsp; &nbsp; &nbsp; |</p>
-<p class="p_Normal">| SMP race windows &nbsp; | Architectural serialization &nbsp; &nbsp; &nbsp;|</p>
-<p class="p_Normal">| Host thread timing | Emulator-controlled ordering &nbsp; &nbsp; |</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&gt; **Invariant:**</p>
-<p class="p_Normal">&gt; Host scheduling must never influence architectural outcome.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.4 Deterministic Scheduling Model</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### CPU Execution</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Each CPU:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Executes one architectural cycle per run-loop iteration</p>
-<p class="p_Normal">* Advances pipeline stages in a fixed order</p>
-<p class="p_Normal">* Samples interrupts only at defined boundaries</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">No instruction is:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Preempted mid-execution</p>
-<p class="p_Normal">* Interrupted mid-pipeline stage</p>
-<p class="p_Normal">* Reordered relative to architectural rules</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### Device Execution</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Devices:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Execute asynchronously in *emulator time*</p>
-<p class="p_Normal">* Signal completion via queued events</p>
-<p class="p_Normal">* Deliver interrupts only at sampling points</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Optional deterministic mode:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Device progress advances only when CPU cycles advance</p>
-<p class="p_Normal">* Eliminates host timing variance</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.5 Tracing Architecture (Observational Only)</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Tracing in ASA-EmulatR is **strictly observational**.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&gt; **Rule:**</p>
-<p class="p_Normal">&gt; Tracing must never affect architectural behavior.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">All trace hooks:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Observe committed state</p>
-<p class="p_Normal">* Do not inject ordering</p>
-<p class="p_Normal">* Do not alter timing</p>
-<p class="p_Normal">* Do not allocate memory in hot paths</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.6 Instruction Tracing</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Instruction tracing may record:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* PC at fetch</p>
-<p class="p_Normal">* Decoded instruction</p>
-<p class="p_Normal">* Grain identity</p>
-<p class="p_Normal">* Operand values (optional)</p>
-<p class="p_Normal">* Result values</p>
-<p class="p_Normal">* Retirement cycle</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Granularity is configurable:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Fetch-level</p>
-<p class="p_Normal">* Execute-level</p>
-<p class="p_Normal">* Retirement-level</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Tracing may be:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Continuous</p>
-<p class="p_Normal">* Conditional (PC range, opcode, CPU)</p>
-<p class="p_Normal">* Triggered by events</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.7 Pipeline and Stall Tracing</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Pipeline tracing can observe:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Slot occupancy</p>
-<p class="p_Normal">* Stall reasons</p>
-<p class="p_Normal">* Barrier engagement and release</p>
-<p class="p_Normal">* Hazard detection</p>
-<p class="p_Normal">* Flush events</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This is critical for:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Diagnosing deadlocks</p>
-<p class="p_Normal">* Verifying barrier correctness</p>
-<p class="p_Normal">* Understanding performance behavior</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.8 Exception and Fault Tracing</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">FaultDispatcher integrates deeply with tracing.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Traceable events include:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Fault creation</p>
-<p class="p_Normal">* Priority arbitration</p>
-<p class="p_Normal">* Deliverability decisions</p>
-<p class="p_Normal">* PAL vector selection</p>
-<p class="p_Normal">* HW_REI restoration</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Each exception is traceable to:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Exact faulting instruction</p>
-<p class="p_Normal">* Exact architectural state</p>
-<p class="p_Normal">* Exact cycle</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.9 Interrupt and IPI Tracing</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Interrupt tracing records:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* IRQ assertion</p>
-<p class="p_Normal">* Masking decisions</p>
-<p class="p_Normal">* Delivery cycle</p>
-<p class="p_Normal">* PAL entry</p>
-<p class="p_Normal">* Handler completion</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">IPI tracing includes:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Sender CPU</p>
-<p class="p_Normal">* Target CPU(s)</p>
-<p class="p_Normal">* Payload type</p>
-<p class="p_Normal">* Acknowledgment timing</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This is essential for SMP debugging.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.10 Memory and LL/SC Diagnostics</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Memory tracing supports:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Load/store address and size</p>
-<p class="p_Normal">* Write buffer enqueue/drain</p>
-<p class="p_Normal">* Barrier-forced drains</p>
-<p class="p_Normal">* LL/SC reservation set/invalidate</p>
-<p class="p_Normal">* Reservation failure diagnostics</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">False sharing and livelock scenarios are explicitly observable.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.11 Deterministic Replay</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">ASA-EmulatR supports **deterministic replay** by recording:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* External inputs</p>
-<p class="p_Normal">* Device events</p>
-<p class="p_Normal">* Interrupt injections</p>
-<p class="p_Normal">* Timing metadata</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Replay guarantees:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Identical execution</p>
-<p class="p_Normal">* Identical fault timing</p>
-<p class="p_Normal">* Identical SMP interaction</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">This enables:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Binary-level bug reproduction</p>
-<p class="p_Normal">* Cross-version validation</p>
-<p class="p_Normal">* Regression testing</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.12 Breakpoints and Watchpoints</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### Breakpoints</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Supported breakpoint types:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* PC breakpoints</p>
-<p class="p_Normal">* Instruction-class breakpoints</p>
-<p class="p_Normal">* PAL entry breakpoints</p>
-<p class="p_Normal">* Exception breakpoints</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Breakpoints:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Trigger only at architectural boundaries</p>
-<p class="p_Normal">* Never mid-instruction</p>
-<p class="p_Normal">* Preserve precise semantics</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">### Watchpoints</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Watchpoints observe:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Memory reads</p>
-<p class="p_Normal">* Memory writes</p>
-<p class="p_Normal">* Register writes</p>
-<p class="p_Normal">* IPR changes</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">They are observational and do not alter ordering.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.13 Debugger Interaction Model</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">When a debug event triggers:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Pipeline drains to a precise point</p>
-<p class="p_Normal">* Architectural state is frozen</p>
-<p class="p_Normal">* Debugger may inspect state</p>
-<p class="p_Normal">* No partial instruction effects exist</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Single-step mode:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Executes exactly one instruction</p>
-<p class="p_Normal">* Delivers a debug trap afterward</p>
-<p class="p_Normal">* Preserves precise exception semantics</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.14 SMP Debugging Considerations</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">In SMP:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Each CPU has independent trace streams</p>
-<p class="p_Normal">* Global ordering can be reconstructed via timestamps</p>
-<p class="p_Normal">* Cross-CPU events are correlated explicitly</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">There is **no implicit global serialization** for debugging.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.15 Performance vs Observability</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Tracing is:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Compile-time configurable</p>
-<p class="p_Normal">* Runtime filterable</p>
-<p class="p_Normal">* Designed to be removable from hot paths</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">You can:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">* Run fully instrumented builds</p>
-<p class="p_Normal">* Run near-production builds</p>
-<p class="p_Normal">* Toggle determinism and tracing independently</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## 21.16 Architectural Invariants (Normative)</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">1. Debugging must not alter behavior</p>
-<p class="p_Normal">2. Tracing is observational only</p>
-<p class="p_Normal">3. Determinism is enforceable</p>
-<p class="p_Normal">4. Interrupt timing is sampled, not injected</p>
-<p class="p_Normal">5. Replay must be exact</p>
-<p class="p_Normal">6. SMP behavior must be reproducible</p>
-<p class="p_Normal">7. Debug events occur only at precise boundaries</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Violating any invariant invalidates emulator credibility.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">---</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">## Topic Page Breakdown (Recommended)</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Each item should be a topic page:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">1. Debugging Philosophy</p>
-<p class="p_Normal">2. Determinism Model</p>
-<p class="p_Normal">3. Nondeterminism Sources</p>
-<p class="p_Normal">4. CPU Scheduling Determinism</p>
-<p class="p_Normal">5. Device Determinism</p>
-<p class="p_Normal">6. Instruction Tracing</p>
-<p class="p_Normal">7. Pipeline Tracing</p>
-<p class="p_Normal">8. Exception Tracing</p>
-<p class="p_Normal">9. Interrupt &amp; IPI Tracing</p>
-<p class="p_Normal">10. Memory &amp; LL/SC Diagnostics</p>
-<p class="p_Normal">11. Deterministic Replay</p>
-<p class="p_Normal">12. Breakpoints</p>
-<p class="p_Normal">13. Watchpoints</p>
-<p class="p_Normal">14. Debugger Interaction</p>
-<p class="p_Normal">15. SMP Debugging</p>
-<p class="p_Normal">16. Performance Considerations</p>
-<p class="p_Normal">17. Debugging Invariants</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter_11___architectural_invabec0da0.html" class="topiclink">Chapter 11 – Architectural Invariants</a> (determinism and observability invariants); <a href="chapter_22___testing__validati1a2b3c4d.html" class="topiclink">Chapter 22 – Testing, Validation, and Architectural Compliance</a> (verification strategy).</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
 
-  
 
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
   $(document).ready(function(){
-    $(window).bind('resize', function() {
+    $(window).on('resize', function() {
       var y = $('#idheader').height(); 
       $('#idcontent').css('margin-top', y);
       var par = window.parent;
@@ -495,12 +176,15 @@
         $('#idcontent').css('margin-top', $('#idheader').height());
         $('#idbacktotop').css('display', 'none');
         $('.hmanchor').css('margin-top', -y-20);
-	$('.hmanchor').css('padding-top', y+20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
       }
+	normHeaders();
     });
     
-    $(window).resize(); //trigger event for initially small displays
+	 $(window).resize(); //trigger event for initially small displays
   });
+ 
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
 

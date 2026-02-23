@@ -19,17 +19,18 @@
       div#printheader { display: none; }
       #idheader { 
         width:100%; 
-        height:auto; 
+        min-height: 60px; 
         padding: 0; 
         margin: 0;
         position: fixed;
         top: 0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
-      #idheader table { background: #2C5D88; min-height: 59px }             
-      #idheader h1 { color: #FFF }     
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
         width: 126px;
@@ -63,17 +64,22 @@
       #overview-table a {text-decoration: none; color: black;}
       #overview-table a:visited {text-decoration: none; color: black;}
       #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
-      p.help-url { margin: 20px 0 5px 0; text-align: center; font-size: 80%; text-decoration: none }      
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
       .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
       .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
       .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
-      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em }	  
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
    </style>
    <style TYPE="text/css" media="print">
       div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
    </style>
+   
    <script type="text/javascript" src="jquery.js"></script>
    <script type="text/javascript" src="helpman_settings.js"></script>
    <script type="text/javascript" src="helpman_topicinit.js"></script>
@@ -95,7 +101,7 @@
 <div id="idheaderbg">
 <table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
   <tr>
-    <td class="topichead" style="text-align:left; vertical-align:bottom">
+    <td class="topichead" style="text-align:left; vertical-align:middle">
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?chapter-7_8-pal-mode-entry.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
@@ -175,10 +181,28 @@
 </div></div>
 <script type="text/javascript">
 
-  
 
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
   $(document).ready(function(){
-    $(window).bind('resize', function() {
+    $(window).on('resize', function() {
       var y = $('#idheader').height(); 
       $('#idcontent').css('margin-top', y);
       var par = window.parent;
@@ -194,12 +218,15 @@
         $('#idcontent').css('margin-top', $('#idheader').height());
         $('#idbacktotop').css('display', 'none');
         $('.hmanchor').css('margin-top', -y-20);
-	$('.hmanchor').css('padding-top', y+20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
       }
+	normHeaders();
     });
     
-    $(window).resize(); //trigger event for initially small displays
+	 $(window).resize(); //trigger event for initially small displays
   });
+ 
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
 
