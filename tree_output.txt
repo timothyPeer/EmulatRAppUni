@@ -1,0 +1,2573 @@
+Folder PATH listing for volume Development
+Volume serial number is 7299-695D
+D:.
+|   .gitattributes
+|   .gitignore
+|   AlphaCPU_Gap_Analysis.md
+|   CMakeLists.txt
+|   CMakeLists.txt.user
+|   CMakePresets.json
+|   CMakeUserPresets.json
+|   cpp.hint
+|   Critical_Fixes_Implementation_Guide.md
+|   EmulatR-Toy.json
+|   es40_instance.cpu0.trace
+|   Folder.DotSettings.user
+|   function_signatures_only.txt
+|   header_function_audit.txt
+|   LICENSE.md
+|   main.cpp
+|   README.md
+|   tree_output.txt
+|   Version.h.in
+|   
++---.qtcreator
+|   |   CMakeLists.txt.user
+|   |   
+|   \---qtc-cmake-presets-KwlDEzCV
+|       +---Qt-Debug
+|       |   |   CMakeLists.txt
+|       |   |   
+|       |   \---build
+|       |       |   CMakeCache.txt
+|       |       |   
+|       |       \---CMakeFiles
+|       |           |   cmake.check_cache
+|       |           |   CMakeConfigureLog.yaml
+|       |           |   
+|       |           +---3.30.5
+|       |           |       CMakeSystem.cmake
+|       |           |       
+|       |           \---pkgRedirects
+|       +---Qt-Release
+|       |   |   CMakeLists.txt
+|       |   |   
+|       |   \---build
+|       |       |   CMakeCache.txt
+|       |       |   
+|       |       \---CMakeFiles
+|       |           |   cmake.check_cache
+|       |           |   CMakeConfigureLog.yaml
+|       |           |   
+|       |           +---3.30.5
+|       |           |       CMakeSystem.cmake
+|       |           |       
+|       |           \---pkgRedirects
+|       +---x64-debug
+|       \---x64-release
++---.vs
+|   |   CMake Overview
+|   |   cmake.db
+|   |   ProjectSettings.json
+|   |   slnx.sqlite
+|   |   VSWorkspaceState.json
+|   |   
+|   \---EmulatRAppUni
+|       +---FileContentIndex
+|       |       07ca03bc-85b1-465a-989d-fd5d553f88bc.vsidx
+|       |       0dfccc93-05dc-4c3a-ba9b-0bed047bfcfb.vsidx
+|       |       6078c947-8cd4-4b1e-9922-4e0d0d919f0d.vsidx
+|       |       81e04028-3f9a-47ac-a8db-3cca8f0c505d.vsidx
+|       |       fd3a7917-cdb0-4662-9f88-b9b3be057de4.vsidx
+|       |       
+|       \---v17
+|               Browse.VC.db
+|               Browse.VC.db-shm
+|               Browse.VC.db-wal
+|               DocumentLayout.backup.json
+|               DocumentLayout.json
+|               Solution.VC.db
+|               workspaceFileList.bin
+|               
++---CBoxLib
+|       BranchPredictor.h
+|       CBoxBase.h
+|       CBoxBase.h.BAK
+|       cBox_core.h
+|       
++---config
+|       Version.h
+|       
++---configLib
+|       ASAEmulatr.ini
+|       ASAEmulatr.ini.BAK
+|       EmulatorConfig.h
+|       EmulatorSettingsInline.h
+|       global_EmulatorSettings.cpp
+|       global_EmulatorSettings.h
+|       settings.h
+|       
++---controllersLib
+|       controllersLib_global.h
+|       GenericScsiHostAdapter.h
+|       ISP1020_Controller.h
+|       KZPBA_Controller.h
+|       MmioManagerPciAdapter.h
+|       PciBarAllocator.h
+|       PciBus.h
+|       PciDeviceManager.h
+|       PciInterruptRouter.h
+|       PciMmioRegistrar.h
+|       PciScsiConfigBinder.h
+|       PciScsiController.h
+|       PciScsiControllerTemplate.h
+|       PciScsiDevice.h
+|       PciScsiDeviceShell.h
+|       PciScsiDmaChannel.h
+|       PciScsiDmaEngine.h
+|       PciScsiInterruptController.h
+|       PciScsiLib.h
+|       PciScsiMailbox.h
+|       PciScsiMmioInterface.h
+|       PciScsiRegisterBank.h
+|       PciScsiScriptEngine.h
+|       PciSubsystem.h
+|       PcsiScsiMmioInterface.h
+|       ScsiBus.h
+|       ScsiController.h
+|       ScsiControllerLib.h
+|       ScsiHostAdapter.h
+|       ScsiHostAdapterBackend.h
+|       ScsiHostAdapterEvents.h
+|       ScsiInitatorPort.h
+|       ScsiInitiatorPort.h
+|       ScsiScheduler.h
+|       ScsiTargetPort.h
+|       ScsiTransaction.h
+|       VirtualScsiDeviceFactory.h
+|       
++---CORE
++---coreLib
+|       alpha_alu_inl.h
+|       alpha_fpcr_core.h
+|       alpha_fp_helpers_inl.h
+|       alpha_fp_ieee_inl.h
+|       alpha_int_byteops_inl.h
+|       alpha_int_helpers_inl.h
+|       alpha_operate_opcode_helper.h
+|       alpha_SSE_fp_inl.h
+|       alpha_SSE_int_inl.h
+|       AMASK_Constants_inl.h
+|       arithExtender_helpers.h
+|       assyFormat_inl.h
+|       astEligibility_inl.h
+|       Ast_core_inl.h
+|       Axp_Attributes_core.h
+|       BitUtils.h
+|       BoxRequest.h
+|       cboxCSRState.h
+|       coreLib_core.h
+|       cpu_struct_inline.h
+|       CurrentCpuTls.h
+|       DMA_core.h
+|       enum_header.h
+|       enum_header.h.BAK
+|       enum_MCES.h
+|       EnvironVariables.h
+|       EventLog.cpp
+|       EventLog.h
+|       ExecTrace.cpp
+|       ExecTrace.cpp.BAK
+|       ExecTrace.h
+|       ExecTraceMacros.h
+|       EXECTRACE_Macros.h
+|       FetchResult.h
+|       fp_variant_core.h
+|       globalCPUCount.h
+|       global_cBoxState.h
+|       global_RegisterMaster_hot.h
+|       HWPCB_SwapContext.h
+|       IEEE754_FloatConversion_inl.h
+|       info_inl_helpers.h
+|       InitPhaseLogging.h
+|       InterruptRouter.h
+|       IPI_core.h
+|       IPRStorage_CBox.h
+|       IPRStorage_Core.h
+|       IprStorage_Hot.h
+|       IPRStorage_Hot_osf.h
+|       IprStorage_IBox.h
+|       ipr_AST_mask_semantics.h
+|       IPR_core.h
+|       IPR_IC_FLUSH_inl.h
+|       IRQAstandSCBHelpers.h
+|       IRQPendingState.h
+|       IRQ_SourceId_core.h
+|       LoggingMacros.h
+|       MCES_helpers.h
+|       MemoryBarrierKind_enum.h
+|       memory_enums_structs.h
+|       mmio_core.h
+|       mmio_structs.h
+|       PS_helpers_inl.h
+|       pte_core.h
+|       qt_int_aliases.h
+|       register_core_inl.h
+|       stdLibCore.h
+|       TrapsAndFaults_inl_helpers.h
+|       types_core.h
+|       VA_core.h
+|       VA_types.h
+|       Version.h.in
+|       WriteBufferEntry.h
+|       
++---cpuCoreLib
+|       AlphaCPU.cpp
+|       AlphaCPU.h
+|       AlphaPipeline.h
+|       cpuCore_core.h
+|       CycleCounter_inl.h
+|       global_ReservationManager.cpp
+|       global_ReservationManager.h
+|       RedirectReason.h
+|       registerBank_coreFramework.h
+|       ReservationManager.h
+|       resetPALcodeState_inl.h
+|       StagedPTECache.h
+|       syncPALcodeMemoryMapping_inl.h
+|       toy_consoleNvram.h
+|       
++---deviceLib
+|       ConsoleManager.cpp
+|       ConsoleManager.h
+|       deviceLib_global.h
+|       device_core_inl.h
+|       global_ConsoleManager.cpp
+|       global_ConsoleManager.h
+|       global_SRMEnvStore.cpp
+|       global_SRMEnvStore.h
+|       IBootDevice.h
+|       IConsoleDevice.h
+|       OPA_Console_Config.h
+|       SRMConsole.cpp
+|       SRMConsole.h
+|       SRMConsoleDevice.cpp
+|       SRMConsoleDevice.h
+|       SRMEnvStore.cpp
+|       SRMEnvStore.h
+|       
++---docs
+|   |   10_1-purpose-of-this-chapter.html
+|   |   10_10-mmio-and-serialization.html
+|   |   10_11-pal-and-device-control.html
+|   |   10_12-smp-and-error-handling.html
+|   |   10_13-summary.html
+|   |   10_2-design-philosophy.html
+|   |   10_3-device-model-overview.html
+|   |   10_3_2-device-attachment.html
+|   |   10_4-mmio-address-space.html
+|   |   10_5-mmio-access-semantics.html
+|   |   10_6-device-registers.html
+|   |   10_7-asynchronous-device-opera.html
+|   |   10_9-interrupt-signaling.html
+|   |   11_1-purpose-of-this-chapter.html
+|   |   11_10-invariant-violations.html
+|   |   11_11-summary.html
+|   |   11_2-execution-and-pipeline-in.html
+|   |   11_3-memory-model-invariants.html
+|   |   11_4-load-locked-_-store-condi.html
+|   |   11_5-privilege-and-pal-invaria.html
+|   |   11_6-exception-and-interrupt-i.html
+|   |   11_7-smp-invariants.html
+|   |   11_8-device-and-mmio-invariant.html
+|   |   11_9-debugging-and-observabili.html
+|   |   12_1-purpose-of-this-chapter.html
+|   |   12_10-cpu-local-events.html
+|   |   12_11-error-handling.html
+|   |   12_12-performance-and-instrume.html
+|   |   12_13-summary.html
+|   |   12_2-alphacpu-as-the-unit-of-e.html
+|   |   12_3-ownership-model.html
+|   |   12_4-cpu-lifecycle.html
+|   |   12_5-the-alphacpu-run-loop.html
+|   |   12_6-pipeline-integration.html
+|   |   12_7-interrupt-and-exception-h.html
+|   |   12_8-pal-integration.html
+|   |   12_9-smp-awareness.html
+|   |   13_1-purpose-of-this-chapter.html
+|   |   13_10-exception-precision.html
+|   |   13_11-branch-handling.html
+|   |   13_12-ll_sc-and-determinism.html
+|   |   13_13-summary.html
+|   |   13_2-pipeline-role-and-design.html
+|   |   13_3-pipeline-structure---ring.html
+|   |   13_4-pipelineslot-structure.html
+|   |   13_5-pipeline-execution---tick.html
+|   |   13_6-stage-implementations.html
+|   |   13_7-stall-mechanics.html
+|   |   13_8-flush-semantics.html
+|   |   13_9-serialization-and-barrier.html
+|   |   14_1-ibox---instruction-box.html
+|   |   14_2-ebox---integer-execution-.html
+|   |   14_3-fbox---floating-point-exe.html
+|   |   14_4-mbox---memory-box.html
+|   |   14_5-cbox---cache-_-control-bo.html
+|   |   14_6-palbox---privileged-archi.html
+|   |   14_7-box-interaction-model.html
+|   |   14_8-repository-directory-mapp.html
+|   |   15_1-memory-is-shared_-not-own.html
+|   |   15_10-smp-visibility-guarantee.html
+|   |   15_11-memory-fault-handling.html
+|   |   15_12-diagnostics-and-dma-cohe.html
+|   |   15_13-architectural-invariants.html
+|   |   15_14-repository-directory-map.html
+|   |   15_2-guestmemory-vs-safememory.html
+|   |   15_3-guestmemory-region-suppor.html
+|   |   15_4-sparsememorybacking---on-.html
+|   |   15_5-load-and-store-semantics.html
+|   |   15_6-write-buffer-implementati.html
+|   |   15_7-mmio-access-semantics.html
+|   |   15_8-ll_sc-reservation-trackin.html
+|   |   15_9-memory-barrier-coordinati.html
+|   |   16_1-device-differentiation-an.html
+|   |   16_11-architectural-invariants.html
+|   |   16_12-repository-directory-map.html
+|   |   16_2-mmio-routing-implementati.html
+|   |   16_3-endianness-and-device-reg.html
+|   |   16_4-asynchronous-device-threa.html
+|   |   16_5-scsi-subsystem.html
+|   |   16_6-tape-drive-emulation-and-.html
+|   |   16_7-network-and-fibre-channel.html
+|   |   16_8-irq-integration-architect.html
+|   |   16_9-dma-implementation.html
+|   |   17_1-alpha-virtual-address-for.html
+|   |   17_10-architectural-invariants.html
+|   |   17_11-repository-directory-map.html
+|   |   17_2-pte-representation.html
+|   |   17_3-translation-path.html
+|   |   17_4-spam-tlb-cache-architectu.html
+|   |   17_5-ev6silicontlb-and-layer-a.html
+|   |   17_6-replacement-policies.html
+|   |   17_7-asn-management-and-cohere.html
+|   |   17_8-tlb-invalidation-and-shoo.html
+|   |   17_9-ibox-instruction-translat.html
+|   |   18_1-exception-classification.html
+|   |   18_10-architectural-invariants.html
+|   |   18_11-repository-directory-map.html
+|   |   18_2-pendingevent-structure.html
+|   |   18_3-exceptionfactory.html
+|   |   18_4-faultdispatcher-implement.html
+|   |   18_5-exception-to-pal-vector-m.html
+|   |   18_6-pipeline-fault-detection-.html
+|   |   18_7-pal-mode-entry.html
+|   |   18_8-precise-exception-guarant.html
+|   |   18_9-barrier-interaction.html
+|   |   19_1-interrupt-sources.html
+|   |   19_2-irqpendingstate-implement.html
+|   |   19_3-interrupt-routing.html
+|   |   19_4-interrupt-sampling-and-de.html
+|   |   19_5-ipi-architecture.html
+|   |   19_6-memory-barrier-coordinati.html
+|   |   19_7-tlb-shootdown-protocol.html
+|   |   19_8-architectural-invariants-.html
+|   |   19_9-repository-directory-mapp.html
+|   |   1_5-non-goalschapter1.html
+|   |   1_6-control-and-data-flowchapter1.html
+|   |   1_7-architectural-invariants.html
+|   |   1_8-how-to-read-this-guidechapter1.html
+|   |   20_1-palbox-execution-domain.html
+|   |   20_10-architectural-invariants.html
+|   |   20_11-repository-directory-map.html
+|   |   20_2-palservice-delegation.html
+|   |   20_3-call_pal-dispatch-and-vec.html
+|   |   20_4-pal-mode-entry-and-exit.html
+|   |   20_5-shadow-registers-and-hwpc.html
+|   |   20_6-privileged-instructions.html
+|   |   20_7-pal-function-inventory.html
+|   |   20_8-cserve-and-srm-console-in.html
+|   |   20_9-boot-sequence.html
+|   |   21_1-determinism-as-a-design-g.html
+|   |   21_10-architectural-invariants.html
+|   |   21_11-repository-directory-map.html
+|   |   21_2-sources-of-nondeterminism.html
+|   |   21_3-exectrace-instrumentation.html
+|   |   21_4-subsystem-logging-(debug_.html
+|   |   21_5-tracing-by-subsystem.html
+|   |   21_6-logreader-diagnostic-appl.html
+|   |   21_7-breakpoints-and-watchpoin.html
+|   |   21_8-deterministic-replay.html
+|   |   21_9-smp-debugging-considerati.html
+|   |   22_1-definition-of-correctness.html
+|   |   22_10-known-deviations-and-non.html
+|   |   22_11-architectural-invariants.html
+|   |   22_12-final-compliance-stateme.html
+|   |   22_2-layered-validation-strate.html
+|   |   22_3-determinism-as-a-validati.html
+|   |   22_4-exception-and-fault-valid.html
+|   |   22_5-memory-ordering-and-ll_sc.html
+|   |   22_6-pal-and-privilege-boundar.html
+|   |   22_7-device-and-dma-validation.html
+|   |   22_8-regression-testing-policy.html
+|   |   22_9-architectural-compliance-.html
+|   |   3_15-ll_sc-interaction-with-th.html
+|   |   3_16-grain-system-chapter3.html
+|   |   4_1-purpose-of-this-chapter.html
+|   |   5_10-memory-barriers-(preview).html
+|   |   5_2-purpose-of-this-chapter.html
+|   |   6_1-purpose-of-this-chapter.html
+|   |   7_1-purpose-of-this-chapter.html
+|   |   7_4-exception-detection-points.html
+|   |   8_1-purpose-of-this-chapter.html
+|   |   8_12-pal-register-matrix.html
+|   |   8_13-summary.html
+|   |   9_1-purpose-of-this-chapter.html
+|   |   9_10-barriers-in-smp-context.html
+|   |   9_11-pal-and-smp.html
+|   |   9_12-exception-and-interrupt-i.html
+|   |   9_14-summary.html
+|   |   acronyms--usage-appendix.html
+|   |   alpha-boot-sequence.html
+|   |   alpha-physical-address-space.html
+|   |   alpha-pipeline-.html
+|   |   alpha-va-format-contract.html
+|   |   alpha.html
+|   |   alphacpu-alpha.html
+|   |   alphacpu-core.html
+|   |   alphacpudependency.html
+|   |   alphamemorysystem-managers.html
+|   |   alphapipeline-implementation.html
+|   |   alphasystemmemoryfinakl.html
+|   |   alpha_alu_inl.html
+|   |   alpha_fp_helpers_inl.html
+|   |   alpha_int_byteops_inl.html
+|   |   alpha_int_helpers_inl.html
+|   |   alpha_operate_opcode_helper.html
+|   |   alpha_spam_manager.html
+|   |   alpha_sse_fp_inl.html
+|   |   alpha_sse_int_inl.html
+|   |   appendix---trait-examples.html
+|   |   appendix-a---ev6-internal-proc.html
+|   |   appendix-b---core-types-refere.html
+|   |   appendix-c---glossary-and-acro.html
+|   |   appendix-d---instruction-inven.html
+|   |   appendix-e---physical-address-.html
+|   |   appendix-f---repository-direct.html
+|   |   appendix-g---decodedinstructio.html
+|   |   appendix-h---endianness-rules.html
+|   |   appendix-i---global-singletons.html
+|   |   application_get.png
+|   |   application_get_h.png
+|   |   architectural-high-value.html
+|   |   architectural-overview---memor.html
+|   |   architecture-overview.html
+|   |   architecture.html
+|   |   arithextender_helpers.html
+|   |   arrow-down.gif
+|   |   arrow-empty.gif
+|   |   arrow-none.gif
+|   |   arrow-up.gif
+|   |   arrow_left.png
+|   |   arrow_left_h.png
+|   |   arrow_left_off.png
+|   |   arrow_left_off_h.png
+|   |   arrow_left_on.png
+|   |   arrow_right.png
+|   |   arrow_right_h.png
+|   |   arrow_right_off.png
+|   |   arrow_right_off_h.png
+|   |   arrow_right_on.png
+|   |   asa-emulatr_ini.html
+|   |   ast-delivery.html
+|   |   automatic-generationgrains.html
+|   |   autotoc.js
+|   |   axp_attributes_core.html
+|   |   background-logo.png
+|   |   background-menu.png
+|   |   background-topic-header.jpg
+|   |   background-white50.png
+|   |   background.jpg
+|   |   background_header.jpg
+|   |   backup-gude-claude-todo.html
+|   |   barriers.html
+|   |   bgblue80.png
+|   |   bootstrap.html
+|   |   box-architecture.html
+|   |   box-orchestration.html
+|   |   branch-prediction-alphapipeline.html
+|   |   branch-prediction.html
+|   |   bullet_go.png
+|   |   bullet_go_h.png
+|   |   cache-alpha.html
+|   |   cbox.html
+|   |   chapter-10---devices-and-mmio.html
+|   |   chapter-11---architectural-inv.html
+|   |   chapter-11-interaction-with-se.html
+|   |   chapter-14---execution-domains.html
+|   |   chapter-15---memory-system-imp.html
+|   |   chapter-16---device-model--dma.html
+|   |   chapter-17---tlb_-pte_-and-add.html
+|   |   chapter-18---fault-dispatcher-.html
+|   |   chapter-19---debugging_-tracin.html
+|   |   chapter-1_.html
+|   |   chapter-1_2---design-goals-and.html
+|   |   chapter-1_3---major-architectu.html
+|   |   chapter-1_4---architectural-in.html
+|   |   chapter-2---execution-model.html
+|   |   chapter-20---boot-sequence_-pa.html
+|   |   chapter-21---debugging_-tracin.html
+|   |   chapter-22---testing_-validati.html
+|   |   chapter-2_1-purpose-of-this-ch.html
+|   |   chapter-2_10-summary.html
+|   |   chapter-2_2-cycle-base-executi.html
+|   |   chapter-2_3-responsibilities-o.html
+|   |   chapter-2_4---execution-phases.html
+|   |   chapter-2_5-execution-progress.html
+|   |   chapter-2_6-speculation-policy.html
+|   |   chapter-2_7-execution-and-comm.html
+|   |   chapter-2_8-interaction-with-s.html
+|   |   chapter-2_9-relationship-to-ot.html
+|   |   chapter-3---pipeline-architect.html
+|   |   chapter-3-key-takeaways.html
+|   |   chapter-3_10-pipeline-semantic.html
+|   |   chapter-3_11-backward-pipeline.html
+|   |   chapter-3_12-stalls-and-serial.html
+|   |   chapter-3_13-flushing-and-spec.html
+|   |   chapter-3_15-precise-exception.html
+|   |   chapter-3_16-summary.html
+|   |   chapter-3_2-overview-of-the-pi.html
+|   |   chapter-3_3-the-six-pipeline-s.html
+|   |   chapter-3_4-fetch-stage-(if).html
+|   |   chapter-3_5-decode-stage-(id).html
+|   |   chapter-3_6-issue-stage-(is).html
+|   |   chapter-3_7-execute-stage-(ex).html
+|   |   chapter-3_8-memory-stage-(mem).html
+|   |   chapter-3_9-writeback-stage-(w.html
+|   |   chapter-4---functionexecution-.html
+|   |   chapter-4_10-cross-box-interac.html
+|   |   chapter-4_11-summary.html
+|   |   chapter-4_2-box-based-executio.html
+|   |   chapter-4_3-relationship-betwe.html
+|   |   chapter-4_4-ibox---instruction.html
+|   |   chapter-4_5-ebox---execution-b.html
+|   |   chapter-4_6-fbox---floating-po.html
+|   |   chapter-4_7---mbox---memory-bo.html
+|   |   chapter-4_8---cbox---cache-_-c.html
+|   |   chapter-4_9-palbox---privilege.html
+|   |   chapter-5---memory-system-arch.html
+|   |   chapter-5_11-load-locked-_-sto.html
+|   |   chapter-5_12-memory-faults.html
+|   |   chapter-5_13-interaction-with-.html
+|   |   chapter-5_14-smp-consideration.html
+|   |   chapter-5_15-summary.html
+|   |   chapter-5_2-design-philosophy.html
+|   |   chapter-5_3-memory-layers-over.html
+|   |   chapter-5_4-virtual-addressing.html
+|   |   chapter-5_5-guestmemory---shar.html
+|   |   chapter-5_6-safememory---phsyi.html
+|   |   chapter-5_7-mmio-regions.html
+|   |   chapter-5_8-loads-and-stores.html
+|   |   chapter-5_9-write-buffers.html
+|   |   chapter-6---serialization-and-.html
+|   |   chapter-6_10---trapb---trap-ba.html
+|   |   chapter-6_11-call_pal-as-a-ser.html
+|   |   chapter-6_12-interaction-with-.html
+|   |   chapter-6_13-serialization-in-.html
+|   |   chapter-6_15-summary.html
+|   |   chapter-6_2-weak-ordering-as-t.html
+|   |   chapter-6_3-what-serialization.html
+|   |   chapter-6_4-classes-of-seriali.html
+|   |   chapter-6_5-pipeline-level-beh.html
+|   |   chapter-6_6-barrier-release-mo.html
+|   |   chapter-6_7-mb---full-memory-b.html
+|   |   chapter-6_8-wmb---write-memory.html
+|   |   chapter-6_9-excb---exception-b.html
+|   |   chapter-7---interrupt-and-ipi-.html
+|   |   chapter-7_10-traps-and-trapb.html
+|   |   chapter-7_13-summary.html
+|   |   chapter-7_2-terminology-and-cl.html
+|   |   chapter-7_3-exception-detectio.html
+|   |   chapter-7_4-faultdispatcher.html
+|   |   chapter-7_5-priority-ordering.html
+|   |   chapter-7_6-precise-exception-.html
+|   |   chapter-7_7-exception-delivery.html
+|   |   chapter-7_8-pal-mode-entry.html
+|   |   chapter-7_9-interrupt-handling.html
+|   |   chapter-8---pal-and-privleged-.html
+|   |   chapter-8_10-enforcing-the-pri.html
+|   |   chapter-8_11-pal-and-ll_sc.html
+|   |   chapter-8_2-what-pal-is-(and-i.html
+|   |   chapter-8_3-privilege-levels-i.html
+|   |   chapter-8_4-call_pal---enterin.html
+|   |   chapter-8_5-pal-execution-mode.html
+|   |   chapter-8_6-pal-and-exceptions.html
+|   |   chapter-8_7-pal-and-interrupts.html
+|   |   chapter-8_8-pal-and-memory-ord.html
+|   |   chapter-8_9-hw_rei---exiting-p.html
+|   |   chapter-9_2-smp-design-philoso.html
+|   |   chapter-9_3-cpu-instantiation-.html
+|   |   chapter-9_4-per-cpu-vs-shared-.html
+|   |   chapter-9_5-memory-visibility-.html
+|   |   chapter-9_6-write-buffers-in-s.html
+|   |   chapter-9_7-reservation-invali.html
+|   |   chapter-9_8-inter-processor-in.html
+|   |   chapter-9_9-tlb-shootdown.html
+|   |   chapter-style-guide-and-cross-.html
+|   |   chapter9-smparchitecture.html
+|   |   check_circular_py-appendix.html
+|   |   cicon1.png
+|   |   cicon2.png
+|   |   cicon9.png
+|   |   ciconidx.gif
+|   |   cicon_loadindex_ani.gif
+|   |   commands.html
+|   |   company-logo.png
+|   |   compiler-options.html
+|   |   config.html
+|   |   contents.png
+|   |   contents_h.png
+|   |   contents_off.png
+|   |   contents_off_h.png
+|   |   contents_on.png
+|   |   controllers.html
+|   |   conventions.html
+|   |   core-processor-implementation.html
+|   |   corelib.html
+|   |   cow-support-alphaspammanager.html
+|   |   cpu.html
+|   |   cpucorelib.html
+|   |   cpustateiprinterface-taskable2.html
+|   |   cpustateiprinterface-taskables.html
+|   |   cserve-environment-variable-im.html
+|   |   cserve-selector-table-based-on.html
+|   |   currentcputls.html
+|   |   custom.css
+|   |   debugging-sessoins.html
+|   |   debugging_-tracing_-and-valida.html
+|   |   decodedinstruction.html
+|   |   default.css
+|   |   define_helpers.html
+|   |   dependency-requirements.html
+|   |   device-subsystem.html
+|   |   devicemanagerdependency.html
+|   |   directory-structure.html
+|   |   discussions.html
+|   |   dual-issue-hazard-scoreboard.html
+|   |   dumpbin.html
+|   |   ebox.html
+|   |   email.png
+|   |   emailoff.png
+|   |   emailoff_h.png
+|   |   email_h.png
+|   |   emulatormanger-app.html
+|   |   emulatr-initialization-.html
+|   |   emulatr-logging.html
+|   |   endianness-rules.html
+|   |   ev4.html
+|   |   ev5.html
+|   |   ev6.html
+|   |   ev6ptecache.html
+|   |   ev6_hooks_taskables.html
+|   |   exception--faults.html
+|   |   exception-handling-fbox.html
+|   |   exceptionfactory_inl.html
+|   |   exceptionlib.html
+|   |   exceptionmapping_inl.html
+|   |   exceptionpreparation_inl.html
+|   |   exceptions.html
+|   |   exceptionstateupdate_inl.html
+|   |   exc_sum_helpers.html
+|   |   executeexcb-barriers.html
+|   |   executewmb-barriers.html
+|   |   export-symbols-appendix.html
+|   |   eye.png
+|   |   eyeoff.png
+|   |   eyeoff_h.png
+|   |   eye_h.png
+|   |   favicon.ico
+|   |   fbox.html
+|   |   flow-chart-runloop.html
+|   |   fpcr-fbox-registers.html
+|   |   function-flow-branchpredition.html
+|   |   function-index.html
+|   |   generate_all_grains_py-appendix.html
+|   |   generate_cmakelists_py-appendix.html
+|   |   ghwpcbbank_globalstatics.html
+|   |   giprbank-(iprbank)_qglobalstatics.html
+|   |   girqcontroller_qglobalstatics.html
+|   |   globalev6ptecache.html
+|   |   globalipr_hot_cold.html
+|   |   globalreservationmanager.html
+|   |   global_emulatorsettings.html
+|   |   global_hwpcbbank_interface.html
+|   |   grain-routing---pal.html
+|   |   grainmaster_tsv-appendix.html
+|   |   grains_.html
+|   |   graphic_arrow-down.gif
+|   |   graphic_arrow-empty.gif
+|   |   graphic_arrow-none.gif
+|   |   graphic_arrow-up.gif
+|   |   guestmemory-srm-integration.html
+|   |   helper-functions.html
+|   |   helpman_navigation.js
+|   |   helpman_settings.js
+|   |   helpman_topicinit.js
+|   |   highlight.js
+|   |   hm-keyword-page-icon.gif
+|   |   hm-keyword-page-icon.png
+|   |   hmcontent.html
+|   |   hmcontextids.js
+|   |   hmftsearch.html
+|   |   hmkwindex.html
+|   |   hmlogo.png
+|   |   hmpopups.js
+|   |   hmtopic.js
+|   |   hm_btn_index.png
+|   |   hm_btn_index_orange.png
+|   |   hm_btn_navigate_next.png
+|   |   hm_btn_navigate_next_d.png
+|   |   hm_btn_navigate_next_orange.png
+|   |   hm_btn_navigate_prev.png
+|   |   hm_btn_navigate_prev_d.png
+|   |   hm_btn_navigate_prev_orange.png
+|   |   hm_btn_navigate_top.png
+|   |   hm_btn_navigate_top_orange.png
+|   |   hm_btn_search.png
+|   |   hm_btn_search_orange.png
+|   |   hm_btn_toc.png
+|   |   hm_btn_toc_orange.png
+|   |   hm_topic.css
+|   |   hm_webhelp_buttons_black.png
+|   |   hm_webhelp_buttons_blue.png
+|   |   hm_webhelp_buttons_grey.png
+|   |   hm_webhelp_buttons_orange.png
+|   |   hm_webhelp_buttons_white.png
+|   |   hm_webhelp_buttons_yellow.png
+|   |   home.png
+|   |   home_h.png
+|   |   home_off.png
+|   |   home_off_h.png
+|   |   home_on.png
+|   |   house_go.png
+|   |   hwpcb-.html
+|   |   hwpcb_taskables.html
+|   |   i-cache-cache.html
+|   |   ibox.html
+|   |   icon-book.png
+|   |   icon-bookopen.png
+|   |   icon-page.png
+|   |   implementation-alpha_spam_manager.html
+|   |   implementation.html
+|   |   index.html
+|   |   integration-steps.html
+|   |   interrupt---methodology--conve.html
+|   |   interrupts-_-ipl-and-ast.html
+|   |   introduction.html
+|   |   ipi---inter-processor-interrup.html
+|   |   ipr-cache-optimization---quick.html
+|   |   ipr-hive.html
+|   |   ipr-storage.html
+|   |   ipr.html
+|   |   iprstorage.html
+|   |   iprstorage_ibox.html
+|   |   ipr_getactivesp_inl.html
+|   |   ipr_ic_flush_inl.html
+|   |   irqcontroller-controllers.html
+|   |   irqcontrollerdependencies.html
+|   |   jquery.js
+|   |   jquery.scrollTo-min.js
+|   |   keep.html
+|   |   lifecycle-grain.html
+|   |   lines.gif
+|   |   load---silos-.html
+|   |   logging.html
+|   |   logo.png
+|   |   main-icon-fb.png
+|   |   main-icon-rss.png
+|   |   makearithmeticfaultinfo_inl.html
+|   |   managers.html
+|   |   mbox.html
+|   |   mega-icons.png
+|   |   memory--synchronization-intern.html
+|   |   memory-mapvisual.html
+|   |   menu.png
+|   |   menu_h.png
+|   |   menu_off.png
+|   |   menu_off_h.png
+|   |   menu_on.png
+|   |   minimal-pal-checklist.html
+|   |   mmio.html
+|   |   mmiomanagerdependency.html
+|   |   mono_arrow-down.gif
+|   |   mono_arrow-empty.gif
+|   |   mono_arrow-none.gif
+|   |   mono_arrow-up.gif
+|   |   mplatedefault-modified2026-02-.html
+|   |   next-steps-to-srm-.html
+|   |   next-steps.html
+|   |   nsh.js
+|   |   oniplchanged_inl.html
+|   |   osf.html
+|   |   pagetable(pte)subsystem.html
+|   |   pal-exception-vectoring.html
+|   |   pal-module.html
+|   |   pal-vector-table-(gpalvectorta.html
+|   |   pal.html
+|   |   pctx_helpers.html
+|   |   permissions--va-translation.html
+|   |   permissions_helper_inl.html
+|   |   platform.html
+|   |   printer.png
+|   |   printer_h.png
+|   |   printer_off.png
+|   |   printer_off_h.png
+|   |   processor-status-(ps)-helpers.html
+|   |   ps_helpers_inl.html
+|   |   pte.html
+|   |   pte_core.html
+|   |   pupose-of-this-chapterchapter2.html
+|   |   purpose-and-audiencechapter1.html
+|   |   python-scripts.html
+|   |   qglobalstatics_appendix.html
+|   |   qtrandomcompat.html
+|   |   r31-profiling.html
+|   |   r31-usage.html
+|   |   raw-hazard---load-followed-alu.html
+|   |   registers-ebox.html
+|   |   registers-fbox.html
+|   |   registers-ibox.html
+|   |   registers-mbox.html
+|   |   registers.html
+|   |   reservationmanager-appendix.html
+|   |   reservationmanager.html
+|   |   reservationmanagerdependency.html
+|   |   resolution-interface.html
+|   |   run-loop-nested-stack.html
+|   |   run-loop.html
+|   |   safememory---ram.html
+|   |   safememorydependency.html
+|   |   scoreboard-hazards.html
+|   |   scsi.html
+|   |   search.png
+|   |   searchoff.png
+|   |   settings.js
+|   |   shard-scaffolding-ownership.html
+|   |   sharding-mechanism---pte---spa.html
+|   |   sortable.js
+|   |   spacer.gif
+|   |   spam---policies.html
+|   |   spam-shard-support.html
+|   |   specation-pipeline.html
+|   |   srm-load.html
+|   |   stall-conditions.html
+|   |   style_header.css
+|   |   systems-integration.html
+|   |   taskables.html
+|   |   tier.html
+|   |   todo-palvectoring.html
+|   |   tracehelpers.html
+|   |   trait---ctor-usage-examples.html
+|   |   trait-examples.html
+|   |   translation-buffer.html
+|   |   types_core.html
+|   |   uat.html
+|   |   unit-test-scaffold.html
+|   |   usage-and-integrationlogging.html
+|   |   vms.html
+|   |   waw-check-scoreboarding.html
+|   |   ZoomIn.png
+|   |   zoom_index.js
+|   |   zoom_pageinfo.js
+|   |   zoom_search.js
+|   |   _hmpermalink.html
+|   |   _hmXpopup.htm
+|   |   _hmXtopic.htm
+|   |   _hm_print_window.htm
+|   |   
+|   +---css
+|   |       hmprojectstyles.css
+|   |       hmwebhelp_index_desktop.css
+|   |       hmwebhelp_index_phone.css
+|   |       hmwebhelp_index_tablet.css
+|   |       hmwebhelp_main_desktop.css
+|   |       hmwebhelp_main_phone.css
+|   |       hmwebhelp_main_print.css
+|   |       hmwebhelp_main_tablet.css
+|   |       hmwebhelp_search_desktop.css
+|   |       hmwebhelp_search_phone.css
+|   |       hmwebhelp_search_tablet.css
+|   |       hmwebhelp_toc_desktop.css
+|   |       hmwebhelp_toc_phone.css
+|   |       hmwebhelp_toc_tablet.css
+|   |       hm_popup.css
+|   |       hm_webhelp.css
+|   |       
+|   +---images
+|   |       banner_company.jpg
+|   |       bg.png
+|   |       blackpaisley.jpeg
+|   |       build.svg
+|   |       cicon_loadindex_ani.gif
+|   |       close_data.png
+|   |       favorite.svg
+|   |       hmlogo_white.png
+|   |       hxlogo_white.png
+|   |       internet.svg
+|   |       kw-page.gif
+|   |       leftright.png
+|   |       logo-image-desk.png
+|   |       logo-image-mobile.png
+|   |       mob_home.png
+|   |       mob_next.png
+|   |       mob_previous.png
+|   |       open_data.png
+|   |       page-bg.png
+|   |       search.svg
+|   |       social_mail.png
+|   |       spacer.gif
+|   |       TextMinus.png
+|   |       TextNormal.png
+|   |       TextPlus.png
+|   |       toc.png
+|   |       toc_chapter_closed.svg
+|   |       toc_chapter_open.svg
+|   |       toc_hide.png
+|   |       toc_show.png
+|   |       toc_topic.svg
+|   |       ZoomClose.png
+|   |       ZoomIn.png
+|   |       
+|   +---js
+|   |       fontSize.js
+|   |       helpman_settings.js
+|   |       highlight.js
+|   |       hmcontent.js
+|   |       hmcontextids.js
+|   |       hmDoInlineToggle.js
+|   |       hmDoToggle.js
+|   |       hmEmbeddedPopups.js
+|   |       hmEmbedHelp.js
+|   |       hmFeatureHeader.js
+|   |       hmFeatureHeaderM.js
+|   |       hmImageToggle.js
+|   |       hmImageToggleMobile.js
+|   |       hmkwindex.js
+|   |       hmpopup_html.js
+|   |       hmSmartPopup.js
+|   |       hmVideoBox.js
+|   |       hmXtopic.js
+|   |       hm_autotoc.js
+|   |       hm_mail_feedback.js
+|   |       hm_webhelp.js
+|   |       hm_xTablesInit.js
+|   |       jquery.history.js
+|   |       jquery.js
+|   |       jquery.scrollTomin.js
+|   |       mobileNav.js
+|   |       postloadFuncs.js
+|   |       socialsharing.js
+|   |       tapImage.js
+|   |       toggleLayoutTable.js
+|   |       xmessage.js
+|   |       zoom_search.js
+|   |       
+|   \---jstopics
+|           10_1-purpose-of-this-chapter.js
+|           10_10-mmio-and-serialization.js
+|           10_11-pal-and-device-control.js
+|           10_12-smp-and-error-handling.js
+|           10_13-summary.js
+|           10_2-design-philosophy.js
+|           10_3-device-model-overview.js
+|           10_3_2-device-attachment.js
+|           10_4-mmio-address-space.js
+|           10_5-mmio-access-semantics.js
+|           10_6-device-registers.js
+|           10_7-asynchronous-device-opera.js
+|           10_9-interrupt-signaling.js
+|           11_1-purpose-of-this-chapter.js
+|           11_10-invariant-violations.js
+|           11_11-summary.js
+|           11_2-execution-and-pipeline-in.js
+|           11_3-memory-model-invariants.js
+|           11_4-load-locked-_-store-condi.js
+|           11_5-privilege-and-pal-invaria.js
+|           11_6-exception-and-interrupt-i.js
+|           11_7-smp-invariants.js
+|           11_8-device-and-mmio-invariant.js
+|           11_9-debugging-and-observabili.js
+|           12_1-purpose-of-this-chapter.js
+|           12_10-cpu-local-events.js
+|           12_11-error-handling.js
+|           12_12-performance-and-instrume.js
+|           12_13-summary.js
+|           12_2-alphacpu-as-the-unit-of-e.js
+|           12_3-ownership-model.js
+|           12_4-cpu-lifecycle.js
+|           12_5-the-alphacpu-run-loop.js
+|           12_6-pipeline-integration.js
+|           12_7-interrupt-and-exception-h.js
+|           12_8-pal-integration.js
+|           12_9-smp-awareness.js
+|           13_1-purpose-of-this-chapter.js
+|           13_10-exception-precision.js
+|           13_11-branch-handling.js
+|           13_12-ll_sc-and-determinism.js
+|           13_13-summary.js
+|           13_2-pipeline-role-and-design.js
+|           13_3-pipeline-structure---ring.js
+|           13_4-pipelineslot-structure.js
+|           13_5-pipeline-execution---tick.js
+|           13_6-stage-implementations.js
+|           13_7-stall-mechanics.js
+|           13_8-flush-semantics.js
+|           13_9-serialization-and-barrier.js
+|           14_1-ibox---instruction-box.js
+|           14_2-ebox---integer-execution-.js
+|           14_3-fbox---floating-point-exe.js
+|           14_4-mbox---memory-box.js
+|           14_5-cbox---cache-_-control-bo.js
+|           14_6-palbox---privileged-archi.js
+|           14_7-box-interaction-model.js
+|           14_8-repository-directory-mapp.js
+|           15_1-memory-is-shared_-not-own.js
+|           15_10-smp-visibility-guarantee.js
+|           15_11-memory-fault-handling.js
+|           15_12-diagnostics-and-dma-cohe.js
+|           15_13-architectural-invariants.js
+|           15_14-repository-directory-map.js
+|           15_2-guestmemory-vs-safememory.js
+|           15_3-guestmemory-region-suppor.js
+|           15_4-sparsememorybacking---on-.js
+|           15_5-load-and-store-semantics.js
+|           15_6-write-buffer-implementati.js
+|           15_7-mmio-access-semantics.js
+|           15_8-ll_sc-reservation-trackin.js
+|           15_9-memory-barrier-coordinati.js
+|           16_1-device-differentiation-an.js
+|           16_11-architectural-invariants.js
+|           16_12-repository-directory-map.js
+|           16_2-mmio-routing-implementati.js
+|           16_3-endianness-and-device-reg.js
+|           16_4-asynchronous-device-threa.js
+|           16_5-scsi-subsystem.js
+|           16_6-tape-drive-emulation-and-.js
+|           16_7-network-and-fibre-channel.js
+|           16_8-irq-integration-architect.js
+|           16_9-dma-implementation.js
+|           17_1-alpha-virtual-address-for.js
+|           17_10-architectural-invariants.js
+|           17_11-repository-directory-map.js
+|           17_2-pte-representation.js
+|           17_3-translation-path.js
+|           17_4-spam-tlb-cache-architectu.js
+|           17_5-ev6silicontlb-and-layer-a.js
+|           17_6-replacement-policies.js
+|           17_7-asn-management-and-cohere.js
+|           17_8-tlb-invalidation-and-shoo.js
+|           17_9-ibox-instruction-translat.js
+|           18_1-exception-classification.js
+|           18_10-architectural-invariants.js
+|           18_11-repository-directory-map.js
+|           18_2-pendingevent-structure.js
+|           18_3-exceptionfactory.js
+|           18_4-faultdispatcher-implement.js
+|           18_5-exception-to-pal-vector-m.js
+|           18_6-pipeline-fault-detection-.js
+|           18_7-pal-mode-entry.js
+|           18_8-precise-exception-guarant.js
+|           18_9-barrier-interaction.js
+|           19_1-interrupt-sources.js
+|           19_2-irqpendingstate-implement.js
+|           19_3-interrupt-routing.js
+|           19_4-interrupt-sampling-and-de.js
+|           19_5-ipi-architecture.js
+|           19_6-memory-barrier-coordinati.js
+|           19_7-tlb-shootdown-protocol.js
+|           19_8-architectural-invariants-.js
+|           19_9-repository-directory-mapp.js
+|           1_5-non-goalschapter1.js
+|           1_6-control-and-data-flowchapter1.js
+|           1_7-architectural-invariants.js
+|           1_8-how-to-read-this-guidechapter1.js
+|           20_1-palbox-execution-domain.js
+|           20_10-architectural-invariants.js
+|           20_11-repository-directory-map.js
+|           20_2-palservice-delegation.js
+|           20_3-call_pal-dispatch-and-vec.js
+|           20_4-pal-mode-entry-and-exit.js
+|           20_5-shadow-registers-and-hwpc.js
+|           20_6-privileged-instructions.js
+|           20_7-pal-function-inventory.js
+|           20_8-cserve-and-srm-console-in.js
+|           20_9-boot-sequence.js
+|           21_1-determinism-as-a-design-g.js
+|           21_10-architectural-invariants.js
+|           21_11-repository-directory-map.js
+|           21_2-sources-of-nondeterminism.js
+|           21_3-exectrace-instrumentation.js
+|           21_4-subsystem-logging-(debug_.js
+|           21_5-tracing-by-subsystem.js
+|           21_6-logreader-diagnostic-appl.js
+|           21_7-breakpoints-and-watchpoin.js
+|           21_8-deterministic-replay.js
+|           21_9-smp-debugging-considerati.js
+|           22_1-definition-of-correctness.js
+|           22_10-known-deviations-and-non.js
+|           22_11-architectural-invariants.js
+|           22_12-final-compliance-stateme.js
+|           22_2-layered-validation-strate.js
+|           22_3-determinism-as-a-validati.js
+|           22_4-exception-and-fault-valid.js
+|           22_5-memory-ordering-and-ll_sc.js
+|           22_6-pal-and-privilege-boundar.js
+|           22_7-device-and-dma-validation.js
+|           22_8-regression-testing-policy.js
+|           22_9-architectural-compliance-.js
+|           3_15-ll_sc-interaction-with-th.js
+|           3_16-grain-system-chapter3.js
+|           4_1-purpose-of-this-chapter.js
+|           5_10-memory-barriers-(preview).js
+|           5_2-purpose-of-this-chapter.js
+|           6_1-purpose-of-this-chapter.js
+|           7_1-purpose-of-this-chapter.js
+|           7_4-exception-detection-points.js
+|           8_1-purpose-of-this-chapter.js
+|           8_12-pal-register-matrix.js
+|           8_13-summary.js
+|           9_1-purpose-of-this-chapter.js
+|           9_10-barriers-in-smp-context.js
+|           9_11-pal-and-smp.js
+|           9_12-exception-and-interrupt-i.js
+|           9_14-summary.js
+|           acronyms--usage-appendix.js
+|           alpha-boot-sequence.js
+|           alpha-physical-address-space.js
+|           alpha-pipeline-.js
+|           alpha-va-format-contract.js
+|           alpha.js
+|           alphacpu-alpha.js
+|           alphacpu-core.js
+|           alphacpudependency.js
+|           alphamemorysystem-managers.js
+|           alphapipeline-implementation.js
+|           alphasystemmemoryfinakl.js
+|           alpha_alu_inl.js
+|           alpha_fp_helpers_inl.js
+|           alpha_int_byteops_inl.js
+|           alpha_int_helpers_inl.js
+|           alpha_operate_opcode_helper.js
+|           alpha_spam_manager.js
+|           alpha_sse_fp_inl.js
+|           alpha_sse_int_inl.js
+|           appendix---trait-examples.js
+|           appendix-a---ev6-internal-proc.js
+|           appendix-b---core-types-refere.js
+|           appendix-c---glossary-and-acro.js
+|           appendix-d---instruction-inven.js
+|           appendix-e---physical-address-.js
+|           appendix-f---repository-direct.js
+|           appendix-g---decodedinstructio.js
+|           appendix-h---endianness-rules.js
+|           appendix-i---global-singletons.js
+|           architectural-high-value.js
+|           architectural-overview---memor.js
+|           architecture-overview.js
+|           architecture.js
+|           arithextender_helpers.js
+|           asa-emulatr_ini.js
+|           ast-delivery.js
+|           automatic-generationgrains.js
+|           axp_attributes_core.js
+|           backup-gude-claude-todo.js
+|           barriers.js
+|           bootstrap.js
+|           box-architecture.js
+|           box-orchestration.js
+|           branch-prediction-alphapipeline.js
+|           branch-prediction.js
+|           cache-alpha.js
+|           cbox.js
+|           chapter-10---devices-and-mmio.js
+|           chapter-11---architectural-inv.js
+|           chapter-11-interaction-with-se.js
+|           chapter-14---execution-domains.js
+|           chapter-15---memory-system-imp.js
+|           chapter-16---device-model--dma.js
+|           chapter-17---tlb_-pte_-and-add.js
+|           chapter-18---fault-dispatcher-.js
+|           chapter-19---debugging_-tracin.js
+|           chapter-1_.js
+|           chapter-1_2---design-goals-and.js
+|           chapter-1_3---major-architectu.js
+|           chapter-1_4---architectural-in.js
+|           chapter-2---execution-model.js
+|           chapter-20---boot-sequence_-pa.js
+|           chapter-21---debugging_-tracin.js
+|           chapter-22---testing_-validati.js
+|           chapter-2_1-purpose-of-this-ch.js
+|           chapter-2_10-summary.js
+|           chapter-2_2-cycle-base-executi.js
+|           chapter-2_3-responsibilities-o.js
+|           chapter-2_4---execution-phases.js
+|           chapter-2_5-execution-progress.js
+|           chapter-2_6-speculation-policy.js
+|           chapter-2_7-execution-and-comm.js
+|           chapter-2_8-interaction-with-s.js
+|           chapter-2_9-relationship-to-ot.js
+|           chapter-3---pipeline-architect.js
+|           chapter-3-key-takeaways.js
+|           chapter-3_10-pipeline-semantic.js
+|           chapter-3_11-backward-pipeline.js
+|           chapter-3_12-stalls-and-serial.js
+|           chapter-3_13-flushing-and-spec.js
+|           chapter-3_15-precise-exception.js
+|           chapter-3_16-summary.js
+|           chapter-3_2-overview-of-the-pi.js
+|           chapter-3_3-the-six-pipeline-s.js
+|           chapter-3_4-fetch-stage-(if).js
+|           chapter-3_5-decode-stage-(id).js
+|           chapter-3_6-issue-stage-(is).js
+|           chapter-3_7-execute-stage-(ex).js
+|           chapter-3_8-memory-stage-(mem).js
+|           chapter-3_9-writeback-stage-(w.js
+|           chapter-4---functionexecution-.js
+|           chapter-4_10-cross-box-interac.js
+|           chapter-4_11-summary.js
+|           chapter-4_2-box-based-executio.js
+|           chapter-4_3-relationship-betwe.js
+|           chapter-4_4-ibox---instruction.js
+|           chapter-4_5-ebox---execution-b.js
+|           chapter-4_6-fbox---floating-po.js
+|           chapter-4_7---mbox---memory-bo.js
+|           chapter-4_8---cbox---cache-_-c.js
+|           chapter-4_9-palbox---privilege.js
+|           chapter-5---memory-system-arch.js
+|           chapter-5_11-load-locked-_-sto.js
+|           chapter-5_12-memory-faults.js
+|           chapter-5_13-interaction-with-.js
+|           chapter-5_14-smp-consideration.js
+|           chapter-5_15-summary.js
+|           chapter-5_2-design-philosophy.js
+|           chapter-5_3-memory-layers-over.js
+|           chapter-5_4-virtual-addressing.js
+|           chapter-5_5-guestmemory---shar.js
+|           chapter-5_6-safememory---phsyi.js
+|           chapter-5_7-mmio-regions.js
+|           chapter-5_8-loads-and-stores.js
+|           chapter-5_9-write-buffers.js
+|           chapter-6---serialization-and-.js
+|           chapter-6_10---trapb---trap-ba.js
+|           chapter-6_11-call_pal-as-a-ser.js
+|           chapter-6_12-interaction-with-.js
+|           chapter-6_13-serialization-in-.js
+|           chapter-6_15-summary.js
+|           chapter-6_2-weak-ordering-as-t.js
+|           chapter-6_3-what-serialization.js
+|           chapter-6_4-classes-of-seriali.js
+|           chapter-6_5-pipeline-level-beh.js
+|           chapter-6_6-barrier-release-mo.js
+|           chapter-6_7-mb---full-memory-b.js
+|           chapter-6_8-wmb---write-memory.js
+|           chapter-6_9-excb---exception-b.js
+|           chapter-7---interrupt-and-ipi-.js
+|           chapter-7_10-traps-and-trapb.js
+|           chapter-7_13-summary.js
+|           chapter-7_2-terminology-and-cl.js
+|           chapter-7_3-exception-detectio.js
+|           chapter-7_4-faultdispatcher.js
+|           chapter-7_5-priority-ordering.js
+|           chapter-7_6-precise-exception-.js
+|           chapter-7_7-exception-delivery.js
+|           chapter-7_8-pal-mode-entry.js
+|           chapter-7_9-interrupt-handling.js
+|           chapter-8---pal-and-privleged-.js
+|           chapter-8_10-enforcing-the-pri.js
+|           chapter-8_11-pal-and-ll_sc.js
+|           chapter-8_2-what-pal-is-(and-i.js
+|           chapter-8_3-privilege-levels-i.js
+|           chapter-8_4-call_pal---enterin.js
+|           chapter-8_5-pal-execution-mode.js
+|           chapter-8_6-pal-and-exceptions.js
+|           chapter-8_7-pal-and-interrupts.js
+|           chapter-8_8-pal-and-memory-ord.js
+|           chapter-8_9-hw_rei---exiting-p.js
+|           chapter-9_2-smp-design-philoso.js
+|           chapter-9_3-cpu-instantiation-.js
+|           chapter-9_4-per-cpu-vs-shared-.js
+|           chapter-9_5-memory-visibility-.js
+|           chapter-9_6-write-buffers-in-s.js
+|           chapter-9_7-reservation-invali.js
+|           chapter-9_8-inter-processor-in.js
+|           chapter-9_9-tlb-shootdown.js
+|           chapter-style-guide-and-cross-.js
+|           chapter9-smparchitecture.js
+|           check_circular_py-appendix.js
+|           commands.js
+|           compiler-options.js
+|           config.js
+|           controllers.js
+|           conventions.js
+|           core-processor-implementation.js
+|           corelib.js
+|           cow-support-alphaspammanager.js
+|           cpu.js
+|           cpucorelib.js
+|           cpustateiprinterface-taskable2.js
+|           cpustateiprinterface-taskables.js
+|           cserve-environment-variable-im.js
+|           cserve-selector-table-based-on.js
+|           currentcputls.js
+|           debugging-sessoins.js
+|           debugging_-tracing_-and-valida.js
+|           decodedinstruction.js
+|           define_helpers.js
+|           dependency-requirements.js
+|           device-subsystem.js
+|           devicemanagerdependency.js
+|           directory-structure.js
+|           discussions.js
+|           dual-issue-hazard-scoreboard.js
+|           dumpbin.js
+|           ebox.js
+|           emulatormanger-app.js
+|           emulatr-initialization-.js
+|           emulatr-logging.js
+|           endianness-rules.js
+|           ev4.js
+|           ev5.js
+|           ev6.js
+|           ev6ptecache.js
+|           ev6_hooks_taskables.js
+|           exception--faults.js
+|           exception-handling-fbox.js
+|           exceptionfactory_inl.js
+|           exceptionlib.js
+|           exceptionmapping_inl.js
+|           exceptionpreparation_inl.js
+|           exceptions.js
+|           exceptionstateupdate_inl.js
+|           exc_sum_helpers.js
+|           executeexcb-barriers.js
+|           executewmb-barriers.js
+|           export-symbols-appendix.js
+|           fbox.js
+|           flow-chart-runloop.js
+|           fpcr-fbox-registers.js
+|           function-flow-branchpredition.js
+|           function-index.js
+|           generate_all_grains_py-appendix.js
+|           generate_cmakelists_py-appendix.js
+|           ghwpcbbank_globalstatics.js
+|           giprbank-(iprbank)_qglobalstatics.js
+|           girqcontroller_qglobalstatics.js
+|           globalev6ptecache.js
+|           globalipr_hot_cold.js
+|           globalreservationmanager.js
+|           global_emulatorsettings.js
+|           global_hwpcbbank_interface.js
+|           grain-routing---pal.js
+|           grainmaster_tsv-appendix.js
+|           grains_.js
+|           guestmemory-srm-integration.js
+|           helper-functions.js
+|           hwpcb-.js
+|           hwpcb_taskables.js
+|           i-cache-cache.js
+|           ibox.js
+|           implementation-alpha_spam_manager.js
+|           implementation.js
+|           index.js
+|           integration-steps.js
+|           interrupt---methodology--conve.js
+|           interrupts-_-ipl-and-ast.js
+|           ipi---inter-processor-interrup.js
+|           ipr-cache-optimization---quick.js
+|           ipr-hive.js
+|           ipr-storage.js
+|           ipr.js
+|           iprstorage.js
+|           iprstorage_ibox.js
+|           ipr_getactivesp_inl.js
+|           ipr_ic_flush_inl.js
+|           irqcontroller-controllers.js
+|           irqcontrollerdependencies.js
+|           keep.js
+|           lifecycle-grain.js
+|           load---silos-.js
+|           logging.js
+|           makearithmeticfaultinfo_inl.js
+|           managers.js
+|           mbox.js
+|           memory--synchronization-intern.js
+|           memory-mapvisual.js
+|           minimal-pal-checklist.js
+|           mmio.js
+|           mmiomanagerdependency.js
+|           mplatedefault-modified2026-02-.js
+|           next-steps-to-srm-.js
+|           next-steps.js
+|           oniplchanged_inl.js
+|           osf.js
+|           pagetable(pte)subsystem.js
+|           pal-exception-vectoring.js
+|           pal-module.js
+|           pal-vector-table-(gpalvectorta.js
+|           pal.js
+|           pctx_helpers.js
+|           permissions--va-translation.js
+|           permissions_helper_inl.js
+|           platform.js
+|           processor-status-(ps)-helpers.js
+|           ps_helpers_inl.js
+|           pte.js
+|           pte_core.js
+|           pupose-of-this-chapterchapter2.js
+|           purpose-and-audiencechapter1.js
+|           python-scripts.js
+|           qglobalstatics_appendix.js
+|           qtrandomcompat.js
+|           r31-profiling.js
+|           r31-usage.js
+|           raw-hazard---load-followed-alu.js
+|           registers-ebox.js
+|           registers-fbox.js
+|           registers-ibox.js
+|           registers-mbox.js
+|           registers.js
+|           reservationmanager-appendix.js
+|           reservationmanager.js
+|           reservationmanagerdependency.js
+|           resolution-interface.js
+|           run-loop-nested-stack.js
+|           run-loop.js
+|           safememory---ram.js
+|           safememorydependency.js
+|           scoreboard-hazards.js
+|           scsi.js
+|           shard-scaffolding-ownership.js
+|           sharding-mechanism---pte---spa.js
+|           spam---policies.js
+|           spam-shard-support.js
+|           specation-pipeline.js
+|           srm-load.js
+|           stall-conditions.js
+|           systems-integration.js
+|           taskables.js
+|           tier.js
+|           todo-palvectoring.js
+|           tracehelpers.js
+|           trait---ctor-usage-examples.js
+|           trait-examples.js
+|           translation-buffer.js
+|           types_core.js
+|           uat.js
+|           unit-test-scaffold.js
+|           usage-and-integrationlogging.js
+|           vms.js
+|           waw-check-scoreboarding.js
+|           
++---EBoxLib
+|       EBoxBase.h
+|       
++---emulatR
++---emulatrLib
+|       Clipper.BinStructure
+|       CPUStateManager.cpp
+|       CPUStateManager.h
+|       EmulatorPaths.h
+|       emulatrLib.zip
+|       emulatrLib_global.h
+|       EmulatR_init.cpp
+|       EmulatR_init.h
+|       ExecutionCoordinator.cpp
+|       ExecutionCoordinator.h
+|       global_EmulatR_init.cpp
+|       global_EmulatR_init.h
+|       global_ExecutionCoordinator.cpp
+|       global_ExecutionCoordinator.h
+|       global_IPIManager.cpp
+|       global_IPIManager.h
+|       global_SubsystemCoordinator.cpp
+|       global_SubSystemCoordinator.h
+|       IPIManager.h
+|       SubsystemCoordinator.h
+|       
++---exceptionLib
+|       DStreamErrorContext_EV6.h
+|       ExceptionClass_EV6.h
+|       ExceptionFactory.cpp
+|       ExceptionFactory.h
+|       ExceptionStateUpdate_inl.h
+|       PendingEventKind.h
+|       
++---faultLib
+|       FaultDispatcher.h
+|       fault_core.h
+|       GlobalFaultDispatcherBank.cpp
+|       GlobalFaultDispatcherBank.h
+|       global_faultDispatcher.cpp
+|       global_faultDispatcher.h
+|       IFaultSink.h
+|       isVAAddressTranslationFault.h
+|       makeAlignmentFaultEvent_inl.h
+|       makeArithmeticFaultInfo_inl.h
+|       MemoryFaultInfo.h
+|       PendingEvent_Refined.h
+|       raiseTranslationFault_inl.h
+|       Tlb_Fault_core.h
+|       
++---FBoxLib
+|       FBoxBase.h
+|       
++---firmware
+|       cl67srmrom.exe
+|       clipper.bin
+|       decompressed.rom
+|       DS10_V6_2.EXE
+|       DS20L_V6_2.EXE
+|       DS20_V6_2.EXE
+|       ES40_V6_2.EXE
+|       ES45_V6_2.EXE
+|       GS320_V62.EXE
+|       
++---grainFactoryLib
+|   |   convert_grainmaster.py
+|   |   convert_grainmaster.py7
+|   |   DecodedInstruction.h
+|   |   DecodedInstruction_inl.h
+|   |   executionBoxDecoder_inl.h
+|   |   generate_all_grains.py
+|   |   generate_all_grains.py.bak
+|   |   global_grainResolver.h
+|   |   GrainArchitectureDump.h
+|   |   GrainMaster.tsv
+|   |   GrainMaster.tsv.bak
+|   |   GrainMaster.tsv.bak.bak
+|   |   GrainMaster_Corrected.tsv
+|   |   GrainRegistry.cpp
+|   |   GrainRegistry.h
+|   |   GrainResolver.h
+|   |   Grain_const_core.h
+|   |   grain_core.h
+|   |   iGrain-DualCache_singleton.h
+|   |   iGrain-DualLookup_inl.h
+|   |   iGrain-Invalidations_inl.h
+|   |   iGrain-KeyIdenties.h
+|   |   iGrain-Parameter-DecodeCache.h
+|   |   iGrain_helper_inl.h
+|   |   iGrain_SemanicExamples.h
+|   |   ImplementationRefactored.txt
+|   |   instructionFormatClassifier.h
+|   |   InstructionGrain.h
+|   |   InstructionGrainRegistry.cpp
+|   |   InstructionGrainRegistry.h
+|   |   InstructionGrain_core.h
+|   |   InstructionSemantics_mask.h
+|   |   MemoryBarrier_core.h
+|   |   original_GrainMaster.tsv
+|   |   RegisterAllGrains.cpp
+|   |   
+|   \---grains
+|       |   generate_all_grains.py
+|       |   generate_grain_registration.py
+|       |   GrainMaster.xlsx
+|       |   grain_validator.py
+|       |   Regenerate_grainmaster.py
+|       |   
+|       \---generated
+|           +---Branch
+|           |       BEQ_InstructionGrain.h
+|           |       BGE_InstructionGrain.h
+|           |       BGT_InstructionGrain.h
+|           |       BLBC_InstructionGrain.h
+|           |       BLBS_InstructionGrain.h
+|           |       BLE_InstructionGrain.h
+|           |       BLT_InstructionGrain.h
+|           |       BNE_InstructionGrain.h
+|           |       BR_InstructionGrain.h
+|           |       BSR_InstructionGrain.h
+|           |       ECB_InstructionGrain.h
+|           |       EXCB_InstructionGrain.h
+|           |       FBEQ_InstructionGrain.h
+|           |       FBGE_InstructionGrain.h
+|           |       FBGT_InstructionGrain.h
+|           |       FBLE_InstructionGrain.h
+|           |       FBLT_InstructionGrain.h
+|           |       FBNE_InstructionGrain.h
+|           |       JMP_InstructionGrain.h
+|           |       JSR_COROUTINE_InstructionGrain.h
+|           |       JSR_InstructionGrain.h
+|           |       MB_InstructionGrain.h
+|           |       RC_InstructionGrain.h
+|           |       RET_InstructionGrain.h
+|           |       RS_InstructionGrain.h
+|           |       TRAPB_InstructionGrain.h
+|           |       WMB_InstructionGrain.h
+|           |       
+|           +---FloatingPoint
+|           |       ADDF_C_InstructionGrain.h
+|           |       ADDF_InstructionGrain.h
+|           |       ADDF_SC_InstructionGrain.h
+|           |       ADDF_SUC_InstructionGrain.h
+|           |       ADDF_SU_InstructionGrain.h
+|           |       ADDF_S_InstructionGrain.h
+|           |       ADDF_UC_InstructionGrain.h
+|           |       ADDF_U_InstructionGrain.h
+|           |       ADDG_C_InstructionGrain.h
+|           |       ADDG_InstructionGrain.h
+|           |       ADDG_SC_InstructionGrain.h
+|           |       ADDG_SUC_InstructionGrain.h
+|           |       ADDG_SU_InstructionGrain.h
+|           |       ADDG_S_InstructionGrain.h
+|           |       ADDG_UC_InstructionGrain.h
+|           |       ADDG_U_InstructionGrain.h
+|           |       ADDS_C_InstructionGrain.h
+|           |       ADDS_D_InstructionGrain.h
+|           |       ADDS_InstructionGrain.h
+|           |       ADDS_M_InstructionGrain.h
+|           |       ADDS_SUC_InstructionGrain.h
+|           |       ADDS_SUD_InstructionGrain.h
+|           |       ADDS_SUIC_InstructionGrain.h
+|           |       ADDS_SUID_InstructionGrain.h
+|           |       ADDS_SUIM_InstructionGrain.h
+|           |       ADDS_SUI_InstructionGrain.h
+|           |       ADDS_SUM_InstructionGrain.h
+|           |       ADDS_SU_InstructionGrain.h
+|           |       ADDS_UC_InstructionGrain.h
+|           |       ADDS_UD_InstructionGrain.h
+|           |       ADDS_UM_InstructionGrain.h
+|           |       ADDS_U_InstructionGrain.h
+|           |       ADDT_C_InstructionGrain.h
+|           |       ADDT_D_InstructionGrain.h
+|           |       ADDT_InstructionGrain.h
+|           |       ADDT_M_InstructionGrain.h
+|           |       ADDT_SUC_InstructionGrain.h
+|           |       ADDT_SUD_InstructionGrain.h
+|           |       ADDT_SUIC_InstructionGrain.h
+|           |       ADDT_SUID_InstructionGrain.h
+|           |       ADDT_SUIM_InstructionGrain.h
+|           |       ADDT_SUI_InstructionGrain.h
+|           |       ADDT_SUM_InstructionGrain.h
+|           |       ADDT_SU_InstructionGrain.h
+|           |       ADDT_UC_InstructionGrain.h
+|           |       ADDT_UD_InstructionGrain.h
+|           |       ADDT_UM_InstructionGrain.h
+|           |       ADDT_U_InstructionGrain.h
+|           |       CMPGEQ_C_InstructionGrain.h
+|           |       CMPGEQ_InstructionGrain.h
+|           |       CMPGLE_InstructionGrain.h
+|           |       CMPGLE_S_InstructionGrain.h
+|           |       CMPGLT_InstructionGrain.h
+|           |       CMPGLT_S_InstructionGrain.h
+|           |       CMPTEQ_InstructionGrain.h
+|           |       CMPTEQ_SU_InstructionGrain.h
+|           |       CMPTLE_InstructionGrain.h
+|           |       CMPTLE_SU_InstructionGrain.h
+|           |       CMPTLT_InstructionGrain.h
+|           |       CMPTLT_SU_InstructionGrain.h
+|           |       CMPTUN_InstructionGrain.h
+|           |       CMPTUN_SU_InstructionGrain.h
+|           |       CPYSE_InstructionGrain.h
+|           |       CPYSN_InstructionGrain.h
+|           |       CPYS_InstructionGrain.h
+|           |       CVTBQ_C_InstructionGrain.h
+|           |       CVTBQ_SVC_InstructionGrain.h
+|           |       CVTDG_C_InstructionGrain.h
+|           |       CVTDG_InstructionGrain.h
+|           |       CVTDG_SC_InstructionGrain.h
+|           |       CVTDG_SUC_InstructionGrain.h
+|           |       CVTDG_SU_InstructionGrain.h
+|           |       CVTDG_S_InstructionGrain.h
+|           |       CVTDG_UC_InstructionGrain.h
+|           |       CVTDG_U_InstructionGrain.h
+|           |       CVTGD_C_InstructionGrain.h
+|           |       CVTGD_InstructionGrain.h
+|           |       CVTGD_SC_InstructionGrain.h
+|           |       CVTGD_SUC_InstructionGrain.h
+|           |       CVTGD_SU_InstructionGrain.h
+|           |       CVTGD_S_InstructionGrain.h
+|           |       CVTGD_UC_InstructionGrain.h
+|           |       CVTGD_U_InstructionGrain.h
+|           |       CVTGF_C_InstructionGrain.h
+|           |       CVTGF_InstructionGrain.h
+|           |       CVTGF_SC_InstructionGrain.h
+|           |       CVTGF_SUC_InstructionGrain.h
+|           |       CVTGF_SU_InstructionGrain.h
+|           |       CVTGF_S_InstructionGrain.h
+|           |       CVTGF_UC_InstructionGrain.h
+|           |       CVTGF_U_InstructionGrain.h
+|           |       CVTGQ_C_InstructionGrain.h
+|           |       CVTGQ_InstructionGrain.h
+|           |       CVTGQ_NC_InstructionGrain.h
+|           |       CVTGQ_SC_InstructionGrain.h
+|           |       CVTGQ_SVC_InstructionGrain.h
+|           |       CVTGQ_SV_InstructionGrain.h
+|           |       CVTGQ_S_InstructionGrain.h
+|           |       CVTGQ_V_InstructionGrain.h
+|           |       CVTLQ_InstructionGrain.h
+|           |       CVTQF_C_InstructionGrain.h
+|           |       CVTQF_InstructionGrain.h
+|           |       CVTQG_C_InstructionGrain.h
+|           |       CVTQG_InstructionGrain.h
+|           |       CVTQL_InstructionGrain.h
+|           |       CVTQS_C_InstructionGrain.h
+|           |       CVTQS_D_InstructionGrain.h
+|           |       CVTQS_InstructionGrain.h
+|           |       CVTQS_M_InstructionGrain.h
+|           |       CVTQT_C_InstructionGrain.h
+|           |       CVTQT_InstructionGrain.h
+|           |       CVTQT_M_InstructionGrain.h
+|           |       CVTQT_SUI_InstructionGrain.h
+|           |       CVTST_InstructionGrain.h
+|           |       CVTST_S_InstructionGrain.h
+|           |       CVTTQ_C_InstructionGrain.h
+|           |       CVTTQ_D_InstructionGrain.h
+|           |       CVTTQ_InstructionGrain.h
+|           |       CVTTQ_M_InstructionGrain.h
+|           |       CVTTQ_SVC_InstructionGrain.h
+|           |       CVTTQ_SVD_InstructionGrain.h
+|           |       CVTTQ_SVIC_InstructionGrain.h
+|           |       CVTTQ_SVID_InstructionGrain.h
+|           |       CVTTQ_SVIM_InstructionGrain.h
+|           |       CVTTQ_SVI_InstructionGrain.h
+|           |       CVTTQ_SVM_InstructionGrain.h
+|           |       CVTTQ_SV_InstructionGrain.h
+|           |       CVTTQ_VC_InstructionGrain.h
+|           |       CVTTQ_VD_InstructionGrain.h
+|           |       CVTTQ_VM_InstructionGrain.h
+|           |       CVTTQ_V_InstructionGrain.h
+|           |       CVTTS_C_InstructionGrain.h
+|           |       CVTTS_D_InstructionGrain.h
+|           |       CVTTS_InstructionGrain.h
+|           |       CVTTS_M_InstructionGrain.h
+|           |       CVTTS_SUC_InstructionGrain.h
+|           |       CVTTS_SUD_InstructionGrain.h
+|           |       CVTTS_SUIC_InstructionGrain.h
+|           |       CVTTS_SUID_InstructionGrain.h
+|           |       CVTTS_SUIM_InstructionGrain.h
+|           |       CVTTS_SUI_InstructionGrain.h
+|           |       CVTTS_SUM_InstructionGrain.h
+|           |       CVTTS_SU_InstructionGrain.h
+|           |       CVTTS_UC_InstructionGrain.h
+|           |       CVTTS_UD_InstructionGrain.h
+|           |       CVTTS_UM_InstructionGrain.h
+|           |       CVTTS_U_InstructionGrain.h
+|           |       DIVF_C_InstructionGrain.h
+|           |       DIVF_InstructionGrain.h
+|           |       DIVF_SC_InstructionGrain.h
+|           |       DIVF_SUC_InstructionGrain.h
+|           |       DIVF_SU_InstructionGrain.h
+|           |       DIVF_S_InstructionGrain.h
+|           |       DIVF_UC_InstructionGrain.h
+|           |       DIVF_U_InstructionGrain.h
+|           |       DIVG_C_InstructionGrain.h
+|           |       DIVG_InstructionGrain.h
+|           |       DIVG_SC_InstructionGrain.h
+|           |       DIVG_SUC_InstructionGrain.h
+|           |       DIVG_SU_InstructionGrain.h
+|           |       DIVG_S_InstructionGrain.h
+|           |       DIVG_UC_InstructionGrain.h
+|           |       DIVG_U_InstructionGrain.h
+|           |       DIVS_C_InstructionGrain.h
+|           |       DIVS_D_InstructionGrain.h
+|           |       DIVS_InstructionGrain.h
+|           |       DIVS_M_InstructionGrain.h
+|           |       DIVS_SUC_InstructionGrain.h
+|           |       DIVS_SUD_InstructionGrain.h
+|           |       DIVS_SUIC_InstructionGrain.h
+|           |       DIVS_SUID_InstructionGrain.h
+|           |       DIVS_SUIM_InstructionGrain.h
+|           |       DIVS_SUI_InstructionGrain.h
+|           |       DIVS_SUM_InstructionGrain.h
+|           |       DIVS_SU_InstructionGrain.h
+|           |       DIVS_UC_InstructionGrain.h
+|           |       DIVS_UD_InstructionGrain.h
+|           |       DIVS_UM_InstructionGrain.h
+|           |       DIVS_U_InstructionGrain.h
+|           |       DIVT_C_InstructionGrain.h
+|           |       DIVT_D_InstructionGrain.h
+|           |       DIVT_InstructionGrain.h
+|           |       DIVT_M_InstructionGrain.h
+|           |       DIVT_SUC_InstructionGrain.h
+|           |       DIVT_SUD_InstructionGrain.h
+|           |       DIVT_SUIC_InstructionGrain.h
+|           |       DIVT_SUID_InstructionGrain.h
+|           |       DIVT_SUIM_InstructionGrain.h
+|           |       DIVT_SUI_InstructionGrain.h
+|           |       DIVT_SUM_InstructionGrain.h
+|           |       DIVT_SU_InstructionGrain.h
+|           |       DIVT_UC_InstructionGrain.h
+|           |       DIVT_UD_InstructionGrain.h
+|           |       DIVT_UM_InstructionGrain.h
+|           |       DIVT_U_InstructionGrain.h
+|           |       FCMOVEQ_InstructionGrain.h
+|           |       FCMOVGE_InstructionGrain.h
+|           |       FCMOVGT_InstructionGrain.h
+|           |       FCMOVLE_InstructionGrain.h
+|           |       FCMOVLT_InstructionGrain.h
+|           |       FCMOVNE_InstructionGrain.h
+|           |       MF_FPCR_InstructionGrain.h
+|           |       MT_FPCR_InstructionGrain.h
+|           |       MULF_C_InstructionGrain.h
+|           |       MULF_InstructionGrain.h
+|           |       MULF_SC_InstructionGrain.h
+|           |       MULF_SUC_InstructionGrain.h
+|           |       MULF_SU_InstructionGrain.h
+|           |       MULF_S_InstructionGrain.h
+|           |       MULF_UC_InstructionGrain.h
+|           |       MULF_U_InstructionGrain.h
+|           |       MULG_C_InstructionGrain.h
+|           |       MULG_InstructionGrain.h
+|           |       MULG_SC_InstructionGrain.h
+|           |       MULG_SUC_InstructionGrain.h
+|           |       MULG_SU_InstructionGrain.h
+|           |       MULG_S_InstructionGrain.h
+|           |       MULG_UC_InstructionGrain.h
+|           |       MULG_U_InstructionGrain.h
+|           |       MULS_C_InstructionGrain.h
+|           |       MULS_InstructionGrain.h
+|           |       MULS_M_InstructionGrain.h
+|           |       MULS_SUC_InstructionGrain.h
+|           |       MULS_SUD_InstructionGrain.h
+|           |       MULS_SUIC_InstructionGrain.h
+|           |       MULS_SUID_InstructionGrain.h
+|           |       MULS_SUIM_InstructionGrain.h
+|           |       MULS_SUI_InstructionGrain.h
+|           |       MULS_SUM_InstructionGrain.h
+|           |       MULS_SU_InstructionGrain.h
+|           |       MULS_UC_InstructionGrain.h
+|           |       MULS_UD_InstructionGrain.h
+|           |       MULS_UM_InstructionGrain.h
+|           |       MULS_U_InstructionGrain.h
+|           |       MULT_C_InstructionGrain.h
+|           |       MULT_D_InstructionGrain.h
+|           |       MULT_InstructionGrain.h
+|           |       MULT_M_InstructionGrain.h
+|           |       MULT_SUC_InstructionGrain.h
+|           |       MULT_SUD_InstructionGrain.h
+|           |       MULT_SUIC_InstructionGrain.h
+|           |       MULT_SUID_InstructionGrain.h
+|           |       MULT_SUIM_InstructionGrain.h
+|           |       MULT_SUI_InstructionGrain.h
+|           |       MULT_SUM_InstructionGrain.h
+|           |       MULT_SU_InstructionGrain.h
+|           |       MULT_UC_InstructionGrain.h
+|           |       MULT_UD_InstructionGrain.h
+|           |       MULT_UM_InstructionGrain.h
+|           |       MULT_U_InstructionGrain.h
+|           |       SQRTF_SC_InstructionGrain.h
+|           |       SQRTF_SUC_InstructionGrain.h
+|           |       SQRTF_SU_InstructionGrain.h
+|           |       SQRTF_S_InstructionGrain.h
+|           |       SQRTF_UC_InstructionGrain.h
+|           |       SQRTF_U_InstructionGrain.h
+|           |       SQRTG_SC_InstructionGrain.h
+|           |       SQRTG_SUC_InstructionGrain.h
+|           |       SQRTG_SU_InstructionGrain.h
+|           |       SQRTG_S_InstructionGrain.h
+|           |       SQRTG_UC_InstructionGrain.h
+|           |       SQRTG_U_InstructionGrain.h
+|           |       SQRTS_SUC_InstructionGrain.h
+|           |       SQRTS_SUD_InstructionGrain.h
+|           |       SQRTS_SUIC_InstructionGrain.h
+|           |       SQRTS_SUID_InstructionGrain.h
+|           |       SQRTS_SUIM_InstructionGrain.h
+|           |       SQRTS_SUI_InstructionGrain.h
+|           |       SQRTS_SUM_InstructionGrain.h
+|           |       SQRTS_SU_InstructionGrain.h
+|           |       SQRTS_UC_InstructionGrain.h
+|           |       SQRTS_UD_InstructionGrain.h
+|           |       SQRTS_UM_InstructionGrain.h
+|           |       SQRTS_U_InstructionGrain.h
+|           |       SQRTT_SUC_InstructionGrain.h
+|           |       SQRTT_SUD_InstructionGrain.h
+|           |       SQRTT_SUIC_InstructionGrain.h
+|           |       SQRTT_SUID_InstructionGrain.h
+|           |       SQRTT_SUIM_InstructionGrain.h
+|           |       SQRTT_SUI_InstructionGrain.h
+|           |       SQRTT_SUM_InstructionGrain.h
+|           |       SQRTT_SU_InstructionGrain.h
+|           |       SQRTT_UC_InstructionGrain.h
+|           |       SQRTT_UD_InstructionGrain.h
+|           |       SQRTT_UM_InstructionGrain.h
+|           |       SQRTT_U_InstructionGrain.h
+|           |       SUBF_C_InstructionGrain.h
+|           |       SUBF_InstructionGrain.h
+|           |       SUBF_SC_InstructionGrain.h
+|           |       SUBF_SUC_InstructionGrain.h
+|           |       SUBF_SU_InstructionGrain.h
+|           |       SUBF_S_InstructionGrain.h
+|           |       SUBF_UC_InstructionGrain.h
+|           |       SUBF_U_InstructionGrain.h
+|           |       SUBG_C_InstructionGrain.h
+|           |       SUBG_InstructionGrain.h
+|           |       SUBG_SC_InstructionGrain.h
+|           |       SUBG_SUC_InstructionGrain.h
+|           |       SUBG_SU_InstructionGrain.h
+|           |       SUBG_S_InstructionGrain.h
+|           |       SUBG_UC_InstructionGrain.h
+|           |       SUBG_U_InstructionGrain.h
+|           |       SUBS_C_InstructionGrain.h
+|           |       SUBS_InstructionGrain.h
+|           |       SUBS_M_InstructionGrain.h
+|           |       SUBS_SUC_InstructionGrain.h
+|           |       SUBS_SUD_InstructionGrain.h
+|           |       SUBS_SUIC_InstructionGrain.h
+|           |       SUBS_SUID_InstructionGrain.h
+|           |       SUBS_SUIM_InstructionGrain.h
+|           |       SUBS_SUI_InstructionGrain.h
+|           |       SUBS_SUM_InstructionGrain.h
+|           |       SUBS_SU_InstructionGrain.h
+|           |       SUBS_UC_InstructionGrain.h
+|           |       SUBS_UD_InstructionGrain.h
+|           |       SUBS_UM_InstructionGrain.h
+|           |       SUBS_U_InstructionGrain.h
+|           |       SUBT_C_InstructionGrain.h
+|           |       SUBT_D_InstructionGrain.h
+|           |       SUBT_InstructionGrain.h
+|           |       SUBT_M_InstructionGrain.h
+|           |       SUBT_SUC_InstructionGrain.h
+|           |       SUBT_SUD_InstructionGrain.h
+|           |       SUBT_SUIC_InstructionGrain.h
+|           |       SUBT_SUID_InstructionGrain.h
+|           |       SUBT_SUIM_InstructionGrain.h
+|           |       SUBT_SUI_InstructionGrain.h
+|           |       SUBT_SUM_InstructionGrain.h
+|           |       SUBT_SU_InstructionGrain.h
+|           |       SUBT_UC_InstructionGrain.h
+|           |       SUBT_UD_InstructionGrain.h
+|           |       SUBT_UM_InstructionGrain.h
+|           |       SUBT_U_InstructionGrain.h
+|           |       
+|           +---Integer
+|           |       ADDL_InstructionGrain.h
+|           |       ADDL_V_InstructionGrain.h
+|           |       ADDQ_InstructionGrain.h
+|           |       ADDQ_V_InstructionGrain.h
+|           |       AND_InstructionGrain.h
+|           |       BIC_InstructionGrain.h
+|           |       BIS_InstructionGrain.h
+|           |       CMOVEQ_InstructionGrain.h
+|           |       CMOVGE_InstructionGrain.h
+|           |       CMOVGT_InstructionGrain.h
+|           |       CMOVLBC_InstructionGrain.h
+|           |       CMOVLBS_InstructionGrain.h
+|           |       CMOVLE_InstructionGrain.h
+|           |       CMOVLT_InstructionGrain.h
+|           |       CMOVNE_InstructionGrain.h
+|           |       CMPBGE_InstructionGrain.h
+|           |       CMPEQ_InstructionGrain.h
+|           |       CMPLE_InstructionGrain.h
+|           |       CMPLT_InstructionGrain.h
+|           |       CMPULE_InstructionGrain.h
+|           |       CMPULT_InstructionGrain.h
+|           |       CTLZ_InstructionGrain.h
+|           |       CTPOP_InstructionGrain.h
+|           |       CTTZ_InstructionGrain.h
+|           |       EQV_InstructionGrain.h
+|           |       EXTBL_InstructionGrain.h
+|           |       EXTLH_InstructionGrain.h
+|           |       EXTLL_InstructionGrain.h
+|           |       EXTQH_InstructionGrain.h
+|           |       EXTQL_InstructionGrain.h
+|           |       EXTWH_InstructionGrain.h
+|           |       EXTWL_InstructionGrain.h
+|           |       INSBL_InstructionGrain.h
+|           |       INSLH_InstructionGrain.h
+|           |       INSLL_InstructionGrain.h
+|           |       INSQH_InstructionGrain.h
+|           |       INSQL_InstructionGrain.h
+|           |       INSWH_InstructionGrain.h
+|           |       INSWL_InstructionGrain.h
+|           |       MAXSB8_InstructionGrain.h
+|           |       MAXSW4_InstructionGrain.h
+|           |       MAXUB8_InstructionGrain.h
+|           |       MAXUW4_InstructionGrain.h
+|           |       MINSB8_InstructionGrain.h
+|           |       MINSW4_InstructionGrain.h
+|           |       MINUB8_InstructionGrain.h
+|           |       MINUW4_InstructionGrain.h
+|           |       MSKBL_InstructionGrain.h
+|           |       MSKLH_InstructionGrain.h
+|           |       MSKLL_InstructionGrain.h
+|           |       MSKQH_InstructionGrain.h
+|           |       MSKQL_InstructionGrain.h
+|           |       MSKWH_InstructionGrain.h
+|           |       MSKWL_InstructionGrain.h
+|           |       MULL_InstructionGrain.h
+|           |       MULL_V_InstructionGrain.h
+|           |       MULQ_InstructionGrain.h
+|           |       MULQ_V_InstructionGrain.h
+|           |       ORNOT_InstructionGrain.h
+|           |       PERR_InstructionGrain.h
+|           |       PKLB_InstructionGrain.h
+|           |       PKWB_InstructionGrain.h
+|           |       RC_InstructionGrain.h
+|           |       RS_InstructionGrain.h
+|           |       S4ADDL_InstructionGrain.h
+|           |       S4ADDQ_InstructionGrain.h
+|           |       S4SUBL_InstructionGrain.h
+|           |       S4SUBQ_InstructionGrain.h
+|           |       S8ADDL_InstructionGrain.h
+|           |       S8ADDQ_InstructionGrain.h
+|           |       S8SUBL_InstructionGrain.h
+|           |       S8SUBQ_InstructionGrain.h
+|           |       SEXTB_InstructionGrain.h
+|           |       SEXTW_InstructionGrain.h
+|           |       SLL_InstructionGrain.h
+|           |       SRA_InstructionGrain.h
+|           |       SUBL_InstructionGrain.h
+|           |       SUBL_V_InstructionGrain.h
+|           |       SUBQ_InstructionGrain.h
+|           |       SUBQ_V_InstructionGrain.h
+|           |       UMULH_InstructionGrain.h
+|           |       UNPKBL_InstructionGrain.h
+|           |       UNPKBW_InstructionGrain.h
+|           |       XOR_InstructionGrain.h
+|           |       ZAPNOT_InstructionGrain.h
+|           |       ZAP_InstructionGrain.h
+|           |       
+|           +---Memory
+|           |       FETCH_InstructionGrain.h
+|           |       FETCH_M_InstructionGrain.h
+|           |       LDAH_InstructionGrain.h
+|           |       LDA_InstructionGrain.h
+|           |       LDF_InstructionGrain.h
+|           |       LDG_InstructionGrain.h
+|           |       LDL_InstructionGrain.h
+|           |       LDL_L_InstructionGrain.h
+|           |       LDQ_InstructionGrain.h
+|           |       LDQ_L_InstructionGrain.h
+|           |       LDQ_U_InstructionGrain.h
+|           |       LDS_InstructionGrain.h
+|           |       LDT_InstructionGrain.h
+|           |       RDUNIQUE_64_InstructionGrain.h
+|           |       RPCC_InstructionGrain.h
+|           |       SRL_InstructionGrain.h
+|           |       STF_InstructionGrain.h
+|           |       STG_InstructionGrain.h
+|           |       STL_C_InstructionGrain.h
+|           |       STL_InstructionGrain.h
+|           |       STQ_C_InstructionGrain.h
+|           |       STQ_InstructionGrain.h
+|           |       STQ_U_InstructionGrain.h
+|           |       STS_InstructionGrain.h
+|           |       STT_InstructionGrain.h
+|           |       WRUNIQUE_64_InstructionGrain.h
+|           |       
+|           \---PAL
+|                   AMOVRM_InstructionGrain.h
+|                   AMOVRR_InstructionGrain.h
+|                   BPT_InstructionGrain.h
+|                   BUGCHK_InstructionGrain.h
+|                   CALLSYS_InstructionGrain.h
+|                   CALL_PAL_InstructionGrain.h
+|                   CFLUSH_InstructionGrain.h
+|                   CHME_InstructionGrain.h
+|                   CHMK_InstructionGrain.h
+|                   CHMS_InstructionGrain.h
+|                   CHMU_InstructionGrain.h
+|                   CSERVE_InstructionGrain.h
+|                   CSIR_InstructionGrain.h
+|                   DI_InstructionGrain.h
+|                   DRAINA_InstructionGrain.h
+|                   DTBIS_InstructionGrain.h
+|                   EI_InstructionGrain.h
+|                   GENTRAP_InstructionGrain.h
+|                   HALT_InstructionGrain.h
+|                   IMB_InstructionGrain.h
+|                   INITPAL_InstructionGrain.h
+|                   INSQHILR_InstructionGrain.h
+|                   INSQHIL_InstructionGrain.h
+|                   INSQHIQR_InstructionGrain.h
+|                   INSQHIQ_InstructionGrain.h
+|                   INSQTILR_InstructionGrain.h
+|                   INSQTIL_InstructionGrain.h
+|                   INSQTIQR_InstructionGrain.h
+|                   INSQTIQ_InstructionGrain.h
+|                   INSQUEL_D_InstructionGrain.h
+|                   INSQUEL_InstructionGrain.h
+|                   INSQUEQ_D_InstructionGrain.h
+|                   INSQUEQ_InstructionGrain.h
+|                   LDQP_InstructionGrain.h
+|                   MFPR_ASN_InstructionGrain.h
+|                   MFPR_ASTEN_InstructionGrain.h
+|                   MFPR_ASTSR_InstructionGrain.h
+|                   MFPR_ESP_InstructionGrain.h
+|                   MFPR_FEN_InstructionGrain.h
+|                   MFPR_IPL_InstructionGrain.h
+|                   MFPR_MCES_InstructionGrain.h
+|                   MFPR_PCBB_InstructionGrain.h
+|                   MFPR_PRBR_InstructionGrain.h
+|                   MFPR_PTBR_InstructionGrain.h
+|                   MFPR_SISR_InstructionGrain.h
+|                   MFPR_SSP_InstructionGrain.h
+|                   MFPR_TBCHK_InstructionGrain.h
+|                   MFPR_USP_InstructionGrain.h
+|                   MFPR_VPTB_InstructionGrain.h
+|                   MFPR_WHAMI_InstructionGrain.h
+|                   MTPR_ASTEN_InstructionGrain.h
+|                   MTPR_ASTSR_InstructionGrain.h
+|                   MTPR_DATFX_InstructionGrain.h
+|                   MTPR_ESP_InstructionGrain.h
+|                   MTPR_FEN_InstructionGrain.h
+|                   MTPR_IPIR_InstructionGrain.h
+|                   MTPR_IPL_InstructionGrain.h
+|                   MTPR_MCES_InstructionGrain.h
+|                   MTPR_PERFMON_InstructionGrain.h
+|                   MTPR_PRBR_InstructionGrain.h
+|                   MTPR_SCBB_InstructionGrain.h
+|                   MTPR_SIRR_InstructionGrain.h
+|                   MTPR_SSP_InstructionGrain.h
+|                   MTPR_TBIAP_InstructionGrain.h
+|                   MTPR_TBIA_InstructionGrain.h
+|                   MTPR_TBISD_InstructionGrain.h
+|                   MTPR_TBISI_InstructionGrain.h
+|                   MTPR_TBIS_InstructionGrain.h
+|                   MTPR_USP_InstructionGrain.h
+|                   MTPR_VPTB_InstructionGrain.h
+|                   OPC01_InstructionGrain.h
+|                   OPC02_InstructionGrain.h
+|                   OPC03_InstructionGrain.h
+|                   OPC04_InstructionGrain.h
+|                   OPC05_InstructionGrain.h
+|                   OPC06_InstructionGrain.h
+|                   OPC07_InstructionGrain.h
+|                   PAL19_InstructionGrain.h
+|                   PAL1B_InstructionGrain.h
+|                   PAL1D_InstructionGrain.h
+|                   PAL1E_InstructionGrain.h
+|                   PAL1F_InstructionGrain.h
+|                   PROBER_InstructionGrain.h
+|                   PROBEW_InstructionGrain.h
+|                   RDCOUNTERS_InstructionGrain.h
+|                   RDKSP_64_InstructionGrain.h
+|                   RDKSP_InstructionGrain.h
+|                   RDMCES_64_InstructionGrain.h
+|                   RDMCES_InstructionGrain.h
+|                   RDPCBB_64_InstructionGrain.h
+|                   RDPER_64_InstructionGrain.h
+|                   RDPSR_64_InstructionGrain.h
+|                   RDPS_InstructionGrain.h
+|                   RDTEB_InstructionGrain.h
+|                   RDTHREAD_64_InstructionGrain.h
+|                   RDUSP_64_InstructionGrain.h
+|                   RDUSP_InstructionGrain.h
+|                   RDVAL_InstructionGrain.h
+|                   RD_PS_InstructionGrain.h
+|                   READ_UNQ_InstructionGrain.h
+|                   REBOOT_64_InstructionGrain.h
+|                   REBOOT_InstructionGrain.h
+|                   REI_InstructionGrain.h
+|                   REMQHILR_InstructionGrain.h
+|                   REMQHIL_InstructionGrain.h
+|                   REMQHIQ_InstructionGrain.h
+|                   REMQTILR_InstructionGrain.h
+|                   REMQTIL_InstructionGrain.h
+|                   REMQTIQR_InstructionGrain.h
+|                   REMQTIQ_InstructionGrain.h
+|                   REMQUEL_InstructionGrain.h
+|                   REMQUEQ_D_InstructionGrain.h
+|                   REMQUEQ_InstructionGrain.h
+|                   REMQUEUD_InstructionGrain.h
+|                   RESTART_InstructionGrain.h
+|                   RETSYS_64_InstructionGrain.h
+|                   RSCC_InstructionGrain.h
+|                   RTI_InstructionGrain.h
+|                   SSIR_64_InstructionGrain.h
+|                   STQP_InstructionGrain.h
+|                   SWASTEN_InstructionGrain.h
+|                   SWPCTX_InstructionGrain.h
+|                   SWPIPL_InstructionGrain.h
+|                   SWPPROCESS_InstructionGrain.h
+|                   TBIA_InstructionGrain.h
+|                   TBISASN_InstructionGrain.h
+|                   TBIS_InstructionGrain.h
+|                   TBI_InstructionGrain.h
+|                   THIS_64_InstructionGrain.h
+|                   WHAMI_InstructionGrain.h
+|                   WRENT_InstructionGrain.h
+|                   WRFEN_InstructionGrain.h
+|                   WRIPIR_InstructionGrain.h
+|                   WRITE_UNQ_InstructionGrain.h
+|                   WRKGP_InstructionGrain.h
+|                   WRMCES_64_InstructionGrain.h
+|                   WRMCES_InstructionGrain.h
+|                   WRPERFMON_InstructionGrain.h
+|                   WRPRBR_64_InstructionGrain.h
+|                   WRUSP_64_InstructionGrain.h
+|                   WRUSP_InstructionGrain.h
+|                   WRVAL_InstructionGrain.h
+|                   WRVPTPTR_InstructionGrain.h
+|                   WR_PS_SW_InstructionGrain.h
+|                   
++---IBoxLib
+|       IBoxBase.h
+|       
++---machineLib
+|       MemoryExecutionStages.h
+|       PipeLineSlot.h
+|       PipeLineSlot_inl.h
+|       
++---manual
+|   \---ASA-EmulatR
+|       |   DevSpace.hmxz
+|       |   
+|       +---Baggage
+|       \---New folder
++---MBoxLib_EV6
+|       MBoxBase.cpp
+|       MBoxBase.h
+|       
++---memoryLib
+|       FirmwareDeviceManager.h
+|       global_firmwaredevicemanager.cpp
+|       global_firmwaredevicemanager.h
+|       global_GuestMemory.cpp
+|       global_GuestMemory.h
+|       global_MemoryBarrierCoordinator.h
+|       global_writeBufferManager.cpp
+|       global_writeBufferManager.h
+|       GuestMemory.cpp
+|       GuestMemory.h
+|       INSTALLATION_GUIDE.md
+|       MemoryBarrierCoordinator.h
+|       MemorySpan.h
+|       memory_core.h
+|       README.md
+|       SafeMemory.cpp
+|       SafeMemory.h
+|       SparseMemoryBacking.h
+|       SrmRomLoader.cpp
+|       SrmRomLoader.h
+|       WriteBufferManager.cpp
+|       WriteBufferManager.h
+|       
++---mmioLib
+|       CMakeLists(0).txt
+|       CMakeLists(1).txt
+|       global_mmioManager.cpp
+|       global_mmioManager.h
+|       helperLibrary_mmioLib.h
+|       IDeviceEmulator.h
+|       mmiolib.cpp
+|       mmiolib.h
+|       mmioLib_global.h
+|       MMIO_Attribute.h
+|       mmio_DegradedDevices.h
+|       mmio_DeviceCatalog.cpp
+|       mmio_DeviceCatalog.h
+|       mmio_deviceTemplate.h
+|       mmio_DMACoherencyManager.h
+|       mmio_helper.h
+|       mmio_Manager.cpp
+|       mmio_Manager.h
+|       mmio_PlatformTemplates.h
+|       ScsiControllerKzpba.h
+|       
++---mmuLib
+|       mmulib.cpp
+|       mmulib.h
+|       mmuLib_core.h
+|       mmuLib_global.h
+|       
++---out
+|   \---build
+|       \---debug
+|           |   .ninja_deps
+|           |   .ninja_log
+|           |   build.ninja
+|           |   CMakeCache.txt
+|           |   cmake_install.cmake
+|           |   deploy_asa_ini.cmake
+|           |   EmulatRAppUni.exe
+|           |   EmulatRAppUni.exp
+|           |   EmulatRAppUni.lib
+|           |   EmulatRAppUni.pdb
+|           |   Qt6Cored.dll
+|           |   Qt6Networkd.dll
+|           |   VSInheritEnvironments.txt
+|           |   
+|           +---.cmake
+|           |   \---api
+|           |       \---v1
+|           |           +---query
+|           |           |   \---client-MicrosoftVS
+|           |           |           query.json
+|           |           |           
+|           |           \---reply
+|           |                   cache-v2-55edd61d8c62336a53e6.json
+|           |                   cmakeFiles-v1-76d1cb0794eae97054bf.json
+|           |                   codemodel-v2-b6d018120218f2452978.json
+|           |                   directory-.-Debug-3aa6ba4e8335c0adcfdb.json
+|           |                   index-2026-02-22T05-43-18-0829.json
+|           |                   target-EmulatRAppUni-Debug-9c1c186936c010b0e231.json
+|           |                   target-EmulatRAppUni_autogen-Debug-22ee892d3a0cb4432d30.json
+|           |                   target-EmulatRAppUni_autogen_timestamp_deps-Debug-dca6b054b933b9568f2f.json
+|           |                   toolchains-v1-bf9402fc237ce0ab0da6.json
+|           |                   
+|           +---.qt
+|           |       QtDeploySupport.cmake
+|           |       QtDeployTargets.cmake
+|           |       
+|           +---CMakeFiles
+|           |   |   clean_additional.cmake
+|           |   |   cmake.check_cache
+|           |   |   CMakeConfigureLog.yaml
+|           |   |   rules.ninja
+|           |   |   TargetDirectories.txt
+|           |   |   
+|           |   +---3.31.6-msvc6
+|           |   |   |   CMakeCXXCompiler.cmake
+|           |   |   |   CMakeDetermineCompilerABI_CXX.bin
+|           |   |   |   CMakeRCCompiler.cmake
+|           |   |   |   CMakeSystem.cmake
+|           |   |   |   
+|           |   |   \---CompilerIdCXX
+|           |   |       |   CMakeCXXCompilerId.cpp
+|           |   |       |   CMakeCXXCompilerId.exe
+|           |   |       |   CMakeCXXCompilerId.obj
+|           |   |       |   
+|           |   |       \---tmp
+|           |   +---d
+|           |   +---EmulatRAppUni.dir
+|           |   |   |   embed.manifest
+|           |   |   |   intermediate.manifest
+|           |   |   |   main.cpp.obj
+|           |   |   |   manifest.rc
+|           |   |   |   manifest.res
+|           |   |   |   vc140.pdb
+|           |   |   |   
+|           |   |   +---configLib
+|           |   |   |       global_EmulatorSettings.cpp.obj
+|           |   |   |       
+|           |   |   +---coreLib
+|           |   |   |       EventLog.cpp.obj
+|           |   |   |       ExecTrace.cpp.obj
+|           |   |   |       
+|           |   |   +---cpuCoreLib
+|           |   |   |       AlphaCPU.cpp.obj
+|           |   |   |       global_ReservationManager.cpp.obj
+|           |   |   |       
+|           |   |   +---deviceLib
+|           |   |   |       ConsoleManager.cpp.obj
+|           |   |   |       global_ConsoleManager.cpp.obj
+|           |   |   |       global_SRMEnvStore.cpp.obj
+|           |   |   |       SRMConsole.cpp.obj
+|           |   |   |       SRMConsoleDevice.cpp.obj
+|           |   |   |       SRMEnvStore.cpp.obj
+|           |   |   |       
+|           |   |   +---EmulatRAppUni_autogen
+|           |   |   |       mocs_compilation.cpp.obj
+|           |   |   |       
+|           |   |   +---emulatrLib
+|           |   |   |       CPUStateManager.cpp.obj
+|           |   |   |       EmulatR_init.cpp.obj
+|           |   |   |       ExecutionCoordinator.cpp.obj
+|           |   |   |       global_EmulatR_init.cpp.obj
+|           |   |   |       global_ExecutionCoordinator.cpp.obj
+|           |   |   |       global_IPIManager.cpp.obj
+|           |   |   |       global_SubsystemCoordinator.cpp.obj
+|           |   |   |       
+|           |   |   +---exceptionLib
+|           |   |   |       ExceptionFactory.cpp.obj
+|           |   |   |       
+|           |   |   +---faultLib
+|           |   |   |       GlobalFaultDispatcherBank.cpp.obj
+|           |   |   |       global_faultDispatcher.cpp.obj
+|           |   |   |       
+|           |   |   +---grainFactoryLib
+|           |   |   |       GrainRegistry.cpp.obj
+|           |   |   |       InstructionGrainRegistry.cpp.obj
+|           |   |   |       RegisterAllGrains.cpp.obj
+|           |   |   |       
+|           |   |   +---MBoxLib_EV6
+|           |   |   |       MBoxBase.cpp.obj
+|           |   |   |       
+|           |   |   +---memoryLib
+|           |   |   |       global_firmwaredevicemanager.cpp.obj
+|           |   |   |       global_GuestMemory.cpp.obj
+|           |   |   |       global_writeBufferManager.cpp.obj
+|           |   |   |       GuestMemory.cpp.obj
+|           |   |   |       SafeMemory.cpp.obj
+|           |   |   |       SrmRomLoader.cpp.obj
+|           |   |   |       WriteBufferManager.cpp.obj
+|           |   |   |       
+|           |   |   +---mmioLib
+|           |   |   |       global_mmioManager.cpp.obj
+|           |   |   |       mmiolib.cpp.obj
+|           |   |   |       mmio_DeviceCatalog.cpp.obj
+|           |   |   |       mmio_Manager.cpp.obj
+|           |   |   |       
+|           |   |   +---mmuLib
+|           |   |   |       mmulib.cpp.obj
+|           |   |   |       
+|           |   |   +---palLib_EV6
+|           |   |   |       global_PalVectorTable.cpp.obj
+|           |   |   |       
+|           |   |   +---pteLib
+|           |   |   |       ptelib.cpp.obj
+|           |   |   |       
+|           |   |   \---scsiCoreLib
+|           |   |           scsicorelib.cpp.obj
+|           |   |           
+|           |   +---EmulatRAppUni_autogen.dir
+|           |   |       AutogenInfo.json
+|           |   |       AutogenUsed.txt
+|           |   |       ParseCache.txt
+|           |   |       
+|           |   +---pkgRedirects
+|           |   \---ShowIncludes
+|           |           foo.h
+|           |           main.c
+|           |           main.obj
+|           |           
+|           +---config
+|           |       ASAEmulatR.ini
+|           |       
+|           +---EmulatRAppUni_autogen
+|           |   |   deps
+|           |   |   mocs_compilation.cpp
+|           |   |   timestamp
+|           |   |   
+|           |   +---AGSVXRXKTW
+|           |   |       moc_ConsoleManager.cpp
+|           |   |       moc_ConsoleManager.cpp.d
+|           |   |       moc_SRMConsoleDevice.cpp
+|           |   |       moc_SRMConsoleDevice.cpp.d
+|           |   |       
+|           |   +---include
+|           |   +---RUWUXCCXPB
+|           |   |       moc_ExecutionCoordinator.cpp
+|           |   |       moc_ExecutionCoordinator.cpp.d
+|           |   |       
+|           |   \---YEFCN544EX
+|           |           moc_AlphaCPU.cpp
+|           |           moc_AlphaCPU.cpp.d
+|           |           
+|           +---firmware
+|           |       clipper.bin
+|           |       decompressed.rom
+|           |       DS10_V6_2.exe
+|           |       DS20L_V6_2.exe
+|           |       DS20_V6_2.exe
+|           |       ES40_V6_2.exe
+|           |       ES45_V6_2.exe
+|           |       GS320_V62.exe
+|           |       
+|           +---networkinformation
+|           |       qnetworklistmanagerd.dll
+|           |       
+|           +---Testing
+|           |   \---Temporary
+|           |           LastTest.log
+|           |           
+|           \---tls
+|                   qcertonlybackendd.dll
+|                   qschannelbackendd.dll
+|                   
++---PalBoxLib
+|       PalBoxBase.h
+|       
++---palLib_EV6
+|       global_PalVectorTable.cpp
+|       global_PalVectorTable.h
+|       onValidatePALcodeBaseAddress_inl.h
+|       PalArgumentPack_str.h
+|       palLib_global.h
+|       PalVectorId_inl.h
+|       PalVectorId_refined.h
+|       PalVectorId_refined.h.BAK
+|       PalVectorTable_final.h
+|       PAL_core.h
+|       Pal_core_inl.h
+|       Pal_CSERVE_ConsoleHandlers_inl.h
+|       Pal_Service.h
+|       Pal_Service.h.BAK
+|       Registers_MF_MT_Rules.txt
+|       spec_srm.txt
+|       tbchk_probe_inl.h
+|       
++---pipelineLib
++---pteLib
+|       AlphaPTE_Core.h
+|       alpha_pte_core.h
+|       alpha_pte_traits.h
+|       alpha_pte_traits_ev6_dtb.h
+|       alpha_pte_traits_ev6_itb.h
+|       alpha_spam_bucket.h
+|       alpha_spam_manager.h
+|       Alpha_spam_types.h
+|       buildCanonicalTLBTag_inl.h
+|       calculateEffectiveAddress.h
+|       EV6PteCore.h
+|       Ev6PTETraits.h
+|       Ev6SiliconConfig_Constants.h
+|       Ev6SiliconTLB.h
+|       Ev6SiliconTLB_Singleton.h
+|       Ev6SiliconTypes.h
+|       Ev6SiliconTypes.h.BAK
+|       Ev6SiliconTypes_Fwd.h
+|       ev6Translation_struct.h
+|       frontEndFetch_inl.h
+|       global_Ev6TLB_Singleton.h
+|       global_Ev6TLB_Singleton.h.BAK
+|       ptelib.cpp
+|       ptelib.h
+|       pteLib_global.h
+|       pte_dual_core.h
+|       pte_l2_helpers.h
+|       SPAMEpoch_inl.h
+|       TemplatePolicyBase.h
+|       TLBShootdownTypes.h
+|       TLB_Helpers_inl.h
+|       
++---Python
+|       analyze_trace.py
+|       audit_grain.py
+|       check_circular.py
+|       consolidate_cmake.py
+|       consolidate_make.py
+|       copy_project.py
+|       dead_file_finder.py
+|       extract_header_functions.py
+|       fileScanner(0).py
+|       fileScanner.py
+|       filesModifiedDateTime_now(0).py
+|       filesModifiedDateTime_now(1).py
+|       filesModifiedDateTime_now.py
+|       FINAL_VALIDATION_REPORT.md
+|       find_missing_colon.py
+|       find_missing_semicolon.ps1
+|       find_modified.py
+|       generate_cmakelists.py
+|       generate_cmakelists_recursive_nofiles.py
+|       generate_grain_registration.py
+|       grain_validator.md
+|       grain_validator.py
+|       header_tree.py
+|       license_guard_tool.py
+|       make_consolidate.py
+|       orphans.csv
+|       README_GRAIN_GENERATION.md
+|       syntax_checker.py
+|       
++---romLib
+|       SrmBootValidation_Report.md
+|       SrmRomData_CL.inc
+|       SrmRomData_CL67.inc
+|       SrmRomData_DS10.inc
+|       SrmRomData_DS20.inc
+|       SrmRomData_ES40.inc
+|       SrmRomData_ES45.inc
+|       SrmRomData_GS320.inc
+|       
+\---scsiCoreLib
+        ScsiCbd.h
+        ScsiCommand.h
+        ScsiCommandQueue.h
+        scsicorelib.cpp
+        scsicorelib.h
+        scsiCoreLib_global.h
+        ScsiEndian.h
+        ScsiOpcodes.h
+        ScsiSenseData.h
+        ScsiTypes.h
+        SCSI_helpers_inl.h
+        VirtualIsoDevice.h
+        VirtualScsiBackend.h
+        VirtualScsiCacheLayer.h
+        VirtualScsiDevice.h
+        VirtualScsiDisk.h
+        VirtualTapeDevice.h
+        
