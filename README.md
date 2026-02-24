@@ -33,34 +33,34 @@ ASA-EMulatR is a cycle-approximate emulator for the Alpha AXP 64-bit RISC archit
 │  AlphaCPU 0  │  AlphaCPU 1   │  AlphaCPU 2    │  AlphaCPU 3  │
 ├──────────────┴───────────────┴────────────────┴──────────────┤
 │                                                              │
-│                  EV6 Execution Domain Boxes                   │
+│                  EV6 Execution Domain Boxes                  │
 │                                                              │
-│  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────────┐ │
-│  │  IBox  │ │  EBox  │ │  FBox  │ │  MBox  │ │    CBox    │ │
-│  │ Fetch  │ │ IntExe │ │ FPExe  │ │ LdSt   │ │ Cache/Ctrl │ │
-│  │ Decode │ │ Branch │ │ FPCR   │ │ WrBuf  │ │ BPred/L2   │ │
-│  └────────┘ └────────┘ └────────┘ └────────┘ └────────────┘ │
+│  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────────┐  │
+│  │  IBox  │ │  EBox  │ │  FBox  │ │  MBox  │ │    CBox    │  │
+│  │ Fetch  │ │ IntExe │ │ FPExe  │ │ LdSt   │ │ Cache/Ctrl │  │
+│  │ Decode │ │ Branch │ │ FPCR   │ │ WrBuf  │ │ BPred/L2   │  │
+│  └────────┘ └────────┘ └────────┘ └────────┘ └────────────┘  │
 │                                                              │
 │  ┌──────────────────────────────────────────────────────────┐│
 │  │                       PalBox                             ││
-│  │   PAL dispatch · Shadow registers · HWPCB · HW_REI      ││
+│  │   PAL dispatch · Shadow registers · HWPCB · HW_REI       ││
 │  └──────────────────────────────────────────────────────────┘│
 │                                                              │
 ├──────────────────────────────────────────────────────────────┤
-│                Pipeline / Machine Library                     │
-│   PipeLineSlot · MemoryExecutionStages · Stall/Flush/Retire │
+│                Pipeline / Machine Library                    │
+│   PipeLineSlot · MemoryExecutionStages · Stall/Flush/Retire  │
 ├──────────────────────────────────────────────────────────────┤
-│                Grain Factory (Instruction Grains)             │
-│   Integer (96) · FP (280+) · Memory · Branch · PAL          │
+│                Grain Factory (Instruction Grains)            │
+│   Integer (96) · FP (280+) · Memory · Branch · PAL           │
 │   DecodedInstruction · GrainRegistry · Decode Cache          │
 ├──────────────────────────────────────────────────────────────┤
 │                SPAM TLB / PTE Subsystem                      │
 │   4-D Shard Array [cpu][realm][GH][bucket]                   │
 │   Two-axis lazy invalidation (global + per-ASN epochs)       │
-│   Seqlock readers · CAS bitmap · Ev6SiliconTLB              │
+│   Seqlock readers · CAS bitmap · Ev6SiliconTLB               │
 ├──────────────────────────────────────────────────────────────┤
 │                Memory Subsystem                              │
-│   GuestMemory · SafeMemory · SparseMemoryBacking            │
+│   GuestMemory · SafeMemory · SparseMemoryBacking             │
 │   WriteBufferManager · MemoryBarrierCoordinator              │
 │   SrmRomLoader · FirmwareDeviceManager                       │
 ├──────────────────────────────────────────────────────────────┤
@@ -70,15 +70,15 @@ ASA-EMulatR is a cycle-approximate emulator for the Alpha AXP 64-bit RISC archit
 ├──────────────────────────────────────────────────────────────┤
 │                MMIO / Device Subsystem                       │
 │   MMIO Manager · Device Catalog · DMA Coherency              │
-│   UART/SIO (OPA0:) · SRM Console · SRM Environment Store    │
+│   UART/SIO (OPA0:) · SRM Console · SRM Environment Store     │
 ├──────────────────────────────────────────────────────────────┤
 │                SCSI / PCI / Controllers                      │
-│   PCI Bus · QLogic ISP1040B · KZPBA · ALi 1553C IDE         │
-│   SCSI Bus/Command/CDB · VirtualDisk · VirtualTape · ISO    │
+│   PCI Bus · QLogic ISP1040B · KZPBA · ALi 1553C IDE          │
+│   SCSI Bus/Command/CDB · VirtualDisk · VirtualTape · ISO     │
 │   DE500 NIC · IRQ Controller · Interval Timer                │
 ├──────────────────────────────────────────────────────────────┤
-│                Firmware                                       │
-│   SRM ROMs (ES40/ES45/DS10/DS20/GS320) · Clipper.bin        │
+│                Firmware                                      │
+│   SRM ROMs (ES40/ES45/DS10/DS20/GS320) · Clipper.bin         │
 └──────────────────────────────────────────────────────────────┘
 ```
 
