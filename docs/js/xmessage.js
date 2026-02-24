@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 
 function xMsg(ogn) {
@@ -9,26 +9,41 @@ function xMsg(ogn) {
 		xAnchor = /^https??:\/\//im.test(document.location) ? "\?" : "\!";
 	
 	// We need the domain and protocol when online but not when running locally 
-	var docDomain = document.domain;
-		if (docDomain !== "" && location.protocol !== "file:")  {
-			docDomain = location.protocol + "//" + docDomain + (location.port !== "" ? ":" + location.port : "");
+	// Embedded domains are only needed when embedding WebHelp from another domain
+	var docDomain = document.domain,
+		allowedDomains = ("").replace(/ /g,"");
+
+		if (allowedDomains == "") {
+			allowedDomains = [];
+		} else {
+			allowedDomains = allowedDomains.split(",");
+		}
+		
+		if (docDomain !== "" && docDomain.length !== 0 && location.protocol !== "file:")  {
+			docDomain = location.protocol + "//" + docDomain + (location.port !== "" && location.port !== "0" ? ":" + location.port : "");
 			}
 			else {
 				docDomain = "*";
 			}
-	
+
 	// Basic sendmessage function, we don't usually call postMessage directly because the callback needs to be formatted
 	function sendmessage(target, message, callback) {
+
 		try {
-			var t = typeof target !== "string" ? target : target === "parent" ? parent : target.indexOf("parent.") === 0 ? parent.frames[target.substr(7)].contentWindow : document.getElementById(target).contentWindow;
+			var tErr = ("Target: " + (typeof target == "string" ? target : typeof target));
+			var t = typeof target !== "string" ? target : target === "parent" ? parent : target.indexOf("parent.") === 0 ? parent.frames[target.substr(7)].contentWindow : document.getElementById(target).contentWindow,
+				targetDomain = typeof message.domain == "undefined" || message.domain == "file:" || !message.domain ? docDomain : message.domain;
+			
 			if (typeof message == "object") {
-				t.postMessage(message,docDomain);
+				t.postMessage(message,targetDomain);
 				} else if (typeof message == "string") {
-			//console.log("SENDMESSAGE WARNING: Deprecated postMessage with string message: " + message + (callback ? "," + callback : "") + " target: " + target.toString());
-			t.postMessage(message + (callback ? "," + callback : ""),docDomain);
+				t.postMessage(message + (callback ? "," + callback : ""),targetDomain);
+				console.log("WARNING: xMessage call with deprecated string argument: " + tErr + (callback ? ", callback:" + callback : "") + " message string: " + message);
 				}
 			} catch(e) {
-			console.log(thisOrigin + "SENDMESSAGE ERROR: " + target + " / " + message + " / " + callback + " / "  + e.message);
+				console.log(thisOrigin + "SENDMESSAGE ERROR: " + tErr + (typeof callback == "undefined" ? "" : " Callback: " + callback.toString()) + " / "  + e.message);
+				console.log("Postmessage object: ");
+				console.log(message);
 			}
 		}
 
@@ -82,7 +97,7 @@ function xMsg(ogn) {
 	}
 
 	var topicCallback = function(t,f,a) {
-			var thistopic = t;
+			var thistopic = t.indexOf("\?") < 0 ? t : t.substr(0,t.indexOf("\?"));
 			var iterations = 0;
 			var docallback = setInterval(function(){
 				iterations++;
@@ -106,10 +121,21 @@ function xMsg(ogn) {
 		function doParse(event) {
 			event = event || window.event;
 			
-			// Prevent access from any but the current domain when on a web server
+			// Prevent access to any but the current domain when on a web server and allowed domains when remote
 			// Full communication is allowed on local because X-Domain attacks are not possible there
-			var currentProtocol = document.location.protocol, func, callback;
-			if (currentProtocol.substr(0,4) === "http" && event.origin != docDomain) return;
+
+			var currentProtocol = document.location.protocol, func, callback,
+				domainOK = allowedDomains.length > 0 ? allowedDomains.includes(event.origin) : event.origin == docDomain;
+
+			// Ignore PostMessage messages from internal components like browser extensions, and from Google Analytics
+			if (event.origin !== "null" && event.origin !== "file:" && !/^https?:\/\//i.test(event.origin)) return;
+			if (event.data.type && event.data.type === "escapePressed") return;
+			if (/^https?:\/\/tagassistant.google.com/i.test(event.origin)) return;
+
+			if (currentProtocol.substr(0,4) === "http" && !domainOK) {
+				alert("Security error:\r\n\r\nInterframe communication between " + event.origin + " and " + docDomain + " is not currently permitted.\r\n\r\nFor full functionality you must include both domains in your allowed domains settings in all participating WebHelp collections, using the EMBEDDED_DOMAINS variable in the skin.")
+				return;
+			}
 
 		/******** Object Data *********/
 		// Preferred postMessaging method
@@ -163,7 +189,12 @@ function xMsg(ogn) {
 
 				// Respond to a getvalue request from another frame
 				case "getvalue":
+				if (event.origin != "null") {
+				sendmessage(event.source,{action: "returnvalue", vn: event.data.vn.replace(/\./g,"_"), vv: getSetVarByName(event.data.vn), cbf: event.data.cbf, domain: event.origin});
+				}
+				else {
 				sendmessage(event.source,{action: "returnvalue", vn: event.data.vn.replace(/\./g,"_"), vv: getSetVarByName(event.data.vn), cbf: event.data.cbf});
+				}
 				break;
 
 				// Write a received value from the other frame to the returnvalues object
@@ -175,12 +206,10 @@ function xMsg(ogn) {
 			
 		} 
 			
-		/******** String Data *********/
-		// Treat as deprecated
-		else if (typeof event.data == "string") 
-		console.log("ERROR: xMessage call with deprecated string argument " + event.data);
-			
-		
+		/* String data is also an external script */
+		else if (typeof event.data == "string") {
+		return;
+		}
 			} // doParse()
 
 		if (window.addEventListener) {
@@ -196,4 +225,4 @@ function xMsg(ogn) {
 		};
 		
 	
-		}
+		} // xMsg

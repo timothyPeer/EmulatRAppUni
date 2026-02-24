@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-   <title>Introduction &gt; Architecture Overview &gt; Chapter 8 - PAL and Privileged Boundary &gt; 8.12 PAL Register Matrix</title>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Architecture Overview &gt; Chapter 8 - PAL and Privileged Boundary &gt; 8.12 PAL Register Matrix</title>
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
-   <meta name="keywords" content="" />
+   <meta name="keywords" content="AlphaAXPArchitectureReferenceManual,AMASK,AMOVRM,AMOVRR,BPT,BUGCHK,CALLSYS,CHME,CHMK,CHMS,CHMU,ConsoleService,CSERVE,DebugService,DRAINA,GENTRAP,HALT,HW_MFPR,HW_MTPR,IMB,ImplicitState,IntegerRegister,IPR,IPRAccess,IPRValue,MFPR,MFPR_ASN,MFPR_ASTEN,MFPR_ASTSR,MFPR_CC,MFPR_DTB,MFPR_ESP,MFPR_FEN,MFPR_IER,MFPR_IPL,MFPR_ISR,MFPR_KSP,MFPR_MCES,MFPR_PCBB,MFPR_PRBR,MFPR_PTBR,MFPR_SCBB,MFPR_SISR,MFPR_SSP,MFPR_SYSPTBR,MFPR_TBCHK,MFPR_USP,MFPR_VPTB,MFPR_WHAMI,ModeTransition,MTPR,MTPR_ASN,MTPR_ASTEN,MTPR_ASTSR,MTPR_CC,MTPR_DTB,MTPR_ESP,MTPR_FEN,MTPR_IER,MTPR_IPL,MTPR_ISR,MTPR_KSP,MTPR_MCES,MTPR_PCBB,MTPR_PRBR,MTPR_PTBR,MTPR_SCBB,MTPR_SISR,MTPR_SSP,MTPR_SYSPTBR,MTPR_TBCHK,MTPR_USP,MTPR_VPTB,MTPR_WHAMI,PalBoxBase_h,PALCallsChapter,PalFunction,PalMode,PrivilegedInstruction,ProcessorStatus,ProgramCounter,R0,R1,R10,R11,R12,R13,R14,R15,R16,R17,R18,R19,R2,R20,R21,R22,R23,R24,R25,R26,R27,R28,R29,R3,R30,R31,R4,R5,R6,R7,R8,R9,RD_PS,READ_UNQ,RegisterAccessPattern,RegisterDependency,RegisterMatrix,RegisterRead,RegisterUsage,RegisterWrite,RESTART,ShadowRegister,ShadowRegisterFile,SWPCTX,SystemOperation,WR_PS,WRITE_UNQ,WRVPTPTR" />
    <meta name="description" content="This reference matrix documents the register read (R) and write (W) patterns for each PAL call and privileged instruction. Registers are R0–R31 (integer). Only registers with..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
@@ -24,16 +24,16 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #F0F0F0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #000000 }     
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
-        width: 126px;
+        width: 158px;
         vertical-align: middle;        
       } 
       #idnav a { text-decoration: none }
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_grey.png');
+        background-image:url('hm_webhelp_buttons_white.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_yellow.png');
+        background-image:url('hm_webhelp_buttons_orange.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #000000; }
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -105,7 +105,7 @@
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?8_12-pal-register-matrix.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
-      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-8---pal-and-privleged-.html">Chapter 8 - PAL and Privileged Boundary</a>&nbsp;&gt;</p>
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-8---pal-and-privleged-.html">Chapter 8 - PAL and Privileged Boundary</a>&nbsp;&gt;</p>
    
       <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">8.12 PAL Register Matrix</span></h1>
 
@@ -115,7 +115,7 @@
       <a href="chapter-8_11-pal-and-ll_sc.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
       <a href="chapter-8---pal-and-privleged-.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
       <a href="8_13-summary.html" title="Next Topic"><span class="hmbtnnext"></span></a>
-      
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
     </td>
   </tr>  
 </table>
@@ -145,6 +145,11 @@
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
 
 
 
@@ -188,11 +193,19 @@ function normHeaders() {
 	normHeaders();
     });
     
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
 	 $(window).resize(); //trigger event for initially small displays
   });
  
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?8_12-pal-register-matrix.html" target="_top">'+baseurl+'index.html?8_12-pal-register-matrix.html</a></p>');
 
 </script>
 </body>

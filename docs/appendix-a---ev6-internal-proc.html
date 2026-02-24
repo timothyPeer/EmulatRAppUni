@@ -1,13 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-   <title>Introduction &gt; Appendix &gt; Appendix A – EV6 Internal Processor Register (IPR) Reference</title>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Appendix &gt; Appendix A - Topics - Core &gt; A.2 – EV6 Internal Processor Register (IPR) Reference</title>
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
-   <meta name="keywords" content="" />
-   <meta name="description" content="This appendix lists all EV6 Internal Processor Registers (IPRs) as implemented in EMulatR. IPRs are accessed exclusively through HW_MFPR (opcode 0x19, read) and HW_MTPR (opcode..." />
+   <meta name="keywords" content="ASA_EmulatR,ASN,ASTEN,ASTSR,C_DATA,C_SHFT,CBox,CC,CC_CTL,CLR_MAP,DATFX,DC_CTL,DC_STAT,DTB_ALTMODE,DTB_ASN0,DTB_IS0,DTB_IS1,DTB_PTE0,DTB_PTE1,DTB_TAG0,DTB_TAG1,ESP,EV6,EXC_ADDR,EXC_SUM,FEN,HW_INT_CLR,HW_MFPR,HW_MTPR,I_CTL,I_STAT,IBox,IC_FLUSH,IC_FLUSH_ASM,IER,IER_CM,InternalProcessorRegister,IPL,IPR,IPRStorage_Cold,IPRStorage_Hot,ISUM,ITB_IA,ITB_IAP,ITB_IS,ITB_PTE,ITB_TAG,IVA_FORM,KSP,M_CTL,MBox,MCES,MM_STAT,OPCDEC,PAL_BASE,PalMode,PalService,PCBB,PCTR_CTL,PCTX,PERFMON,PRBR,PrivilegedAccess,PTBR,SCBB,SIRR,SISR,SLEEP,SSP,SYSPTBR,TBCHK,USP,VPTB,WHAMI" />
+   <meta name="description" content="This appendix lists all EV6 Internal Processor Registers (IPRs) as implemented in ASA-EmulatR. IPRs are accessed exclusively through HW_MFPR (opcode 0x19, read) and HW_MTPR..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,16 +24,16 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #F0F0F0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #000000 }     
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
-        width: 126px;
+        width: 158px;
         vertical-align: middle;        
       } 
       #idnav a { text-decoration: none }
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_grey.png');
+        background-image:url('hm_webhelp_buttons_white.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_yellow.png');
+        background-image:url('hm_webhelp_buttons_orange.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #000000; }
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -95,7 +95,7 @@
 <body>
 
 
-<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix A – EV6 Internal Processor Register (IPR) Reference</span></h1>
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">A.2 – EV6 Internal Processor Register (IPR) Reference</span></h1>
 </div>
 <div id="idheader">
 <div id="idheaderbg">
@@ -105,17 +105,17 @@
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?appendix-a---ev6-internal-proc.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
-      <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a>&nbsp;&gt;</p>
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="topics---core.html">Appendix A - Topics - Core</a>&nbsp;&gt;</p>
    
-      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix A – EV6 Internal Processor Register (IPR) Reference</span></h1>
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">A.2 – EV6 Internal Processor Register (IPR) Reference</span></h1>
 
     </td>
     <td class="topichead" id="idnav">
       
-      <a href="appendix---trait-examples.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
-      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
-      <a href="appendix-b---core-types-refere.html" title="Next Topic"><span class="hmbtnnext"></span></a>
-      
+      <a href="appendix-b---core-types-refere.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="topics---core.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="appendix-i---global-singletons.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
     </td>
   </tr>  
 </table>
@@ -127,7 +127,7 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">This appendix lists all EV6 Internal Processor Registers (IPRs) as implemented in EMulatR. IPRs are accessed exclusively through HW_MFPR (opcode 0x19, read) and HW_MTPR (opcode 0x1D, write), both of which are legal only in PAL mode. Access outside PAL mode faults with OPCDEC.</p>
+<p class="p_Normal">This appendix lists all EV6 Internal Processor Registers (IPRs) as implemented in ASA-EmulatR. IPRs are accessed exclusively through HW_MFPR (opcode 0x19, read) and HW_MTPR (opcode 0x1D, write), both of which are legal only in PAL mode. Access outside PAL mode faults with OPCDEC.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-weight: bold;">IBox IPRs (I):</span></p>
 <p class="p_Normal">&nbsp;</p>
@@ -571,11 +571,16 @@
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-weight: bold;">PAL-Managed IPRs</span> (accessed via MFPR_*/MTPR_* PAL calls, not directly by index): ASN, ASTEN, ASTSR, ESP, FEN, IPL, KSP, MCES, PCBB, PRBR, PTBR, SCBB, SISR, SSP, SYSPTBR, TBCHK, USP, VPTB, WHAMI, PERFMON, DATFX. These are stored in <span class="f_CodeExample">IPRStorage_Hot</span> and <span class="f_CodeExample">IPRStorage_Cold</span> and accessed by PalService wrapper methods.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter-20---boot-sequence_-pa.html" class="topiclink">Chapter 20 – Boot Sequence, PAL, and SRM Integration</a> (HW_MFPR/HW_MTPR implementation); 21264/EV6 Hardware Reference Manual, Chapter 5.</span></p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter-20---boot-sequence_-pa.html" class="topiclink">Chapter 20 – Boot Sequence, PAL, and SRM Integration</a> &nbsp;(HW_MFPR/HW_MTPR implementation); 21264/EV6 Hardware Reference Manual, Chapter 5.</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
 
 
 
@@ -619,11 +624,19 @@ function normHeaders() {
 	normHeaders();
     });
     
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
 	 $(window).resize(); //trigger event for initially small displays
   });
  
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?appendix-a---ev6-internal-proc.html" target="_top">'+baseurl+'index.html?appendix-a---ev6-internal-proc.html</a></p>');
 
 </script>
 </body>

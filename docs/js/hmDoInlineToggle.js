@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */		
 hmWebHelp.funcs.hmDoInlineToggle = function(tg) {
 	
@@ -7,7 +7,10 @@ hmWebHelp.funcs.hmDoInlineToggle = function(tg) {
 	var text = tg.text(),
 		textChopper,
 		textCounter = 0,
-		textLength = text.length;
+		textLength = text.length,
+		$toggle = $("a#" + tg.attr("id") + "_LINK"),
+		$icon = $("img#" + tg.attr("id") + "_ICON");
+
 	if (show) {
 		tg.text("");
 		tg.show();
@@ -19,6 +22,8 @@ hmWebHelp.funcs.hmDoInlineToggle = function(tg) {
 				return;
 			}
 		},0);
+		if ($icon.length > 0)
+		$icon.attr("src",$toggle.attr("data-src1"));
 	} else { 
 		textChopper = setInterval(function(){
 			tg.text(tg.text().substr(0,tg.text().length-1));
@@ -29,7 +34,8 @@ hmWebHelp.funcs.hmDoInlineToggle = function(tg) {
 				return;
 			}
 		},0);
-	
+		if ($icon.length > 0)
+		$icon.attr("src",$toggle.attr("data-src0"));
 	}
 }
 	

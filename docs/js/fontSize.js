@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 function hmFS() {
 
@@ -68,7 +68,7 @@ function hmFS() {
 				}
 				document.getElementsByTagName("html")[0].style.fontSize = changeSize + "%";
 				if (pageName == "mainPage") {
-					sessionVariable.setPV("fontSize",changeSize.toString());
+					sessionVariable.setPV("hmFontSize",changeSize.toString());
 					setTimeout(function() {
 					if (!hmDevice.phone)
 						hmWebHelp.resizePanes(hmpage.FnavWidth());
@@ -76,7 +76,9 @@ function hmFS() {
 					} 
 					
 					if (hmDevice.phone) {
-						hmWebHelp.funcs.mobTBfix();
+						if (pageName == "mainPage") {
+							hmWebHelp.funcs.mobTBfix();
+						}
 					}
 				}
 			} // doFS()

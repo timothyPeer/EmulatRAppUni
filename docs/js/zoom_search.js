@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------------------
+﻿// ----------------------------------------------------------------------------
 // Zoom Search Engine 7.0 (14/Jan/2014)
 //
 // This file (search.js) is the JavaScript search front-end for client side
@@ -413,6 +413,8 @@ if (DateRangeSearch == 1)
 {
 	date_from = getParam("zoom_datefrom");
 	date_to = getParam("zoom_dateto");
+	var dateOK = (/^\d{2}\/\d{2}\/\d{4}$/i.test(date_from) && /^\d{2}\/\d{2}\/\d{4}$/i.test(date_to));
+	if (!dateOK) date_from = date_to = "";
 }
 
 var SelfURL = "";
@@ -792,7 +794,8 @@ function ZoomInitSearch()
 	var UseDateRange = false;
 	if (DateRangeSearch == 1)
 	{				
-		if (date_from.length > 0 && date_to.length > 0)
+		var dateOK = (/^\d{2}\/\d{2}\/\d{4}$/i.test(date_from) && /^\d{2}\/\d{2}\/\d{4}$/i.test(date_to));
+		if (dateOK && date_from.length > 0 && date_to.length > 0)
 		{			
 			var fromArray = date_from.split("/");
 			var toArray = date_to.split("/");

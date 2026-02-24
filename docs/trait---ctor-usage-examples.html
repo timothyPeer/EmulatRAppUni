@@ -24,16 +24,16 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #F0F0F0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #000000 }     
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
-        width: 126px;
+        width: 158px;
         vertical-align: middle;        
       } 
       #idnav a { text-decoration: none }
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_grey.png');
+        background-image:url('hm_webhelp_buttons_white.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_yellow.png');
+        background-image:url('hm_webhelp_buttons_orange.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #000000; }
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -115,7 +115,7 @@
       <span class="hmbtnprev"></span>
       <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
       <span class="hmbtnnext"></span>
-      
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
     </td>
   </tr>  
 </table>
@@ -270,6 +270,11 @@
 </div></div>
 <script type="text/javascript">
 
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
+
 
 
 function normHeaders() {
@@ -312,11 +317,19 @@ function normHeaders() {
 	normHeaders();
     });
     
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
 	 $(window).resize(); //trigger event for initially small displays
   });
  
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?trait---ctor-usage-examples.html" target="_top">'+baseurl+'index.html?trait---ctor-usage-examples.html</a></p>');
 
 </script>
 </body>

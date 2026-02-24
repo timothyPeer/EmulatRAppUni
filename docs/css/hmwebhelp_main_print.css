@@ -1,5 +1,5 @@
- /* Main Help & Manual WebHelp Page Layout CSS
-	 Copyright (c) by Tim Green 2014. All rights reserved. Contact: tg@it-authoring.com
+﻿ /* Main Help+Manual WebHelp Page Layout CSS
+	 Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 body { 
 	font-size: 100;
@@ -35,8 +35,17 @@ div#topicheader {
 	}
 
 
-/* Topic title in topic header*/ 
-p.topictitle {
+/* Topic title in topic header*/
+p#ptopic_breadcrumbs {
+	display: none;
+	color: #000000;
+	}
+p#ptopic_breadcrumbs a {
+	color: #000000;  
+	opacity: 1.0; 
+	font-style: normal; 
+	}
+h1.topictitle {
 	font-size: 1.3rem;
 	font-weight: bold;
 	color: #000000;
@@ -46,11 +55,6 @@ img.dropdown-toggle-icon {
 	display: none;
 	}
 
-/* Invisible div for click operation */
-div#unclicker {
-	display: none;
-}
-
 /* Mobile Navigation Toolbar and Buttons */	
 div#mob_toolbar_wrapper { 
 	display: none;
@@ -58,16 +62,13 @@ div#mob_toolbar_wrapper {
 div#dragsurface {
 	display: none;
 	}
-div#unclicker {
-	display: none;
-	}	
 
 .wraptext {
 	white-space: normal !important;
 	}
 
 /* Topic Footer */
-div.topicfooter {
+footer.topicfooter {
 	display: none;
 	}
 

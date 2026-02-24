@@ -1,0 +1,74 @@
+﻿<%DOCTYPE%><IF_VAR[OPT_NOSERVER=true]>
+<%IE_MOTW_NOSERVER%></IF_VAR[OPT_NOSERVER=true]>
+<html lang="<%XMLLANG%>">
+<head>
+<!-- HMSKIN FILETYPE: INDEX -->
+<title><%TITLE%></title>
+<meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" id="pageviewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes, minimal-ui" />
+<meta name="msapplication-tap-highlight" content="no" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="-1" />
+<meta http-equiv="cache-control" content="no-cache" /><IF_VAR[OPT_WEBFONTS=true]> 
+<HMINCLUDE:_google_webfonts.html></IF_VAR[OPT_WEBFONTS=true]>
+<style type="text/css">
+div#noscript {display: none;}
+</style> 
+<noscript>
+<style type="text/css">
+	div#noscript {
+		display: block;
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+		border: 1rem solid grey;
+		background-color: #eaeaea;
+		}
+	h2#noscriptwarning {
+		text-align: center;
+		position: relative;
+		top: 35%;
+		color: #333333;
+	}
+</style> 
+</noscript>
+<script type="text/javascript">
+<HMINCLUDE:hm_indexprescript.js>
+</script> 
+<script id="jqscript" type="text/javascript"></script> 
+</head>
+<body>
+<div id="noscript"><h2 id="noscriptwarning"><%NOJS_WARNING%></h2></div>
+<div id="page_wrapper">
+<div id="unclicker"></div>
+<!-- HMSKIN BODY START -->
+<div id="hmpageheader" class="noscript">
+<p class="navbar noscript" id="tocnoindexnavbar"><a href="<%HREF_CONTENT_PAGE%>" target="_self">Contents</a>&nbsp;|&nbsp;Index<IF_SEARCH_PAGE>&nbsp;|&nbsp;<a href="<%HREF_SEARCH_PAGE%>" target="_self">Search</a></IF_SEARCH_PAGE></p>
+</div>
+<div id="hmpagebody">
+<div id="popmessage"></div>
+<div id="idxheadwrapper">
+	<ul id="idxheader"></ul> 
+	<form id="idxsearch">
+	<table id="searchtable">
+	<tr>
+	<td id="btn"><input type="submit" value="<%IDXTEXT_SEARCHBUTTON%>" id="searchbtn" form="idxsearch" /></td>
+	<td id="arg"><input type="text" name="searcharg" id="searcharg" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /></td>
+	</tr>
+	<tr>
+	<td colspan="2"><input type="checkbox" name="searchtype" id="idxmode" value="<%IDXTEXT_SEARCHMODE%>" checked><label for="idxmode" id="idxmodelabel">&nbsp;<%IDXTEXT_SEARCHMODE%></label></td>
+	</tr> 
+	</table>
+	</form>
+</div>
+<div id="hmindextree">
+	<div id="idxgroups"></div> 
+</div>
+</div>
+<!-- HMSKIN BODY END -->
+</div>
+<script type="text/javascript">
+<HMINCLUDE:hm_indexscript.js>
+</script>  
+</body>
+</html>

@@ -1,0 +1,318 @@
+﻿<%DOCTYPE%><IF_VAR[OPT_NOSERVER=true]>
+<%IE_MOTW_NOSERVER%></IF_VAR[OPT_NOSERVER=true]>
+<html lang="<%XMLLANG%>">
+	<head>
+	<!-- Help+Manual Premium Pack 5.23 Copyright (c) 2015-2026 by Tim Green all rights reserved -->
+	<title><%TOPIC_TITLE%></title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" id="pageviewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes, minimal-ui" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="-1" />
+	<meta http-equiv="cache-control" content="no-cache" />	
+	<meta http-equiv="Content-Type" content="text/html" charset="<%DOCCHARSET%>" />
+	<meta name="generator" content="Help+Manual" />
+	<meta name="keywords" content="<%TOPIC_KEYWORDS%>" />
+	<meta name="description" content="<%TOPIC_DESCRIPTION%>" />
+	<meta name="ZOOMIMAGE" content="./images/<%ZOOMIMAGE%>" />
+	<meta name="author" content="<%AUTHOR%>" />
+	<meta name="msapplication-tap-highlight" content="no" /><IF_VAR[OPT_FAVICON=true]>
+<link rel="shortcut icon" href="<%FAVICON_PATH%><%FAVICON_FILE%>" /></IF_VAR[OPT_FAVICON=true]><IF_VAR[OPT_WEBFONTS=true]> 
+<HMINCLUDE:_google_webfonts.html></IF_VAR[OPT_WEBFONTS=true]>
+	<link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
+	<link id="customstylesheet" type="text/css" href="./css/custom_topic_styles.css" rel="stylesheet" />
+	<script type="text/javascript">
+<HMINCLUDE:hm_pageprescript.js>
+	hmDevice.pageStylesheet = "<%STYLESHEET%>";
+	var hmSearchActive = <IF_SEARCH_PAGE>true</IF_SEARCH_PAGE><IFNOT_SEARCH_PAGE>false</IFNOT_SEARCH_PAGE>,
+		hmIndexActive = <IF_INDEX_PAGE>true</IF_INDEX_PAGE><IFNOT_INDEX_PAGE>false</IFNOT_INDEX_PAGE>;
+	</script>
+	<style type="text/css">
+	.svgsprite{display:none;}
+	div#noscript {display: none;}
+	<IF_VAR[OPT_BREADOFF=true]>p#ptopic_breadcrumbs { display: none;}</IF_VAR[OPT_BREADOFF=true]></style> 
+	<style id="livestyles" type="text/css"></style>
+	<noscript><style type="text/css">
+	div#pagewrapper {display: none;}
+	div#fouc {display: none;}
+	div#noscript {
+		display: block;
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+		border: 1rem solid grey;
+		background-color: #eaeaea;
+		}
+	h2#noscriptwarning {
+		text-align: center;
+		position: relative;
+		top: 35%;
+		color: #333333;
+	}
+	</style>
+	</noscript><IF_GA4ACCOUNT>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<%GA4ACCOUNT%>"></script>
+<script>
+var gaOptString = 'ga-disable-' + "<%GA4ACCOUNT%>",
+	gaConfigString = 'ga-configure-' + "<%GA4ACCOUNT%>",
+	gaAccountOK = true,
+	gaOptOutCookie = hmDevice.hmGetCookie(gaOptString),
+	gaConfigCookie = hmDevice.hmGetCookie(gaConfigString);
+	
+	// Redirect to author's GDPR consent form if required
+	var ga_redirect = "<%GA_CONSENTREDIRECT%>";
+	if (ga_redirect != "") {
+	// Redirect to consent form if neither cookie is set
+	if (navigator.cookieEnabled && gaOptOutCookie == "" && gaConfigCookie == "") {
+		window.location.replace(ga_redirect);
+		}
+	}
+
+if (/^UA-/.test("<%GA4ACCOUNT%>")) {
+		alert("Invalid Universal Analytics GA ID: <%GA4ACCOUNT%>\r\n\r\nYou must use a Google Analytics 4 ID.")
+		gaAccountOK = false;
+	}
+
+if (/^https??:\/\//im.test(document.location) && gaAccountOK) {
+
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', '<%GA4ACCOUNT%>');
+
+	var optmode = "<%GA_GDPR_OPTMODE%>";
+
+	// Configure consent if activated
+	if (optmode != "off") {
+
+	let ad_storage = "denied", 
+		analytics_storage = "denied", 
+		ads_data_redaction = "denied";
+
+	if (navigator.cookieEnabled && gaOptOutCookie == "" && gaConfigCookie == "") {
+		if (optmode == "optin") {
+			gaOptOutCookie = "true";
+		} else if (optmode == "optout") {
+			ad_storage = "granted", 
+			analytics_storage = "granted", 
+			ads_data_redaction = "granted";
+			}
+		} else if (!navigator.cookieEnabled) {
+			gaOptOutCookie = "true";
+		}
+
+	if (gaOptOutCookie == "true") {
+
+		// Disable GA completely
+		window['ga-disable-<%GA4ACCOUNT%>'] = true;
+		hmDevice.GAactive = false;
+		
+	} else if (gaConfigCookie != "") {
+
+		switch (gaConfigCookie) {
+		
+			case "granted":
+			ad_storage = analytics_storage = ads_data_redaction = "granted";
+			break;
+			
+			case "denied":
+			ad_storage = analytics_storage = ads_data_redaction = "denied";
+			break;
+			
+			default:
+			if (gaConfigCookie.indexOf("ad_storage") > -1) ad_storage = "granted";
+			if (gaConfigCookie.indexOf("analytics_storage") > -1) analytics_storage = "granted";
+			if (gaConfigCookie.indexOf("ads_data_redaction") > -1) ads_data_redaction = "granted";
+			break;
+		}
+
+		// Configure GA
+		gtag('consent', {
+			'ad_storage': ad_storage,
+			'analytics_storage': analytics_storage,
+			'ads_data_redaction': ads_data_redaction,
+			'wait_for_update': 500
+			});
+		
+		} // Config cookie
+
+	} // Consent mode
+} // If server
+</script></IF_GA4ACCOUNT>													  
+	<link rel="canonical" href="<%HREF_HELPURL%><%HREF_CURRENT_PAGE%>" />
+	<script id="jqscript" type="text/javascript"></script>
+</head>
+<body>
+<!--ZOOMSTOP-->
+<HMINCLUDE:_svgicons.html>
+<div id="fouc" style="background:#ffffff;position:absolute;top:0;right:0;bottom:0;left:0;z-index:100001;"></div><div id="noscript"><h2 id="noscriptwarning"><%NOJS_WARNING%></h2></div>
+	<div id="helpwrapper">
+	<div id="pagewrapper">
+	<div id="toolbar_updown" class="toolwrapper phone">
+	<svg id="toolbar_updown_button" alt="Show/Hide Toolbars" viewBox="0 0 30 30"><use xlink:href="#toolbar_updown_icon"></use></svg>
+	</div>
+	<div id="headerbox_wrapper">
+	<div id="headerbox">
+<HMINCLUDE:HM_HEADERBOX.html>
+<IF_VAR[OPT_HEADERMENUOFF=false]><div id="phone_hamburger_icon" class="phone"><svg id="phone_hamburger_mobnav" viewBox="0 0 27 32"><use xlink:href="#menu"></use></svg></div>
+	</IF_VAR[OPT_HEADERMENUOFF=false]></div>
+	<div id="header_menu"><IF_VAR[OPT_HEADERMENUOFF=false]>
+<HMINCLUDE:HM_HEADERMENU.html></IF_VAR[OPT_HEADERMENUOFF=false]>
+	</div>
+	</div>
+	<!-- TOPIC CONTENT -->
+	<div id="topicbox">
+	<div id="navigationmenu">
+	<ul id="hamburgermenu">
+	<li id="toggle_fullscreen" class="desktop">
+	<svg id="fullscreen_toggle" class="hmbicon" viewBox="0 0 27 32"><use xlink:href="#resize-full"></use></svg>
+	<a onclick='hmWebHelp.doFullEmbedWindow(this)' tabindex="0" title="<%HMBTEXT_ZOOMTIP%>">
+	<span><%HMBTEXT_ZOOMOUT%></span></a>
+	</li> 
+	<li>
+		<svg class="hmbicon" viewBox="0 0 32 32"><use xlink:href="#text-height"></use></svg>
+		<a onclick="hmWebHelp.extFuncs('fontSize',[true,'global']);" title="<%HMBTEXT_TEXTPLUSTIP%>"> 
+		<span><%HMBTEXT_TEXTPLUS%></span></a>&nbsp;|&nbsp;<a onclick="hmWebHelp.extFuncs('fontSize',[false,'global']);" title="<%HMBTEXT_TEXTMINUSTIP%>"><span><%HMBTEXT_TEXTMINUS%></span></a>
+	</li>
+	<li class="desktop" id="showhide_pageheader">
+		<svg id="showhide_header_icon" class="hmbicon" viewBox="0 0 27 32"><use xlink:href="#collapse"></use></svg>
+		<a title="<%HMBTEXT_HEADER_HIDETIP%>">
+		<span><%HMBTEXT_HEADER_HIDE%></span></a>
+	</li>
+	<li class="toggles" id="showhide_toggles">
+		<svg id="showhide_toggles_icon" class="hmbicon" viewBox="0 0 32 32"><use xlink:href="#eye"></use></svg>
+		<a onclick="hmWebHelp.extFuncs('hmDoToggle',{method: 'hmToggleToggles', obj: {speed: 80}});" title="<%HMBTEXT_TOGGLESTIP%>"> 
+		<span><%HMBTEXT_TOGGLES_SHOW%></span></a>
+	</li><IF_VAR[OPT_NOPRINT=false]>
+	<li id="hm_printable_version">
+		<svg class="hmbicon" viewBox="0 0 30 32"><use xlink:href="#print"></use></svg><IF_VAR[OPT_NOSERVER=false]>
+		<a id="hm_printable_link" href="_hm_print_window.htm?<%HREF_CURRENT_PAGE%>" onclick="hmWebHelp.hamburgerMenu()" target="hm_print_window" title="<%HMBTEXT_PRINTTIP%>"></IF_VAR[OPT_NOSERVER=false]><IF_VAR[OPT_NOSERVER=true]><a id="hm_printable_link" href="javascript:print()" title="<%HMBTEXT_PRINTTIP%>"></IF_VAR[OPT_NOSERVER=true]>
+		<span><%HMBTEXT_PRINT%></span></a>
+	</li></IF_VAR[OPT_NOPRINT=false]><IF_VAR[OPT_MAILFB=true]>
+	<li>
+		<svg class="hmbicon" viewBox="0 0 32 32"><use xlink:href="#mail-alt"></use></svg>
+		<a onclick="hmWebHelp.extFuncs('hm_mail_feedback')" title="<%HMBTEXT_MAILTIP%>"> 
+		<span><%HMBTEXT_MAIL%></span></a>
+	</li></IF_VAR[OPT_MAILFB=true]><IFNOT_EBOOK><IF_VAR[OPT_SOCIALSHARE=true]>
+	<li class="server">
+		<svg class="hmbicon" viewBox="0 0 27 32"><use xlink:href="#share"></use></svg>
+		<a href="javascript:hmWebHelp.hamburgerMenu()" data-target="socialsharing.js" data-path="./js/" data-title="<%HMBTEXT_SHARETITLE%>" class="popuplink" title="<%HMBTEXT_SHARETIP%>">
+		<span><%HMBTEXT_SHARE%></span></a>
+	</li></IF_VAR[OPT_SOCIALSHARE=true]>
+	<li class="desktop server">
+		<svg class="hmbicon" viewBox="0 0 30 32"><use xlink:href="#link"></use></svg>
+		<a href="javascript:hmWebHelp.hamburgerMenu()" data-target="_hmpermalink.html" data-path="./" data-title="<%PERMA_TITLEBAR%>" class="popuplink" title="<%HMBTEXT_PERMALINKTIP%>">
+		<span><%HMBTEXT_PERMALINK%></span></a>
+	</li></IFNOT_EBOOK> 	
+	</ul>
+			 
+	</div>
+	<div id="topicbody">
+	<!-- HMSKIN BODY START -->
+	<div id="hmpageheader">
+	<table id="topicheadertable">
+	  <tr>
+		<td id="topicheadercell">
+		  <div id="topicheaderwrapper">
+		  <p id="ptopic_breadcrumbs" class="topic_breadcrumbs desktop"><%BREAD_LABEL%> <IF_TOPIC_BREADCRUMBS><%TOPIC_BREADCRUMBS%></IF_TOPIC_BREADCRUMBS><IFNOT_TOPIC_BREADCRUMBS><span>&raquo;&nbsp;<%BREAD_NOTOPIC%>&nbsp;&laquo;</span></IFNOT_TOPIC_BREADCRUMBS></p><IF_VAR[OPT_HDFORMAT=false]> 
+		  <p class="topictitle"><IF_TOPIC_HEADER><%TOPIC_HEADER_TEXT%></IF_TOPIC_HEADER><IFNOT_TOPIC_HEADER><%TOPIC_TITLE%></IFNOT_TOPIC_HEADER></p></IF_VAR[OPT_HDFORMAT=false]><IF_VAR[OPT_HDFORMAT=true]>
+		  <span class="hdFormat"><IF_TOPIC_HEADER><%TOPIC_HEADER%></IF_TOPIC_HEADER><IFNOT_TOPIC_HEADER><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1"><%TOPIC_TITLE%></span></h1></IFNOT_TOPIC_HEADER></span></IF_VAR[OPT_HDFORMAT=true]>
+		  </div>
+		</td>
+		<td id="topicnavcell"><span>
+		<a id="atoclink" class="topicnavlink" href="javascript:void(0);" title="<%ATOC_BTNTIP_ON%>">
+		<svg class="navicon" viewBox="0 0 32 32"><use xlink:href="#list-bullet"></use></svg>
+		<span><%ATOC_TITLE%></span></a> 
+		 <a id="topicnavlinkprevious" class="topicnavlink<IF_PREVIOUS_PAGE> nav</IF_PREVIOUS_PAGE><IFNOT_PREVIOUS_PAGE> disabled</IFNOT_PREVIOUS_PAGE>" <IF_PREVIOUS_PAGE>href="<%HREF_PREVIOUS_PAGE%>" title="<%BTNTEXT_PREVTIP%>"</IF_PREVIOUS_PAGE><IFNOT_PREVIOUS_PAGE> title="<%BTNTEXT_PREVNO%>"</IFNOT_PREVIOUS_PAGE>>
+		 <svg class="navicon" viewBox="0 0 27 32"><use xlink:href="#angle-circled-left"></use></svg>
+		 <span><%BTNTEXT_PREV%></span></a>
+		<a id="topicnavlinkhome" class="topicnavlink<IF_PREVIOUS_PAGE> nav</IF_PREVIOUS_PAGE><IFNOT_PREVIOUS_PAGE> disabled</IFNOT_PREVIOUS_PAGE>" <IF_PREVIOUS_PAGE>href="<IF_VAR[OPT_PARENTHOME=false]><%HREF_DEFAULT_PAGE%></IF_VAR[OPT_PARENTHOME=false]><IF_VAR[OPT_PARENTHOME=true]><%HREF_PARENT_CHAPTER%></IF_VAR[OPT_PARENTHOME=true]>" title="<%BTNTEXT_HOMETIP%>"</IF_PREVIOUS_PAGE><IFNOT_PREVIOUS_PAGE>title="<%BTNTEXT_HOMENO%>"<IFNOT_PREVIOUS_PAGE>>
+		<svg class="navicon" viewBox="0 0 27 32"><use xlink:href="#angle-circled-up"></use></svg>
+		<span><%BTNTEXT_HOME%></span></a>
+		<a id="topicnavlinknext" class="topicnavlink<IF_NEXT_PAGE> nav</IF_NEXT_PAGE><IFNOT_NEXT_PAGE> disabled</IFNOT_NEXT_PAGE>" <IF_NEXT_PAGE>href="<%HREF_NEXT_PAGE%>" title="<%BTNTEXT_NEXTTIP%>"</IF_NEXT_PAGE><IFNOT_NEXT_PAGE>title="<%BTNTEXT_NEXTNO%>"</IFNOT_NEXT_PAGE>>
+		<svg class="navicon" viewBox="0 0 27 32"><use xlink:href="#angle-circled-right"></use></svg>
+		<span><%BTNTEXT_NEXT%></span></a>
+		 <a id="hamburgerlink" class="topicnavlink" href="javascript:void(0);" title="<%HMBTEXT_TITLETIP%>">
+		 <svg class="navicon" viewBox="0 0 27 32"><use xlink:href="#menu"></use></svg>
+		 <span><%HMBTEXT_TITLE%></span></a>
+		 </span>
+		 </td>
+	  </tr>
+	</table>
+	</div>
+	<div id="autoTocWrapper" class=""></div> 
+	<div id="hmpagebody">
+	<div id="unclicker"></div>
+	<div id="hmpagebody_scroller">
+<!--ZOOMRESTART-->
+	<%TOPIC_TEXT%><IF_VAR[OPT_TOPICFOOTER=true]>
+	<HMINCLUDE:_topicfooter.html></IF_VAR[OPT_TOPICFOOTER=true]>
+	</div> <!-- hmpagebody_scroller -->
+	</div> <!-- hmpagebody -->
+	</div> <!-- topicbody-->
+	</div><!-- topicbox -->
+	<div id="navwrapper">
+	<div id="dragwrapper" class="toolwrapper" alt="<%TABTEXT_NAVPANE%>" title="<%TABTEXT_NAVPANE%>">
+	<svg id="draghandleicon" class="phone" viewBox="0 0 30 32" alt="resize nav pane"><use xlink:href="#draghandle"></use></svg>
+	<div id="dragbutton" class="desk_tablet">
+	<svg id="draghandleicon_r" class="splittertool" viewBox="0 0 30 32" alt="resize nav pane"><use xlink:href="#draghandle_r"></use></svg>
+	<svg id="draghandleicon_l" class="splittertool" viewBox="0 0 30 32" alt="resize nav pane"><use xlink:href="#draghandle_l"></use></svg>
+	</div></div>
+	<div id="toolbutton_wrapper" class="toolwrapper desk_tablet" tabindex="0" role="button" alt="<%HMBTEXT_HEADER%>" title="<%HMBTEXT_HEADER%>">
+	<div id="toolbutton">
+	<svg id="toolbar_updown_close" class="splittertool" viewBox="0 0 30 32" alt="showhide pageheader"><use xlink:href="#toolbar_close"></use></svg>
+	<svg id="toolbar_updown_open" class="splittertool" viewBox="0 0 30 32" alt="showhide pageheader"><use xlink:href="#toolbar_open"></use></svg>
+	</div></div>
+	<div id="navsplitbar"></div>
+	<img id="leftright" src="./images/leftright.png" alt="resize nav pane" width="150" height="45" border="0" />
+	<div id="navcontainer">
+	<!-- NAV TABS START -->
+	<nav id="navpane_tabs">
+	<ul id="topictabs" class="tabs">
+	<li id="contentstab" class="hmtabs current" title="<%TABTEXT_TOCTABTIP%>"><a id="contentstablink" title="<%TABTEXT_TOCTABTIP%>" href="<%HREF_CONTENT_PAGE%>"><svg class="tocicon" viewBox="0 0 30 32"><use xlink:href="#th-list"></use></svg></a></li><IF_INDEX_PAGE>
+	<li id="indextab" class="hmtabs" title="<%TABTEXT_INDEXTABTIP%>"><a id="indextablink" title="<%TABTEXT_INDEXTABTIP%>" href="<%HREF_INDEX_PAGE%>"><svg class="tocicon" viewBox="0 0 30 32"><use xlink:href="#key-inv"></use></svg></a></li></IF_INDEX_PAGE><IF_SEARCH_PAGE>
+	<li id="searchtab" class="hmtabs" title="<%TABTEXT_SEARCHTABTIP%>"><a id="searchtablink" title="<%TABTEXT_SEARCHTABTIP%>" href="<%HREF_SEARCH_PAGE%>"><svg class="tocicon" viewBox="0 0 30 32"><use xlink:href="#search"></use></svg></a></li></IF_SEARCH_PAGE>
+	</ul>
+	</nav>
+	<!-- NAV TABS END -->	
+	<div id="contentsbox" class="navbox on">
+	<iframe name="hmnavigation" id="hmnavigation" class="navframe" src="<%HREF_CONTENT_PAGE%>" scrolling="no" seamless="seamless" title="Navigation Pane" frameborder="0"></iframe>
+	</div>
+	<div id="indexbox" class="navbox off">
+	<iframe name="hmindex" id="hmindex" class="navframe" src="" scrolling="no" seamless="seamless" title="Keyword Index Pane" frameborder="0"></iframe>	
+	</div> 
+	<div id="searchbox" class="navbox off">
+	<iframe name="hmsearch" id="hmsearch" class="navframe" src="" scrolling="no" seamless="seamless" title="Full Text Search Pane" frameborder="0"></iframe>
+	</div>
+	</div><!-- navcontainer -->
+	</div><!-- navwrapper -->
+	<div id="mob_toolbar_wrapper" data="open">
+	<div id="mob_toolbar" class="mtoolbar">
+		<table id="mob_tb_table" class="mobtoolbar" border="0" width="100%"><tr>
+			<td width="22"></td> 
+			<td id="mob_tb_home" align="center" valign="middle"><div id="mobnavhome" class="mobnav home"></div></td>
+			<td id="mob_tb_toc" align="center" valign="middle"><div id="mobnavtoc" class="mobnav toc"></div></td>
+			<td id="mob_tb_textplus" align="center" valign="middle"><div id="mobnavtextplus" class="mobnav textplus"></div></td>
+			<td id="mob_tb_textminus" align="center" valign="middle"><div id="mobnavtextminus" class="mobnav textminus"></div></td>
+			<td id="mob_tb_previous" align="center" valign="middle"><div id="mobnavprevious" class="mobnav previous"></div></td>
+			<td id="mob_tb_next" align="center" valign="middle"><div id="mobnavnext" class="mobnav next"></div></td>
+			<td>&nbsp;&nbsp;</td>
+			<td id="mob_tb_hamburger" class="mob_hamburger" align="right" valign="top"><div id="phone_mobnav_hamburger_icon" class="mobnav phone"><svg id="phonetb_hamburger_mobnav" viewBox="0 0 27 32"><use xlink:href="#menu"></use></svg></div></td>
+			</tr></table>
+	</div></div>
+	</div> <!-- pagewrapper -->
+	</div> <!-- helpwrapper -->
+	<div id="dragsurface"></div>
+<script type="text/javascript" src="./js/xmessage.js"></script> 
+<script id="hmPageInitScript" type="text/javascript">
+var fouc=document.getElementById("fouc");<IF_EBOOK>
+fouc.innerHTML = '<h2 style="margin-left: 10px">ERROR: WebHelp Skin Used for eWriter output</h2> <p style="font-weight:bold;margin: 10px;">You have published your project to the eWriter format with a dedicated WebHelp skin. These skins are only for use in WebHelp.</p><p style="font-weight:bold;margin: 10px;">Please use a skin class specified for eWriter. </p>';</IF_EBOOK>
+<HMINCLUDE:hm_pagescript.js>
+helpman_mailrecipient = '<%FB_TO%>';
+hmGetUrlParams = function() {<HMINCLUDE:getUrlParams.js>}
+<HMINCLUDE:postloadFuncs.js>
+</script>
+</body>
+</html>

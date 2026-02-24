@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 
 // Constructor
@@ -10,10 +10,8 @@ function mFb() {
 
 	// Clean up email link strings
 	var unQuote = function(varStr) {
-	// varStr = varStr.replace(/\'/g, "`");
 	varStr = varStr.replace(/&gt;/g, ">");
 	varStr = varStr.replace(/&lt;/g, "<");
-	// varStr = varStr.replace(/&quot;/g, '`');
 	varStr = varStr.replace(/&quot;/g, '"');
 	varStr = varStr.replace(/&amp;/g, '&');
 	varStr = varStr.replace(/&nbsp;|&NBSP;/g, ' ');
@@ -54,10 +52,10 @@ function mFb() {
 	};	// End unQuote
 
 	// Main variables
-	var topicTitle = function(){ return unQuote($("p.topictitle").first().text());},
+	var topicTitle = function(){ return unQuote($("h1.topictitle").first().text());},
 	topicRef = function() {return unQuote("Reference:");},
 	fbbody = unQuote("Dear Support Staff,"),
-	mailsubject = function(){return(unQuote("Feedback on:" +  " " + $("h1#hm_pageheader").text() + " > " + $("p.topictitle").text()));},
+	mailsubject = function(){return(unQuote("Feedback on:" +  " " + $("h1#hm_pageheader").text() + " > " + $("h1.topictitle").text()));},
 	mailrecipient = helpman_mailrecipient,
 	simplerecipient = "support@ec-software.com",
 	simplesubject = "Documentation%20Feedback",
@@ -82,7 +80,9 @@ function mFb() {
 	
 	// Simplified version for problems with special character sets
 	var simplefb = false;
-	var topicReference = window.location.protocol + "%2F%2F" + window.location.hostname + window.location.pathname;
+	
+	// Reference to the topic
+	var topicReference = window.location.protocol + "%2F%2F" + window.location.hostname + encodeURIComponent(window.location.pathname);
 	
 	// Close hamburger
 	if ($("div#navigationmenu").is(":visible"))

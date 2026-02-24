@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-   <title>Introduction &gt; Architecture Overview &gt; Chapter 4 - Functional Execution Domains (&quot;Boxes) &gt; 4.5 EBox - Execution Box (Integer Core)</title>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Architecture Overview &gt; Chapter 4 - Functional Execution Domains (&quot;Boxes) &gt; 4.5 EBox - Execution Box (Integer Core)</title>
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
-   <meta name="keywords" content="" />
+   <meta name="keywords" content="ADD,ADDL,ADDL,ADDLV,ADDLV,ADDQ,ADDQ,ADDQV,ADDQV,Address,AddressCalculation,ADDS,ADDT,AMASK,AND,AND,Barrier,Below is a consolidated architectural mnemonic list (Alpha AXP base ISA, representative full set), one mnemonic per line, no commentary.,BEQ,BEQ,BGE,BGE,BGT,BGT,BIC,BIC,BIS,Bitmask,BLBC,BLBC,BLBS,BLBS,BLE,BLE,BLT,BLT,BNE,BNE,BR,BranchCondition,BSR,BusyState,ByteManipulation,CALL_PAL,CFLUSH,CMOVEQ,CMOVEQ,CMOVGE,CMOVGE,CMOVGT,CMOVGT,CMOVLE,CMOVLE,CMOVLT,CMOVLT,CMOVNE,CMOVNE,CMPBGE,CMPEQ,CMPEQ,CMPLE,CMPLE,CMPLT,CMPLT,CMPSEQ,CMPSLE,CMPSLT,CMPSUN,CMPTEQ,CMPTLE,CMPTLT,CMPTUN,CMPULE,CMPULE,CMPULT,CMPULT,Comparison,ConditionalMove,CVTFQ,CVTQF,CVTQS,CVTQT,CVTST,CVTTQ,CVTTS,CycleCounter,Divide,DIVL,DIVLV,DIVQ,DIVQV,DIVS,DIVT,DRAINA,EBox,EffectiveAddress,EQV,EXCB,ExecuteMethod,EXTBL,EXTBL,EXTLH,EXTLL,EXTLL,EXTQH,EXTQL,EXTQL,EXTWH,EXTWL,EXTWL,FBEQ,FBGE,FBGT,FBLE,FBLT,FBNE,FETCH,FETCH_M,HALT,HazardDetection,HW_MFPR,HW_MTPR,Implementation,IMPLVER,INSBL,INSBL,INSLH,INSLL,INSLL,INSQH,INSQL,INSQL,INSWH,INSWL,INSWL,IntegerArithmetic,Invariant,JMP,JSR,JSR_COROUTINE,LDA,LDA,LDAH,LDAH,LDBU,LDF,LDG,LDL,LDL_L,LDQ,LDQ_L,LDQ_U,LDS,LDT,LDWU,LogicalOperation,MB,MemoryEffect,MemoryOperation,MF_FPCR,MSKBL,MSKBL,MSKLH,MSKLL,MSKLL,MSKQH,MSKQL,MSKQL,MSKWH,MSKWL,MSKWL,MT_FPCR,MULL,MULL,MULLV,MULLV,MULQ,MULQ,MULQV,MULQV,MULS,MULT,Multiply,Operand,OR,ORNOR,ORNOT,ORNOT,Payload,RC,RegisterFile,RegisterScoreboard,REI,Result,RET,RPCC,RS,Scoreboard,SLL,SLL,SQRTS,SQRTT,SRA,SRA,SRL,SRL,Stall,STB,STF,STG,STL,STL_C,STQ,STQ_C,STQ_U,STS,STT,STW,SUB,SUBL,SUBL,SUBLV,SUBLV,SUBQ,SUBQ,SUBQV,SUBQV,SUBS,SUBT,Tick,TRAPB,UMULH,UMULH,WH64,WH64EN,WMB,Writeback,XOR,XOR,ZAP,ZAP,ZAPNOT,ZAPNOT" />
    <meta name="description" content="The EBox implements integer and control-flow execution semantics. It performs computation, not coordination." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
@@ -24,16 +24,16 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #F0F0F0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #000000 }     
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
-        width: 126px;
+        width: 158px;
         vertical-align: middle;        
       } 
       #idnav a { text-decoration: none }
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_grey.png');
+        background-image:url('hm_webhelp_buttons_white.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_yellow.png');
+        background-image:url('hm_webhelp_buttons_orange.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #000000; }
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -105,7 +105,7 @@
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?chapter-4_5-ebox---execution-b.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
-      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-4---functionexecution-.html">Chapter 4 - Functional Execution Domains (&quot;Boxes)</a>&nbsp;&gt;</p>
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-4---functionexecution-.html">Chapter 4 - Functional Execution Domains (&quot;Boxes)</a>&nbsp;&gt;</p>
    
       <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">4.5 EBox - Execution Box (Integer Core)</span></h1>
 
@@ -115,7 +115,7 @@
       <a href="chapter-4_4-ibox---instruction.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
       <a href="chapter-4---functionexecution-.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
       <a href="chapter-4_6-fbox---floating-po.html" title="Next Topic"><span class="hmbtnnext"></span></a>
-      
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
     </td>
   </tr>  
 </table>
@@ -161,6 +161,11 @@
 </div></div>
 <script type="text/javascript">
 
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
+
 
 
 function normHeaders() {
@@ -203,11 +208,19 @@ function normHeaders() {
 	normHeaders();
     });
     
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
 	 $(window).resize(); //trigger event for initially small displays
   });
  
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?chapter-4_5-ebox---execution-b.html" target="_top">'+baseurl+'index.html?chapter-4_5-ebox---execution-b.html</a></p>');
 
 </script>
 </body>

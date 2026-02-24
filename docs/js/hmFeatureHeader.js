@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 
 // Constructor
@@ -52,14 +52,6 @@ function fh() {
 		imheightL = wh * imaspect;
 
 		hh = $fp.height();
-		
-		/*if (hmBrowser.Flandscape()) {
-			wh = wh/2;
-			hh = hh > imheightL ? hh : imheightL;
-		} else {
-			wh = wh/2;
-			hh = hh > imheightP ? hh : imheightP;
-		} */
 		
 		wh = Math.round(wh/3);
 		hh = hh > imheightP ? hh : imheightP;

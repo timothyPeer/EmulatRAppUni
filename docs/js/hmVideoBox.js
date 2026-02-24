@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 function videoBoxConstructor() {
 	var hmmin = function(v1, v2) { if (v1<v2) return v1; return v2; };
@@ -69,10 +69,10 @@ function videoBoxConstructor() {
 		lightbox.show();  	
 	  }  
 
-	  $(lightboxWindow).bind('resize.hmlightbox', lightboxResize);
-	  $(lightboxWindow).bind('scroll.hmlightbox', lightboxScroll);
-	  $(lightboxBody).bind('click.hmlightbox', lightboxClick);
-	  $(document).bind('keydown.hmlightbox', lightboxKeydown);
+	  $(lightboxWindow).on('resize.hmlightbox', lightboxResize);
+	  $(lightboxWindow).on('scroll.hmlightbox', lightboxScroll);
+	  $(lightboxBody).on('click.hmlightbox', lightboxClick);
+	  $(document).on('keydown.hmlightbox', lightboxKeydown);
 	  $(lightbox).focus();
 
 	  function lightboxScroll() {
@@ -150,9 +150,9 @@ function videoBoxConstructor() {
 		  if (lighboxScrollLayer!==null) lighboxScrollLayer.remove(); 
 		  lightboxBackground.remove();
 		}
-		$(lightboxWindow).unbind('.hmlightbox');
-		$(lightboxBody).unbind('.hmlightbox');
-		$(document).unbind('.hmlightbox');
+		$(lightboxWindow).off('.hmlightbox');
+		$(lightboxBody).off('.hmlightbox');
+		$(document).off('.hmlightbox');
 	}
 	  
 	}; // showLightbox

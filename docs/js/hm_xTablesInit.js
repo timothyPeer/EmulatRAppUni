@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 
 function xTableConstructor($thisTable) {
@@ -146,7 +146,6 @@ function xTableConstructor($thisTable) {
 	} // updateColumns
 	
 	// Resize handler
-	//if (tableID != "xtable1") return;
 	$(window).on(hmBrowser.orientationevent + ".xTables", function(){
 		
 		if (hmBrowser.orientationevent == "orientationchange") {
@@ -209,7 +208,7 @@ function xTableConstructor($thisTable) {
 			
 		$(this).html("<div class='"+tableID+" xtable_dataiconwrapper'><img class='xtable_dataicon' id=\""+tIconID+"\"src=\"images/open_data.png\" title=\""+showDataTooltip+"\"/></div><div class='xtable_switchwrapper'>" + tempHTML+"</div>");
 		
-		$("img#"+tIconID).on("click",function(event){
+		$("img#"+tIconID).on("click", function(event){
 			hmWebHelp.funcs.xTables[tableID](event,$switchTD);
 			
 		});
@@ -246,7 +245,7 @@ function xTableConstructor($thisTable) {
 			colspan = 0,
 			colcounter = 0,
 			datatitle_class = "xtable_datatitle";
-
+				
 		// Create data blocks row if it doesn't exist already
 		// Only create if actually needed (user tries to display it)
 		if ($("tr#" + dataid).length === 0) {

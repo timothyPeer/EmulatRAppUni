@@ -1,0 +1,527 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Appendix &gt; Appendix B - Branch Prediction Mechanics</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="Accuracy,AXP_HOT,Backward,BEQ,BGT,BHT,Bimodal,BR,Branch,BranchPredictor,BranchPredictor.h,BranchStrategy,BSR,BTB,CBox,CBoxLib,Conditional,ContextSwitch,COROUTINE,Counter,DisplacementBased,Entry,flushPredictionState,Forward,getPredictedTarget,GlobalHistory,Gshare,Hash,HistoryTable,HitRate,ICCSR,Indirect,JMP,JSR,Loop,Misprediction,NeverTaken,Penalty,Prediction,predictTaken,queryPrediction,RAS,recordBranchResolution,recordPrediction,RET,ReturnAddressStack,Saturating,SetAssociative,Statistics,Strategy,StronglyNotTaken,StronglyTaken,Tournament,Training,Unconditional,updatePrediction,WeaklyNotTaken,WeaklyTaken" />
+   <meta name="description" content="This appendix describes the branch prediction subsystem implemented by CBox and BranchPredictor. Chapter 13.11 describes how the pipeline consumes, resolves, and trains..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        min-height: 60px; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        background: #2C5D88;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 158px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "appendixb-branchpredictionmechanics.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J – Branch Prediction Mechanics</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:middle">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?appendixb-branchpredictionmechanics.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J – Branch Prediction Mechanics</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="appendix-h---endianness-rules.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="appendixc-physicaladdressmemorymap.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">This appendix describes the branch prediction subsystem implemented by CBox and BranchPredictor. Chapter 13.11 describes how the pipeline consumes, resolves, and trains predictions; this appendix documents the predictor structures, strategies, interface, and expected performance.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.1 Architecture</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CBox (CBoxLib/) owns a BranchPredictor instance (BranchPredictor.h). CBox provides the pipeline-facing interface; BranchPredictor contains the prediction structures and algorithms. CBox follows the same construction pattern as PalBox — it receives CPUIdType, HWPCBBank*, and IPRStorage_HotExt* from ExecutionCoordinator and does not own these resources.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The predictor operates independently per CPU. In SMP configurations, each CPU has its own CBox and BranchPredictor with no shared state. Context switches flush predictor state via <span class="f_CodeExample">flushPredictionState()</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.2 Prediction Structures</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Branch History Table (BHT)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">512 entries, 2-way set associative. Each entry contains a 2-bit saturating counter that tracks the recent behavior of the branch at that address. The counter encodes four states:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Value</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">State</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Prediction</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Transition on Taken</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Strongly not-taken</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Not-taken</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">→ 01 (weakly not-taken)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">01</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Weakly not-taken</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Not-taken</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">→ 10 (weakly taken)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">10</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Weakly taken</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Taken</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">→ 11 (strongly taken)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">11</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Strongly taken</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Taken</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">→ 11 (saturates)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On a not-taken outcome, the counter decrements (saturates at 00). Prediction is &quot;taken&quot; when counter &gt;= 2 (bit 1 set). The 2-bit design tolerates one anomalous outcome without changing the prediction — a loop that iterates 100 times and exits once will be correctly predicted 99% of the time.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">BHT indexing: the entry is selected by hashing the branch PC. The 2-way set associativity allows two branches that hash to the same index to coexist without aliasing. Power-of-2 sizing enables efficient masking (index = hash &amp; 0x1FF).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Branch Target Buffer (BTB)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1024 entries. Each entry stores a PC → target address mapping. When the BHT predicts &quot;taken,&quot; the BTB provides the target address. BTB entries are updated when a branch resolves as taken — the actual target is written into the BTB. For not-taken branches, no BTB update occurs (the sequential PC+4 is used).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Global History Register</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">16-bit shift register recording the taken/not-taken outcome of the last 16 branches. Each branch outcome shifts in from the right: <span class="f_CodeExample">m_globalHistory = (m_globalHistory &lt;&lt; 1) | taken</span>. The global history register is maintained for future use by advanced prediction strategies (gshare, tournament). The current HistoryTable strategy does not use global history for index computation.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.3 Prediction Strategies</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The active prediction strategy is controlled by the ICCSR (Implementation-Specific Control and Status Register) branch prediction mode bits. CBox provides <span class="f_CodeExample">setStrategy(BranchStrategy)</span> to change the active strategy at runtime (typically during ICCSR writes). Three strategies are implemented:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">NeverTaken</span> (ICCSR mode 0) — always predicts not-taken. Every branch fetches sequentially from PC+4. Useful as a baseline for measuring predictor benefit. Hit rate: ~30–40% for typical workloads (most loops are backward branches that are usually taken).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">DisplacementBased</span> (ICCSR mode 1) — predicts taken if the branch displacement is negative (backward branch), not-taken if positive (forward branch). This is a static heuristic: backward branches are typically loop-closing branches that are taken on all but the final iteration. No BHT state is used. Hit rate: ~65–75% for typical workloads.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">HistoryTable</span> (ICCSR mode 2, default) — uses the BHT 2-bit saturating counter to predict taken/not-taken, and the BTB for target address. This is a dynamic strategy that learns from runtime behavior. Hit rate: ~85–95% for typical workloads, varying by branch type (see Section J.5).</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4 CBox Public Interface</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All prediction hot-path methods are marked <span class="f_CodeExample">AXP_HOT AXP_ALWAYS_INLINE</span> to eliminate call overhead. CBox avoids virtual function calls on all critical paths.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">queryPrediction(pc, outPredictedTarget) → bool</span></p>
+<p class="p_Normal">Called by IBox during fetch. Checks BHT for taken/not-taken, looks up BTB for the target if taken. Returns true if a taken prediction with valid target is available. Marked <span class="f_CodeExample">AXP_HOT</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">predictTaken(pc, displacement) → bool</span></p>
+<p class="p_Normal">Lower-level interface. Returns the taken/not-taken prediction for the given PC using the active strategy. Delegates directly to <span class="f_CodeExample">BranchPredictor::predict()</span>. Marked <span class="f_CodeExample">AXP_HOT AXP_ALWAYS_INLINE</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">getPredictedTarget(pc) → quint64</span></p>
+<p class="p_Normal">Returns the BTB-cached target address for the given PC. Marked <span class="f_CodeExample">AXP_HOT</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">recordPrediction(pc, predictedTarget)</span></p>
+<p class="p_Normal">Called by IBox after making a speculative prediction. Updates BTB with the predicted target, increments prediction statistics, updates global history. Marked <span class="f_CodeExample">AXP_HOT AXP_FLATTEN</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">recordBranchResolution(pc, actualTarget, wasTaken, wasPredicted, predictedCorrectly)</span></p>
+<p class="p_Normal">Called by the pipeline in stage_WB() at retirement. Trains the BHT (increments or decrements the saturating counter), updates BTB with actual target if taken, updates prediction accuracy statistics, and updates global history with the actual outcome. This is the sole training entry point — all predictor learning happens here.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">flushPredictionState()</span></p>
+<p class="p_Normal">Clears all prediction state: invalidates all BHT entries, invalidates all BTB entries, clears global history register, resets all counters to weakly not-taken (01). Called on context switch and pipeline flush from PAL mode. After flush, the predictor cold-starts — all branches will initially be predicted not-taken until training rebuilds the tables.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">setStrategy(BranchStrategy)</span></p>
+<p class="p_Normal">Changes the active prediction strategy. Called when ICCSR branch prediction mode bits are written. Takes effect immediately for the next prediction.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">getStatistics() / resetStatistics()</span></p>
+<p class="p_Normal">Returns or resets cumulative prediction statistics: totalPredictions, correctPredictions, incorrectPredictions, and computed accuracy().</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.5 Expected Hit Rates by Branch Type</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The following hit rates are expected for the HistoryTable strategy under typical workloads. These are design targets derived from published EV6 branch prediction literature and empirical measurement of the 2-bit saturating counter scheme.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Branch Type</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Instructions</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Expected Hit Rate</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Notes</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Unconditional direct</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BR, BSR</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">100%</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Target known at decode, no prediction needed</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Backward conditional (loops)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BNE, BGT, etc.</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">95%+</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Strongly biased taken; 2-bit counter saturates quickly</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Forward conditional</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BEQ, BLE, etc.</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">80–90%</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">More variable; error handling branches bias not-taken</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Function call (direct)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BSR</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">100%</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Unconditional, target at decode</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Function return</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">RET</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">~60% (BTB only)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Indirect target varies by call site; RAS would improve to ~98%</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Indirect jump</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">JMP, JSR, COROUTINE</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">~50–70%</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Target varies; BTB caches last target only</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Aggregate:</span> Across a typical workload mix (integer-heavy, moderate branching), the HistoryTable strategy is expected to achieve 85–93% overall accuracy. The primary sources of misprediction are indirect jumps (switch statements, virtual calls) and loop exit branches (the single misprediction when a loop terminates).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Misprediction cost:</span> Each misprediction invalidates up to 3 pipeline stages (IF, DE, IS), wasting the cycles spent fetching and decoding the wrongly-predicted instruction stream. With a 6-stage pipeline, the maximum penalty is 3 cycles per misprediction.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.6 Prediction Flow</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The complete prediction lifecycle across the pipeline:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">IBox&nbsp;fetch:&nbsp;detect&nbsp;branch&nbsp;in&nbsp;decoded&nbsp;instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">IBox&nbsp;→&nbsp;CBox::queryPrediction(branchPC,&nbsp;outTarget)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;BHT&nbsp;lookup&nbsp;→&nbsp;taken/not-taken</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;BTB&nbsp;lookup&nbsp;→&nbsp;predicted&nbsp;target&nbsp;(if&nbsp;taken)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">IBox&nbsp;→&nbsp;CBox::recordPrediction(branchPC,&nbsp;predictedTarget)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;Updates&nbsp;statistics,&nbsp;global&nbsp;history</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">IBox&nbsp;populates&nbsp;FetchResult:&nbsp;predTaken,&nbsp;predTarget</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">stage_IF:&nbsp;transfers&nbsp;prediction&nbsp;into&nbsp;PipelineSlot</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">stage_EX:&nbsp;grain&nbsp;resolves&nbsp;actual&nbsp;branch&nbsp;outcome</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;Sets&nbsp;slot.branchTaken,&nbsp;slot.branchTarget</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;Compares&nbsp;actual&nbsp;vs&nbsp;predicted</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;If&nbsp;mismatch&nbsp;→&nbsp;slot.flushPipeline&nbsp;=&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">stage_WB:&nbsp;retirement</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Pipeline&nbsp;→&nbsp;CBox::recordBranchResolution(pc,&nbsp;target,&nbsp;taken,&nbsp;...)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;BHT&nbsp;counter&nbsp;increment/decrement&nbsp;(training)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;BTB&nbsp;update&nbsp;(if&nbsp;taken)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;Statistics&nbsp;update</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓&nbsp;Global&nbsp;history&nbsp;update</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.7 Implementation Details</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Cache friendliness:</span> BHT and BTB are contiguous arrays (not linked structures). Power-of-2 sizing enables efficient index masking. The 2-way set-associative BHT uses simple linear probing within each set.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Hot path optimization:</span> <span class="f_CodeExample">predictTaken()</span> and <span class="f_CodeExample">getPredictedTarget()</span> are marked <span class="f_CodeExample">AXP_HOT AXP_ALWAYS_INLINE</span>. <span class="f_CodeExample">recordPrediction()</span> is marked <span class="f_CodeExample">AXP_HOT AXP_FLATTEN</span>. The hash function is <span class="f_CodeExample">AXP_ALWAYS_INLINE</span>. All critical paths avoid virtual function calls.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Debug support:</span> <span class="f_CodeExample">DEBUG_BRANCH_PREDICTION</span> compile-time flag enables detailed per-branch logging. Statistics tracking is always enabled with minimal overhead. Statistics can be queried via <span class="f_CodeExample">getStatistics()</span> and reset via <span class="f_CodeExample">resetStatistics()</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Context switch behavior:</span> <span class="f_CodeExample">flushPredictionState()</span> is called on context switch. All BHT and BTB entries are invalidated. Counters reset to weakly not-taken (01). The predictor cold-starts for the new process. This prevents stale predictions from the previous process from causing systematic mispredictions in the new process.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.8 EV6 Comparison and Future Enhancements</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The current implementation is a simplified model of the EV6 branch prediction subsystem. The following table compares the emulator's predictor against the documented EV6 hardware:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Feature</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">EV6 Hardware</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">ASA-EMulatR</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BHT entries</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">4096</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">512 (2-way)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BTB entries</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">2048</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">1024</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Local history predictor</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">4096-entry, 10-bit history</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Not implemented</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Global history bits</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">12</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">16 (maintained, not yet used for indexing)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Return Address Stack</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">8-entry</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Not implemented</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Planned enhancements:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Return Address Stack (RAS)</span> — an 8-entry stack dedicated to JSR/RET prediction. JSR pushes PC+4 onto the stack; RET pops the predicted return address. This would improve RET prediction from ~60% to ~98%, as function return targets follow a strict LIFO pattern.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Gshare predictor</span> — XOR the PC with global history to index the BHT. This captures correlations between branches (e.g., if branch A was taken, branch B is likely not-taken). Relatively simple to implement using the existing global history register.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Tournament predictor</span> — run multiple prediction schemes in parallel with a meta-predictor that selects the most accurate scheme for each branch. The EV6 hardware uses a tournament between local and global predictors; this is the most architecturally accurate enhancement.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Indirect branch predictor</span> — a specialized predictor for computed jumps (switch statements, virtual method dispatch) that tracks multiple targets per PC rather than the single BTB entry used today.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These enhancements are not required for architectural correctness — misprediction affects performance modeling only, never program behavior. The emulator guarantees correct execution regardless of prediction accuracy.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="13_11-branch-handling.html" class="topiclink">13.11 Branch Handling</a> &nbsp;(pipeline integration); <a href="chapter-14---execution-domains.html" class="topiclink">Chapter 14 – Execution Domains (“Boxes”)</a> &nbsp;(CBox role); CBoxLib/BranchPredictor.h (source); Alpha 21264/EV6 Hardware Reference Manual, Section 2.5 (branch prediction).</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
+
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
+  $(document).ready(function(){
+    $(window).on('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
+      }
+	normHeaders();
+    });
+    
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
+	 $(window).resize(); //trigger event for initially small displays
+  });
+ 
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?appendixb-branchpredictionmechanics.html" target="_top">'+baseurl+'index.html?appendixb-branchpredictionmechanics.html</a></p>');
+
+</script>
+</body>
+</html>

@@ -1,8 +1,9 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 var HMImageToggle = function($img){
-	var	$imgbox, $captionbox = false,
+	var	$imgbox, $imgwrapper, $svgwrapper, svgwrapper,
+		$captionbox = false,
 		imgID = $img.attr("id"),
 		src0 = $img.attr("data-src0"),
 		src1 = $img.attr("data-src1"),
@@ -19,37 +20,38 @@ var HMImageToggle = function($img){
 		windowdims = {},
 		maxImageHeight,
 		vBorderWidth = 0,
-		newImage = new Image();
+		newImage = new Image(),
+		isSVG = src1.substr(src1.lastIndexOf("\.")) == "\.svg";
 		
-		windowdims.w = $(window).width() - 30;
-		windowdims.h = $(window).height() - 30;
+		windowdims.w = $(window).width() - 100;
+		windowdims.h = $(window).height() - 100;
 		closeddims.w = $img.width();
 		closeddims.h = $img.height();
 		maxImageHeight = windowdims.h;
 		hFactor = closeddims.h/closeddims.w;
 
-	// No Caption
+	// With or without caption
 	if (!caption1) {
-			$("body").append('<div id="imagetogglebox"></div>');
+			$("body").append('<div id="imagetoggle-wrapper" style="position: absolute; top: 0; left: 0; width: 100%; height:100%; z-index: 1098;"><div id="imagetogglebox" style="z-index: 1099;"></div></div>');
 		} else {
-			$("body").append('<div id="imagetogglebox"><div id="imagecaptionbox"><p class="zoomedcaption">'+caption1+'</p></div></div>');
+			$("body").append('<div id="imagetoggle-wrapper" style="position: absolute; top: 0; left: 0; width: 100%; height:100%; z-index: 1098;"><div id="imagetogglebox" style="z-index: 1099;"><div id="imagecaptionbox"><p class="zoomedcaption">'+caption1+'</p></div></div></div>');
 			$captionbox = $("div#imagecaptionbox");
 		}
 	
 	$imgbox = $("div#imagetogglebox");
+	$imgwrapper = $("div#imagetoggle-wrapper");
 	$(newImage).css({"width": "100%", "height": "auto"});
+	$(newImage).attr("alt",$img.attr("alt"));
 
 		// Close image toggle
 		function unClicker (elem) {
 			
-			
-			// Click outside element
-			$(document).on(hmBrowser.touchstart + '.closemenu', function(event){
-				if (!elem.contains(event.target)) {
-					closeImage();
-					$(document).off(".closemenu");
-					$(elem).off(".closemenu");
-				}
+			// Click inside element except for SVG toggles
+			var clicktarget = isSVG ? document : elem;
+			$(clicktarget).on((typeof hmBrowser == "undefined" ? "click.closemenu" : hmBrowser.touchstart) + '.closemenu', function(){
+				closeImage();
+				$(document).off(".closemenu");
+				$(elem).off(".closemenu");
 			});
 			
 			// ESC key
@@ -64,10 +66,11 @@ var HMImageToggle = function($img){
 		}
 		
 		function closeImage(event,anispeed) {
-			var speed = (typeof anispeed == "undefined") ? "fast" : anispeed;
-			$imgbox.animate({width: closeddims.w, height: closeddims.h, top: startTop, left: startLeft},speed,function(){
-				$imgbox.hide();
-				$imgbox.remove();
+			var speed = (typeof anispeed == "undefined") ? 400 : anispeed;
+			if ($captionbox) $captionbox.remove();
+			$imgbox.animate({width: closeddims.w, height: closeddims.h, top: startTop, left: startLeft},speed, function(){
+				$imgwrapper.hide();
+				$imgwrapper.remove();
 				$img.attr("data-state","0");
 				// Only reset if we're not in a field-level topic
 				if (typeof hmxtoggle == "undefined")
@@ -75,11 +78,17 @@ var HMImageToggle = function($img){
 			});
 		}
 		
+		// For use if an SVG sends an Esc event
+		window.addEventListener("message", function(event){
+			if (event.data && event.origin === window.location.origin && event.data.type === "escapePressed") {
+				closeImage();
+			}
+		});
+		
 		// Expose the function for external calls
 		hmWebHelp.funcs.closeImageToggle = closeImage;
 		
 		function maximizeImage(event) {
-			event.stopPropagation();
 			if ($imgbox.width() < maxdims.w) {
 				if (maxdims.w > $(window).width() || maxdims.h > $(window).height()) {
 				$("body,html").css("overflow","auto");
@@ -113,13 +122,43 @@ var HMImageToggle = function($img){
 				hOffset = 0, cboxHeight = 0;
 			maxdims.w = opendims.w = newImage.width;
 			maxdims.h = opendims.h = newImage.height;
-			
-			
-			opendims = dynamicResize(opendims,windowdims);
-			$imgbox.append(newImage);
-			$imgbox.append('<div id="imagezoom"><img id="imagezoomer" src="./images/ZoomIn.png" border="0"/></div>');
 
-			unClicker($imgbox[0]);
+			opendims = dynamicResize(opendims,windowdims);
+
+			if (!isSVG)
+				$imgbox.append(newImage);
+			else {
+				svgwrapper = document.createElement("object")
+				svgwrapper.type = "image/svg+xml";
+				svgwrapper.setAttribute("style", "width: 100%; height: 100%;");
+				svgwrapper.setAttribute("alt", "null");
+				svgwrapper.data = src1;
+				$svgwrapper = $(svgwrapper);
+				$svgwrapper.append(newImage);
+				$imgbox.append($svgwrapper);
+			}
+			if (!isSVG) {
+				$imgbox.append('<div id="imagezoom"><img id="imagezoomer" src="./images/ZoomIn.png" border="0"/></div>');
+				}
+
+			// IE can't get the width of the image directly, so maxdims will be zero
+			if (maxdims.w == 0) {
+
+				if ((closeddims.w/closeddims.h) > (windowdims.w/windowdims.h)) {
+					maxdims.w = windowdims.w;
+					maxdims.h = maxdims.w / closeddims.w * closeddims.h;
+				}
+				else {
+					maxdims.h = windowdims.h;
+					maxdims.w = maxdims.h / closeddims.h * closeddims.w;
+				}
+				opendims.w = maxdims.w;
+				opendims.h = maxdims.h;
+			}
+
+			
+			if (!isSVG) unClicker(newImage);
+			else unClicker($imgbox[0]);
 
 			$imgbox.css({"left": startLeft + "px", "top": startTop + "px", "width": closeddims.w + "px", "height": closeddims.h + "px"});
 			$imgbox.show();	
@@ -141,18 +180,20 @@ var HMImageToggle = function($img){
 			newTop = ($(window).height() - (opendims.h + cboxHeight + vBorderWidth*2)) / 2;
 			newLeft = ($(window).width() - (opendims.w + vBorderWidth*2)) / 2;
 			if ($captionbox) {
-				hOffset = cboxHeight+vBorderWidth*2;
+				hOffset = cboxHeight;//+vBorderWidth*2;
 			}
-			if (maxdims.w > opendims.w) {
-				$("div#imagezoom").on("click",maximizeImage).show();
-			}
+			if (maxdims.w > opendims.w && !isSVG) {
+				$("div#imagezoom").on("click", maximizeImage).show();
+				}
 			$imgbox.animate({width: opendims.w, height: opendims.h + hOffset, top: newTop, left: newLeft },'fast',
 			function() {
 				$img.attr("data-state","1");
-				if ($captionbox) {
+				if ($captionbox && isSVG) 
+					$svgwrapper.css("margin-top", "-" + cboxHeight/2 + "px");
+				/*if ($captionbox) {
 				var imgBoxFinalHeight = $(newImage).height() + $captionbox.outerHeight();
 				$imgbox.css("height",imgBoxFinalHeight + "px");
-				}
+				}*/
 			});
 		};
 		newImage.src = src1;

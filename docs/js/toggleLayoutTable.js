@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
  function layouttables() {
 	
@@ -7,7 +7,7 @@ Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authori
 		$tableanchor,
 		speed = 300,
 		$tablewrapper = $("div#ltTableWrapper"),
-		$pagewrapper = $("div#pagewrapper"),
+		$pagewrapper = $("div#helpwrapper"),
 		$napkin = $("div#ltTableNapkin");
 
 	function showTable() {
@@ -19,14 +19,13 @@ Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authori
 		$pagewrapper.fadeOut(300, function(){
 			$tablewrapper.fadeIn(600);
 			document.querySelector('meta[name="viewport"]').content = 'user-scalable=yes initial-scale=1.0 maximum-scale=5.0 minimum-scale=1.0 width=device-width';
-			//alert("toggle this table " + $thisTable.length);
 			});
 	}
 
 	function hideTable(instant) {
 
 		$tablewrapper.fadeOut(speed, function() {
-			$pagewrapper.fadeIn(speed * 2,function(){
+			$pagewrapper.fadeIn(speed * 2, function(){
 			$tableanchor.after($(tableID));
 			$(tableID).hide();
 			});
@@ -73,7 +72,7 @@ $('body').prepend(
 	);
 $("div#ltTableWrapper").on(hmBrowser.touchmove, function(){
 	$("img#closeLTable").css("opacity","0.2");
-		}).on(hmBrowser.touchend,function(){
+		}).on(hmBrowser.touchend, function(){
 			$("img#closeLTable").css("opacity","1.0");
 		});
 

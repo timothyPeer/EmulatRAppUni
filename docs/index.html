@@ -37,7 +37,7 @@
       }
     #mainheader {
 	  height: 69px;
-	  background: #F0F0F0;
+	  background: #2C5D88;
 	}
     #hmheadbox a {
       display: inline-block;
@@ -54,7 +54,7 @@
 		padding: 0;
 		font-size: 1.8em;
 		font-weight: bold;
-		color: #000000;
+		color: #FFF;
 		white-space: nowrap;
 		max-width: 80%;
 		overflow: hidden;
@@ -64,7 +64,7 @@
       float: left;
       width: 16px;
       height: 16px;
-      background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      background:url('hm_webhelp_buttons_white.png') top left no-repeat;
       background-position: -112px -37px;
       display: none;
       }
@@ -74,7 +74,7 @@
       width: 100%;
       top: 70px;
       bottom: 0;     
-      border-top: thin solid #808080; 
+      border-top: thin solid #95B3CA; 
     }
 	#hmcontentwrapper {
 	  position: absolute;
@@ -86,7 +86,7 @@
     #navbar {    /* This is the small bar above TOC/index with 3 icons: TOC|Index|Search */
       height: 60px;
 	  padding-top: 0;
-      background: #F0F0F0;	
+      background: #2C5D88;	
     }
 	/* Fake (pseudo) element, enables vertical-align */
 	#navbar:before {
@@ -103,7 +103,7 @@
       width: 32px;
       height: 32px;
       margin: 0px 14px 0 10px;
-      background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      background:url('hm_webhelp_buttons_white.png') top left no-repeat;
 	  opacity: 0.7;
     } 
 	#navbar a.current {
@@ -111,11 +111,11 @@
 		cursor: default;
 	}
     #navbar a:hover {
-      background:url('hm_webhelp_buttons_yellow.png') top left no-repeat;
+      background:url('hm_webhelp_buttons_orange.png') top left no-repeat;
       opacity: 1;
     }
 	#navbar a.current:hover {
-	 background:url('hm_webhelp_buttons_grey.png');
+	 background:url('hm_webhelp_buttons_white.png');
 	}
     #navbar a.hmbtntoc    { background-position: -32px 0 !important}
     #navbar a.hmbtnindex  { background-position: -64px 0 !important}
@@ -307,14 +307,13 @@
 		event.preventDefault();
 		$("iframe#hmnavigation").attr("src",$(this).attr("href"));
 		});	
-	if (isReduced && (true || document.location.search !== "")) {
+	if (isReduced && (false || document.location.search !== "")) {
 		setTimeout(function(){
 		showNav('hide');
 		},300);
 		}
 		
 	manageScrollbar();
-
 	});
 	
   </script>
@@ -324,7 +323,7 @@
 <!-- Begin of header  --> 
 <div id="hmheadbox">
      <div id="mainheader"> 
-     <a class="logo" href="http://www.helpandmanual.com"><img src="company-logo.png" style="border:none" /></a>
+     <a class="logo" href="http://eNVysys.com"><img src="company-logo.png" style="border:none" /></a>
      <a class="mobilemenu" title="Show Navigation"></a>
      <span class="title">ASA-EmulatR System Reference Guide</span>
      </div>
@@ -348,7 +347,7 @@
 
   <div id="hmcontentbox" >
     <script type="text/javascript">
-      var defaulttopic="introduction.html";
+      var defaulttopic="license-_-attributions.html";
       var query = window.location.search.substring(1).split('&')[0], hash = window.location.hash, xssTest=/^[a-z0-9._~-]{3,}$/i, cntxRX = /contextid=\d{3,10}/, cntxMatch = cntxRX.exec(query), cntxSrc = "";
       if (query != "") {
         if (typeof(hmGetContextId) != "undefined") {
@@ -366,7 +365,7 @@
       document.write('<iframe name="hmcontent" id="hmcontent" src="'+defaulttopic+'" seamless="seamless" title="Content Page" frameborder="0"></iframe>');
     </script>
     <noscript>
-      <iframe name="hmcontent" id="hmcontent" src="introduction.html" seamless="seamless" title="Content Page" frameborder="0"></iframe>
+      <iframe name="hmcontent" id="hmcontent" src="license-_-attributions.html" seamless="seamless" title="Content Page" frameborder="0"></iframe>
     </noscript>
   </div>
   </div>

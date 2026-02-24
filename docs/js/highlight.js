@@ -1,4 +1,4 @@
-// Modified Version of highlight.js for Help & Manual Premium Pack Skins
+﻿// Modified Version of highlight.js for Help+Manual Premium Pack Skins
 // ----------------------------------------------------------------------------
 
 
@@ -216,7 +216,7 @@ function jumpHL()
     {
 		var p = Math.round($d.position().top);
 		var t = p < 500 ? 300 : 600; 
-		var $scrollBox = hmDevice.phone ? $("div#topicbox") : $("div#hmpagebody_scroller");
+		var $scrollBox = hmDevice.phone ? $("main#topicbox") : $("div#hmpagebody_scroller");
 		$scrollBox.scrollTo($d,t, {axis: 'y', offset: {top:-7}});
     }
 }

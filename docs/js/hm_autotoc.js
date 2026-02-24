@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 function hmatoc() {
 
@@ -71,7 +71,7 @@ function hmatoc() {
   function atocPos() {
 	var pBody = $("div#hmpagebody");
 	var headerPos = pBody.position().top + (parseFloat(pBody.css("borderTopWidth"),10) / 2);
-	 $("div#autoTocWrapper").css("top", headerPos + "px");
+	 $("div#autoTocWrapper").css("top", (headerPos + -2) + "px");
   }
 			
 	
@@ -101,7 +101,7 @@ function hmatoc() {
 
 		if (topicParas.length >= atoc_minHeaders) {
 		tocHeads = [];
-		for (i = 0; i < topicParas.length;i++) {
+		for (i = 0; i < topicParas.length; i++) {
 			isToggle = false;
 			thisPara = topicParas[i];
 			linkText = $(topicParas[i]).text();
@@ -131,11 +131,10 @@ function hmatoc() {
 					toggleID = "data=\""+linkID+"\" ";
 				}
 				if (!subStyle) {
-				   TOClink = '<li class="autoTOC mainlink" id="src_'+linkID+'" '+toggleID+'title="'+atoc_tip+fullLinkText+'"><span><svg class="atocicon" viewBox="0 0 27 32"><use xlink:href="#ok-squared"></use></svg></span><p class="autoTOC">'+linkText+'</p></li>';
+				   TOClink = '<li class="autoTOC mainlink" id="src_'+linkID+'" '+toggleID+'><span><svg class="atocicon" viewBox="0 0 27 32"><use xlink:href="#ok-squared"></use></svg></span><a class="autoTOC" href="javascript:void(0);" title="'+atoc_tip+fullLinkText+'">'+linkText+'</a></li>';
 					} else {
-				   TOClink = '<li class="autoTOC subTOC mainlink" id="src_'+linkID+'" '+toggleID+'title="'+atoc_tip+fullLinkText+'"><span><svg class="atocicon" viewBox="0 0 27 32"><use xlink:href="#ok"></use></svg></span><p class="autoTOC subTOC">'+linkText+'</p></li>';
+				   TOClink = '<li class="autoTOC subTOC mainlink" id="src_'+linkID+'" '+toggleID+'><span><svg class="atocicon" viewBox="0 0 27 32"><use xlink:href="#ok"></use></svg></span><a class="autoTOC subTOC" href="javascript:void(0);" title="'+atoc_tip+fullLinkText+'">'+linkText+'</a></li>';
 					}
-				
 					tocHeads.push(TOClink);
 					}
 		}
@@ -150,19 +149,26 @@ function hmatoc() {
 		for (i = 0; i < tocHeads.length;i++) {
 			autoTOCcontent = autoTOCcontent + tocHeads[i];
 			}
-		autoTOCcontent = '<li id="toplink" class="autoTOC toplink" title="'+atoc_toptip+'"><span><svg class="atocicon" viewBox="0 0 27 32"><use xlink:href="#angle-circled-up"></use></svg></span><p class="autoTOC">'+atoc_top+'</p></li>' +autoTOCcontent;
-		autoTOCcontent = '<div id="autoTocMiddle"><div id="autoTocInner"><ul id="autoTocList">' + autoTOCcontent + '</ul></div></div>';
+		autoTOCcontent = '<li id="toplink" class="autoTOC toplink"><span><svg class="atocicon" viewBox="0 0 27 32"><use xlink:href="#angle-circled-up"></use></svg></span><a class="autoTOC" href="javascript:void(0);" title="'+atoc_toptip+'">'+atoc_top+'</a></li>' + autoTOCcontent;
+		autoTOCcontent = '<div id="autoTocMiddle"><div id="autoTocInner"><ul id="autoTocList" role="menu" aria-labelledby="atoclink">' + autoTOCcontent + '</ul></div></div>';
 		
 		TOCbox.innerHTML = autoTOCcontent;
 
 		// Jump to targets for main ATOC entries
-		 $("li.mainlink").on(hmBrowser.touchstart + ".atoc_clicks", function() {
-			var isSearch = SearchCheck(),
-				cTarget = $(this).attr("id"),
-				tTarget = cTarget.replace(/src_/,""),
-				theTarget = $("a[id='"+tTarget+"']"),
-				doToggle = $(this).attr("data");
-			// alert(theTarget.parent().html());
+		 $("li.mainlink a").on(hmBrowser.touchstart + ".atoc_clicks, keydown.atoc_clicks", function(event) {
+
+		//Catch right-clicks
+		if (typeof(event.button) != "undefined" && event.button !== 0) return;
+		if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
+		if (event.type != "keydown") {
+			event.preventDefault();
+		}
+		var isSearch = SearchCheck(),
+			cTarget = $(this).parent().attr("id"),
+			tTarget = cTarget.replace(/src_/,""),
+			theTarget = $("a[id='"+tTarget+"']"),
+			doToggle = $(this).parent().attr("data");
+
 	   // If there are toggles on the page close them all
 	   if (($HMToggles.length!==null) && (!isSearch)) {
 			// hmWebHelp.extFuncs('hmDoToggle',{method: 'hmToggleToggles', obj: {speed:0,mode:"collapse"}});
@@ -170,8 +176,6 @@ function hmatoc() {
 			if (doToggle !== "") {
 			hmWebHelp.extFuncs("hmDoToggle",{method: "HMToggle", obj:{target:$("a#"+doToggle),speed:0,mode:"expand"}});
 			}
-				
-			
 	   }
 
 	   // Scroll to the target with togglejump
@@ -181,7 +185,8 @@ function hmatoc() {
 		});
 
 		// Scroll to top of document function
-		$("li.toplink").on(hmBrowser.touchstart + ".atoc_clicks", function () {
+		$("li.toplink a").on(hmBrowser.touchstart + ".atoc_clicks, keydown", function(event) {
+		if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
 		var isSearch = SearchCheck();
 		hmpage.$scrollBox.scrollTo(0, 600,{
 			onAfter: function(){
@@ -197,38 +202,94 @@ function hmatoc() {
 
 	} // initAtoc()
 	
+	function keyNavigation() {
+
+			var $atocEntries = {},
+				atocCount = 0,
+				currentIndex = 0;
+
+			var atocNavigate = function(event) {
+			
+			if (!hmKeys.keynames.includes(event.key)) return;
+
+			if (hmKeys.escaper.includes(event.key)) {
+				$("a#atoclink")[0].focus();
+				return;
+				}
+			
+			event.preventDefault();	
+			
+			if (event.key == "PageUp") {
+				currentIndex = 0;
+				$atocEntries[0].focus();
+			}
+			if (event.key == "PageDown") {
+				currentIndex = atocCount;
+				$atocEntries[atocCount].focus();
+			}
+			
+			if ((hmKeys.godown.includes(event.key) ||  (event.key == "Tab" && !event.shiftKey)) && currentIndex+1 > atocCount) 
+				currentIndex = -1;
+			else if ((hmKeys.goup.includes(event.key) ||  (event.key == "Tab" && event.shiftKey)) && currentIndex-1 < 0) 
+				currentIndex = atocCount+1;
+			
+			if (hmKeys.goup.includes(event.key) || (event.key == "Tab" && event.shiftKey)) {
+					$atocEntries[currentIndex-1].focus();
+				} else if (hmKeys.godown.includes(event.key) || (event.key == "Tab" && !event.shiftKey)) {
+					$atocEntries[currentIndex+1].focus();
+					}
+			
+			if (hmKeys.godown.includes(event.key) || (event.key == "Tab" && !event.shiftKey)) {
+				currentIndex++;
+				} else if (hmKeys.goup.includes(event.key) || ( event.key == "Tab" && event.shiftKey)) {
+					currentIndex--;
+					}
+			} // atocNavigate
+
+		setTimeout(function(){
+
+			// Get visible ATOC list entries
+			$atocEntries = $("ul#autoTocList a:visible");
+			atocCount = $atocEntries.length - 1;
+			$atocEntries[0].focus();
+			$(document).on("keydown.atoc_clicks", atocNavigate);
+
+		},350);			
+	} // keyNavigation
+	
 	function openMenu() {
-		if ($("div#navigationmenu").is(":visible"))
-			hmWebHelp.hamburgerMenu();
-		$("ul.topnav li ul.subnav").slideUp("fast");
-		$("ul.topnav > li > a.current").removeClass("current");
+
+		hmWebHelp.closeMenus();
 		atocPos();
 		$(window).on('resize.atocResize', function() {
 				atocPos();
 				});
+		hmWebHelp.unClicker("autoTocWrapper");
 		$("div#autoTocWrapper").slideDown("fast", function(){
-				$("div#unclicker").on(hmBrowser.touchstart,function(){
-				closeMenu();
-				}).show();
-			});
+			if (hmpage.atocmode == "mouse") return;
+				keyNavigation();
+				});
 		}
 
 	function closeMenu(speed) {
 			var animation = "fast";
-			if (typeof speed == "string" && speed == "snap")
-				animation = 0;
+			if (typeof speed == "string" && speed == "snap") animation = 0;
+			else if (typeof speed == "number") animation = speed;
 			$("div#autoTocWrapper").slideUp(animation, function(){
 			$(window).off('resize.atocResize');
-			$("div#unclicker").off(hmBrowser.touchstart).hide();
+			$(document).off(hmBrowser.touchstart + '.closemenu');
 				});
+			$(document).off("keydown.atoc_clicks");
 		}
 	
 	/*** Expose the main calling function as the return object ***/
 	return function(speed) {
-		
-		if ($("div#unclicker").length < 1) 
-			$("div#hmpagebody").prepend('<div id="unclicker" />');
-		
+
+		if (speed == "close") {
+			closeMenu(0);
+			return;
+		}
+
 		// Set up for current topic if necessary
 		if ($("#autoTocWrapper").html() === "") {
 			initAtoc();		

@@ -1,4 +1,4 @@
-/* Reset Styles for Consistency */
+﻿/* Reset Styles for Consistency */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 	margin: 0;
 	padding: 0;
@@ -14,10 +14,36 @@ footer, header, hgroup, menu, nav, section {
 body {
 	font-size: 100%;
 	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-	color: #000000;
+	color: #444444;
 	background-color:transparent;
 	overflow: hidden;
 	}
+
+/* Pretty scrollbars for Webkit browsers */
+ /* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #a1a1a1;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #858585;
+}
+
 div#hmpageheader {
 	position: absolute;
 	top: 0; left: 0.313rem; right: 0.313rem;
@@ -26,14 +52,18 @@ div#hmpageheader {
 div#hmpagebody {
 	position: absolute;
 	top: 0; left: 0; right: 0; bottom: 0;
-	background-color: #e8eafd;
-	overflow: auto;
+	background-color: transparent;
+	overflow-x: hidden;
+	overflow-y: scroll;
 	border-style: solid;
-	border-color: #888888;
-	border-width: thin thin 0 0;
-	border-radius: 0 0 0 0;
+	border-color: transparent;
+	border-width: thin;
+	border-radius: 0.5rem 0 0 0.5rem;
 	padding: 0;
 	margin: 0 0 0 0;
+	/* Pretty scrollbar for Firefox */
+	scrollbar-color: #a1a1a1 #f5f5f5;
+	scrollbar-width: thin;
 	}
 
 p#tocnavbar { display: table-cell;}
@@ -59,15 +89,32 @@ p#tocnavbar { display: table-cell;}
 }
 
 .navbar { font-size: 120%; }
-	
+
+h1.toc_title {
+	position: relative;
+	text-align: center;
+	left: 2px; right: 0;
+	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+	font-size: 1.000rem;
+	color: #444444;
+	font-weight: 500;
+	margin: 5px 10px 8px 5px;
+	padding: 0;
+	border-bottom: 1px solid #444444;
+	}
 /* TOC LIST CSS */
 div#hmtoctree {
-	position: absolute;
-	left: 0; right: 0; bottom: 0; top: 0;
+	position: relative;
+	left: 2px; right: 2px; bottom: 0;
 	font-size: 0.950rem;
+	padding-top: 5px;
 	}
-ul#toc, ul#toc ul { 
-	padding: 0; margin: 0;
+ul#toc { 
+	padding: 0; 
+	margin: 0 6px 0 0;
+	list-style-type: none;
+	}
+ul#toc ul { 
 	list-style-type: none;
 	}
 ul#toc li { 
@@ -76,62 +123,63 @@ ul#toc li {
 	background-repeat: no-repeat;
 	}
 
-ul#toc li > span {
+ul#toc li a:link, ul#toc li a:visited {
+	color: #444444;
+	}
+ul#toc li a:hover {
+	background-color: #e5e5e5;
+	border: thin dashed #444444;
+	}
+ul#toc li a:focus {
+	background-color: transparent;
+	border: thin dashed #000000;
+	}
+ul#toc li a.current {
+	background-color: #e5e5e5;
+	border: thin dashed #444444;
+	color: #000000;
+	}
+ul#toc li a.current:hover {
+	border: thin solid #000000;
+	}
+
+ul#toc li > a {
 	display: block;
-	padding: 0.143rem 0.143rem 0.143rem 1.850rem;
+	padding: 0.143rem 0 0.143rem 1.850rem;
 	background-repeat: no-repeat;
 	background-position: 0.5rem 0.205rem;
 	background-size: 1.1rem;
-	color: #444444;
+	text-decoration: none;
+	border: thin solid transparent;
+	border-radius: 5px;
 	}
-ul#toc li.lv2 span{
+ul#toc li.lv2 a {
 	background-position: 1.2rem 0.205rem;
-	padding-left: 2.50rem;
+	padding-left: 2.59rem;
 	}
 
-ul#toc li.lv3 span {
+ul#toc li.lv3 a {
 	background-position: 2rem 0.205rem;
-	padding-left: 3.214rem;
+	padding-left: 3.39rem;
 	}
-ul#toc li.lv4 span {
+ul#toc li.lv4 a {
 	background-position: 2.70rem 0.205rem;
-	padding-left: 3.929rem;
+	padding-left: 4.15rem;
 	}
-ul#toc li.lv5 span {
+ul#toc li.lv5 a {
 	background-position: 3.4rem 0.205rem;
-	padding-left: 4.643rem;
+	padding-left: 4.85rem;
 	}
-ul#toc li.lv6 span {
-	background-position: 4.2rem 0.1rem;
-	padding-left: 5.357rem;
+ul#toc li.lv6 a {
+	background-position: 4.2rem 0.19rem;
+	padding-left: 5.68rem;
 	}
-ul#toc li.lv7 span {
-	background-position: 4.9rem 0.1rem;
-	padding-left: 6.071rem;
+ul#toc li.lv7 a {
+	background-position: 4.9rem 0.22rem;
+	padding-left: 6.25rem;
 	}
 ul#toc li.current {
 	z-index: 10000;
-	}
-ul#toc li span:hover {
-	background-color: transparent;
-	color: initial;
-	font-weight: initial;
-	text-decoration: underline;
-	outline: thin solid transparent;
-	}
-ul#toc li span.current {
-	background-color: transparent;
-	color: #000000;
-	font-weight: bold;
-	text-decoration: underline;
-	outline: thin solid transparent;
-	}
-ul#toc li span.current:hover {
-	background-color: transparent;
-	color: #000000;
-	font-weight: #bold;
-	text-decoration: underline;
-	outline: thin solid transparent;
 	}
 
 ul#toc ul { 

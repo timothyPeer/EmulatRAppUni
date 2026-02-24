@@ -1,0 +1,74 @@
+﻿<%DOCTYPE%>
+<html><head>
+   <title><%TITLE%></title>
+   <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" /><IF_HTML>   
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="robots" content="noindex,follow" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" /></IF_HTML>
+ 
+   <!-- This line includes the general project style sheet (not required) -->
+   <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
+
+   <!-- This block defines the styles of the TOC headings, change them as needed -->
+   <style type="text/css">
+       body { font-size: 1em }
+       .heading1 { color: #000; text-decoration: none; }
+       .heading2 { color: #000; text-decoration: none; }
+       .heading3 { color: #000; text-decoration: none; }
+       .heading4 { color: #000; text-decoration: none; }
+       .heading5 { color: #000; text-decoration: none; }
+       .heading6 { color: #000; text-decoration: none; }
+
+       .hilight1 { color: #FFFFFF; background: <%SKIN-HEADER-COLOR%>; text-decoration: none; }
+       .hilight2 { color: #FFFFFF; background: <%SKIN-HEADER-COLOR%>; text-decoration: none; }
+       .hilight3 { color: #FFFFFF; background: <%SKIN-HEADER-COLOR%>; text-decoration: none; }
+       .hilight4 { color: #FFFFFF; background: <%SKIN-HEADER-COLOR%>; text-decoration: none; }
+       .hilight5 { color: #FFFFFF; background: <%SKIN-HEADER-COLOR%>; text-decoration: none; }
+       .hilight6 { color: #FFFFFF; background: <%SKIN-HEADER-COLOR%>; text-decoration: none; }
+
+       /* TOC LIST CSS */
+       #toc    { padding:0; margin:0 }
+       #toc li { 
+			margin-top:2px; 
+			margin-left:0; 
+			padding: 1px;
+			background-position: 0px 3px !important;
+			background-size: 18px 18px !important;
+            padding-left: 23px !important;
+			}
+       #toc ul { padding-left:0; margin-left:0px }       
+       /* TOC LIST CSS */
+       
+       @media (pointer: coarse) {
+         body    { transform-origin: 0 0;
+		   transform:scale(1.25); 
+		   max-width: 80%;
+       }       
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script><IF_CACHEFIX>
+   <script type="text/javascript" src="cachehash.js"></script></IF_CACHEFIX>
+   <script type="text/javascript">
+   $(document).ready(function(){
+   	   var hiTest = /^hilight/im,
+			parentScope = (parent.hmNavigationFrame);
+		if (parentScope) parent.currentNav("toc");
+		$("a[class^='heading']").on("click",function(event){
+			var doSwipe = (hiTest.test($(this).children("span").first().attr("class")) || <%SKIN-TOC-SINGLETAP%> || (parentScope && !parent.hmBrowser.nonDeskTouch));
+			if (doSwipe && parentScope) {
+			window.parent.showNav("toggle");
+			}
+			});
+     });
+   </script>
+   </head>
+<body>
+<%TABLE_OF_CONTENTS%><IF_CACHEFIX>
+<script type="text/javascript">
+$("a[target='hmcontent']").bind("click", function(event){
+	event.preventDefault();
+	window.parent.document.getElementById("hmcontent").src = hmGetTarget($(this).attr("href"));
+});
+</script></IF_CACHEFIX>
+</body>
+</html>

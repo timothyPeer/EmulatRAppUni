@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-   <title>Introduction &gt; Architecture Overview &gt; Chapter 5 - Memory System Architecture &gt; 5.4 Virtual Addressing and Translation</title>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Architecture Overview &gt; Chapter 5 - Memory System Architecture &gt; 5.4 Virtual Addressing and Translation</title>
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
-   <meta name="keywords" content="" />
+   <meta name="keywords" content="AccessViolation,AccessViolation,AddressTranslation,Alignment,AlignmentFault,AlphaAXP,Appendix,ASN,BasePageSize,Boundary,BusError,Calculation,CanonicalAddress,Chapter,Check,Configuration,Contract,Conversion,CopyOnWrite,CPU,Decode,DemandPaging,DTB,Entry,Ev6Translator,Event,ExecuteDisable,ExecuteStage,ExecutiveMode,FastPath,FaultBit,FaultOnExecute,FaultOnRead,FaultOnWrite,Fetch,Field,FOE,FOR,FOW,FullPath,GH,GranularityHint,Index,Instruction,Invalidation,IPR,ITB,KernelMode,KSEG,L1,L2,L3,Level,LevelBits,Lifecycle,Lookup,Manual,MBox,MissDetection,Mode,NonCanonical,Offset,OffsetMask,Option,OrderOfOperations,PageMask,PageNotPresent,PageShift,PageSize,PageTable,Permission,PermissionMask,PFN,PhysicalAddress,Quadrant,Realm,Reference,Segment,Sequence,Shift,SignExtension,SizeClass,SPAM,Step,Success,Superpage,SupervisorMode,TLB,TLBEntry,TlbMiss,TranslationEngine,TranslationFault,TranslationResult,UserMode,VABits,VAFormat,ValidBit,VirtualAddress,VirtualAddressSpace,VPN,Workload,Writeback" />
    <meta name="description" content="5.4.1 Virtual Address Space &nbsp;All instructions operate on virtual addresses. The emulator models per-CPU ITB (Instruction TLB) and DTB (Data TLB) with ASN (Address Space Number)..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
@@ -24,16 +24,16 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #F0F0F0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #000000 }     
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
-        width: 126px;
+        width: 158px;
         vertical-align: middle;        
       } 
       #idnav a { text-decoration: none }
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_grey.png');
+        background-image:url('hm_webhelp_buttons_white.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_yellow.png');
+        background-image:url('hm_webhelp_buttons_orange.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #000000; }
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -95,7 +95,7 @@
 <body>
 
 
-<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">5.4 Virtual Addressing and Translation</span></h1>
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">5.4 Virtual Address Space and Translation</span></h1>
 </div>
 <div id="idheader">
 <div id="idheaderbg">
@@ -105,9 +105,9 @@
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?chapter-5_4-virtual-addressing.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
-      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-5---memory-system-arch.html">Chapter 5 - Memory System Architecture</a>&nbsp;&gt;</p>
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="chapter-5---memory-system-arch.html">Chapter 5 - Memory System Architecture</a>&nbsp;&gt;</p>
    
-      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">5.4 Virtual Addressing and Translation</span></h1>
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">5.4 Virtual Address Space and Translation</span></h1>
 
     </td>
     <td class="topichead" id="idnav">
@@ -115,7 +115,7 @@
       <a href="chapter-5_3-memory-layers-over.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
       <a href="chapter-5---memory-system-arch.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
       <a href="alpha-va-format-contract.html" title="Next Topic"><span class="hmbtnnext"></span></a>
-      
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
     </td>
   </tr>  
 </table>
@@ -134,38 +134,230 @@
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.4.2 Translation Responsibility</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Address translation occurs in MBox during the EX stage. The Ev6Translator (ev6Translation_struct.h, 1,336 lines) provides the translation engine. Translation responsibilities include: VA→PA conversion, ITB/DTB miss detection, access violation detection, alignment fault detection, and precise translation fault raising.</p>
+<p class="p_Normal">Address translation occurs in MBox during the EX stage. The Ev6Translator (<span class="f_CodeExample">ev6Translation_struct.h</span>, 1,336 lines) provides the translation engine. Translation responsibilities include: VA→PA conversion, ITB/DTB miss detection, access violation detection, alignment fault detection, and precise translation fault raising.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">Translation never occurs in fetch (IBox translates instruction addresses separately), decode, or writeback.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The translator supports two paths:</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>ev6TranslateFastVA() — checks canonical address, tries KSEG fast-path (kernel segment direct mapping), then TLB lookup. Returns TranslationResult on miss without walking.</p>
-<p class="p_Normal" style="text-indent: 0; padding-left: 13px; margin-left: 0;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#8226;</span>ev6TranslateFullVA() — same checks plus full page table walk on TLB miss, using the three-level Alpha page table structure (L1/L2/L3).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">ev6TranslateFastVA()</span> — checks canonical address, tries KSEG fast-path (kernel segment direct mapping), then TLB lookup. Returns TranslationResult on miss without walking.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">ev6TranslateFullVA()</span> — same checks plus full page table walk on TLB miss, using the three-level Alpha page table structure (L1/L2/L3).</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">TranslationResult values: Success, TlbMiss, NonCanonical, PageNotPresent, FaultOnWrite, FaultOnRead, FaultOnExecute, AccessViolation, BusError.</p>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
-<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.4.3 Alpha VA Format</span></h2>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.4.3 Translation Order-of-Operations Contract (Normative)</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The Alpha AXP virtual address format is implementation-dependent, selected at CPU/board bring-up, not inferred from VA bits. The format is determined by page size (pageShift) and implemented VA width (vaBits):</p>
+<p class="p_Normal">Every data access (load or store) must follow this exact ordered sequence. No step may be skipped or reordered. A fault at any step terminates the sequence — subsequent steps do not execute.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">8K pages — pageShift=13, levelBits=10, vaBits=43. Fields: SEG[42:41], L1[40:33] (8 bits), L2[32:23] (10 bits), L3[22:13] (10 bits), OFFSET[12:0] (13 bits)</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 1 — Canonical VA Check.</span> Bits above (vaBits−1) must be a sign-extension of bit (vaBits−1). A non-canonical address produces <span class="f_CodeExample">TranslationResult::NonCanonical</span> and raises a non-canonical address fault via <span class="f_CodeExample">makeNonCanonicalAddressEvent()</span>. No TLB lookup is attempted.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">16K pages — pageShift=14, levelBits=11, vaBits=43..47</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 2 — KSEG Fast-Path Check.</span> If the VA falls in the kernel segment direct-mapping region, the PA is computed directly without TLB involvement. This applies only in kernel mode (CM=0). KSEG addresses bypass Steps 3–6 entirely.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">32K pages — pageShift=15, levelBits=12, vaBits=43..51</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 3 — TLB Lookup.</span> The SPAM TLB cache is probed: <span class="f_CodeExample">globalEv6SPAM().tlbLookup(cpuId, realm, va, asn, pfn, perm, sizeClass)</span>. The lookup uses VPN = VA &gt;&gt; pageShift plus ASN matching (entry.asn == currentASN || entry.global). On hit, the TLB returns three values: pfn (page frame number), perm (permission mask), and sizeClass (granularity hint from the PTE that filled this entry). On miss, the sequence raises <span class="f_CodeExample">makeDTBMissEvent()</span> or <span class="f_CodeExample">makeITBMissEvent()</span> and terminates — PAL handles the page table walk and TLB refill.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">64K pages — pageShift=16, levelBits=13, vaBits=46..55 (minimum vaBits=46 to satisfy L1 ≥ 2 bits)</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 4 — PTE Valid Bit Check.</span> The permission mask returned by the TLB is checked for validity via <span class="f_CodeExample">AlphaN_S::isValid(perm)</span>. An invalid entry produces <span class="f_CodeExample">TranslationResult::AccessViolation</span>.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">In all cases, bits above (vaBits-1) must be a sign-extension of bit (vaBits-1) for the address to be canonical. The segment field (2 bits) selects the address space quadrant. The three-level page table uses L1, L2, and L3 fields to index into page table entries, with the offset field providing the byte-within-page address.</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 5 — Fault-On-Access Bit Check.</span> The PTE fault bits are checked: FOR (Fault-On-Read) for loads via <span class="f_CodeExample">AlphaN_S::isFaultOnRead(perm)</span>, FOW (Fault-On-Write) for stores via <span class="f_CodeExample">AlphaN_S::isFaultOnWrite(perm)</span>, FOE (Fault-On-Execute) for instruction fetches via <span class="f_CodeExample">AlphaN_S::isFaultOnExecute(perm)</span>. These bits support copy-on-write (FOW), demand paging (FOR), and execute-disable (FOE). A set fault bit produces the corresponding <span class="f_CodeExample">TranslationResult</span> and raises the appropriate fault event.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Implementation note: The VA option is selected once at configuration time. The TLB lookup uses VPN = VA &gt;&gt; pageShift plus ASN/global/mode checks. Mixed page sizes are handled as TLB entry attributes (pageMask), not by reinterpreting VA fields.</p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 6 — Permission Check Against Current Mode.</span> The access is checked against the current processor mode (CM) obtained from <span class="f_CodeExample">getCM_Active(cpuId)</span>. For kernel mode: <span class="f_CodeExample">AlphaN_S::canReadKernel(perm)</span> / <span class="f_CodeExample">canWriteKernel(perm)</span>. For user mode: <span class="f_CodeExample">canReadUser(perm)</span> / <span class="f_CodeExample">canWriteUser(perm)</span>. Executive and supervisor modes use their respective permission fields. A denied access produces <span class="f_CodeExample">TranslationResult::AccessViolation</span>.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: pteLib/ev6Translation_struct.h; Alpha Architecture Reference Manual v6, Memory Management chapter; <a href="alpha-va-format-contract.html" class="topiclink">5.4.4 Alpha VA Field Boundary Reference</a>.</span></p>
+<p class="p_Normal"><span style="font-weight: bold;">Step 7 — Physical Address Calculation.</span> On success, the PA is computed from the TLB hit results (see Section 5.4.6 below).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Instruction fetches follow the same sequence using Realm::I (ITB) instead of Realm::D (DTB), with FOE checked instead of FOR/FOW, and execute permission checked instead of read/write.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.4.4 Alpha VA Format</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The Alpha AXP virtual address format is implementation-dependent, selected at CPU/board bring-up, not inferred from VA bits. The format is determined by page size (<span class="f_CodeExample">pageShift</span>) and implemented VA width (<span class="f_CodeExample">vaBits</span>):</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">8K pages</span> — pageShift=13, levelBits=10, vaBits=43. Fields: SEG[42:41], L1[40:33] (8 bits), L2[32:23] (10 bits), L3[22:13] (10 bits), OFFSET[12:0] (13 bits).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">16K pages</span> — pageShift=14, levelBits=11, vaBits=43..47. L2 and L3 are 11 bits each. L1 width = vaBits − 2 − (14 + 22), ranging from 5 bits (vaBits=43) to 9 bits (vaBits=47).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">32K pages</span> — pageShift=15, levelBits=12, vaBits=43..51. L2 and L3 are 12 bits each. L1 width ranges from 2 bits (minimum, vaBits=43) to 10 bits (vaBits=51).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">64K pages</span> — pageShift=16, levelBits=13, vaBits=46..55. L2 and L3 are 13 bits each. Minimum vaBits=46 required to satisfy the architectural constraint that L1 must be at least 2 bits (L1 width = vaBits − 44).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">In all cases, bits above (vaBits−1) must be a sign-extension of bit (vaBits−1) for the address to be canonical. The segment field (2 bits) selects the address space quadrant. The three-level page table uses L1, L2, and L3 fields to index into page table entries, with the offset field providing the byte-within-page address.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The VA field boundaries are derived from the selected option, not detected from the VA itself:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">offsetMask&nbsp;=&nbsp;(1ULL&nbsp;&lt;&lt;&nbsp;pageShift)&nbsp;-&nbsp;1</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Segment&nbsp;=&nbsp;VA[vaBits-1&nbsp;:&nbsp;vaBits-2]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L3&nbsp;=&nbsp;VA[pageShift&nbsp;+&nbsp;levelBits&nbsp;-&nbsp;1&nbsp;:&nbsp;pageShift]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L2&nbsp;=&nbsp;VA[pageShift&nbsp;+&nbsp;2*levelBits&nbsp;-&nbsp;1&nbsp;:&nbsp;pageShift&nbsp;+&nbsp;levelBits]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;width&nbsp;=&nbsp;vaBits&nbsp;-&nbsp;2&nbsp;-&nbsp;(pageShift&nbsp;+&nbsp;2*levelBits)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">L1&nbsp;=&nbsp;VA[vaBits-3&nbsp;:&nbsp;pageShift&nbsp;+&nbsp;2*levelBits]</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.4.5 Size Class Contract (Normative)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">There are two distinct page-size concepts in the Alpha architecture, and conflating them is a common source of implementation errors:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Base page size</span> (VA format option) is fixed at implementation time. For EV6, this is always 8 KB (pageShift=13). It determines how the VA fields are decoded (Section 5.4.4) and is a compile-time constant. It never changes during execution.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Granularity Hint (GH) superpages</span> are per-PTE attributes established only at TLB fill time. On EV6, GH encodes four size classes: GH=0 → 8 KB (1 page), GH=1 → 64 KB (8 pages), GH=2 → 512 KB (64 pages), GH=3 → 4 MB (512 pages). GH is stored in the PTE and copied into the TLB entry when the entry is created.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Size class is not:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A property of the VA — you cannot determine the size class by examining any VA bits. A property of the instruction — the instruction does not encode or imply page size. A property of the ASN — different pages within the same address space may have different GH values. A global CPU mode — there is no &quot;superpage mode&quot; that applies to all translations.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Size class lifecycle:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Instruction&nbsp;generates&nbsp;VA</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">TLB&nbsp;lookup&nbsp;miss</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PAL&nbsp;/&nbsp;hardware&nbsp;page&nbsp;table&nbsp;walk</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PTE&nbsp;is&nbsp;read&nbsp;from&nbsp;page&nbsp;table&nbsp;in&nbsp;memory</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PTE&nbsp;GH&nbsp;bits&nbsp;decoded&nbsp;→&nbsp;sizeClass&nbsp;determined</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↓</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">TLB&nbsp;entry&nbsp;created:&nbsp;{&nbsp;VPN&nbsp;(masked&nbsp;by&nbsp;sizeClass),&nbsp;PFN,&nbsp;ASN,&nbsp;perms,&nbsp;sizeClass&nbsp;}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The only authoritative source of size class is the PTE used to fill the TLB entry. Once stored, the TLB entry's sizeClass determines how the PA is calculated on subsequent hits. TLB invalidation (TBIS/TBISD) invalidates by VA range and ASN without needing to know the sizeClass — the sizeClass is an attribute of the entry being invalidated, not a parameter to the invalidation.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Implementation consequence:</span> The TLB lookup does not accept sizeClass as an input parameter. The lookup probes by VPN and ASN; on hit, it returns sizeClass as an output alongside pfn and perm. The caller uses the returned sizeClass to compute the PA (Section 5.4.6). On most workloads, the vast majority of TLB entries use GH=0 (8 KB); superpages (GH=1..3) are rare, typically used for kernel large mappings and shared library text segments.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.4.6 Physical Address Calculation Contract (Normative)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">After a successful TLB hit (Step 7 of the translation sequence), the physical address is calculated from three values returned by the TLB lookup:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Value</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Source</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">pfn</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Page Frame Number from the TLB entry (originally from PTE bits [52:32] on EV6)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">sizeClass</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Granularity hint from the TLB entry (originally from PTE GH bits, decoded at fill time)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">va</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">The original virtual address from the instruction</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The calculation:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">pageShift&nbsp;=&nbsp;PageSizeHelpers::pageShift(sizeClass)&nbsp;//&nbsp;13,&nbsp;16,&nbsp;19,&nbsp;or&nbsp;22</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">pageMask&nbsp;=&nbsp;(1ULL&nbsp;&lt;&lt;&nbsp;pageShift)&nbsp;-&nbsp;1&nbsp;//&nbsp;offset&nbsp;within&nbsp;page</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PA&nbsp;=&nbsp;(pfn&nbsp;&lt;&lt;&nbsp;13)&nbsp;|&nbsp;(va&nbsp;&amp;&nbsp;pageMask)&nbsp;//&nbsp;always&nbsp;shift&nbsp;by&nbsp;13</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Critical detail:</span> The PFN shift is always 13 (the base page shift), regardless of the GH size class. This is because the PFN in the PTE is defined relative to the base 8 KB page size. For superpages, the offset mask (<span class="f_CodeExample">pageMask</span>) is wider — it extracts more bits from the VA to form the byte offset within the larger page. The PFN itself already accounts for the superpage alignment: a 64 KB superpage (GH=1) has its low 3 PFN bits zero by construction, a 512 KB superpage (GH=2) has its low 6 PFN bits zero, and so on.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">GH</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Page Size</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">pageShift</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Offset Bits from VA</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">8 KB</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">13</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">VA[12:0]</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">1</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">64 KB</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">16</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">VA[15:0]</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">2</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">512 KB</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">VA[18:0]</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">3</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">4 MB</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">22</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">VA[21:0]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Invariant:</span> The pageMask used to extract the offset from the VA is determined solely by the sizeClass stored in the TLB entry that matched — never by examining VA bits, never by a global mode, and never by the instruction. The PFN is always shifted left by 13 regardless of GH.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">5.4.7 Alpha VA Field Boundary Reference</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">8K Pages</span> (EV6 default: pageShift=13, levelBits=10, vaBits=43):</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[42:41]&nbsp;[40:33]&nbsp;[32:23]&nbsp;[22:13]&nbsp;[12:0]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;SEG&nbsp;L1&nbsp;L2&nbsp;L3&nbsp;OFFSET(8K)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">16K Pages</span> (pageShift=14, levelBits=11, vaBits=43 minimum):</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[42:41]&nbsp;[40:36]&nbsp;[35:25]&nbsp;[24:14]&nbsp;[13:0]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;SEG&nbsp;L1&nbsp;L2&nbsp;L3&nbsp;OFFSET(16K)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">32K Pages</span> (pageShift=15, levelBits=12, vaBits=43 minimum):</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[42:41]&nbsp;[40:39]&nbsp;[38:27]&nbsp;[26:15]&nbsp;[14:0]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;SEG&nbsp;L1&nbsp;L2&nbsp;L3&nbsp;OFFSET(32K)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">64K Pages</span> (pageShift=16, levelBits=13, vaBits=46 minimum):</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[45:44]&nbsp;[43:42]&nbsp;[41:29]&nbsp;[28:16]&nbsp;[15:0]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;SEG&nbsp;L1&nbsp;L2&nbsp;L3&nbsp;OFFSET(64K)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Implementation note:</span> The VA option is selected once at configuration time. EV6 is hardwired to 8K pages (pageShift=13, vaBits=43). The TLB lookup uses VPN = VA &gt;&gt; pageShift plus ASN/global/mode checks. Mixed page sizes within a single VA option are handled as TLB entry attributes (sizeClass from GH), not by reinterpreting VA fields. Do not scan VA options (8K/16K/32K/64K) on every lookup.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: pteLib/ev6Translation_struct.h; <a href="chapter-17---tlb_-pte_-and-add.html" class="topiclink">Chapter 17 – Address Translation, TLB, and PTE</a> ; <a href="appendix-a---ev6-internal-proc.html" class="topiclink">Appendix A – EV6 Internal Processor Register (IPR) Reference</a> &nbsp;(DTB_TAG, DTB_PTE IPRs); Alpha Architecture Reference Manual v6, Memory Management chapter.</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
 
 
 
@@ -209,11 +401,19 @@ function normHeaders() {
 	normHeaders();
     });
     
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
 	 $(window).resize(); //trigger event for initially small displays
   });
  
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?chapter-5_4-virtual-addressing.html" target="_top">'+baseurl+'index.html?chapter-5_4-virtual-addressing.html</a></p>');
 
 </script>
 </body>

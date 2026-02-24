@@ -1,19 +1,96 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 
-// Get the path to the WebHelp folder
+// Get the path to the WebHelp folder and domains for remote check
+window.name = "wpwebhelp";
+
 var scriptEls = document.getElementsByTagName('script'),
-	thisScriptEl = scriptEls[scriptEls.length - 1],
-	scriptPath = thisScriptEl.src,
-	hmPopupPath = scriptPath.substr(0, scriptPath.lastIndexOf('/js/')+1);
+	hmPopupPath = (scriptEls[scriptEls.length - 1]).src;
+	hmPopupPath = hmPopupPath.substr(0, hmPopupPath.lastIndexOf('\/js\/')+1);
+var	hmTargetDomain,
+	hmLocalDomain = document.location.protocol + "\/\/" + document.location.hostname,
+	domainmatch = /((?:^https?:\/\/|^\/\/).*?)\//i,
+	match = domainmatch.exec(hmPopupPath),
+	hmIsAspx = (/\.aspx??$/i.test(document.location.pathname));
+	
+var xpopupFile = !hmIsAspx ? "_hmXpopup.htm" : "_hmXpopup.aspx",
+	xtopicFile = !hmIsAspx ? "_hmXtopic.htm" : "_hmXtopic.aspx";
+
+	if (match != null) {
+		hmTargetDomain = match[1];
+	} else {
+		hmTargetDomain = "";
+	}
 	
 //** Main Object **//
 var hmXPopup = {};
 	hmXPopup.topicTarget = "";
+	hmXPopup.popupMode = "";
 	hmXPopup.topicExtension = "";
-	hmXPopup.visitedTopics = {};
+	hmXPopup.visitedTopics = {}; 
+	hmXPopup.remoteAccess = hmLocalDomain !== hmTargetDomain;
+	hmXPopup.ProjectName = "ASA-EmulatR System Reference Guide";
+	hmXPopup.contentWidth = 0; 
+	hmXPopup.contentHeight = 0;
+	hmXPopup.topicWidth = 0;
+	hmXPopup.topicHeight = 0;
+	hmXPopup.popupTitles = {};
+	
+	hmXPopup.setContentDims = function(dims) {
+		var pHW = dims.split(",");
+		hmXPopup.contentHeight = parseInt(pHW[0],10);
+		hmXPopup.contentWidth = parseInt(pHW[1],10);
+		};
+	// Extract domain from a path
+	hmXPopup.getDomain = function(path) {
+			let domainmatch = /((?:^https?:\/\/|^\/\/).*?)\//i,
+				match = domainmatch.exec(path);
+			return(match[1]);
+		};
+	// Individual titles (popup name) for popups
+	hmXPopup.setPopupName = function(title) {
+		hmXPopup.$popuptitle.html(title);
+	}
+	// General titles (project name) for inline topics
+	hmXPopup.setPopupTitle = function(title) {
+		if (!hmXPopup.popupTitles.hasOwnProperty(hmXPopup.refPath)) {
+			hmXPopup.popupTitles[hmXPopup.refPath] = title;
+		}
+		hmXPopup.$popuptitle.html(title);
+	}
+	// Set the outgoing link to open in full page
+	hmXPopup.setPopupTopiclink = function(mainfile) {
+		hmXPopup.topicExtension = mainfile.substr(mainfile.lastIndexOf("\."));
+		
+		let target = hmXPopup.topicTargetJS;
+			target = hmXPopup.refPath + target.substr(0,target.lastIndexOf("\.")) + hmXPopup.topicExtension;
+
+		hmXPopup.$topicLinkHeader.attr("href",target); 
+	}
+	// Set up xMessage and initalize
+	hmXPopup.initializeX = function() {
+		
+		if (jQuery("link#popupstyles").length < 1) {
+			jQuery("head").append('<link id="popupstyles" rel="stylesheet" type="text/css" href="'+ hmPopupPath + "css/hm_popup.css" + '" />');
+		}
+		
+		if (typeof xMessage == "undefined") {
+		jQuery.getScript(hmPopupPath + "js/xmessage.js", function( data, textStatus, jqxhr ) {
+			xMessage = new xMsg("EMBED PARENT: ");
+			doHmXPopup();
+			});
+		} else {
+			doHmXPopup();
+		}
+	}
+
+hmXPopup.hmDevice = {
+	ppversion: 4.1
+	};
+
 var doHmXPopup = function() {
+	
 	// Multi-browser preventDefault for non-jQuery functions
 	hmXPopup.PreventDefault = function(event) {
 	if (typeof event == "undefined" || event === null) return;
@@ -23,14 +100,7 @@ var doHmXPopup = function() {
 		event.returnValue = false;
 	};
 	
-	if (jQuery("link#popupstyles").length < 1) {
-		jQuery("head").append('<link id="popupstyles" rel="stylesheet" type="text/css" href="'+ hmPopupPath + "css/hm_popup.css" + '" />');
-	}
-	
 	jQuery.cachedScript = function( url, options ) {
-
-	  // Use .done(function(script,textStatus){}); for callbacks
-
 	  // Allow user to set any option except for dataType, cache, and url
 	  options = jQuery.extend( options || {}, {
 	    dataType: "script",
@@ -38,41 +108,42 @@ var doHmXPopup = function() {
 	    url: url
 	  });
 	  return jQuery.ajax( options );
-};
-	
+	};
+
 	// Browser capabilities reference 
 	var agent = navigator.userAgent,
-		platform = navigator.platform;
-		hmXPopup.hmBrowser = {};
-		hmXPopup.hmBrowser.touch = !!(('ontouchstart' in window) || ('msmaxtouchpoints' in window.navigator) || ('maxtouchpoints' in window.navigator) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
-		hmXPopup.hmBrowser.nonDeskTouch = !!((hmXPopup.hmBrowser.touch && !/win32|win64/i.test(platform)) || (hmXPopup.hmBrowser.touch && /win32|win64/i.test(platform) && /mobile/i.test(agent)));
-	 
-		hmXPopup.hmBrowser.eventType = (('onmousedown' in window && !hmXPopup.hmBrowser.nonDeskTouch) ? "mouse" : ('ontouchstart' in window) ? "touch" : ('msmaxtouchpoints' in window.navigator || navigator.msMaxTouchPoints > 0) ? "mstouchpoints" : ('maxtouchpoints' in window.navigator || navigator.maxTouchPoints > 0) ? "touchpoints" : "mouse");
-			 switch(hmXPopup.hmBrowser.eventType) {
-				case "mouse":
-					hmXPopup.hmBrowser.touchstart = "mousedown.startevents";
-					hmXPopup.hmBrowser.touchend = "mouseup.endevents";
-					hmXPopup.hmBrowser.touchmove = "mousemove.moveevents";
-				break;
-				case "touch":
-					hmXPopup.hmBrowser.touchstart = "touchstart.startevents";
-					hmXPopup.hmBrowser.touchend = "touchend.endevents";
-					hmXPopup.hmBrowser.touchmove = "touchmove.moveevents";
-				break;
-				case "mstouchpoints":
-					hmXPopup.hmBrowser.touchstart = "MSPointerDown.startevents";
-					hmXPopup.hmBrowser.touchend = "MSPointerUp.endevents";
-					hmXPopup.hmBrowser.touchmove = "MSPointerMove.moveevents";
-				break;
-				case "touchpoints":
-					hmXPopup.hmBrowser.touchstart = "pointerdown.startevents";
-					hmXPopup.hmBrowser.touchend = "pointerup.endevents";
-					hmXPopup.hmBrowser.touchmove = "pointermove.moveevents";
-				break;
-			 }
+	platform = navigator.platform;
+	hmXPopup.hmBrowser = {};
+	hmXPopup.hmBrowser.touch = !!(('ontouchstart' in window) || ('msmaxtouchpoints' in window.navigator) || ('maxtouchpoints' in window.navigator) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
+	hmXPopup.hmBrowser.nonDeskTouch = !!((hmXPopup.hmBrowser.touch && !/win32|win64/i.test(platform)) || (hmXPopup.hmBrowser.touch && /win32|win64/i.test(platform) && /mobile/i.test(agent)));
+ 
+	hmXPopup.hmBrowser.eventType = (('onmousedown' in window && !hmXPopup.hmBrowser.nonDeskTouch) ? "mouse" : ('ontouchstart' in window) ? "touch" : ('msmaxtouchpoints' in window.navigator || navigator.msMaxTouchPoints > 0) ? "mstouchpoints" : ('maxtouchpoints' in window.navigator || navigator.maxTouchPoints > 0) ? "touchpoints" : "mouse");
+		 switch(hmXPopup.hmBrowser.eventType) {
+			case "mouse":
+				hmXPopup.hmBrowser.touchstart = "mousedown.startevents";
+				hmXPopup.hmBrowser.touchend = "mouseup.endevents";
+				hmXPopup.hmBrowser.touchmove = "mousemove.moveevents";
+			break;
+			case "touch":
+				hmXPopup.hmBrowser.touchstart = "touchstart.startevents";
+				hmXPopup.hmBrowser.touchend = "touchend.endevents";
+				hmXPopup.hmBrowser.touchmove = "touchmove.moveevents";
+			break;
+			case "mstouchpoints":
+				hmXPopup.hmBrowser.touchstart = "MSPointerDown.startevents";
+				hmXPopup.hmBrowser.touchend = "MSPointerUp.endevents";
+				hmXPopup.hmBrowser.touchmove = "MSPointerMove.moveevents";
+			break;
+			case "touchpoints":
+				hmXPopup.hmBrowser.touchstart = "pointerdown.startevents";
+				hmXPopup.hmBrowser.touchend = "pointerup.endevents";
+				hmXPopup.hmBrowser.touchmove = "pointermove.moveevents";
+			break;
+		 }
 
 	// Device capabilities reference
-	hmXPopup.hmDevice = {};
+	
+	
 	hmXPopup.hmDevice.agent = navigator.userAgent.toLowerCase();
 	hmXPopup.hmDevice.platform = navigator.platform.toLowerCase();
 	hmXPopup.hmDevice.ipad = /ipad/.test(hmXPopup.hmDevice.platform);
@@ -100,13 +171,12 @@ var doHmXPopup = function() {
 	hmXPopup.hmDevice.desktop = ((!hmXPopup.hmDevice.tablet && !hmXPopup.hmDevice.phone));	
 	hmXPopup.hmDevice.device = hmXPopup.hmDevice.phone ? "phone" : hmXPopup.tablet ? "tablet" : hmXPopup.hmDevice.desktop ? "desktop" : "default";
 	
+	
 	// Get the parent container
 	var $popparent = jQuery("body");
 	
-	// Create the necessary components
-	$popparent.prepend('<div id="hmpopupbox" class="hmpopup"><div id="hmpopuptitlebar" class="hmpopup"><div id="hmpopuptitle"  class="hmpopup"><p class="hmpopup">This is the title bar</p></div><div id="hmclosepopup" class="hmpopup"><span>X</span></div></div><div id="hmpopupbody"><iframe id="hmXPopupFrame" src="" class="hmpopup" frameborder="0"></iframe></div></div>');
-
-	$popparent.prepend('<div id="dragsurface" style="display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-image: url(\''+hmPopupPath+'images/spacer.gif\')" />');
+	// Create the popup components
+	$popparent.prepend('<div id="dragsurface" style="display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-image: url(\''+hmPopupPath+'images/spacer.gif\')" ></div><div id="hmpopupbox" class="hmpopup"><div id="hmpopuptitlebar" class="hmpopup"><div id="hmpopuptitle"  class="hmpopup"><p class="hmpopup"></p></div><div id="hmclosepopup" class="hmpopup"><span>X</span></div><div id="hmpopuptitlelink"><p class="linkheader"><a id="topiclinkheader" href="" target="_blank">Click here to open this topic in a full help window</a></p></div></div><div id="hmpopupbody"><iframe id="hmXPopupFrame" src="" class="hmpopup" frameborder="0"></iframe></div></div>'); 
 
 	// Get the JQ variables once for faster reuse
 	hmXPopup.$popup = jQuery("div#hmpopupbox");
@@ -114,10 +184,8 @@ var doHmXPopup = function() {
 	hmXPopup.$popupheader = jQuery("div#hmpopuptitlebar");
 	hmXPopup.$popupdragger = jQuery("div#hmpopuptitle");
 	hmXPopup.$dragsurface = jQuery("div#dragsurface");
-	hmXPopup.$popupbody = null;
-	hmXPopup.$popupscroller = null;
-	hmXPopup.$popupwindow = null;
 	hmXPopup.$popframe = jQuery("iframe#hmXPopupFrame");
+	hmXPopup.$topicLinkHeader = jQuery("a#topiclinkheader");
 	hmXPopup.refPath = hmPopupPath; //"./";
 	hmXPopup.currentPopup = "";
 	hmXPopup.clickX = 0; 
@@ -125,20 +193,50 @@ var doHmXPopup = function() {
 	hmXPopup.relposX = 0;
 	hmXPopup.relposY = 0;
 
+	// Inside the popup for same origin access
+	hmXPopup.$popupbody = null;
+	hmXPopup.$popupscroller = null;
+	hmXPopup.$popupwindow = null;
+
+	hmXPopup.hmResizePopupRemote = function() {
+		
+		var vpWidth = jQuery(window).width(),
+			vpHeight = jQuery(window).height(),
+			pWidth = hmXPopup.$popup.width(),
+			pHeight = hmXPopup.$popup.height(),
+			newWidth = 600, newHeight = 600;
+			
+			// Standard 600 px wide x 600 px high or 90% of window width/height, whichever is smaller
+			
+			if (newWidth > vpWidth * 0.9 || newHeight > vpHeight * 0.9 || pHeight < 100 || pWidth < 350) {
+				if (newWidth > vpWidth * 0.9) newWidth = vpWidth * 0.9;
+				if (newHeight > vpHeight * 0.9) newHeight = vpHeight * 0.9;
+				hmXPopup.$popup.css({"width": newWidth + "px", "height": newHeight + "px"});
+			}
+
+			hmXPopup.positionPopup();
+	}
+
 	hmXPopup.hmResizePopup = function() {
 		var popBodyWidth = 0, popBodyHeight = 0,
 			windowWidth = function(){return jQuery(window).width();},
-			wW = 0, pW = 0,
 			windowHeight = function(){return jQuery(window).height();},
-			wH = 0, pH = 0,
 			newWidth = 0, newHeight = 0,
-			verticalScroller = function() {return hmXPopup.$popupscroller.height() > hmXPopup.$popupwindow.height();},
-			horizontalScroller = function() {return hmXPopup.$popupscroller.width() > hmXPopup.$popupwindow.width();};
+			verticalScroller = function() {return hmXPopup.$popupscroller.height() + 35 > hmXPopup.$popupwindow.height();},
+			horizontalScroller = function() {return hmXPopup.$popupscroller.width() > hmXPopup.$popupwindow.width();},
+			popFixedWidth = false;
 			popBodyWidth = hmXPopup.$popupbody.outerWidth(true);
 			popBodyHeight = hmXPopup.$popupbody.outerHeight(true);
 			
+			// Poptable for fixed width
+			let $poptable = hmXPopup.$popupscroller.find("table#poptable"); 
+			if ($poptable.length > 0 ) {
+				hmXPopup.$popup.width($poptable.width() + 30);
+				popFixedWidth = true;
+				}
+
 			// Horizontal scrollbar?
-			if (horizontalScroller()) {
+			if (!popFixedWidth && horizontalScroller()) {
 				hmXPopup.$popup.width((hmXPopup.$popupscroller.width() + 10) + "px");
 			}
 			
@@ -147,96 +245,119 @@ var doHmXPopup = function() {
 			if (verticalScroller()) {
 				newWidth = hmXPopup.$popup.width();
 				newHeight = hmXPopup.$popup.height();
+				let widthOffset = popFixedWidth ? 0 : 5;
 				do {
-					newWidth+=5; newHeight+=5;
+					newWidth+=widthOffset; newHeight+=5;
 					hmXPopup.$popup.width(newWidth + "px");
 					hmXPopup.$popup.height(newHeight + "px");
 				} while (verticalScroller() && (newWidth < windowWidth() * 0.5));
 					
 			if (horizontalScroller()) {
-				hmXPopup.$popup.width((hmXPopup.$popupscroller.width() + 5) + "px");
+				hmXPopup.$popup.width((hmXPopup.$popupscroller.width() + widthOffset) + "px");
 			}
-				
-			if (verticalScroller()) {					 
-				hmXPopup.$popup.height((hmXPopup.$popupheader.height() + hmXPopup.$popupscroller.height() + 2) + "px");
+
+			if (verticalScroller()) { 
+				do {
+				hmXPopup.$popup.height((hmXPopup.$popup.height() + 2) + "px");
+				}
+				while (verticalScroller());
 				}
 			}
 			
 		// Now position the popup
 		
-		wW = windowWidth()-5; pW = hmXPopup.$popup.outerWidth();
-		wH = windowHeight()-5; pH = hmXPopup.$popup.outerHeight();
-		
-		// Does it fit in the standard position (just below and right of click position)?
-		if ((pH + hmXPopup.relposY + 15 < wH-5) && (pW + hmXPopup.relposX  + 30 < wW-5)) {
-			hmXPopup.clickY+=15;
-			hmXPopup.clickX+=30;
-		} else {
-		 
-		 // Vertical: Move up minimum amount to fit
-		if (pH + hmXPopup.relposY + 15 > wH-5) {
-			 
-			 hmXPopup.clickY = jQuery(document).scrollTop() + (wH-pH);
-			 hmXPopup.clickY = hmXPopup.clickY < 0 ? 5 : hmXPopup.clickY;
-		 } else hmXPopup.clickY+=15;
-		 
-		 // Horizontal: Move left to fit
-		 if (pW + hmXPopup.relposX  + 30 > wW-5) {
-			 
-			 // Fits left of the click point?
-			 if (pW+5 < hmXPopup.relposX) {
-				 hmXPopup.clickX = jQuery(document).scrollLeft() + (wW-pW);
-			 } else { 
-				hmXPopup.clickX = (jQuery(document).scrollLeft() + wW) - (pW+5);
-			 }
-			 hmXPopup.clickX = hmXPopup.clickX < 0 ? 5 : hmXPopup.clickX;
-		 } else hmXPopup.clickX+=30;
-		 
-		}
-	
-		hmXPopup.$popup.css({"top": (hmXPopup.clickY) + "px", "left": (hmXPopup.clickX) + "px"});
+		hmXPopup.positionPopup();
 		
 	};
-	
-	// Global load popup function to execute from the JSON file
-	hmLoadPopup = function(popObj) {
-		hmXPopup.noresize = false;
-		var sourceTest = hmXPopup.$popframe.attr("src");
-		if (sourceTest === "" || /_hmXtopic.htm$/.test(sourceTest)){
-			hmXPopup.$popframe.attr("src", hmXPopup.refPath + "_hmXpopup.htm");
+
+	// Position popup
+	hmXPopup.positionPopup = function() {
+
+		var wW = jQuery(window).width()-5, pW = hmXPopup.$popup.outerWidth(),
+			wH = jQuery(window).height()-5, pH = hmXPopup.$popup.outerHeight(),
+			pT = hmXPopup.$popup.position().top,
+			pL = hmXPopup.$popup.position().left;
+		
+		// Does it fit in the standard position (just below and right of click position)?
+		if (
+			((hmXPopup.popupMode == "popup") && (pH + hmXPopup.relposY + 15 < wH-5) && (pW + hmXPopup.relposX  + 30 < wW-5))
+			||
+			((hmXPopup.popupMode == "topic") && (pT > 0 && pL > 0) && (pT + pH < wH && pL + pW < wW))
+			)
+			{
+				if (hmXPopup.popupMode == "popup") {
+					hmXPopup.$popup.css({"top": hmXPopup.clickY +=15, "left":  hmXPopup.clickX +=30});
+				} else {
+					hmXPopup.$popup.css({"top": hmXPopup.clickY += 10, "left":  hmXPopup.clickX });
 				}
-		var loadPopper = setInterval(function(){
+		} else {
+		  // Vertical: Move up minimum amount to fit
+			if (pH + hmXPopup.relposY + 15 > wH-5) {
+				
+				 hmXPopup.clickY = jQuery(document).scrollTop() + (wH-pH);
+				 hmXPopup.clickY = hmXPopup.clickY < 0 ? 5 : hmXPopup.clickY;
+				 
+			 } else {
+				 
+				 hmXPopup.clickY+=15;
+			 }
+			 
+			 // Horizontal: Move left to fit
+			 if (pW + hmXPopup.relposX  + 30 > wW-5) {
+				 
+				 // Fits left of the click point?
+				 if (pW+5 < hmXPopup.relposX) {
+					 
+					 hmXPopup.clickX = jQuery(document).scrollLeft() + (wW-pW);
+					 
+				 } else { 
+				 
+					hmXPopup.clickX = (jQuery(document).scrollLeft() + wW) - (pW+5);
+					
+				 }
+				 
+				 hmXPopup.clickX = hmXPopup.clickX < 0 ? 5 : hmXPopup.clickX;
+				 
+			 } else {
+				 hmXPopup.clickX+=30;
+			 }
 			
-			hmXPopup.$popupbody = hmXPopup.$popframe.contents().find("div#hmxpopupbody");
-		if (hmXPopup.$popupbody.length > 0) {
-			clearInterval(loadPopper);
+			hmXPopup.$popup.css({"top": hmXPopup.clickY, "left": hmXPopup.clickX})
 			
-			hmXPopup.$popupscroller = hmXPopup.$popframe.contents().find("body");
-			hmXPopup.$popupwindow = jQuery("div#hmpopupbody");
-			hmXPopup.$popupbody.html(popObj.hmBody);
-			hmXPopup.$popuptitle.html(popObj.hmTitle);
-			hmXPopup.$popup.css({"height": "3.6rem", "width": "20rem"});
+			/* hmXPopup.$popup.animate({
+			top: hmXPopup.clickY, 
+			left: hmXPopup.clickX},
+			300);*/
+			 
+		} // reposition
+		
+	}
+	
+	// Display inline topic finalize for local and remote
+	
+	hmXPopup.displayInlineTopic = function() {
+	
+	jQuery("div#hmpopupbody").css("top",(jQuery("div#hmpopuptitlebar").height() + 2) +"px");
+			
+			hmXPopup.$topicLinkHeader.attr("href",hmXPopup.topicTarget);
+			jQuery("div#hmpopuptitlelink").show();
 			hmXPopup.$popup.show();
-			hmXPopup.hmResizePopup();
+			hmXPopup.$popup.css({"width": hmXPopup.topicWidth + "px",  "height": hmXPopup.topicHeight + "px"});
+			hmXPopup.hmResizePopupRemote();
+			hmXPopup.positionPopup();
 			
-			/*jQuery("div#unclicker").show().on("click",function(){
-				hmXPopup.closePopup();
-			});*/
-		if (hmXPopup.hmDevice.desktop && !hmXPopup.noresize) {
-			jQuery("body").on("mousemove.resizepopuplistener",function(event){
+			if (hmXPopup.hmDevice.desktop && !hmXPopup.noresize) {
+			jQuery("body").on("mousemove.resizepopuplistener", function(event){
 			var ev = event.originalEvent;
 			hmXPopup.resizeListener(ev);
 			});
-			jQuery("body").on("mousedown.resizepopup",function(event){
+			jQuery("body").on("mousedown.resizepopup", function(event){
 				var e = event.originalEvent;
 				hmXPopup.startResizePopup(e);
 			});
-		} // Resizable for desktop browsers
-		
-		} // Actual load routine
-		},30); // Poller for popup content present
-	};
-	
+			}
+	}
+
 	// Work out the topic extension that is in use
 	var setTopicExtension = function(obj) {
 		var ext = "";
@@ -251,61 +372,24 @@ var doHmXPopup = function() {
 		else 
 			hmXPopup.topicExtension = ext.substr(ext.lastIndexOf("\."));
 		};
-	
-	// Global load topic function to execute from the JSON file	
-	hmLoadTopic = function(topObj) {
-		
-		hmXPopup.noresize = false;
-		var topicHeader = "";
-		if (hmXPopup.topicExtension === "")
-			setTopicExtension(topObj);
-		if (hmXPopup.topicExtension) {
-			hmXPopup.topicTarget = hmPopupPath + hmXPopup.currentPopup.replace(/\.js$/,hmXPopup.topicExtension);
-			topicHeader = "<p class='linkheader'><a href='"+hmXPopup.topicTarget+"' target='_blank'>Click here to open this topic in a full help window</a></p>";
-		}
-		var sourceTest = hmXPopup.$popframe.attr("src");
-		if ( sourceTest === "" || /_hmXpopup.htm$/.test(sourceTest))
-			hmXPopup.$popframe.attr("src", hmXPopup.refPath + "_hmXtopic.htm");
-		var loadPopper = setInterval(function(){
-			hmXPopup.$popupbody = hmXPopup.$popframe.contents().find("div#hmxpopupbody");
-		if (hmXPopup.$popupbody.length > 0) {
-			clearInterval(loadPopper);
-			hmXPopup.$popupscroller = hmXPopup.$popframe.contents().find("body");
-			hmXPopup.$popupwindow = jQuery("div#hmpopupbody");
-			hmXPopup.$popupbody.html(topicHeader + topObj.hmBody);
-			hmXPopup.$popuptitle.html(topObj.hmTitle);
-			hmXPopup.$popup.css({"height": "3.6rem", "width": "20rem"});
-			hmXPopup.$popup.show();
-			hmXPopup.hmResizePopup();
-			
-		if (hmXPopup.hmDevice.desktop && !hmXPopup.noresize) {
-			jQuery("body").on("mousemove.resizepopuplistener",function(event){
-			var ev = event.originalEvent;
-			hmXPopup.resizeListener(ev);
-			});
-			jQuery("body").on("mousedown.resizepopup",function(event){
-				var e = event.originalEvent;
-				hmXPopup.startResizePopup(e);
-			});
-		} // Resizable for desktop browsers
-		
-		// Image Toggles
-	hmXPopup.$popupbody.find("img.image-toggle").parent("a").on("click",function(event){
-		event.preventDefault();	
-		//alert("Image toggles not supported in field-level mode")
-		document.getElementById("hmXPopupFrame").contentWindow.hmWebHelp.extFuncs("hmImageToggle",(jQuery(this).children("img").first()));
-		});
-		
-		
-		} // Actual load routine
-		},30); // Poller for popup content present
-	};
-	
+
 	hmXPopup.closePopup = function() {
 
 		if (hmXPopup.$popup.is(":hidden"))
 			return;
-		hmXPopup.$popup.fadeOut(300);
+		
+		// Save topic dimensions
+		if (hmXPopup.popupMode == "topic") {
+			hmXPopup.topicWidth = hmXPopup.$popup.width();
+			hmXPopup.topicHeight = hmXPopup.$popup.height();
+		} else {
+			hmXPopup.topicWidth = 0;
+			hmXPopup.topicHeight = 0;
+		}
+		
+		// Reset reference values
+		hmXPopup.contentWidth = 0;
+		hmXPopup.contentHeight = 0;
 		
 		// Unbind all the resizing on the desktop
 		if (hmXPopup.hmDevice.desktop) {
@@ -313,45 +397,103 @@ var doHmXPopup = function() {
 			hmXPopup.$dragsurface.off(".resizepopup");
 		}
 		
-		// Kill iframe videos before closing to prevent youtube crashes
-		//hmXPopup.$popupbody.find("iframe").attr("src","");
-		// hmXPopup.$popupbody.html("");
-		
-		// Kill any video iframes and objects to prevent hangovers and crashes
-		hmXPopup.$popupbody.find("iframe").attr("src","");
-		var $videoBits = hmXPopup.$popupbody.find("object,embed,param");
-		if ($videoBits.length > 0) {
-			// In IE the only a reload gets rid of the buffered video object
-			if (/trident|edge/i.test(window.navigator.userAgent)) {
-				document.location.reload();
-			}
-			else {
-				$videoBits.attr("data","").attr("src","").attr("value","").remove();
-			}
-		}
-		
-		// Kill any image toggle boxes
-		hmXPopup.$popupscroller.find("div#imagetogglebox").remove();
-		
-		// Clear the inline style settings of the popup and contents of the container
-		hmXPopup.$popup.attr("style","");
-		hmXPopup.$popupbody.html("");
-		// Clear up any drag residue
-		endDrag();
+		//if (hmXPopup.remoteAccess) {
+			hmXPopup.$popup.fadeOut(300, function(){
+			// Clear frame contents
+			hmXPopup.$popframe.attr("src","");
+			// Clear header text and topic outlink
+			hmXPopup.$popuptitle.html("");
+			jQuery("div#hmpopuptitlelink").attr("src","");
+			// Clear up any drag residue
+			endDrag();
+			});
+			return;
+		//}
 	};
 
 	var fixTarget = function(t) {
-		if (/\.js$/i.test(t)) {
-			return t.toLowerCase();
+		t = t.toLowerCase();
+		if (/\.js$|\.html?$|\.php\d?$|\.asp$/im.test(t)) {
+			return t;
 		} else {
-			return t.toLowerCase() + ".js";
+			return t + ".js";
 		}
 	};
 
-	hmXPopup.loadPopup = function(e, thisPopup, refPath){
+	hmXPopup.initPopup = function() {
 		
+		//hmXPopup.$popup.show();
+		
+		hmXPopup.noresize = false;
+		jQuery("div#hmpopuptitlelink").hide();
+		jQuery("div#hmpopupbody").css("top","1.6rem");
+	   
+	   hmXPopup.$popup.css({"top": hmXPopup.clickY, "left": hmXPopup.clickX});
+	   hmXPopup.$popup.show();
+	  // Interval to wait for dimensions from source
+		var intCount = 0,
+		
+			popDims = setInterval(function(){
+		 
+		 intCount++;
+		 
+		  if (intCount > 10) {
+			  clearInterval(popDims);
+			  return;
+		  }
+		  if (hmXPopup.contentHeight > 0 ) {
+			  
+			  clearInterval(popDims);
+				
+			  // Never more than 600 px wide/high or 90% of window width/height, whichever is smaller
+			  
+			  let targetWidth = hmXPopup.contentWidth + 16,
+				  targetHeight = hmXPopup.contentHeight + 16;
+			
+			  if (targetWidth > 600 || targetWidth > jQuery(window).width()) {
+				  if (jQuery(window).width() > 670)	
+					  targetWidth = 600;
+				  else {
+					  targetWidth = jQuery(window).width() * 0.9;
+				  }
+			  }
+			  if (targetHeight > 600 || targetHeight > jQuery(window).height()) {
+				  if (jQuery(window).height() > 670) {	
+					  targetHeight = 600;
+					} else {
+					  targetHeight = jQuery(window).height() * 0.9;
+					}
+			  }
+			  
+			  hmXPopup.$popup.animate({
+				  width: targetWidth, 
+				  height: targetHeight},
+				  0, function() {
+				  hmXPopup.positionPopup();
+				 
+				  });
+		  }
+		  
+	  },100);
+	  
+	  if (hmXPopup.hmDevice.desktop && !hmXPopup.noresize) {
+		jQuery("body").on("mousemove.resizepopuplistener", function(event){
+		var ev = event.originalEvent;
+		hmXPopup.resizeListener(ev);
+		});
+		jQuery("body").on("mousedown.resizepopup", function(event){
+			var e = event.originalEvent;
+			hmXPopup.startResizePopup(e);
+		});
+		} // Resizable for desktop browsers
+
+	}
+
+	hmXPopup.loadPopup = function(e, thisPopup, refPath) {
+
 		var cacheTopic = thisPopup,
-			loadThis = "";
+			loadThis = "",
+			topicHeader = "";
 
 		if (Object.keys(hmXPopup.visitedTopics).length > 300)
 			hmXPopup.visitedTopics = {};
@@ -360,29 +502,148 @@ var doHmXPopup = function() {
 			hmXPopup.relposX = hmXPopup.clickX - jQuery(document).scrollLeft();
 		hmXPopup.clickY = e.pageY;
 			hmXPopup.relposY = hmXPopup.clickY - jQuery(document).scrollTop();
-		if (typeof refPath == "undefined") refPath = hmPopupPath + "jspopups/";
+		
+		// Handle undefined and remote refpaths
+		
+		if (typeof refPath == "undefined") {
+			
+			refPath = hmPopupPath + "jspopups/";
+		
+		} else if (refPath == "remotetopic") {
+
+			hmXPopup.remoteAccess = true;
+			hmXPopup.topicTarget = hmXPopup.refPath + thisPopup;
+			hmXPopup.topicTargetJS = thisPopup.substr(0,thisPopup.lastIndexOf("\.")) + ".js";
+			hmXPopup.$topicLinkHeader.attr("href",hmXPopup.topicTarget);
+			hmXPopup.$popframe.attr("src", hmXPopup.refPath + xtopicFile + "?" + hmXPopup.topicTargetJS);
+			
+			if (hmXPopup.popupTitles.hasOwnProperty(hmXPopup.refPath)) {
+				hmXPopup.$popuptitle.html(hmXPopup.popupTitles[hmXPopup.refPath]);
+			} else {
+				setTimeout(function(){		
+					xMessage.sendObject("hmXPopupFrame",{action: "getvalue", vn: "hmProjectInfo.title", cbf: "hmXPopup.setPopupTitle", domain: hmXPopup.getDomain(hmXPopup.refPath)});
+				},500);
+			}
+			
+			hmXPopup.displayInlineTopic();
+			return;
+			
+		} else if (refPath == "remotepopup") {
+			hmXPopup.remoteAccess = true;
+			jQuery("div#hmpopuptitlelink").hide();
+			jQuery("div#hmpopupbody").css("top","1.2rem");
+			hmXPopup.$popframe.attr("src", hmXPopup.refPath + xpopupFile + "?" + thisPopup);
+			hmXPopup.initPopup();
+			return;
+		}
+		
+		let pExt = thisPopup.substr(thisPopup.lastIndexOf("\."));
+		if (pExt != "\.js") {
+			thisPopup = thisPopup.replace(pExt,"\.js");
+		}
+		
 		hmXPopup.currentPopup = thisPopup;
 		loadThis = refPath + thisPopup;
+		
+	// Do local version (popup or topic on same domain)
+	if (!hmXPopup.remoteAccess) {
+			hmXPopup.topicTargetJS = thisPopup.substr(0,thisPopup.lastIndexOf("\.")) + ".js";
+			
+			if (hmXPopup.popupMode != "popup") {
+					hmXPopup.$popframe.attr("src", hmXPopup.refPath + xtopicFile + "?" + hmXPopup.topicTargetJS); 
+					
+					if (hmXPopup.popupTitles.hasOwnProperty(hmXPopup.refPath)) {
+					hmXPopup.$popuptitle.html(hmXPopup.popupTitles[hmXPopup.refPath]);
+					}
+				
+				setTimeout(function(){	
+				if (!hmXPopup.popupTitles.hasOwnProperty(hmXPopup.refPath)) {	
+					xMessage.sendObject("hmXPopupFrame",{action: "getvalue", vn: "hmProjectInfo.title", cbf: "hmXPopup.setPopupTitle", domain: hmXPopup.getDomain(hmXPopup.refPath)});
+					}
+					xMessage.sendObject("hmXPopupFrame",{action: "getvalue", vn: "hmProjectInfo.mainfile", cbf: "hmXPopup.setPopupTopiclink", domain: hmXPopup.getDomain(hmXPopup.refPath)});
+				},500);
+				
+				hmXPopup.displayInlineTopic();
+				
+			} else {				 
+				jQuery("div#hmpopuptitlelink").hide();
+				jQuery("div#hmpopupbody").css("top","1.2rem");
+				hmXPopup.$popframe.attr("src", hmXPopup.refPath + xpopupFile + "?" + thisPopup); 
+				hmXPopup.initPopup();
+			}
 
-	if (hmXPopup.visitedTopics.hasOwnProperty(cacheTopic)){
-		$.cachedScript(loadThis).done(function(script,textStatus){
-		});
-		} else {
-		jQuery.getScript(loadThis, function(data, textStatus, jqxhr) {
-			hmXPopup.visitedTopics[cacheTopic] = true;
-		});
-		}
-
+		} // !remoteAccess 
 		
 	};
+
 	// Bind the events for popup links on the page 
-	jQuery("a.hmpopuplink").on("click",function(event){
+	jQuery("a.hmpopuplink").on("click", function(event){
 			event.preventDefault();
-			hmXPopup.loadPopup(event,fixTarget(jQuery(this).attr("data-target")), hmPopupPath + "jspopups/");
+
+			hmXPopup.popupMode = "popup";
+			
+			 hmXPopup.clickX = event.pageX;
+			 hmXPopup.clickY = event.pageY;
+
+			jQuery("iframe#hmXPopupFrame").css({"top": "0", "height": "100%"});
+			
+			var linkTarget = fixTarget(jQuery(this).attr("data-target")),
+				targetPath = linkTarget.substr(0,linkTarget.lastIndexOf("\/") + 1);
+				
+			if (targetPath !== "") {
+				hmXPopup.refPath = targetPath;
+				hmXPopup.remoteAccess = hmXPopup.getDomain(targetPath) != hmLocalDomain;
+				linkTarget = linkTarget.substr(linkTarget.lastIndexOf("\/") + 1);
+			} else {
+				hmXPopup.refPath = hmPopupPath;
+				targetPath = hmPopupPath;
+				hmXPopup.remoteAccess = hmXPopup.getDomain(hmPopupPath) != hmLocalDomain;
+			}
+			
+			// Set the default size for area calculation
+			hmXPopup.$popup.css({"width": "20rem", "height": "3.6rem"});
+			
+			if (hmXPopup.remoteAccess) {
+				
+				// Remote link
+				hmXPopup.topicExtension = linkTarget.substr(linkTarget.lastIndexOf("\."));
+				hmXPopup.loadPopup(event, linkTarget, "remotepopup");
+				
+			} else {
+				// Local link
+				hmXPopup.loadPopup(event, linkTarget, targetPath + "jspopups/");
+				
+			}
 		});
-	jQuery("a.hmtopiclink").on("click",function(event){
+		
+	jQuery("a.hmtopiclink").on("click", function(event){
+			
 			event.preventDefault();
-			hmXPopup.loadPopup(event,fixTarget(jQuery(this).attr("data-target")), hmPopupPath + "jstopics/");
+			
+			hmXPopup.popupMode = "topic";
+
+			var linkTarget = fixTarget(jQuery(this).attr("data-target")),
+				targetPath = linkTarget.substr(0,linkTarget.lastIndexOf("\/") + 1);
+				
+			if (targetPath !== "") {
+				hmXPopup.refPath = targetPath;
+				hmXPopup.remoteAccess = hmXPopup.getDomain(targetPath) != hmLocalDomain;
+				linkTarget = linkTarget.substr(linkTarget.lastIndexOf("\/") + 1);
+			} else {
+				hmXPopup.refPath = hmPopupPath;
+				targetPath = hmPopupPath;
+				hmXPopup.remoteAccess = hmXPopup.getDomain(hmPopupPath) != hmLocalDomain;
+			}
+			
+			if (!hmXPopup.remoteAccess) {
+				// Local link
+				hmXPopup.loadPopup(event, linkTarget, targetPath + "jstopics/");
+			} else {
+				// Remote link
+				hmXPopup.topicExtension = linkTarget.substr(linkTarget.lastIndexOf("\."));
+				hmXPopup.loadPopup(event, linkTarget, "remotetopic");
+			}
+			
 		});
 		
 	// Popup closing routines
@@ -400,7 +661,6 @@ var doHmXPopup = function() {
 	var startTime = 0,
 		dragTime = 0,
 		dragcount = 0,
-		// $dragsurface = $dragsurface = jQuery("div#dragsurface"),
 		oldX,
 		oldY,
 		oldLeftPos, 
@@ -458,6 +718,7 @@ var doHmXPopup = function() {
 		hmXPopup.$popup.css({"top": (oldTopPos + moveY) + 'px'});
 		}
 	};
+	
 	// Triggered at beginning of a drag
     var startDrag = function(e) {
 		hmXPopup.PreventDefault(e);
@@ -501,10 +762,8 @@ var doHmXPopup = function() {
 		startDrag(ev);
 		});	
 
-if (hmXPopup.hmDevice.desktop) {
-	
+if (!hmXPopup.hmDevice.phone) {
 	hmXPopup.resizeListener = function(e) {
-	// var e = event.originalEvent,
 	 var popPos = hmXPopup.$popup.position(),
 	 popWd = hmXPopup.$popup.outerWidth(),
 	 popHt = hmXPopup.$popup.outerHeight(),
@@ -516,7 +775,7 @@ if (hmXPopup.hmDevice.desktop) {
 	var bBd = ((e.pageY > (popPos.top + (popHt-8-bWidth))) && (e.pageY < (popPos.top + popHt+10)) && (e.pageX < (popPos.left + popWd+10)) && (e.pageX > popPos.left+4));
 	var corner = ((rBd && (e.pageY > (popPos.top + popHt-10))) || (bBd && e.pageX > (popPos.left + popWd-10)));
 	hmXPopup.bdDrag = rBd || bBd;
-	jQuery("body").css("cursor",function(){
+	jQuery("body").css("cursor", function(){
 	return corner ? "nw-resize" : rBd && !bBd ? hmXPopup.ewResize : bBd && !rBd ? hmXPopup.nsResize : "auto";
 	});
 	}; // resize listener
@@ -550,16 +809,19 @@ if (hmXPopup.hmDevice.desktop) {
 			}
 			if (newY < 50) newY = 50;
 			if (newX < 200) newX = 200;
-			hmXPopup.$popup.css({"width": newX + "px", "max-width": newX + "px", "height": newY + "px", "max-height": newY + "px"});
+			hmXPopup.$popup.css({"width": newX + "px", "height": newY + "px"});
 	};
 	
 	hmXPopup.endResizePopup = function(event) {
-		// jQuery("body").off("mousemove.resizepopup");
 		hmXPopup.$dragsurface.off("mousemove.resizepopup");
 		jQuery("body").off("mouseup.resizepopup");
-		hmXPopup.$popupbody.css("overflow","auto");
 		jQuery("body").css("cursor","default");
 		hmXPopup.$dragsurface.css("cursor","default").hide();
+		
+		if (hmXPopup.popupMode == "topic") {
+			hmXPopup.topicWidth = hmXPopup.$popup.width();
+			hmXPopup.topicHeight = hmXPopup.$popup.height();
+		}
 	};
 	
 	hmXPopup.startResizePopup = function(e) {
@@ -567,7 +829,6 @@ if (hmXPopup.hmDevice.desktop) {
 		function initialize(direction) {
 			hmXPopup.resizeX = e.pageX;
 			hmXPopup.resizeY = e.pageY;
-			hmXPopup.$popupbody.css("overflow","hidden");
 			hmXPopup.popdims = {};
 			hmXPopup.popdims.w = hmXPopup.$popup.width();
 			hmXPopup.popdims.h = hmXPopup.$popup.height();
@@ -608,12 +869,12 @@ if (typeof jQuery === "undefined") {
 		if (typeof jQuery === 'function') {
 			clearInterval(jQLoader);
 			jQuery(document).ready(function(){
-			doHmXPopup();
+			hmXPopup.initializeX();
 			});
 		} 
 	},50);
 } else {
 	jQuery(document).ready(function(){
-	doHmXPopup();
+	hmXPopup.initializeX();
 	});
 }	

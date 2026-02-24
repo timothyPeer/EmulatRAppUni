@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 
 // Set up vibration support if available
@@ -13,10 +13,10 @@ hmWebHelp.funcs.doVibrate = function(duration) {
 
 // Mobile nav closer
 hmWebHelp.closeTopNav = function() {
-	$("div#unclicker").off(hmBrowser.touchstart + ".closemenu").hide();
 	$("ul.topnav > li > a.current").removeClass("current");
 	hmpage.$mHamMenuSub.hide();
 	hmpage.$mHamMenu.slideUp("fast");
+	$(document).off(hmBrowser.touchstart + '.closemenu');
 };
 
 // Update topic navigation links
@@ -46,7 +46,7 @@ hmWebHelp.mobNavLinks = function(args) {
 			}
 	
 		$("div.mobnav.off").off("click").off(hmBrowser.touchstart);
-		$("div.mobnav.on").off("click").off(hmBrowser.touchstart).on("click",function(event){event.preventDefault(); event.stopPropagation();}).on(hmBrowser.touchstart, function(event) {
+		$("div.mobnav.on").off("click").off(hmBrowser.touchstart).on("click", function(event){event.preventDefault(); event.stopPropagation();}).on(hmBrowser.touchstart, function(event) {
 		hmWebHelp.tocNav({action: "set", href: $(this).attr('data-href'), bs: parseInt($(this).attr('data-bs'),10)}); 
 	});
 		
@@ -56,14 +56,12 @@ hmWebHelp.mobNavLinks = function(args) {
 		hmpage.$mToolbar = $("div#mob_toolbar_wrapper");
 		hmpage.$mToolbarBody = $("div#mob_toolbar");
 		hmpage.$mToolbarCombo = $("div#mob_toolbar_wrapper,div#mob_toolbar");
-		hmpage.$navTopicCombo = $("div#navwrapper, div#topicbox");
+		hmpage.$navTopicCombo = $("div#navwrapper, main#topicbox");
 		hmpage.$mToolbarHeight = $("div#mob_toolbar").height() + 2;
 		hmpage.$navTabs = $("div#toolbar_updown, div#dragwrapper");
 		hmpage.navOp = $(hmpage.$navTabs[0]).css("opacity");
 		hmpage.showTimer = null;
-		// hmpage.$mToolbarTab = $("img#toolbar_tab");
-		
-		
+
 		/*** Header Hamburger Menu ***/
 		hmpage.$mHambutton = $("div#phone_hamburger_icon");
 		hmpage.$mHamnavbutton = $("div#phone_mobnav_hamburger_icon");
@@ -90,19 +88,16 @@ hmWebHelp.mobNavLinks = function(args) {
 		hmpage.$mHamMenuWd = ((hmpage.$mHamMenuWd * 1.2) / parseFloat($("html").first().css("font-size"),10)).toFixed(3);
 		hmpage.$mHamMenu.css("width",hmpage.$mHamMenuWd + "rem");
 		
-		hmWebHelp.funcs.mHamburgerDo = function(){
+		hmWebHelp.funcs.mHamburgerDo = function(elem1, elem2){
 			if (hmpage.$mHamMenu.is(":hidden")) {
-			
-			hmpage.$mHamMenu.slideDown("fast",function(){
+			hmWebHelp.closePopup();
+			hmpage.$mHamMenu.slideDown("fast", function(){
 				$("ul.topnav > li:visible").last().not(".last").addClass("last");
+				hmWebHelp.unClicker(elem1, elem2);
 			});
 				if (!hmpage.navclosed && hmpage.topicleft) {
 					hmWebHelp.pageDimensions.dragHandle(false);
 				}
-				
-			$("div#unclicker").show().on(hmBrowser.touchstart + ".closemenu",function(){
-				hmWebHelp.closeTopNav();
-			});
 			} else {
 				hmWebHelp.closeTopNav();
 			}
@@ -115,7 +110,7 @@ hmWebHelp.mobNavLinks = function(args) {
 		tbOffset = tbOffset > 4 ? tbOffset : 0;
 		//hmpage.$mToolbar.css("bottom",tbOffset + "px");
 	    hmpage.$scrollBox.css("padding-bottom",tbOffset + "px");
-		hmpage.$navwrapper.css("bottom",(tbOffset + hmpage.$mToolbar.height() + 5) + "px");
+		hmpage.$navwrapper.css("bottom",(tbOffset + hmpage.$mToolbar.height() + 9) + "px");
 		$("body").scrollTop(0);
 		if (hmBrowser.Flandscape()) {
 			$("table.mobtoolbar").addClass("landscape");
@@ -132,10 +127,9 @@ hmWebHelp.mobNavLinks = function(args) {
 			}
 	};
 
-		
-		
-		hmpage.$mHambutton.on(hmBrowser.touchstart,hmWebHelp.funcs.mHamburgerDo);
-		hmpage.$mHamnavbutton.on(hmBrowser.touchstart,hmWebHelp.funcs.mHamburgerDo);
+		hmpage.$mHambutton.on(hmBrowser.touchstart, function(){	
+			hmWebHelp.funcs.mHamburgerDo("header_menu", "phone_hamburger_icon");
+		});
 		
 		// Make tabs transparent on touch
 
@@ -147,7 +141,7 @@ hmWebHelp.mobNavLinks = function(args) {
 			
 		if (hmpage.navOp > 0.1 ) {
 			hmpage.$navTabs.css("opacity","0.1");
-			$("body").on(hmBrowser.touchend + ".navtabs",function(){
+			$("body").on(hmBrowser.touchend + ".navtabs", function(){
 				hmpage.$navTabs.css("opacity","0.3");
 				$("body").off(hmBrowser.touchend + ".navtabs");
 				});
@@ -169,6 +163,8 @@ hmWebHelp.mobNavLinks = function(args) {
 			hmWebHelp.closeTopNav();
 			var hHeight = hmpage.Fpix2em(hmpage.$headerbox.height());
 			if (hmpage.$mToolbar.attr('data') == 'open') {
+				// HIDE
+				hmpage.$mToolbarHeight = hmpage.$mToolbar.height();
 				hmpage.$headerbox.animate({
 					top: (-hHeight + "rem")
 				}, 300, function(){
@@ -177,56 +173,47 @@ hmWebHelp.mobNavLinks = function(args) {
 				hmpage.$navwrapper.animate({
 					top: "0.7rem",
 					bottom: "0"
-					// bottom: ("-=" + (hmpage.Fpix2em(hmpage.$mToolbarHeight + 2)) + "rem") // (hmpage.Fpix2em(3) + "rem")
 				},300);
 				hmpage.$topicbox.animate({
 					top: "0",
 					bottom: "0"
 					},300);
 				hmpage.$mToolbarCombo.animate({
-					// height: ( "-=" + hmpage.Fpix2em(hmpage.$mToolbarHeight) + "rem"),
 					height: ( "-=" + hmpage.$mToolbarHeight + "px"),
 					bottom: 0
 					},300, function() {
 						hmpage.$mToolbar.attr("data","closed");
 						hmpage.$mToolbarBody.hide();
 						hmWebHelp.funcs.mobTBfix();
-						if (false && hmpage.hmPicture !== "")
+						if (true && hmpage.hmPicture !== "")
 							hmWebHelp.extFuncs('hmFeatureHeaderM',"resize");
 						sessionVariable.setSV("headerState","closed");
-						// hmpage.$mToolbarTab.css("marginTop","-"+hmpage.Fpix2em(8)+"rem");
-						// hmpage.$mToolbarTab.css("marginTop","-8px");
 						});
 				$("div#featureheader").animate({
 					top: 0
 				});
 				
 			} else {
-			// $("div.mobnav").show();
+			// SHOW
 			hmpage.$headerbox.show().animate({
 					top: "0"
 				}, 300);
 			hmpage.$headerbox.slideDown(300);
-			// alert(hmpage.Fpix2em(hmpage.$mToolbarHeight));
 			hmpage.$navwrapper.animate({
 				top: (hmpage.Fpix2em(hmpage.FheaderHeight() + 7) + "rem"),//"35px",
 				bottom: (hmpage.Fpix2em(hmpage.$mToolbarHeight + 7) + "rem")
-				// bottom: "3.5em"
 				},300);
 			hmpage.$topicbox.animate({
 					top: (hmpage.Fpix2em(hmpage.FheaderHeight()) + "rem"),
 					bottom: (hmpage.Fpix2em(hmpage.$mToolbarHeight) + "rem")
 				},300);
 			hmpage.$mToolbarBody.show();
-			// hmpage.$mToolbarTab.css("marginTop","-"+hmpage.Fpix2em(12)+"rem");
-			// hmpage.$mToolbarTab.css("marginTop","-12px");
 			hmpage.$mToolbarCombo.animate({
-					// height: ( "+=" + hmpage.Fpix2em(hmpage.$mToolbarHeight) + "rem")
 					height: ( "+=" +hmpage.$mToolbarHeight + "px")
 					},300, function() {
 						hmpage.$mToolbar.attr("data","open");
 						hmWebHelp.funcs.mobTBfix();
-						if (false && hmpage.hmPicture !== "")
+						if (true && hmpage.hmPicture !== "")
 							hmWebHelp.extFuncs('hmFeatureHeaderM',"resize");
 						sessionVariable.setSV("headerState","open");
 						});
@@ -238,7 +225,7 @@ hmWebHelp.mobNavLinks = function(args) {
 		};
 		
 		// Show/hide header bar and mobile toolbar
-		$("div#toolbar_updown").on(hmBrowser.touchstart,function(event){
+		$("div#toolbar_updown").on(hmBrowser.touchstart, function(event){
 			hmWebHelp.funcs.mobileUpDown(event);
 			});
 
@@ -290,13 +277,13 @@ hmWebHelp.mobNavLinks = function(args) {
 			hmWebHelp.funcs.doVibrate();
 			} 
 
-		$("div#mobnavtextplus").on(hmBrowser.touchstart,function(){fSize(true,"div#mobnavtextplus");});
-		$("div#mobnavtextminus").on(hmBrowser.touchstart,function(){fSize(false,"div#mobnavtextminus");});
-		$("div#mobnavtoc").on(hmBrowser.touchstart,function(){doToc("div#mobnavtoc");});
+		$("div#mobnavtextplus").on(hmBrowser.touchstart, function(){fSize(true,"div#mobnavtextplus");});
+		$("div#mobnavtextminus").on(hmBrowser.touchstart, function(){fSize(false,"div#mobnavtextminus");});
+		$("div#mobnavtoc").on(hmBrowser.touchstart, function(){doToc("div#mobnavtoc");});
 		$("div#dragwrapper").css("visibility","visible");
 		$("a#topicnavlinkprevious,a#topicnavlinkhome,a#topicnavlinknext").removeAttr("href");
 		
-		hmpage.$scrollBox.on("scroll",function(){
+		hmpage.$scrollBox.on("scroll", function(){
 			hmWebHelp.funcs.mobTBfix();
 		});
 		hmWebHelp.funcs.mobTBfix();

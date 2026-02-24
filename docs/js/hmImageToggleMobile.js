@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 var HMImageToggle = function($img){
 	
@@ -23,10 +23,12 @@ var HMImageToggle = function($img){
 		vBorderWidth = 0,
 		hFactor,
 		scaleFactor,
-		$zoomImage;
+		$zoomImage,
+		newImage = new Image(),
+		svgWrapper = document.createElement("object"),
+		isSVG = src1.substr(src1.lastIndexOf("\.")) == "\.svg";
 		
 		// Create temporary full version to get dimensions
-		newImage = new Image();
 		newImage.src = src1;
 		$(newImage).css({"visibility":"none","z-index": "100002"}).appendTo($("body"));
 		
@@ -47,29 +49,47 @@ var HMImageToggle = function($img){
 			scaleFactor = windowdims.w / closeddims.w > windowdims.h / closeddims.h ? windowdims.h / closeddims.h : windowdims.w / closeddims.w;
 		else {
 			// Make toggle image smaller than viewport to avoid overflow bug
-			//r Use can expand to view with pinch zoom 
+			// User can expand to view with pinch zoom 
 			scaleFactor = (windowdims.w / closeddims.w) - 0.1;
 			if ((closeddims.h * scaleFactor) > windowdims.h)
 				scaleFactor = (windowdims.h / closeddims.h) - 0.1;
 			
 			}
-		// if (scaleFactor < 1) scaleFactor = 1;
 		hFactor = closeddims.h/closeddims.w;
 	
-		$("body").append('<div id="imagetogglebox" style="position: absolute; top: '+startTop+'px; left: '+startLeft+'px; width:'+closeddims.w+'px; height:'+closeddims.h+'px;z-index:10000;"><img id="zoomImg" src="'+src1+'" style="position: absolute; top: 0; left: 0; width: 100%; height: auto;z-index:10000"/><div id="imagezoom" style="position: absolute;top: 5px; left: 5px; z-index: 10001; display: none;"></div>');
+		$("body").append('<div id="imagetogglebox" style="position: absolute; top: '+startTop+'px; left: '+startLeft+'px; width:'+closeddims.w+'px; height:'+closeddims.h+'px;z-index:10000;"></div>');
 		
+		newImage = new Image();
+		newImage.id = "zoomImg";
+		newImage.src = src1;
+		newImage.width = "100%";
+		newImage.height = "auto";
+
+		var $imgbox = $("div#imagetogglebox");
 		
+		if (!isSVG) {
+			newImage.style = "width: 100%; height: auto; position: absolute; top: 0; left: 0 ;z-index:10000";
+			$imgbox.append(newImage);
+			
+		} else {
+			svgWrapper.type = "image/svg+xml";
+			svgWrapper.width = "100%";
+			svgWrapper.height = "auto";
+			svgWrapper.style = "position: absolute; top: 0; left: 0 ;z-index:10000";
+			svgWrapper.data = src1;
+			$(svgWrapper).append(newImage);
+			$imgbox.append(svgWrapper);
+			}
+
 		function closeImage(event,instant) {
 			
 			function rescale() {
 				document.querySelector('meta[name="viewport"]').content = 'user-scalable=yes, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1, width=device-width, minimal-ui';
 			}
-			
-			// if (instant || hmDevice.phone) {
+
 			if (instant) {
-				$page.fadeIn("fast");
-				$imgbox.fadeOut("fast",function(){
-					$this.remove();
+				$imgbox.fadeOut("fast", function(){
+					$(this).remove();
 					rescale();
 				});
 			return;
@@ -84,9 +104,15 @@ var HMImageToggle = function($img){
 			$(this).remove();
 			rescale();
 		});
-			$page.fadeIn("fast");
 		}
-		
+
+		// For use if an SVG sends an Esc event
+		window.addEventListener("message", function(event){
+			if (event.data && event.origin === window.location.origin && event.data.type === "escapePressed") {
+				closeImage();
+			}
+		});
+
 		function maximizeImage() {
 			$imgbox.animate({
 			"top":"0",
@@ -99,16 +125,15 @@ var HMImageToggle = function($img){
 		
 	$imgzoomer = $("div#imagezoom");
 	$imgbox = $("div#imagetogglebox");
-	$page = $("div#pagewrapper");
+	$page = $("div#helpwrapper");
 	$zoomImage = $("img#zoomImg");
 	
-	$zoomImage.on("click",closeImage);
+	if (!isSVG) $zoomImage.on("click",closeImage);
 	
 	var topTarget = hmDevice.phone ? 0 : (windowdims.h - (closeddims.h * scaleFactor)) / 2;
 	var leftTarget = hmDevice.phone ? 0 : (windowdims.w - (closeddims.w * scaleFactor)) / 2;
 	document.querySelector('meta[name="viewport"]').content = 'user-scalable=yes, initial-scale=1.0, maximum-scale=2.0, minimum-scale=0.5, width=device-width, minimal-ui';
-	$page.fadeOut("fast");
-		
+
 		$zoomImage.show();
 		$imgbox.show().animate({
 			"top": topTarget + "px",
@@ -116,10 +141,13 @@ var HMImageToggle = function($img){
 			"width": (closeddims.w * scaleFactor) + "px",
 			"height": (closeddims.h * scaleFactor) + "px"
 			
-		},"fast",function(){
-			
+		},"fast", function(){
+			if (isSVG) {
+			$page.on("click.closer", function(){
+				closeImage(event,true);
+				$page.off("click.closer");
+				});
+			}
 		});
-
-	
 };
 hmWebHelp.funcs.hmImageToggleMobile = HMImageToggle;

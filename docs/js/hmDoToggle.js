@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 
 // Constructor
@@ -18,50 +18,68 @@ function hmDropDownToggles() {
 		icon0 = icon ? $obj.attr("data-src0") : null,
 		icon1 = icon ? $obj.attr("data-src1") : null,
 		state = $obj.attr("data-state"),
-		$target = $("div#" + $obj.attr("id").replace(/_LINK/,"")),
+		$target = $("div#" + $obj.attr("id").replace(/_LINK$/i,"")),
 		$icon = icon ? $("img#" + icon) : null,
 		multi = typeof mlt !== "undefined",
+		togid = $obj.attr("id"),
 		doflash = true;
 		
-		// if ((document.location.search.indexOf("anchor=") > -1) && !multi)
-			// History.replaceState(null,null,document.location.pathname);
-		
-		function repositionToggle($thisToggle) {
-			var hdTop = $obj.position().top,
-				bdTop = $target.position().top,
-				toggleHeight = (bdTop - hdTop) + $target.height(),
-				wdHeight = hmpage.$scrollContainer.height(),
-				toggleOffset = (hdTop + toggleHeight) - wdHeight,
-				currentScroll = hmpage.$scrollBox[0].scrollTop,
-				scrollTarget = currentScroll + toggleOffset,
-				scrollOffset = 0,
-				noScroll = false;
+		function repositionToggle() {
+			if (typeof hmxtoggle == "undefined")
+				hmxtoggle = false;
+			var $scrollBox = !hmxtoggle ? hmpage.$scrollBox : $("html"),
+				hdTop = hmxtoggle ? $obj.offset().top : $obj.offset().top - $scrollBox.offset().top + $scrollBox.scrollTop(),
+				bdTop =  hmxtoggle ? $target.offset().top : $target.offset().top - $scrollBox.offset().top + $scrollBox.scrollTop(),
 				
-				if (scrollTarget < currentScroll) {
-					noScroll = true;
-				} else if (toggleHeight > wdHeight || scrollTarget < 0) {
-					scrollTarget = $obj;
-					scrollOffset = -10;
+				toggleHeight = $obj.height() + $target.height(),
+				wdHeight = !hmxtoggle ? hmpage.$scrollContainer.height() : $(window).height(),
+				currentScroll = !hmxtoggle ? $scrollBox.scrollTop() : $("body").scrollTop(),
+				toggleOffset = hdTop - currentScroll,
+				toggleOverlap = toggleOffset + toggleHeight - wdHeight,
+				scrollTarget = Math.round(currentScroll + toggleOverlap);
+				
+				var conditionalFlash = function() {
+					if ($obj.attr("class") == "dropdown-toggle" && !self.clicked && !hmxtoggle)
+					hmWebHelp.flashTarget($obj,3,200);
+					}
+				
+				if ((toggleOffset + toggleHeight) > wdHeight) {
+					if (toggleHeight > wdHeight) {
+						$scrollBox.scrollTo(hdTop-10,300,{axis: 'y', onAfter: conditionalFlash
+						});
+					} else {
+						$scrollBox.scrollTo((scrollTarget+30 > hdTop-10 ? hdTop-10 : scrollTarget+30),300,{axis: 'y', onAfter: conditionalFlash});
+						}
+				} else {
+					conditionalFlash();
 				}
-			
-			if (!noScroll) {
-			hmpage.$scrollBox.scrollTo(scrollTarget,300,{axis: 'y', offset:{top: scrollOffset}, onAfter: function() {
-			if ($obj.attr("class") == "dropdown-toggle" && !self.clicked)
-				hmWebHelp.flashTarget($obj,3,200);
+		}
+		
+		function updateOpenToggles(tID, mode) {
+			switch (mode) {
+				
+				case "open":
+				if (!hmpage.currentScrollPos.openToggles.indexOf(tID) > -1)
+					hmpage.currentScrollPos.openToggles.push(tID);
+				break;
+				case "close":
+				if (hmpage.currentScrollPos.openToggles.indexOf(tID) > -1)
+					hmpage.currentScrollPos.openToggles = hmpage.currentScrollPos.openToggles.filter(function (i) {
+					return i !== tID;
+					});
+				break;
 			}
-			});
-			}
-			else if ($obj.attr("class") == "dropdown-toggle" && !self.clicked)
-				hmWebHelp.flashTarget($obj,3,200);
 			
 		}
 		
 		function openToggle() {
-			$target.slideDown(speed,function(){
-				if (!multi && typeof hmxtoggle == "undefined")
-					repositionToggle($target);
+			$target.slideDown(speed, function(){
+				if (!multi) {
+					setTimeout(repositionToggle,50);
+				}
 				});
 			$obj.attr("data-state","1");
+			updateOpenToggles(togid, "open");
 			if (icon) $icon.attr("src",icon1);
 			// Change hamburger menu entries if this is not a multi-toggle operation
 			if (!multi) {
@@ -73,6 +91,7 @@ function hmDropDownToggles() {
 		function closeToggle() {
 			$target.slideUp(speed);
 			$obj.attr("data-state","0");
+			updateOpenToggles(togid, "close");
 			if (icon) $icon.attr("src",icon0);
 			// Change hamburger menu entries if this is not a multi-toggle operation
 			if (!multi) {
@@ -113,7 +132,7 @@ function hmDropDownToggles() {
 	var index, 
 		$theseToggles = {}, 
 		tCount, speed, mode, targetState, $scrolltarget, $doToggle, args;
-		// $scrollBox = hmDevice.phone ? $("div#topicbox") : $("div#hmpagebody_scroller");
+		// $scrollBox = hmDevice.phone ? $("main#topicbox") : $("div#hmpagebody_scroller");
 	if (arguments.length > 0 && typeof arguments[0] === "object") {
 		args = arguments[0];
 		$theseToggles = typeof args.toggles === "undefined" ? $("a.dropdown-toggle") : args.toggles;
@@ -133,8 +152,10 @@ function hmDropDownToggles() {
 		targetState = "1";
 		$scrolltarget = null;
 	}
-	// if (document.location.search.indexOf("anchor=") > -1 && !$scrolltarget)
-			// History.replaceState(null,null,document.location.pathname);
+	
+	if (document.location.search.indexOf("anchor=") > -1 && !$scrolltarget) {
+		History.replaceState(null,null,document.location.pathname);
+		}
 		
 	if (mode === "toggle") {
 	$theseToggles.each(function(){
@@ -211,7 +232,7 @@ function hmDropDownToggles() {
 			
 			case "HMToggle":
 			if (typeof $obj.target !== 'undefined') {
-				self.HMToggle($obj.target,$obj.mode,$obj.speed);
+				self.HMToggle($obj.target,$obj.mode,$obj.speed,$obj.multi);
 			} else {
 			self.HMToggle($obj);
 			}
@@ -220,6 +241,7 @@ function hmDropDownToggles() {
 			case "HMToggleIcon":
 				var objID = $obj.attr("id");
 				objID = objID.replace(/_ICON$/,"_LINK");
+				objID = objID.replace(/_icon$/,"_link");
 				$obj = $("a#" + objID);
 				self.HMToggle($obj);
 			break;

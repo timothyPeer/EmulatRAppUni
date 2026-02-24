@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 hmWebHelp.funcs.tapImage = function(elem) {		
 		var firstTap = new Date().getTime();
@@ -12,19 +12,15 @@ hmWebHelp.funcs.tapImage = function(elem) {
 		xPos = 0;
 			$("div#tapImageWrapper").fadeIn(speed, function(){
 			});
-			$("div#pagewrapper").fadeOut(speed);
+			$("div#helpwrapper").fadeOut(speed);
 
 			}
 		function hideImage(speed) {
 			document.querySelector('meta[name="viewport"]').content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimum-scale=1';
-			$("div#pagewrapper").fadeIn(speed, function(){
+			$("div#helpwrapper").fadeIn(speed, function(){
 			hmWebHelp.funcs.doPagePos.setPos();
 			});
 			$("div#tapImageWrapper").fadeOut(speed);
-			// Some mobile browsers need to reposition...
-			// $("div#topicbox").scrollTop(yPos);
-			
-
 			}
 		function closeTap() {
 			var thisTap = new Date().getTime();
@@ -37,7 +33,7 @@ hmWebHelp.funcs.tapImage = function(elem) {
 			}
 
 		var $I = $("div#tapImageWrapper");
-		// var ev = event.originalEvent;
+
 		if ($I.length > 0)
 			{
 				$("img#tapImage").attr("src",$(elem).attr("src")).attr("width",$(elem).attr("width"));

@@ -1,4 +1,4 @@
-/* Reset Styles for Consistency */
+﻿/* Reset Styles for Consistency */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 	margin: 0;
 	padding: 0;
@@ -18,7 +18,7 @@ body {
 	font-size: 100%;
 	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 	color: #000000;
-	background-color: #ffffff;
+	background-color: transparent;
 	padding: 0.313rem;
  }
 	   
@@ -29,8 +29,8 @@ div#hmpageheader {
 	}
 div#hmpagebody {
 	position: absolute;
-	top: 0; left: 0; right: 0; bottom: 0;
-	background-color: #e8eafd;
+	top: 0.5rem; left: 0.2rem; right: 0.2rem; bottom: 0.2rem;
+	background-color: transparent;
 	overflow-y: auto;
 	border-style: solid;
 	border-color: transparent;
@@ -38,13 +38,6 @@ div#hmpagebody {
 	border-width: thin;
 	padding: 0.313rem 0 0.313rem 0.313rem;
 	margin: 0;
-	}
-div#unclicker {
-	display: none;
-	position: fixed;
-	top: 0; right: 0; bottom: 0; left: 0;
-	background-image: url("../images/spacer.gif");
-	z-index: 1000;
 	}
 
 /* General */
@@ -73,13 +66,15 @@ div#idxheadwrapper {
 	position: absolute;
 	top:0; left: 0; right: 0;
 	border-bottom: thin solid #c0c0c0;
-	background-color: #f5f5f5;
-	padding: 0.1rem;
+	background-color: transparent;
+	padding: 0.1rem 0.1rem 0.1rem 0.5rem;
 	margin: 0 0 0 0;
 }
 div#hmindextree {
 	position: absolute;
-	top: 100px; left: 0.2rem; right: 0; bottom: 0;
+	top: 100px; left: 0.6rem; right: 0; bottom: 0;
+	padding-right: 0.2rem;
+	background-color: #ffffff;
 	-webkit-overflow-scrolling: touch;
 	overflow-y: scroll;
 }
@@ -93,7 +88,7 @@ form#idxsearch {
 	left: 0;
 	}
 table#searchtable {
-	width: 100%;
+	width: 98%;
 	}
 td#btn {
 	width: 60px;
@@ -106,7 +101,7 @@ input#searchbtn {
 	font-size: 0.95rem;
 }
 input#searcharg {
-	width: 90%;
+	width: calc(100% - 0.7rem);
 	font-size: 0.95rem;
 }
 label#idxmodelabel {
@@ -133,9 +128,9 @@ p.idxmultiref {
 	}
 div#multiwrapper {
 	border: thin solid #444444;
-	box-shadow: 1px 1px 4px #676767;
+	box-shadow: 1px 1px 4px #959595;
 	padding: 0.3rem 0.5rem 0.1rem 0.3rem;
-	background-color: #f5f5f5;
+	background-color: #c0c0c0;
 	position: absolute;
 	display: block;
 	right: 0.5rem;
@@ -146,7 +141,7 @@ div#multiwrapper {
 	}
 div#popmessage {
 	border: thin solid #444444;
-	box-shadow: 1px 1px 4px #676767;
+	box-shadow: 1px 1px 4px #959595;
 	padding: 0.3rem 0.5rem 0.1rem 0.3rem;
 	background-color: #f5f5f5;
 	position: absolute;
@@ -170,7 +165,7 @@ a.kw:visited {
 	color: #000000;
 	}
 div#multiwrapper a.kw, div#idxheadwrapper a.kw {
-	color: #444444;
+	color: #000000;
 	}
 
 /* Letter Groups */
@@ -191,4 +186,9 @@ ul.idxgroup-header {
 }
 ul.idxgroup-header li {
 	font-weight: bold;
+	color: #000000;
+}
+ul.idxgroup-header li a {
+	text-decoration: none;
+	color: #000000;
 }

@@ -19,10 +19,10 @@
 	text-align: center;
 	margin: 10px 0px 0px 0px;
 	}
-  .crumbs {font-size: 9pt; margin-bottom: 3px; margin-top: 0px; color: #000}
-  .crumbs a {text-decoration: underline; color: #000 }
-  .crumbs a:visited {text-decoration: underline; color: #000 }
-  .crumbs a:hover { color: #E4641C; }
+  .crumbs {font-size: 8pt; margin-bottom: 3px; margin-top: 0px; color: #FFFFFF}
+  .crumbs a {text-decoration: underline; color: #FFFFFF}
+  .crumbs a:visited {text-decoration: underline; color: #FFFFFF}
+  .crumbs a:hover {color: #F4BC5C}
  
 @media screen{
   #idcontent {    
@@ -68,3 +68,11 @@
       overflow-y:scroll; 
    } 
 }
+
+
+
+
+
+
+
+

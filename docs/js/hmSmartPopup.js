@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 
 //** Main Object **//
@@ -12,7 +12,7 @@ $popparent.append('<div id="hmpopupbox" class="hmpopup"><div id="hmpopuptitlebar
 
 // General variables
 	hmXPopup.$popup = $("div#hmpopupbox");
-	hmXPopup.$popupcontainer = $("div#topicbox");
+	hmXPopup.$popupcontainer = $("main#topicbox");
 	hmXPopup.$popuptitle = $("div#hmpopuptitle > p");
 	hmXPopup.$popupheader = $("div#hmpopuptitlebar");
 	hmXPopup.$popupdragger = $("div#hmpopuptitle");
@@ -57,7 +57,7 @@ hmXPopup.sizeAndPosition = function() {
 				if (hasTable) return false;
 				var maxLength = 0, curLength = 0;
 				$("div#hmpopupbody p").each(function() {
-					curLength = $.trim($(this).text().length);
+					curLength = $(this).text().trim().length;
 					if (curLength > maxLength) maxLength = curLength;
 				});
 				return maxLength < 100;
@@ -221,7 +221,7 @@ hmXPopup.bookmarkPermalink = function() {
 
 // Global load popup executed by the JS popup when it is loaded
 hmLoadPopup = function(popObj) {
-	$(document).on("keydown.popescape",function(event){
+	$(document).on("keydown.popescape", function(event){
 		if (event.which === 27) {
 			$(document).off(".popescape");
 			hmXPopup.closePopup();
@@ -229,7 +229,7 @@ hmLoadPopup = function(popObj) {
 	});
 	hmXPopup.$popup.attr("style","");
 	hmXPopup.$popupbody.html(popObj.hmBody);
-	hmXPopup.$popuptitle.html(popObj.hmTitle);
+	hmXPopup.$popuptitle.text(popObj.hmTitle);
 	if (typeof popObj.dims === 'undefined')
 		hmXPopup.$popup.css({"height": "3.6rem", "width": "20rem"});
 	else
@@ -242,15 +242,15 @@ hmLoadPopup = function(popObj) {
 		$("textarea#plinkBox").text(document.location.protocol + "\/\/" + document.location.hostname + (document.location.port === "80" || document.location.port === "" ? "" : ":" + document.location.port) +  document.location.pathname);
 		$("p#permalink_tip").text("Right-click on permalink to copy to clipboard");
 		$("input#bookmarkPermalink").attr("value","Bookmark Topic");
-		$('input#selectPermalink').on(hmBrowser.touchstart,function(){
+		$('input#selectPermalink').on(hmBrowser.touchstart, function(){
 			$('textarea#plinkBox').focus().select();
 		});
 		// Prevent deselection
-		$('textarea#plinkBox').on("mousedown",function(event){
+		$('textarea#plinkBox').on("mousedown", function(event){
 			if (event.button == 2)
 			$(this).focus().select();
 		});
-		$('input#bookmarkPermalink').on("mousedown",function(){
+		$('input#bookmarkPermalink').on("mousedown", function(){
 			hmXPopup.bookmarkPermalink();
 		});
 	}
@@ -273,11 +273,11 @@ hmLoadPopup = function(popObj) {
 	}
 	
 	if (hmDevice.desktop && !hmXPopup.noresize) {
-		$("body").off("mousemove.resizepopuplistener").on("mousemove.resizepopuplistener",function(event){
+		$("body").off("mousemove.resizepopuplistener").on("mousemove.resizepopuplistener", function(event){
 		var ev = event.originalEvent;
 		hmXPopup.resizeListener(ev);
 		});
-		$("body").off("mousedown.resizepopup").on("mousedown.resizepopup",function(event){
+		$("body").off("mousedown.resizepopup").on("mousedown.resizepopup", function(event){
 			var e = event.originalEvent;
 			hmXPopup.startResizePopup(e);
 		});
@@ -363,8 +363,11 @@ hmXPopup.$popupbody.on("click",
 hmXPopup.$popupbody.on(hmBrowser.touchstart,
 	"a.weblink, a.webhotspot",
 	function(event){
-		$(this).attr("target","_blank");
-	});	
+		if (hmDevice.desktop)
+			$(this).attr("target","_blank");
+		else
+			$(this).attr("target","_self");
+	});
 
 // Delegated event binding for popup links in the popup
 hmXPopup.$popupbody.on(hmBrowser.touchstart,
@@ -490,7 +493,6 @@ hmXPopup.EventType = function(e) {
 if (hmDevice.desktop) {
 
 hmXPopup.resizeListener = function(e) {
-	// var e = event.originalEvent,
 	 var popPos = hmXPopup.$popup.position(),
 	 popWd = hmXPopup.$popup.outerWidth(),
 	 popHt = hmXPopup.$popup.outerHeight(),
@@ -503,7 +505,7 @@ hmXPopup.resizeListener = function(e) {
 	var corner = ((rBd && (e.pageY > (popPos.top + popHt-10))) || (bBd && e.pageX > (popPos.left + popWd-10)));
 	hmXPopup.bdDrag = rBd || bBd;
 
-	$("body").css("cursor",function(){
+	$("body").css("cursor", function(){
 	return corner ? "nw-resize" : rBd && !bBd ? hmXPopup.ewResize : bBd && !rBd ? hmXPopup.nsResize : "auto";
 	});
 };

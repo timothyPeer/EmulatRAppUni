@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 60" width="420" height="60">
+  <defs>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d4520a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#c8940a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4520a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradSoft" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d4520a;stop-opacity:0.7" />
+      <stop offset="50%" style="stop-color:#c8940a;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#d4520a;stop-opacity:0.7" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Transparent background - blends with #F0F0F0 header -->
+  
+  <!-- Hexagonal chip icon -->
+  <g transform="translate(4, 4)">
+    <polygon points="26,0 52,15 52,45 26,60 0,45 0,15" fill="none" stroke="url(#accentGrad)" stroke-width="2"/>
+    <polygon points="26,10 42,19 42,41 26,50 10,41 10,19" fill="none" stroke="url(#accentGrad)" stroke-width="0.8" opacity="0.35"/>
+    <!-- Register lines inside -->
+    <g stroke="url(#accentGrad)" stroke-width="0.7" opacity="0.4">
+      <line x1="16" y1="24" x2="36" y2="24"/>
+      <line x1="16" y1="30" x2="36" y2="30"/>
+      <line x1="16" y1="36" x2="36" y2="36"/>
+    </g>
+    <!-- Hex pins -->
+    <g stroke="url(#accentGrad)" stroke-width="1.2" opacity="0.5">
+      <line x1="26" y1="-5" x2="26" y2="0"/>
+      <line x1="26" y1="60" x2="26" y2="65"/>
+      <line x1="-5" y1="15" x2="0" y2="15"/>
+      <line x1="-5" y1="45" x2="0" y2="45"/>
+      <line x1="52" y1="15" x2="57" y2="15"/>
+      <line x1="52" y1="45" x2="57" y2="45"/>
+    </g>
+  </g>
+  
+  <!-- Main wordmark -->
+  <text x="72" y="38" font-family="Consolas, 'SF Mono', 'Courier New', monospace" font-size="38" letter-spacing="0">
+    <tspan fill="#1a1a2e" font-weight="800">E</tspan><tspan font-weight="300" fill="#6b7280">M</tspan><tspan font-weight="300" fill="#6b7280">u</tspan><tspan font-weight="300" fill="#6b7280">l</tspan><tspan font-weight="300" fill="#6b7280">a</tspan><tspan font-weight="300" fill="#6b7280">t</tspan><tspan fill="url(#accentGrad)" font-weight="800">R</tspan>
+  </text>
+  
+  <!-- Accent underline -->
+  <rect x="72" y="43" width="175" height="2" rx="1" fill="url(#accentGrad)" opacity="0.7"/>
+  
+  <!-- Subtitle -->
+  <text x="72" y="56" font-family="Consolas, 'SF Mono', 'Courier New', monospace" font-size="8.5" fill="#888888" letter-spacing="4">ALPHA AXP — VIRTUALIZED</text>
+  
+  <!-- eNVy branding small -->
+  <text x="310" y="56" font-family="Consolas, 'SF Mono', 'Courier New', monospace" font-size="7" fill="#aaaaaa" letter-spacing="2">eNVy SYSTEMS</text>
+</svg>

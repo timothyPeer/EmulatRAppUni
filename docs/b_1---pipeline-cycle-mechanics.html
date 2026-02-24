@@ -1,0 +1,619 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Appendix &gt; Appendix H - Alpha Pipeline &nbsp;&gt; H.1 - Pipeline Cycle Mechanics</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="advance,advanceRing,AlphaCPU,AlphaPipeline,Bubble,Capacity,commitPending,ConveyorBelt,Cycle,CycleCount,DE,Drain,EX,execute,Fetch,FetchResult,Flush,Forwarding,HeadPointer,IBox,IF,InFlight,InOrder,IS,Latency,m_cycleCount,m_head,m_slots,MEM,MultiCycle,OneInOneOut,Pipeline,PipelineSlot,RAW,Refill,Register,Retire,Retirement,ReverseOrder,RingBuffer,Rotation,runOneInstruction,SingleIssue,Slot,Stage,STAGE_COUNT,Stall,SteadyState,Throughput,tick,valid,Warmup,WB" />
+   <meta name="description" content="This appendix provides the unified view of one pipeline cycle — what happens during a single tick() call when 6 instructions occupy 6 stages simultaneously. The individual..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        min-height: 60px; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        background: #2C5D88;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 158px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "b_1---pipeline-cycle-mechanics.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix L – Pipeline Cycle Mechanics</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:middle">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?b_1---pipeline-cycle-mechanics.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; <a href="appendixh-alphapipeline.html">Appendix H - Alpha Pipeline&nbsp;</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix L – Pipeline Cycle Mechanics</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="appendixh-alphapipeline.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendixh-alphapipeline.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="appendix-k----pipeline-retirem.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">This appendix provides the unified view of one pipeline cycle — what happens during a single tick() call when 6 instructions occupy 6 stages simultaneously. The individual stages are documented in Chapter 13.6; the retirement contract is documented in Appendix K; this appendix explains how they combine into a functioning pipeline.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.1 The Steady-State Snapshot</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">At steady state, the pipeline holds 6 instructions at 6 different stages of execution. Each instruction is at a different point in its lifecycle. The oldest instruction is about to retire in WB; the youngest has just been fetched in IF. All 6 are processed within a single tick() call.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;N&nbsp;—&nbsp;Steady&nbsp;State&nbsp;(6&nbsp;instructions&nbsp;in&nbsp;flight):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;"> Stage</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Slot</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">PC</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Status</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;WB&nbsp;(5)</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[head]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">0x1000</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">Retiring (oldest, about to commit)</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;MEM&nbsp;(4)</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[h-1]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">0x1004</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">Register writeback via commitPending</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;EX&nbsp;(3)</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[h-2]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">0x1008</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">Grain executing (all real work here)</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IS&nbsp;(2)</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[h-3]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">0x100C</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">Issue (pass-through)</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;DE&nbsp;(1)</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[h-4]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">0x1010</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">Decode (pass-through)</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IF&nbsp;(0)</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[h-5]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">0x1014</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">Just fetched (youngest)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Architectural&nbsp;PC:&nbsp;0x1000&nbsp;(matches&nbsp;WB,&nbsp;about&nbsp;to&nbsp;become&nbsp;0x1004)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Fetch&nbsp;PC:&nbsp;0x1018&nbsp;(IBox&nbsp;will&nbsp;fetch&nbsp;this&nbsp;next&nbsp;cycle)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The 6 instructions span 24 bytes of sequential code (6 × 4 bytes per Alpha instruction). The architectural PC always matches the WB slot — it advances only when an instruction retires. The fetch PC runs 5 instructions ahead of the architectural PC.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.2 Anatomy of One tick() Call</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">tick() is called once per cycle by AlphaCPU::runOneInstruction(). It performs four actions in strict order:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Phase 1 — Supply fetch result.</span> The FetchResult from IBox (containing the DecodedInstruction and grain pointer) is stored in m_pendingFetch, ready for stage_IF() to consume.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Phase 2 — Execute all 6 stages.</span> execute() runs all stages in reverse order: stage_WB() → stage_MEM() → stage_EX() → stage_IS() → stage_DE() → stage_IF(). Each stage processes its slot independently. This is where all pipeline work occurs — retirement, register writeback, grain execution, fetch consumption.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Phase 3 — Rotate the ring buffer.</span> advanceRing() increments m_head: <span class="f_CodeExample">m_head = (m_head + 1) % STAGE_COUNT</span>. This causes every instruction to &quot;move forward&quot; one stage — the slot that was IF becomes DE, DE becomes IS, and so on. The slot that was WB wraps around and becomes the new IF slot (cleared, ready for the next fetch).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Phase 4 — Increment cycle counter.</span> m_cycleCount++ records the passage of one pipeline cycle. BoxResult is returned to AlphaCPU indicating pipeline state (advance, stall, fault, PAL transfer).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Critical detail:</span> advanceRing() does not move instruction data. It moves the head pointer. The PipelineSlot objects remain in their physical array positions — the logical-to-physical mapping changes because <span class="f_CodeExample">stage(logicalIndex)</span> computes <span class="f_CodeExample">m_slots[(m_head - logicalIndex + STAGE_COUNT) % STAGE_COUNT]</span>. By incrementing m_head, the physical slot that was WB (oldest) becomes IF (youngest), and every other slot shifts one logical position toward WB. This is O(1) — no data copies, no slot swaps.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.3 Why Reverse Execution Order</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The stage execution order (WB→MEM→EX→IS→DE→IF) is not arbitrary — it is the sole correctness mechanism for three pipeline properties:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">RAW hazard resolution without forwarding.</span> commitPending() runs in stage_WB() (or stage_MEM() depending on configuration) before stage_EX(). This means the register file contains the result from the instruction that executed last cycle before the current cycle's instruction reads registers. No forwarding muxes, no scoreboard stalls for data dependencies, no bypass paths. The reverse order creates an implicit one-cycle forwarding window for free.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Older-before-younger guarantee.</span> By processing WB first, the oldest instruction retires (or faults) before any younger instruction can modify state. If the WB instruction faults, the flush discards all younger stages. If it retires normally, its results are committed before any younger instruction's results could interfere. This is the foundation of precise exceptions.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Commit-before-execute safety.</span> commitPending() at the top of WB commits the deferred result from the previous cycle before the current cycle's stage_WB() makes any fault/CALL_PAL/retirement decisions. The committed result is from an older, already-validated instruction. Even if the current WB instruction faults, the older instruction's result is safely in the register file.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">If the stages ran in forward order (IF→DE→IS→EX→MEM→WB), all three properties would require explicit forwarding logic, hazard detection hardware, and speculative register state management. The reverse order eliminates all of this with zero runtime cost.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.4 Pipeline Warmup</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">After reset or flush, the pipeline is empty. It takes 6 cycles to reach steady state. During warmup, the pipeline contains bubbles (empty slots with valid = false) in the later stages:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;0:&nbsp;IF=Instr[0]&nbsp;DE=bubble&nbsp;IS=bubble&nbsp;EX=bubble&nbsp;MEM=bubble&nbsp;WB=bubble</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;1:&nbsp;IF=Instr[1]&nbsp;DE=Instr[0]&nbsp;IS=bubble&nbsp;EX=bubble&nbsp;MEM=bubble&nbsp;WB=bubble</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;2:&nbsp;IF=Instr[2]&nbsp;DE=Instr[1]&nbsp;IS=Instr[0]&nbsp;EX=bubble&nbsp;MEM=bubble&nbsp;WB=bubble</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;3:&nbsp;IF=Instr[3]&nbsp;DE=Instr[2]&nbsp;IS=Instr[1]&nbsp;EX=Instr[0]&nbsp;MEM=bubble&nbsp;WB=bubble</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;4:&nbsp;IF=Instr[4]&nbsp;DE=Instr[3]&nbsp;IS=Instr[2]&nbsp;EX=Instr[1]&nbsp;MEM=Instr[0]&nbsp;WB=bubble</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;5:&nbsp;IF=Instr[5]&nbsp;DE=Instr[4]&nbsp;IS=Instr[3]&nbsp;EX=Instr[2]&nbsp;MEM=Instr[1]&nbsp;WB=Instr[0]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;└───&nbsp;FIRST&nbsp;RETIREMENT:&nbsp;Instr[0]&nbsp;exits&nbsp;───┘</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;6:&nbsp;IF=Instr[6]&nbsp;...&nbsp;steady&nbsp;state&nbsp;...&nbsp;WB=Instr[1]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;One&nbsp;instruction&nbsp;enters,&nbsp;one&nbsp;retires&nbsp;—&nbsp;peak&nbsp;throughput.</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Key observations:</span> No instruction retires during cycles 0–4. The first retirement occurs at cycle 5 (6-cycle latency from fetch to retirement). Bubbles flow through harmlessly — stage_WB() checks slot.valid and returns immediately for empty slots. During warmup, stage_EX() processes empty slots as no-ops, so there is no wasted computation — only wasted pipeline capacity.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Warmup cost:</span> 5 cycles of zero throughput before the first retirement. This cost is paid on every full flush (fault delivery, CALL_PAL, HW_REI, interrupt). For the SRM boot sequence, where CALL_PAL and TLB miss faults occur frequently, the warmup cost is a measurable fraction of total execution time.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.5 Pipeline Drain</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Pipeline drain is the inverse of warmup — instructions exit the pipeline without new instructions entering. Drain occurs on flush: after the flush clears all slots, the pipeline is empty. If IBox cannot supply a fetch (e.g., IBox is stalled on an ITB miss), the IF slot receives a bubble, and the pipeline begins to drain naturally as instructions retire from WB without replacement.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Drain&nbsp;on&nbsp;full&nbsp;flush&nbsp;(e.g.,&nbsp;fault&nbsp;delivery):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N:&nbsp;6&nbsp;instructions&nbsp;in&nbsp;flight&nbsp;(steady&nbsp;state)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N:&nbsp;Fault&nbsp;detected&nbsp;in&nbsp;WB&nbsp;→&nbsp;flush()&nbsp;called</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N:&nbsp;All&nbsp;6&nbsp;slots&nbsp;cleared&nbsp;instantly&nbsp;(single&nbsp;call)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N+1:&nbsp;Pipeline&nbsp;empty&nbsp;—&nbsp;warmup&nbsp;begins&nbsp;at&nbsp;fault&nbsp;vector&nbsp;PC</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Full flush discards up to 5 cycles of in-flight work (the 5 instructions in IF through MEM that had not yet retired). Only the WB instruction's fault is architecturally visible — the other 5 instructions are silently discarded as if they never executed.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Drain&nbsp;on&nbsp;partial&nbsp;flush&nbsp;(branch&nbsp;misprediction):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N:&nbsp;6&nbsp;instructions&nbsp;in&nbsp;flight</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N:&nbsp;Misprediction&nbsp;detected&nbsp;in&nbsp;EX&nbsp;→&nbsp;flushYoungerSlots()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N:&nbsp;IF,&nbsp;DE,&nbsp;IS&nbsp;cleared&nbsp;(3&nbsp;instructions&nbsp;discarded)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N:&nbsp;EX,&nbsp;MEM,&nbsp;WB&nbsp;preserved&nbsp;(3&nbsp;instructions&nbsp;continue)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N+1:&nbsp;IF&nbsp;fetches&nbsp;from&nbsp;corrected&nbsp;target</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Cycle&nbsp;N+3:&nbsp;Pipeline&nbsp;refilled&nbsp;—&nbsp;steady&nbsp;state&nbsp;resumes</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Partial flush discards 3 instructions and refills in 3 cycles. The misprediction penalty is 3 cycles of lost throughput — the pipeline never fully empties.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.6 The One-In-One-Out Invariant</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">At steady state (6 valid instructions in flight, no stalls, no flushes), exactly one instruction enters the pipeline at IF and exactly one instruction exits at WB per cycle. This is the single-issue throughput ceiling — one instruction per cycle (IPC = 1.0).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">The invariant holds because:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The ring buffer has exactly STAGE_COUNT (6) slots. advanceRing() rotates the head pointer by one position per cycle. The slot exiting WB is recycled as the new IF slot. If IBox supplies a valid FetchResult, the new IF slot is filled. If IBox cannot supply (stall), the IF slot remains a bubble.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Throughput in practice:</span> IPC = 1.0 is the theoretical maximum and the typical case for sequential integer code. Actual IPC is reduced by: pipeline stalls (barriers, multi-cycle FP, device backpressure), branch mispredictions (3-cycle refill penalty), full flushes (5-cycle warmup penalty), and IBox fetch stalls (ITB miss, cache miss). For SRM boot code with frequent CALL_PAL and TLB misses, observed IPC can drop below 0.3.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.7 Multi-Cycle Stall Impact</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When an instruction stalls in stage_EX() (multi-cycle FP operation, device backpressure), the pipeline partially empties from the WB end while backing up from the EX end:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;N:&nbsp;Steady&nbsp;state&nbsp;(6&nbsp;instructions)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;N+1:&nbsp;EX&nbsp;stalls&nbsp;(FP&nbsp;divide,&nbsp;~20&nbsp;cycles)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;WB&nbsp;retires&nbsp;its&nbsp;instruction&nbsp;normally</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;MEM&nbsp;commits&nbsp;its&nbsp;instruction&nbsp;normally</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IF,&nbsp;DE,&nbsp;IS&nbsp;frozen&nbsp;(cannot&nbsp;advance&nbsp;past&nbsp;stalled&nbsp;EX)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;N+2:&nbsp;WB:&nbsp;empty&nbsp;(retired&nbsp;last&nbsp;cycle,&nbsp;no&nbsp;replacement&nbsp;from&nbsp;MEM)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;MEM:&nbsp;empty&nbsp;(committed&nbsp;last&nbsp;cycle,&nbsp;no&nbsp;replacement&nbsp;from&nbsp;EX)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;EX:&nbsp;still&nbsp;stalled</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IS,&nbsp;DE,&nbsp;IF:&nbsp;frozen</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycles&nbsp;N+3&nbsp;through&nbsp;N+20:&nbsp;EX&nbsp;still&nbsp;stalled</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;WB:&nbsp;empty&nbsp;(no&nbsp;retirements&nbsp;—&nbsp;throughput&nbsp;=&nbsp;0)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;MEM:&nbsp;empty</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;EX:&nbsp;stalled&nbsp;instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IS,&nbsp;DE,&nbsp;IF:&nbsp;frozen&nbsp;(3&nbsp;instructions&nbsp;waiting)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;N+21:&nbsp;EX&nbsp;stall&nbsp;clears&nbsp;—&nbsp;instruction&nbsp;advances&nbsp;to&nbsp;MEM</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;N+22:&nbsp;Stalled&nbsp;instruction&nbsp;reaches&nbsp;WB,&nbsp;retires</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IS&nbsp;instruction&nbsp;enters&nbsp;EX</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;N+23:&nbsp;Pipeline&nbsp;refilling...</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Cycle&nbsp;N+25:&nbsp;Steady&nbsp;state&nbsp;resumes&nbsp;(3-cycle&nbsp;refill&nbsp;from&nbsp;EX&nbsp;forward)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Observations:</span> During the stall, the pipeline drains from the WB end. WB and MEM empty within 2 cycles. EX holds the stalled instruction. IS, DE, IF are frozen and hold their instructions intact — they are not discarded, just blocked. No retirement occurs for the duration of the stall (throughput = 0). After the stall clears, it takes 2 additional cycles for the stalled instruction to reach WB and retire, plus 3 more cycles for the pipeline to refill to steady state from the IF end.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Barrier stalls</span> behave identically but stall in stage_MEM() instead of stage_EX(). The stalled instruction has already executed (its result is in slot.payLoad and m_pending). Only 1 stage (WB) drains ahead of the stall point, and the pipeline refills in 4 cycles after clearing (EX through IF must refill).</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.8 advanceRing() — Head Pointer Rotation</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The ring buffer advancement is the simplest operation in the pipeline and the most important to understand correctly:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">void&nbsp;advanceRing()&nbsp;noexcept&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_head&nbsp;=&nbsp;(m_head&nbsp;+&nbsp;1)&nbsp;%&nbsp;STAGE_COUNT;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">}</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">What this does:</span> The physical slot at m_head was WB (oldest). After increment, that same physical slot is now IF (youngest) — ready to receive the next fetch. Every other physical slot shifts one logical position toward WB. No data is copied. No slots are swapped. The instructions stay in place; the interpretation of which slot is which stage changes.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Before advanceRing() (m_head = 3):</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Physical:</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">[0]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">[1]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">[2]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">[3]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">[4]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">[5]</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Logical:</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">IS</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">DE</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">IF</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">WB</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">MEM</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">EX</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;PCs:</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">100C</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">1010</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">1014</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">1000</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">1004</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border-color:#c0c0c0 #000000 #000000 #c0c0c0; border-style:solid; border-width:thin;"><p class="p_Normal"><span class="f_CodeExample">1008</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↑&nbsp;m_head&nbsp;(oldest)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">After advanceRing() (m_head = 4):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0; line-height: 1.0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample"> Physical:</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[0]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[1]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[2]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[3]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[4]</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">[5]</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Logical:</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">EX</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">IS</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">DE</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">IF</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">WB</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">MEM</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_CodeExample"><span class="f_CodeExample">&nbsp;PCs:</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">100C</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">1010</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">1014</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">1018</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">1004</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span class="f_CodeExample">1008</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;↑&nbsp;m_head&nbsp;(oldest)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Physical slot [3] was WB (PC 0x1000, just retired). After rotation, it becomes IF and receives PC 0x1018 from the next fetch. Physical slot [4] is now the oldest (WB), holding PC 0x1004. Every instruction has advanced one logical stage.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">When advanceRing() is skipped:</span> If the pipeline is stalled (isPipelineStalled() returns true), advanceRing() is not called. All instructions remain in their current stages. The stalled stage will be re-evaluated on the next tick(). This is the mechanism that freezes the pipeline on stalls — not special stall logic in each stage, but simply not rotating the ring.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.9 Pipeline Performance Characteristics</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Characteristic</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Value</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Notes</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Pipeline depth</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">6 stages</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">IF → DE → IS → EX → MEM → WB</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Issue width</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">1 (single-issue)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">One instruction enters IF per cycle</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Peak throughput</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">1 IPC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">One retirement per cycle at steady state</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Fetch-to-retire latency</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">6 cycles</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Instruction spends 1 cycle per stage</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Full flush penalty</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">5 cycles</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Warmup from empty to first retirement</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Misprediction penalty</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">3 cycles</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Partial flush (IF/DE/IS), refill from corrected target</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Comparison to EV6 hardware:</span> The real EV6 is a 4-wide superscalar with a 7-stage pipeline, capable of 4 IPC peak. ASA-EMulatR's 6-stage single-issue pipeline is an intentional simplification — it preserves architectural correctness (instruction ordering, exception precision, memory model) while eliminating the complexity of superscalar dispatch, out-of-order execution, and speculative register renaming. The pipeline depth (6 vs 7 stages) is close enough that stall and flush penalties are representative of the hardware's behavior.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">L.10 Pipeline Cycle Invariants</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The following invariants hold for every pipeline cycle:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">One tick, one cycle.</span> tick() is called exactly once per pipeline cycle by AlphaCPU::runOneInstruction(). There is no mechanism to execute half a cycle or skip a cycle. The cycle counter (m_cycleCount) increments by exactly 1 per tick() call.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">All stages execute per cycle.</span> execute() calls all 6 stage functions every cycle, regardless of slot validity. Empty slots (valid = false) return immediately from their stage function. There is no logic that selectively skips stages.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Reverse order is unconditional.</span> The execution order WB→MEM→EX→IS→DE→IF never varies. There is no dynamic reordering, no priority inversion, and no conditional stage skipping. The order is a compile-time constant expressed by the sequence of function calls in execute().</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">At most one instruction enters per cycle.</span> stage_IF() consumes at most one FetchResult per tick(). If IBox did not supply a fetch (stall, miss), the IF slot is a bubble.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">At most one instruction exits per cycle.</span> stage_WB() retires at most one instruction per tick(). If the WB slot is empty (bubble), no retirement occurs.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">advanceRing() is all-or-nothing.</span> Either the ring advances (all 6 slots shift one logical position) or it does not (pipeline stalled). There is no partial advancement — you cannot advance some stages while holding others. This is enforced by the single m_head pointer.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Slot data is never copied between stages.</span> Instructions do not move between PipelineSlot objects. The logical stage assignment changes via head pointer rotation. A PipelineSlot is born in one physical array position and dies in that same position. This eliminates copy overhead and simplifies pointer/reference stability.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="13_3-pipeline-structure---ring.html" class="topiclink">13.3 Pipeline Structure - Ring Buffer</a> ; <a href="13_5-pipeline-execution---tick.html" class="topiclink">13.5 Pipeline Execution - tick() and execute()</a> ; <a href="13_6-stage-implementations.html" class="topiclink">13.6 Stage Implementations</a> ; <a href="appendix-k----pipeline-retirem.html" class="topiclink">B.2 - Pipeline Retirement Mechanics</a> ; cpuCoreLib/AlphaPipeline.h.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
+
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
+  $(document).ready(function(){
+    $(window).on('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
+      }
+	normHeaders();
+    });
+    
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
+	 $(window).resize(); //trigger event for initially small displays
+  });
+ 
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?b_1---pipeline-cycle-mechanics.html" target="_top">'+baseurl+'index.html?b_1---pipeline-cycle-mechanics.html</a></p>');
+
+</script>
+</body>
+</html>

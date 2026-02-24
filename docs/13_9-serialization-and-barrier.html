@@ -1,13 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-   <title>Introduction &gt; Architecture Overview &gt; Chapter 13 – AlphaPipeline Implementation &gt; 13.9 Serialization and Barriers in Pipeline</title>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Architecture Overview &gt; Chapter 13 – AlphaPipeline Implementation &gt; 13.9 Serialization and Barriers in Pipeline</title>
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
-   <meta name="keywords" content="" />
-   <meta name="description" content="Barrier instructions (MB, WMB, EXCB, TRAPB) do not execute work — they enforce ordering. In EX stage, the grain sets slot.needsMemoryBarrier = true or..." />
+   <meta name="keywords" content="Barrier,CALL_PAL,CBox,Completion,Drain,EX,EXCB,Flush,GlobalVisibility,Grain,HW_REI,MB,MEM,memoryBarrierCompleted,MemoryBarrierCoordinator,needsMemoryBarrier,needsWriteBufferDrain,Ordering,PAL_CALL,PipelineAction,Serialization,SMP,stage_EX,stage_MEM,stage_WB,Stall,TRAPB,WB,WMB,WriteBuffer,writeBufferDrained" />
+   <meta name="description" content="13.9.1 Barrier Instruction Pipeline Behavior &nbsp;Barrier instructions (MB, WMB, EXCB, TRAPB) do not execute computational work — they enforce ordering. In stage_EX(), the grain..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,16 +24,16 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #F0F0F0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #000000 }     
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
-        width: 126px;
+        width: 158px;
         vertical-align: middle;        
       } 
       #idnav a { text-decoration: none }
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_grey.png');
+        background-image:url('hm_webhelp_buttons_white.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_yellow.png');
+        background-image:url('hm_webhelp_buttons_orange.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #000000; }
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -105,7 +105,7 @@
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?13_9-serialization-and-barrier.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
-      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="alphapipeline-implementation.html">Chapter 13 – AlphaPipeline Implementation</a>&nbsp;&gt;</p>
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="alphapipeline-implementation.html">Chapter 13 – AlphaPipeline Implementation</a>&nbsp;&gt;</p>
    
       <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">13.9 Serialization and Barriers in Pipeline</span></h1>
 
@@ -115,7 +115,7 @@
       <a href="13_8-flush-semantics.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
       <a href="alphapipeline-implementation.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
       <a href="13_10-exception-precision.html" title="Next Topic"><span class="hmbtnnext"></span></a>
-      
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
     </td>
   </tr>  
 </table>
@@ -127,17 +127,42 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">Barrier instructions (MB, WMB, EXCB, TRAPB) do not execute work — they enforce ordering. In EX stage, the grain sets slot.needsMemoryBarrier = true or slot.needsWriteBufferDrain = true. In stage_MEM(), these flags are checked: if the barrier has not completed (memoryBarrierCompleted / writeBufferDrained is false), the slot stalls.</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.9.1 Barrier Instruction Pipeline Behavior</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">CBox is responsible for completing the barrier (draining write buffers, coordinating with other CPUs for MB). When CBox finishes, it sets the completion flag on the slot. The next tick, stage_MEM() finds the barrier complete and allows the instruction to proceed to WB.</p>
+<p class="p_Normal">Barrier instructions (MB, WMB, EXCB, TRAPB) do not execute computational work — they enforce ordering. In stage_EX(), the grain sets the appropriate stall flag. In stage_MEM(), the flag is checked: if the barrier has not completed, the slot stalls.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">CALL_PAL is the strongest serialization point — it is detected in stage_WB() and triggers PipelineAction::PAL_CALL, which causes AlphaCPU to flush the entire pipeline and enter PAL mode.</p>
+<p class="p_Normal"><span style="font-weight: bold;">MB (Memory Barrier)</span> — sets slot.needsMemoryBarrier = true. Requires global visibility: all prior stores must be visible to all CPUs. CBox coordinates with MemoryBarrierCoordinator, which in SMP configurations ensures all CPUs acknowledge the barrier. This is the most expensive barrier — it may stall for multiple cycles while cross-CPU coordination completes.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: Chapter 6 – Serialization and Stall Model.</span></p>
+<p class="p_Normal"><span style="font-weight: bold;">WMB (Write Memory Barrier)</span> — sets slot.needsWriteBufferDrain = true. Requires local write ordering only: all prior stores must drain from the local write buffer. No cross-CPU coordination is needed. CBox sets writeBufferDrained = true when the local write buffer is empty.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">EXCB (Exception Barrier)</span> — sets slot.needsMemoryBarrier = true. Requires all prior instructions to complete and all pending exceptions to be resolved before any younger instruction issues. Uses the same stall mechanism as MB but the completion condition is exception resolution rather than store visibility.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">TRAPB (Trap Barrier)</span> — sets slot.needsMemoryBarrier = true. Requires all prior instructions that may generate arithmetic traps to have completed. Specifically targets floating-point trap completion. Uses the same stall path as EXCB.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.9.2 Barrier Completion</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CBox is responsible for completing all barriers. The pipeline never self-clears a barrier flag. The completion path: CBox evaluates the barrier condition on each tick, and when satisfied, sets the completion flag (memoryBarrierCompleted or writeBufferDrained) on the stalled slot. On the next tick, stage_MEM() finds the flag set, performs commitPending() normally, and the slot advances to WB.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.9.3 Serialization Points</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">CALL_PAL</span> is the strongest serialization point. It is detected in stage_WB() and triggers PipelineAction::PAL_CALL, which causes AlphaCPU to flush the entire pipeline, drain all write buffers, clear LL/SC reservations, and enter PAL mode. No instruction survives a CALL_PAL boundary in either direction.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">HW_REI</span> is the corresponding exit serialization point. It flushes the pipeline, restores context from EXC_ADDR, clears PAL mode (PC bit 0), and clears LL/SC reservations. No speculative instruction from PAL mode survives into normal execution.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Together, CALL_PAL and HW_REI form a hard boundary: the pipeline is fully drained on entry and fully drained on exit. This is architecturally required — PAL mode operates with shadow registers and privileged state that must not leak across the boundary.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="chapter-6---serialization-and-.html" class="topiclink">Chapter 6 - Serialization and Stall Model</a> ; <a href="chapter-15---memory-system-imp.html" class="topiclink">Chapter 15 – Memory System Implementation Details</a> (MemoryBarrierCoordinator); <a href="chapter-20---boot-sequence_-pa.html" class="topiclink">Chapter 20 – Boot Sequence, PAL, and SRM Integration</a> (CALL_PAL/HW_REI serialization).</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
 
 
 
@@ -181,11 +206,19 @@ function normHeaders() {
 	normHeaders();
     });
     
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
 	 $(window).resize(); //trigger event for initially small displays
   });
  
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?13_9-serialization-and-barrier.html" target="_top">'+baseurl+'index.html?13_9-serialization-and-barrier.html</a></p>');
 
 </script>
 </body>

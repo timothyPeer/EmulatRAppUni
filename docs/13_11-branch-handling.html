@@ -1,13 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-   <title>Introduction &gt; Architecture Overview &gt; Chapter 13 – AlphaPipeline Implementation &gt; 13.11 Branch Handling</title>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Architecture Overview &gt; Chapter 13 – AlphaPipeline Implementation &gt; 13.11 Branch Handling</title>
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
-   <meta name="keywords" content="" />
-   <meta name="description" content="Branches are resolved in EX stage. IBox predicts the target during fetch and stores the prediction in slot.predictionTarget/predictionValid. In EX, the actual branch condition..." />
+   <meta name="keywords" content="BEQ,BR,Branch,BranchPredictor,branchTaken,branchTarget,BSR,CBox,Conditional,COROUTINE,EX,execute,Fetch,Flush,flushPipeline,flushYoungerSlots,Grain,IBox,IF,JMP,JSR,Jump,Misprediction,nextPC,PC,pcReason,predictionTarget,predictionValid,predTaken,predTarget,queryPrediction,recordBranchResolution,Resolution,RET,Retirement,Speculative,stage_EX,stage_IF,stage_WB,Unconditional,updatePrediction,WB" />
+   <meta name="description" content="13.11.1 Prediction at Fetch &nbsp;IBox predicts the branch target during fetch. For each decoded branch, IBox calls CBox::queryPrediction(branchPC, outPredictedTarget) and stores the" />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,16 +24,16 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #F0F0F0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #000000 }     
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
-        width: 126px;
+        width: 158px;
         vertical-align: middle;        
       } 
       #idnav a { text-decoration: none }
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_grey.png');
+        background-image:url('hm_webhelp_buttons_white.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_yellow.png');
+        background-image:url('hm_webhelp_buttons_orange.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #000000; }
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -105,7 +105,7 @@
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?13_11-branch-handling.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
-      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="alphapipeline-implementation.html">Chapter 13 – AlphaPipeline Implementation</a>&nbsp;&gt;</p>
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="alphapipeline-implementation.html">Chapter 13 – AlphaPipeline Implementation</a>&nbsp;&gt;</p>
    
       <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">13.11 Branch Handling</span></h1>
 
@@ -115,7 +115,7 @@
       <a href="13_10-exception-precision.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
       <a href="alphapipeline-implementation.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
       <a href="13_12-ll_sc-and-determinism.html" title="Next Topic"><span class="hmbtnnext"></span></a>
-      
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
     </td>
   </tr>  
 </table>
@@ -127,17 +127,41 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">Branches are resolved in EX stage. IBox predicts the target during fetch and stores the prediction in slot.predictionTarget/predictionValid. In EX, the actual branch condition is evaluated by the grain. If slot.branchTaken is true and the actual target differs from the predicted target, a misprediction is flagged (slot.flushPipeline = true).</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.11.1 Prediction at Fetch</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The execute() method checks for flushPipeline after stage_EX() — younger stages (IF, DE, IS) are invalidated and the correct PC is used for the next fetch. Branch predictor tables are updated in stage_WB() via m_cBox→updatePrediction(pc, taken, target).</p>
+<p class="p_Normal">IBox predicts the branch target during fetch. For each decoded branch, IBox calls <span class="f_CodeExample">CBox::queryPrediction(branchPC, outPredictedTarget)</span> and stores the result in slot.predTaken, slot.predTarget, slot.predictionTarget, and slot.predictionValid. If the predictor returns taken with a valid target, IBox speculatively fetches from the predicted target. Otherwise, IBox fetches sequentially from PC+4.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">PC is updated only in WB via retirement — no earlier stage modifies the architectural PC.</p>
+<p class="p_Normal">Unconditional branches (BR, BSR) have their target known at decode — prediction is always correct. Conditional branches (BEQ, BNE, BGT, BLE, etc.) rely on the CBox branch predictor. Register-indirect jumps (JMP, JSR, RET, COROUTINE) use the Branch Target Buffer for the last known target.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: Section 3.9 – Branch Resolution.</span></p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.11.2 Resolution in EX</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Branches are resolved in stage_EX(). The grain evaluates the actual branch condition and sets slot.branchTaken and slot.branchTarget. The pipeline then compares the actual outcome against the prediction:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Correct prediction:</span> slot.branchTaken matches the predicted direction and slot.branchTarget matches slot.predictionTarget. No pipeline disruption — speculatively fetched instructions continue flowing normally. This is the common case.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Misprediction:</span> actual outcome differs from prediction (wrong direction or wrong target). slot.flushPipeline is set to true. The execute() method detects this after stage_EX() and calls flushYoungerSlots() — stages IF, DE, and IS are invalidated. The corrected PC (slot.branchTarget for taken, slot.nextPC for not-taken) is used for the next fetch cycle. Misprediction cost is the depth of the invalidated pipeline stages (up to 3 cycles of wasted work).</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.11.3 Predictor Training in WB</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Branch predictor tables are updated at retirement in stage_WB() via <span class="f_CodeExample">CBox::recordBranchResolution(pc, actualTarget, wasTaken, wasPredicted, predictedCorrectly)</span>. Training occurs for every branch — correct and mispredicted alike — so the predictor learns from all outcomes. Training at WB (not EX) ensures that only architecturally committed branch outcomes update the predictor; speculative branches that are flushed never corrupt predictor state.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.11.4 PC Contract</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The architectural PC is updated only in WB via retirement — no earlier stage modifies the committed PC. During speculative execution, IBox maintains a speculative fetch PC that advances ahead of the architectural PC. On misprediction, the speculative PC is corrected to the resolved target, but the architectural PC remains unchanged until the correcting instruction retires.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: Section 3.9 – Branch Resolution; <a href="appendixb-branchpredictionmechanics.html" class="topiclink">Appendix J - Branch Prediction Mechanics</a> (predictor structures, strategies, hit rates, and CBox interface).</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
 
 
 
@@ -181,11 +205,19 @@ function normHeaders() {
 	normHeaders();
     });
     
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
 	 $(window).resize(); //trigger event for initially small displays
   });
  
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?13_11-branch-handling.html" target="_top">'+baseurl+'index.html?13_11-branch-handling.html</a></p>');
 
 </script>
 </body>

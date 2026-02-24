@@ -1,6 +1,6 @@
-/*! Main Help & Manual WebHelp 3.0 Functions
-	Copyright (c) by Tim Green 2015-2020. All rights reserved. 
-	Contact: tg@it-authoring.com
+﻿/*! Main Help+Manual WebHelp 3.0 Functions
+	Copyright (c) 2015-2026 by Tim Green. All rights reserved. 
+	Contact: https://www.helpandmanual.com
 */
 
 // General variables
@@ -8,6 +8,16 @@ hmFlags.defaultExt = hmFlags.hmDefaultPage.substr(hmFlags.hmDefaultPage.lastInde
 hmFlags.topicExt = hmFlags.hmTOC.substr(hmFlags.hmTOC.lastIndexOf("."));
 
 // var statePrefix = window.history.pushState ? "" : hmFlags.hmMainPage;
+
+// Key groups for keyboard control
+var hmKeys = {
+	keynames: ["Enter","Tab","Escape","Esc","Home","End","ArrowLeft","ArrowUp","ArrowRight","ArrowDown"," ","Left","Up","Right","Down","PageUp","PageDown"],
+	entermenu: ["Enter","ArrowDown"," ","Down"],
+	doenter: ["Enter", " "],
+	escaper: ["Esc","Escape"],
+	godown: ["ArrowDown","ArrowRight","Down"],
+	goup: ["ArrowUp","ArrowLeft","Up"]
+	}
 
 //** Browser capabilities object  **//
 var hmBrowser = {}; 
@@ -25,7 +35,7 @@ var hmBrowser = {};
 	})(document.createElement('rabbit'));
 	hmBrowser.Flandscape = function() {if (hmBrowser.orientation) {return (Math.abs(window.orientation)==90);} else {return (window.innerHeight < window.innerWidth);}};
 	hmBrowser.MobileFirefox = (/Android.+?Gecko.+?Firefox/i.test(navigator.userAgent));
-
+	hmBrowser.isaspx = (/\.aspx??$/i.test(document.location.pathname));
 	hmBrowser.eventType = (('onmousedown' in window && !hmBrowser.nonDeskTouch) ? "mouse" : ('ontouchstart' in window) ? "touch" : ('msmaxtouchpoints' in window.navigator || navigator.msMaxTouchPoints > 0) ? "mstouchpoints" : ('maxtouchpoints' in window.navigator || navigator.maxTouchPoints > 0) ? "touchpoints" : "mouse");
 	
 	switch(hmBrowser.eventType) {
@@ -61,34 +71,41 @@ var hmBrowser = {};
 // Global page variables, references, dimensions etc.
 var hmpage = {
 		$navwrapper: $("div#navwrapper"),
+		$helpwrapper: $("div#helpwrapper"),
+		$navtabs: $("div#navpane_tabs"),
+		$dragwrapper: $("div#dragwrapper"),
 		navboxoffset: 0.25,
-		$navcontainer: $("div#navcontainer"),
+		$navcontainer: $("nav#navcontainer"),
 		$navsplitbar: $("div#navsplitbar"),
-		$contcontainers: $("div#navwrapper, div#topicbox"),
+		$contcontainers: $("div#navwrapper, main#topicbox"),
 		$headermenu: $("div#header_menu"),
+		atocmode: "mouse",
 		hmDescription: "",
 		topicfooter: "",
 		hmPicture: "",
 		topicadjust: false,
-		// navWidth: function() {return $("div#navwrapper").width();},
 		FtabsWidth: function(){
-		return $("nav#navpane_tabs").width();
+			let thisnavwidth = 20;
+			$("ul#topictabs li").each(function(){
+				if ($(this).is(":visible"))
+					thisnavwidth += $(this).outerWidth();
+				});
+			return thisnavwidth;
 		},
-		// FnavWidth: function() {return hmpage.$navcontainer.width();},
+		FnavWidth: function() {
+			return hmpage.$navcontainer.width();
+			},
 		navWidth: $("div#navwrapper").width(),
-		FnavWidth: function() {return hmpage.$navwrapper.width();},
-		FmaxNavWidth: function() { return hmDevice.phone ? $(window).width() * 0.9 : hmDevice.tablet ? (hmBrowser.Flandscape() ?  $(window).width() * 0.5 :  $(window).width() * 0.9) : hmpage.topicleft ? $(window).width() * 0.8 : $(window).width() * 0.4;},
-		FminNavWidth: function() { return hmpage.FtabsWidth() + 26 + (hmpage.FnavWidth() - hmpage.$navcontainer.width());},
-		/*FnavOffset: function() {return (Math.round(parseFloat($("div.navbox").css("border-left-width"),10)) + Math.round(parseFloat($("div.navbox").css("border-right-width"),10)))}, */
+		FmaxNavWidth: function() { return hmDevice.phone ? hmpage.$helpwrapper.width() * 0.9 : hmDevice.tablet ? (hmBrowser.Flandscape() ?  hmpage.$helpwrapper.width() * 0.5 :  hmpage.$helpwrapper.width() * 0.9) : hmpage.topicleft ? hmpage.$helpwrapper.width() * 0.8 : hmpage.$helpwrapper.width() * 0.5;},
+		FminNavWidth: function() { return (hmpage.FtabsWidth() < 200 ? 200 : hmpage.FtabsWidth()) + 40 + (hmpage.FnavWidth() - hmpage.$navcontainer.width());},
 		FnavOffset: function() {return parseFloat($("div.navbox").css("border-left-width"),10) + parseFloat($("div.navbox").css("border-right-width"),10);},
 		hmHelpUrl: {},
 		splitter: {},
 		currentnav: 0, // Index of current navigation tab
 		currentTopicID: "",
-		$headerbox: $("div#headerbox_wrapper"),
-		// $headerboxwrapper: $("div#headerbox_wrapper"),
-		$topicbox: $("div#topicbox"),
-		$topicboxTop: $("div#topicbox").offset().top,
+		$headerbox: $("header#headerbox_wrapper"),
+		$topicbox: $("main#topicbox"),
+		$topicboxTop: $("main#topicbox").offset().top,
 		$topicheader: $("table#topicheadertable td"),
 		$topichdwrap: $("div#topicheaderwrapper"),		
 		topichdoffset: $("td#topicnavcell").innerHeight() + 1 - $("div#topicheaderwrapper > h1.p_Heading1").outerHeight(),
@@ -97,26 +114,22 @@ var hmpage = {
 		$searchbox: $("div#searchbox"),
 		$headerwrapper: $("div#headerwrapper"),
 		$pagebody: $("div#hmpagebody"),
-		$pageheader: $("div#hmpageheader"),
-		// $navhandle: $("img#draghandleicon"),
+		$pageheader: $("nav#hmpageheader"),
 		$navhandle: $("div#dragwrapper"),
 		$navtools: $("div#dragwrapper,div#toolbutton_wrapper"),
 		FheaderHeight: function() {
 			return $("div#headerbox").height();
 			},
 		headerheightStatic: parseInt($("div#headerbox").css("height"),10),
-		$headerpara: $("div#headerwrapper h1.page_header"),
-		topicleft: $("div#topicbox").position().left < 50,
-		navclosed: $("div#navwrapper").position().left < 0,
+		topicleft: $("main#topicbox").position().left < 50,
+		navclosed: Math.round($("div#navwrapper").position().left) < 0,
 		narrowpageX: false,
 		Fnarrowpage: function() {
 			return (
-			(!hmDevice.phone && $(window).width() <= ((hmFlags.tocInitWidth+20)*2)) ||
+			(!hmDevice.phone && hmpage.$helpwrapper.width() <= ((hmFlags.tocInitWidth+20)*2)) ||
 			(hmDevice.phone && !hmBrowser.Flandscape())|| 
-			(hmDevice.tablet && !hmBrowser.Flandscape() && $(window).width() <= ((hmFlags.tocInitWidth+20)*3)) ||
-			(hmDevice.desktop && $(window).width() < 600)
-			// (hmDevice.desktop && hmDevice.embedded && $(window).width() <= 700)
-			// (hmDevice.desktop && ($(window).width() /  (hmpage.FtabsWidth() +12) < 3))
+			(hmDevice.tablet && !hmBrowser.Flandscape() && hmpage.$helpwrapper.width() <= ((hmFlags.tocInitWidth+20)*3)) ||
+			(hmDevice.desktop && hmpage.$helpwrapper.width() < 600)
 			);},
 		headerclosedonopen: (function(){
 			var storedHeaderState = sessionVariable.getSV("headerState");
@@ -143,7 +156,7 @@ var hmpage = {
 		initialized: false,
 		projectBaseFontRel: "100",
 		projectStoredFont: function(){
-			var testVal = sessionVariable.getPV("fontSize");
+			var testVal = sessionVariable.getPV("hmFontSize");
 			if (testVal !== null)
 			return (parseInt(testVal,10)/100) * 16;
 			else return NaN},
@@ -156,8 +169,61 @@ var hmpage = {
 		Fpix2em: function(pix) {return (pix / this.FbaseFontSize());},
 		Fem2pix: function(em) {return (em * this.FbaseFontSize());},
 		anchorX: hmBrowser.server ? "\?anchor\=" : "\!anchor\=",
-		anchorY: hmBrowser.server ? "\?" : "\!"
+		anchorY: hmBrowser.server ? "\?" : "\!",
+		embeddedBorder: true,
+		currentScrollPos: {},
+		tScrollHistory: false
 	};
+
+function ScrollHistory() {
+	this.scrollEntries = [];
+	this.filterID = function(t) {
+		if (t.indexOf("\?") > -1)
+			t = t.substr(0, t.lastIndexOf("\?"));
+		if (t.indexOf("\#") > -1)
+			t = t.substr(0, t.lastIndexOf("\#"));
+		return t;
+	}
+	this.addEntry = function(p) {
+		// Max length reached?
+		if (this.scrollEntries.length >= 10)
+			this.scrollEntries.shift();
+		// Replace any existing entry for this topic
+		this.scrollEntries = this.scrollEntries.filter(function (i) {
+		return i.topicID !== p.topicID;
+		});
+		this.scrollEntries.push(p);
+	}
+	this.getEntry = function(t) {
+		t = this.filterID(t);
+		for (var p in this.scrollEntries) {
+			if (this.scrollEntries[p].topicID == t) {
+				return this.scrollEntries[p];
+			}
+		}
+		return false;
+	}
+	this.removeEntry = function(t) {
+		t = this.filterID(t);
+		this.scrollEntries = this.scrollEntries.filter(function (i) {
+		return i.topicID !== t;
+		});
+	}
+}
+
+var scrollHistory = new ScrollHistory();
+
+var ScrollPosEntry = function(tID, sPos) {
+  if (tID.indexOf("\?") > -1)
+	  this.topicID = tID.substr(0, tID.lastIndexOf("\?"));
+  else if (tID.indexOf("\#") > -1)
+	  this.topicID = tID.substr(0, tID.lastIndexOf("\#"));
+  else this.topicID = tID;
+  this.scrollPos =  typeof sPos == "undefined" ? 0 : sPos;
+  this.openToggles = [];
+};
+
+
 // Check for correct encoding in author's project
 if (/%|pt|px/i.test(hmpage.projectBaseFontRel)) {
 	$("*").css("visibility","hidden");
@@ -173,6 +239,7 @@ var hmWebHelp = {
 		currentBS: 0,
 		lastBS: false,
 		visitedTopics: {},
+		minTopicHeader: false,
 		userParams: {paramsCount: 0}
 	};
 
@@ -181,6 +248,186 @@ hmWebHelp.trimString = function(str){
    return str.replace(/^\s+/g, '').replace(/\s+$/g, '');  
 };
 
+	// Header closer and opener for calling to embedded help
+hmWebHelp.closeHeaderIfOpen = function() {
+	if ($("div#headerbox").is(":visible")) {
+		hmWebHelp.pageDimensions.pageHeaderUpDown(false);
+		}
+	};
+hmWebHelp.openHeaderIfClosed = function() {
+	if ($("div#headerbox").is(":hidden")) {
+		hmWebHelp.pageDimensions.pageHeaderUpDown(false);
+		}
+	};
+
+/* Keyboard menu control */
+hmWebHelp.keyMenuControl = function() {
+
+		var $keyEntries = {},
+			keyCount = 0,
+			currentIndex = 0;
+			
+		// Get key  entries
+		$keyEntries = $("div#keyboardinfo > table a");
+		keyCount = $keyEntries.length - 1;
+		currentIndex = 0;
+			
+		var headNavigate = function(event) {
+			event.preventDefault();
+			if (!hmKeys.keynames.includes(event.key)) return;
+			$(document).off("keydown.keyentries");
+			$("h1#keynavtitle").removeAttr("tabindex");
+			$keyEntries[0].focus();
+			$(document).on("keydown.keyentries", keyNavigate);
+		};
+
+		var keyNavigate = function(event) {
+			event.preventDefault();
+			if (!hmKeys.keynames.includes(event.key)) return;
+			if (hmKeys.escaper.includes(event.key)) {
+				$(document).off(".keyentries");
+				setTimeout(function(){
+					$("div#keyboardinfo").show();
+					$("h1#keynavtitle").attr("tabindex","0").focus();
+					$(document).on("keydown.keyentries", headNavigate);
+				},10);
+			};
+			if (hmKeys.doenter.includes(event.key)) {
+				setTimeout(function(){
+					$(document).off("keydown.keyentries").off("keydown.keyentries");
+					Function($keyEntries[currentIndex].href.substring(11))();
+					$("div#keyboardinfo").hide();
+					return;
+				},10);
+			};
+		
+			if (!hmKeys.keynames.includes(event.key)) return;
+			
+			if (event.key == "PageDown") {
+				currentIndex = keyCount;
+				$keyEntries[keyCount].focus();
+			}
+			if (event.key == "PageUp") {
+				currentIndex = 0;
+				$keyEntries[0].focus();
+			}
+			
+			if ((hmKeys.godown.includes(event.key) || (event.key == "Tab" && !event.shiftKey)) && currentIndex+1 > keyCount) 
+		currentIndex = -1;
+	else if ((hmKeys.goup.includes(event.key) || (event.key == "Tab" && event.shiftKey)) && currentIndex-1 < 0) 
+		currentIndex = keyCount+1;
+	
+		if (hmKeys.goup.includes(event.key) || (event.key == "Tab" && event.shiftKey)) {
+			$keyEntries[currentIndex-1].focus();
+		} else if (hmKeys.godown.includes(event.key) || (event.key == "Tab" && !event.shiftKey)) {
+			$keyEntries[currentIndex+1].focus();
+			}
+	
+	if (hmKeys.godown.includes(event.key) || (event.key == "Tab" && !event.shiftKey)) {
+		currentIndex++;
+		} else if (hmKeys.goup.includes(event.key) || ( event.key == "Tab" && event.shiftKey)) {
+			currentIndex--;
+			}
+	}; // KeyNavigate
+			
+		if ($("div#keyboardinfo").is(":hidden")) {
+			$(document).off(".keyentries");
+			$("div#keyboardinfo").show();
+			$("div#keyboardinfo").off("click").on("click", function(event){
+				$("h1#keynavtitle").attr("tabindex","0").focus();
+			});
+			hmWebHelp.unClicker('keyboardinfo');
+			setTimeout(function(){
+				$("h1#keynavtitle").attr("tabindex","0").focus();
+			},300);
+			$(document).on("keydown.keyentries", headNavigate);
+		}
+	}// keyMenuControl()
+
+// Set focus for header and topic for keyboard control
+hmWebHelp.pageFocus = function(mode) {
+
+	hmWebHelp.closeMenus();
+
+	switch (mode) {
+		
+		case "nav":
+			$("a#contentstablink").focus();
+		break;
+		
+		case "info":
+		if ($("div#keyboardinfo").is(":hidden")) {
+			hmWebHelp.keyMenuControl();
+		} else {
+			$(document).trigger(hmBrowser.touchstart);
+			}
+		break;
+		
+		case "topic":
+		$("h1.topictitle").first().attr("tabindex","0").focus();
+		break;
+		case "body":
+		let $bod = $("div#hmpagebody_scroller span, div#hmpagebody_scroller p, div#hmpagebody_scroller a").first();
+		let $par = $bod.parent("p");
+		if ($par.length > 0) $bod = $par;
+		if ($bod[0].tagName.toLowerCase() == "span") {
+			let $toggle = $bod.children("a.dropdown-toggle").first();
+			if ($toggle.length > 0) $bod = $toggle;
+			}
+		$bod.attr("tabindex","0").focus();
+		break;
+		
+		case "header":
+		if ($("div#headerbox").is(":hidden")) {
+		hmWebHelp.pageDimensions.pageHeaderUpDown(true);
+		}
+		var $head = $("div#headerbox").find("a").first();
+		$head.focus();
+		$head.css({"box-shadow": "0 0 0 1px #444444"});
+		$head.on( hmBrowser.touchstart + ".headerclick keydown.headerclick", function(){
+			$(this).removeAttr("style").off(".headerclick");
+		});
+		break;
+		}				
+	}; // pageFocus
+	
+hmWebHelp.embedBorderSwitch = function(mode, winWidth) {
+	var borderWidth = "thin";
+	
+	if (["zoomin", "zoomout"].includes(mode)) {
+		if (mode == "zoomout") {
+			if (!hmpage.embeddedBorder) {
+				$("div#helpwrapper").css("border", borderWidth + " solid #888888");
+				} 
+			$("div#helpwrapper").css("border-width", "0 " + borderWidth + " 0 " + borderWidth);
+			
+			// Clear borders if the window is narrower than the viewport
+				if ($('div#helpwrapper').width() < winWidth) {
+						$('div#helpwrapper').css("border-width", "0 " + borderWidth);
+					} else {
+						$('div#helpwrapper').css("border-width", "0 0");
+					}
+		} else {
+			if (hmpage.embeddedBorder) {
+				$("div#helpwrapper").css("border-width", borderWidth + " " +  borderWidth + " "  + borderWidth + " " + borderWidth);
+				} else {
+				$("div#helpwrapper").css("border-width", "0 0 0 0");	
+				} 
+		}
+	} else if (["bordersOn", "bordersOff"].includes(mode)){
+		if (mode == "bordersOn") {
+			$("div#helpwrapper").css({"border-left-width": borderWidth,  "border-right-width": borderWidth});
+		} else {
+			$("div#helpwrapper").css({"border-left-width": "0",  "border-right-width": "0"});
+		}
+	}
+}
+// Scroll to top for script link use
+   var ScrollTop = function() {
+	   hmpage.$scrollBox.scrollTo(0,600);
+   }
+
+// Function for getting topic js file from cache instead of reloading it
 jQuery.cachedScript = function( url, options ) {
 
   // Use .done(function(script,textStatus){}); for callbacks
@@ -192,13 +439,6 @@ jQuery.cachedScript = function( url, options ) {
     url: url
   });
   return jQuery.ajax( options );
-};
-
-// Topic tracking function
-var HMTrackTopiclink = function(obj) {
-	  if (gaaccount !== "") {
-		   hmWebHelp.track("exit", obj.href);
-		}
 };
 
 // Handler for post-loading functions from files
@@ -243,6 +483,23 @@ hmWebHelp.closePopup = function() {
 				hmXPopup.closePopup();
 			}
 };
+
+// Close header drop-down menus
+hmWebHelp.closeTopNav = function(instant) {
+
+	let currentFocus = document.activeElement,
+		$thisMenu = $(currentFocus).parents("li.header").last().find("a").first();
+	
+	if ($thisMenu.length > 0 && currentFocus != $thisMenu[0]) {
+		$thisMenu[0].focus();
+		return;
+		}
+
+	var speed = instant ? 0 : "fast";
+	$("ul.topnav li ul.subnav").slideUp(speed);
+	$("ul.topnav > li > a.current").removeClass("current");
+	$("ul.topnav li.header svg use").attr("xlink:href","#menu-closed");
+}
 
 // TOC navigation management object
 hmWebHelp.tocNav = new function() {
@@ -327,8 +584,7 @@ hmWebHelp.tocNav = new function() {
 				tempslice = args[x].split(stop);
 				if (tempslice.length == 3) {
 					if (tempslice[1] !== "") {
-						bakedbread += '\<a href="javascript:void(0)" onclick="hmWebHelp.tocNav({action: \'set\', bs: '+tempslice[0]+', href: \''+hmWebHelp.targetCheck(tempslice[1])+'\'})"\>' + tempslice[2] + '\</a\> &gt; ';
-		
+						bakedbread += '\<a href="javascript:void(0)" title="'+tempslice[2]+'" onclick="hmWebHelp.tocNav({action: \'set\', bs: '+tempslice[0]+', href: \''+hmWebHelp.targetCheck(tempslice[1])+'\'})"\>' + tempslice[2] + '\</a\> &gt; ';
 					}
 					else
 						bakedbread += tempslice[2] + '\</a\> &gt; ';
@@ -371,8 +627,12 @@ hmWebHelp.tocNav = new function() {
 				$next.attr("class","topicnavlink nav").attr("title","Go to next topic").attr("href",args.nhf).attr("data-bs",args.nbs).attr("data-ac",args.nac);
 			}
 	
-		$("a.topicnavlink.nav").off("click").off(hmBrowser.touchstart).on("click",function(event){event.preventDefault(); event.stopPropagation();}).on(hmBrowser.touchstart, function(event) {
+		$("a.topicnavlink.nav").off("click").off(hmBrowser.touchstart + " keydown").on("click", function(event){
+			event.preventDefault(); event.stopPropagation();
+			}).on(hmBrowser.touchstart + " keydown", function(event) {
+		if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
 		targetHref = $(this).attr('href') + ($(this).attr('data-ac') === '' ? '' : hmpage.anchorX + $(this).attr('data-ac').substr(1));
+		scrollHistory.removeEntry(targetHref);
 		hmWebHelp.tocNav({action: "set", href: targetHref, bs: parseInt($(this).attr('data-bs'),10)}); 
 	});
 		
@@ -411,130 +671,42 @@ hmWebHelp.tocNav = new function() {
 	};
 	}();
 
-// HM Google Analytics tracking function
-
-if (gaaccount !== "") {
-	hmWebHelp.lastTrackEvent = "";
-	if (typeof gatrackername == "undefined") {
-		// HM7 Version
-		hmWebHelp.gaTrackerName = "";
-		hmWebHelp.gaTrackerPath = 0;
-	} else {
-		// HM 8 version
-		hmWebHelp.gaTrackerName = gatrackername;
-		hmWebHelp.gaTrackerPath = gatracklevels;
-	}
-		if (hmWebHelp.gaTrackerPath == 0) {
-			
-			hmWebHelp.gaTrackerPath = "";
-			
-		} else if (hmWebHelp.gaTrackerPath == 9) {
-			
-			hmWebHelp.gaTrackerPath = location.host + location.pathname;
-			hmWebHelp.gaTrackerPath = hmWebHelp.gaTrackerPath.substr(0,hmWebHelp.gaTrackerPath.lastIndexOf("\/")+1);
-			
-		} else {
-			
-			let pathLevels = hmWebHelp.gaTrackerPath,
-				pathString = location.pathname.substr(0,location.pathname.lastIndexOf("\/")),
-				pathArray = pathString.split("\/");
-				hmWebHelp.gaTrackerPath = "";
-				
-			for (var y = pathArray.length-1; pathLevels > 0; y--) {
-    			if (y == 0) break;
-				hmWebHelp.gaTrackerPath =  pathArray[y] + "\/" + hmWebHelp.gaTrackerPath;
-				pathLevels--;
-			}
-			hmWebHelp.gaTrackerPath = "\/" + hmWebHelp.gaTrackerPath;
+// Close all drop-down menus before continuing with something else
+hmWebHelp.closeMenus = function() {
+	
+	let active = 0;
+	
+	if ($("div#navigationmenu").is(":visible") && !hmDevice.phone) {
+		hmWebHelp.hamburgerMenu("close");
+		active++;
 		}
-		
-		hmWebHelp.gaTrackerSource = hmWebHelp.gaTrackerPath == "" ? "" : hmWebHelp.gaTrackerPath + "index.html" + "?q=";
+	if (!hmDevice.phone && hmWebHelp.minTopicHeader) {
+		$("div#header_menu").hide();
+		active++;
+		}
+	if (!hmDevice.phone && !hmWebHelp.minTopicHeader) {
+		hmWebHelp.closeTopNav(true);
+		active++;
+		}
+	if (hmDevice.phone && $("div#header_menu").is(":visible")) {
+		hmWebHelp.closeTopNav();
+		active++;
+		}
+	if ($("div#autoTocWrapper").is(":visible") && !hmDevice.phone) {
+		hmWebHelp.funcs.hm_autotoc("close");
+		active++;
+		}
+	if ($("div#keyboardinfo").is(":visible")) {
+		$(document).off(".keyentries").off(".keyentries");
+		$("div#keyboardinfo").hide();
+		active++;
+		}
+	if ($("div#hmpopupbox").is(":visible")) {
+		hmWebHelp.closePopup();
+		active++;
+	}
+	//if (active > 0) $("[tabindex]").removeAttr("tabindex");
 }
-
-hmWebHelp.track = function(action, data) {
-
-	if (gaaccount !== "") {
-		
-		// Initiate the tracker on first call
-		if (typeof ga == "undefined") {
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-			
-			if (hmWebHelp.gaTrackerName == "") {
-				ga('create', {
-					trackingId: gaaccount,
-					cookieDomain: 'auto'
-				});
-			} else {
-				ga('create', {
-					trackingId: gaaccount,
-					cookieDomain: 'auto',
-					name: hmWebHelp.gaTrackerName
-				});
-			}
-
-			let entryPage = document.location.pathname.substr(document.location.pathname.lastIndexOf("\/")+1);
-			if (hmWebHelp.gaTrackerName != "") hmWebHelp.gaTrackerName = hmWebHelp.gaTrackerName + "."; 
-
-			ga(hmWebHelp.gaTrackerName + 'set', 'page', hmWebHelp.gaTrackerPath + entryPage)
-			ga(hmWebHelp.gaTrackerName + 'send', 'pageview');
-			return;
-		}
-		
-		// Tracking after initialization
-		if (typeof ga != "undefined" && (hmWebHelp.lastTrackEvent != action+data)) {
-			hmWebHelp.lastTrackEvent = action+data;	
-		} else {
-			return;
-		}
-		// Tracking calls after first init
-		switch(action) {
-			case "topic":
-				data = data.substring(data.indexOf("//")+1,data.length);
-				data = data.substring(data.lastIndexOf("/")+1,data.length);
-				if (data.indexOf("\?\&_suid") > 0) data = data.substr(0,data.indexOf("\?"));
-				if (data.substr(0,1) == "\/") data = data.substr(1);
-				if (data.indexOf("\?") < data.lastIndexOf("\?")) {
-					data = data.replace(/\?q=/,"\&q=");
-				}
-				ga(hmWebHelp.gaTrackerName + 'set', 'page', hmWebHelp.gaTrackerPath + decodeURIComponent(data));
-				ga(hmWebHelp.gaTrackerName + 'send', 'pageview');
-				break;
-	  
-			case "search":
-				ga(hmWebHelp.gaTrackerName + 'send', {
-					hitType: 'event',
-					eventCategory: 'Search Help',
-					eventAction: 'Search',
-					eventLabel: hmWebHelp.gaTrackerSource + decodeURIComponent(data)
-				  });
-			  break;
-	  
-			case "index":
-				ga(hmWebHelp.gaTrackerName + 'send', {
-					hitType: 'event',
-					eventCategory: 'Select Index Keyword',
-					eventAction: 'Click Index',
-					eventLabel: hmWebHelp.gaTrackerSource + decodeURIComponent(data)
-				  });
-			  break;
-	  
-			case "exit":
-				ga(hmWebHelp.gaTrackerName + 'send', {
-					hitType: 'event', 
-					eventCategory: 'Outbound Link', 
-					eventAction: 'Click Link', 
-					eventLabel: decodeURIComponent(data), 
-					transport: 'beacon'
-				  });
-			  break;
-			}
-
-	}
-
-}; // hmWebHelp.track
 
 // Initialize page-specific event handlers
 hmWebHelp.hmTopicPageInit = function() {
@@ -546,20 +718,46 @@ hmWebHelp.hmTopicPageInit = function() {
 		$videoToggles = $("div.video-lightbox"),
 		$inlineToggles = $("a.inline-toggle");
 		
-	// Refresh scrollbox reference for new content
-	hmpage.$scrollBox = hmDevice.phone ? $("div#topicbox") : $("div#hmpagebody_scroller");
-	hmpage.$scrollContainer = hmDevice.phone ? $("body") : $("div#hmpagebody");
+	// Copy Code boxes
+	var	$copyCodeBoxes = $("span.f_CodeSampleLink");
 	
+	if ($copyCodeBoxes.length > 0) {
+		$copyCodeBoxes.on("click", function(event) {
+			hmWebHelp.extFuncs('hmDoCopyCode', event.originalEvent);
+			});
+		};
+		
+	// Refresh scrollbox reference for new content
+	hmpage.$scrollBox = hmDevice.phone ? $("main#topicbox") : $("div#hmpagebody_scroller");
+	hmpage.$scrollContainer = hmDevice.phone ? $("body") : $("div#hmpagebody");
+	var scrollEvent = ("onscrollend" in document.getElementById("hmpagebody")) ? "scrollend" : "scroll";
+	hmpage.$scrollBox.on(scrollEvent, function() {
+		hmpage.currentScrollPos.scrollPos = hmpage.$scrollBox.scrollTop();
+		});
+
 	// Display atoc scroll menu on pages with atoc links
-	if ($("span[class*='_atoc']").length >= parseInt("3",10) && !hmDevice.phone) {
-		$("a#atoclink").css("visibility","visible").off(hmBrowser.touchstart).on(hmBrowser.touchstart, 
+	if (true && $("span[class*='_atoc']").length >= parseInt("3",10) && !hmDevice.phone) {
+		$("a#atoclink").css("visibility","visible").off(hmBrowser.touchstart + " keydown").on(hmBrowser.touchstart + " keydown", 
 			function(event){
+			hmpage.atocmode = "keyboard";
+			if (event.type == "keydown" && !hmKeys.entermenu.includes(event.key)) return;
+			//Catch right-clicks
+			if (typeof(event.button) != "undefined" && event.button !== 0) return;
+			if (event.type != "keydown") {
 			event.preventDefault(); event.stopPropagation();
+			hmpage.atocmode = "mouse";
+			}
 			hmWebHelp.extFuncs('hm_autotoc',event);
 			});
 		} else {
 			$("a#atoclink").css("visibility","hidden");
 		}
+		
+	// Open web, file and script links with Enter and Space
+	$("a.weblink, a.filelink, a.scriptlink").off(hmBrowser.touchstart + " keydown").on(hmBrowser.touchstart + " keydown", function(event) { 
+		if (event.type !== "keydown" || (event.type == "keydown" && !hmKeys.doenter.includes(event.key))) return;
+		$(this)[0].click();
+	});
 	
 	// Topic links incl. anchors, anchor links within topics
 	
@@ -574,7 +772,8 @@ hmWebHelp.hmTopicPageInit = function() {
 			}
 		});
 	
-	$("a.topiclink, a.topichotspot, p#ptopic_breadcrumbs a, input.topiclink").off(hmBrowser.touchstart).on("click",function(event){event.preventDefault(); event.stopPropagation();}).on(hmBrowser.touchstart, function(event) {
+	$("a.topiclink, a.topichotspot, p#ptopic_breadcrumbs a, input.topiclink").off(hmBrowser.touchstart + " keydown").on("click", function(event){event.preventDefault();}).on(hmBrowser.touchstart + " keydown", function(event) {
+		if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
 		//Catch right-clicks
 		if (typeof(event.button) != "undefined" && event.button !== 0) return;
 		event.preventDefault(); event.stopPropagation();
@@ -603,24 +802,29 @@ hmWebHelp.hmTopicPageInit = function() {
 			hmWebHelp.funcs.toggleLayoutTable({action: "hide", instant: true});
 		}
 
-		// Filter out anchor links to targets in current topic 
+		// Filter out anchor links to targets in current topic and scrolltop links 
 		if (thisAnchor && !newPage) { 
 			hmWebHelp.scrollTopic(thisAnchor);
+		} else if (!thisAnchor && !newPage) {
+			hmpage.$scrollBox.scrollTo(0,400);
 		} else {
 				target = hmWebHelp.targetCheck(target);
 				if (hmWebHelp.hmMainPageCheck(target)) {
-					//History.pushState(null,null,target);
+					//Clear the scroll history for clicked links
+					scrollHistory.removeEntry(target);
 					hmWebHelp.tocNav({action: "set", href: target, bs: false});
+
 				}
 			}
 		});
-		
-		// Suppress right-click in navigation menu entries
-		$("div#navigationmenu").children().contextmenu(function(){return false;});
-		
+
 		// Popup links
-			$("a.popuplink,a.popuphotspot,a.topichotspot[href^='javascript:void']").contextmenu(function(){return false;}).on(hmBrowser.touchstart,function(event){
-			event.preventDefault();
+			$("a.popuplink,a.popuphotspot,input.popuplink,a.topichotspot[href^='javascript:void']").off(hmBrowser.touchstart + " keydown").on(hmBrowser.touchstart + " keydown", function(event){
+			
+			if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
+			if (event.type != "keydown") {
+				event.preventDefault();
+				}
 			if (typeof(event.button) != "undefined" && event.button !== 0) return;
 			var popupTarget = $(this).attr("data-target"),
 				popupPath = $(this).attr("data-path"),
@@ -628,6 +832,18 @@ hmWebHelp.hmTopicPageInit = function() {
 				// Need original event for touch coordinates
 				ev = event.originalEvent,
 				phonetop = hmpage.Fem2pix(3.000) - 10;
+				
+			// Change extension for ASPX version
+			if (hmBrowser.isaspx) {
+				var newTarget = popupTarget;
+				switch (popupTarget) {
+					
+					case "_hmpermalink.html":
+						newTarget = "_hmpermalink.aspx";
+						break;
+				}
+			}
+				
 			if (typeof hmXPopup === "object") {
 				hmXPopup.clickX = hmDevice.phone ? 0 : ev.pageX;
 				hmXPopup.clickY = hmDevice.phone ? phonetop : ev.pageY;
@@ -652,22 +868,141 @@ hmWebHelp.hmTopicPageInit = function() {
 			}
 		});
 		
-		// var hmbevent = (hmDevice.desktop  && !hmBrowser.touch) ? hmBrowser.hover :  hmBrowser.touchstart;
-		$("a#hamburgerlink").contextmenu(function(){return false;}).off(hmBrowser.touchstart).on(hmBrowser.touchstart, function(event){
-			event.preventDefault(); event.stopPropagation();
+		
+		
+		/* Hamburger Menu */
+		$("a#hamburgerlink").off(hmBrowser.touchstart + " keydown").on(hmBrowser.touchstart + " keydown", function(event) {
+
+			if (event.type != "keydown") {
+				//Catch right-clicks
+				if (typeof(event.button) != "undefined" && event.button !== 0) return;
+				event.stopPropagation();
+				event.preventDefault();
+			} else {
+				if (!hmKeys.keynames.includes(event.key)) return;
+
+				var $hamburgerEntries = {},
+					hamburgerCount = 0,
+					currentIndex = 0;
+				}
+			
+			var hamburgerNavigate = function(event) {
+				
+				if (!hmKeys.keynames.includes(event.key)) {
+					return;
+				}
+				
+				if (hmKeys.escaper.includes(event.key)) {
+				$("a#hamburgerlink")[0].focus();
+				return;
+				}
+
+				if (event.key == "PageUp") {
+				currentIndex = 0;
+				$hamburgerEntries[0].focus();
+			}
+			if (event.key == "PageDown") {
+				currentIndex = hamburgerCount;
+				$hamburgerEntries[hamburgerCount].focus();
+			}
+
+				if (!hmKeys.doenter.includes(event.key)) event.preventDefault();	
+				
+				if ((hmKeys.godown.includes(event.key) ||  (event.key == "Tab" && !event.shiftKey)) && currentIndex+1 > hamburgerCount) 
+				currentIndex = -1;
+				else if ((hmKeys.goup.includes(event.key) ||  (event.key == "Tab" && event.shiftKey)) && currentIndex-1 < 0)
+				currentIndex = hamburgerCount+1;
+			
+				if (hmKeys.goup.includes(event.key) || (event.key == "Tab" && event.shiftKey)) {
+					$hamburgerEntries[currentIndex-1].focus();
+				} else if (hmKeys.godown.includes(event.key) || (event.key == "Tab" && !event.shiftKey)) {
+					$hamburgerEntries[currentIndex+1].focus();
+					}
+			
+			if (hmKeys.godown.includes(event.key) || (event.key == "Tab" && !event.shiftKey)) {
+				currentIndex++;
+				} else if (hmKeys.goup.includes(event.key) || ( event.key == "Tab" && event.shiftKey)) {
+					currentIndex--;
+					}
+			
+			if (event.key == " ") {
+
+				let thisBurger = $($hamburgerEntries[currentIndex]).parent().attr("id");
+				
+				var finishUp = function(f,h) {
+				setTimeout(function(){
+					if (!h) hmWebHelp.hamburgerMenu();
+					if (f) $("a#hamburgerlink").focus();
+				},1000);
+				}
+				
+				switch(thisBurger) {
+					
+					case "showhide_pageheader":
+					finishUp(true);
+					break;
+					case "showhide_toggles":
+					hmWebHelp.extFuncs('hmDoToggle',{method: 'hmToggleToggles', obj: {speed: 80}});
+					finishUp(true);
+					break;
+					case "hm_printable_version":
+					let thistopic = document.location.pathname;
+					thistopic = thistopic.substr(thistopic.lastIndexOf("\/")+1);
+					thistopic = thistopic.replace(/\?.*$/,"");
+					window.open("_hm_print_window.htm?"+thistopic, 'hm_print_window');
+					finishUp(true);
+					break;
+					case "mailfeedback":
+					hmWebHelp.extFuncs('hm_mail_feedback')
+					finishUp(true,true);
+					break;
+					case "sharetopic":
+					finishUp(false,true);
+					break;
+					case "savepermalink":
+					finishUp(false);
+					break;
+					case "changefontsize":
+					case "toggle_fullscreen":
+					$($hamburgerEntries[currentIndex]).click();
+					break;
+					}
+				}
+			}
+			
+			if (event.type == "keydown" && hmKeys.entermenu.includes(event.key)) {
+
+			setTimeout(function(){
+
+				// Get visible hamburger menu  entries
+				$hamburgerEntries = $("ul#hamburgermenu a:visible");
+				hamburgerCount = $hamburgerEntries.length - 1;
+				$hamburgerEntries[0].focus();
+				$(document).on("keydown.hamburger", hamburgerNavigate);
+				},350);	
+			} //else return;
+			
+			if ($("div#navigationmenu").is(":visible")) {
+				hmWebHelp.closeMenus();
+				return;
+			};
 			if (hmDevice.tablet)
 				$(this).addClass('navhilite');
-			$("ul.topnav li ul.subnav").slideUp("fast");
-			$("ul.topnav > li > a.current").removeClass("current");
-			hmWebHelp.hamburgerMenu();
-			}).on(hmBrowser.touchend,function(event){
+			hmWebHelp.closeMenus();
+			if (event.type != "keydown" || hmKeys.entermenu.includes(event.key)) {
+				hmWebHelp.hamburgerMenu();
+			}
+			}).on(hmBrowser.touchend, function(event){
 			if (hmDevice.tablet)
 				$(this).removeClass('navhilite');
 			});
 		// Printable version link in hamburger menu
 		if (!hmDevice.phone && hmBrowser.server) {
-			$("a#hm_printable_link").attr("href","_hm_print_window.htm?" + hmFlags.hmCurrentPage);
-			
+			let printwindow = "_hm_print_window.htm?";
+			if (hmBrowser.isaspx) {
+				printwindow = "_hm_print_window.aspx?";
+			}
+			$("a#hm_printable_link").attr("href",printwindow + hmFlags.hmCurrentPage).attr("target","hm_print_window");
 			}
 		
 		// Hide server-only stuff when local
@@ -680,13 +1015,16 @@ hmWebHelp.hmTopicPageInit = function() {
 		}
 		else {
 			$(".toggles").show();
-			$dropToggles.on(hmBrowser.touchstart,function(event){
-			event.preventDefault();
+			$dropToggles.on(hmBrowser.touchstart + " keydown", function(event){
+			if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
+			if (event.type != "keydown") {
+				event.preventDefault();
+				}
 			var toggleArgs = {method: "HMToggle", obj: $(this), clicked: true};
 			hmWebHelp.extFuncs("hmDoToggle",toggleArgs);
 			});
 			if ($dropIcons.length > 0)
-			$dropIcons.on(hmBrowser.touchstart,function(event){
+			$dropIcons.on(hmBrowser.touchstart, function(event){
 			event.preventDefault();
 			var toggleArgs = {method: "HMToggleIcon", obj: $(this), clicked: true};
 			hmWebHelp.extFuncs("hmDoToggle",toggleArgs);
@@ -702,9 +1040,59 @@ hmWebHelp.hmTopicPageInit = function() {
 			
 		}
 		
+		// Page border in narrow windows when not embedded
+		function manageBorders() {
+		var toWide = false,
+			toNarrow = false,
+			activeBorderWidth = "thin",
+			viewportWidth = $("div#helpwrapper").width(),
+			windowWidth = $(window).width() - 2;
+		if (windowWidth <= viewportWidth) {
+			$("div#helpwrapper").css("border-width","0 0");
+			}
+			
+		function doBorders() {
+				viewportWidth = $("div#helpwrapper").width(),
+				windowWidth = $(window).width() - 2;
+				
+			if (windowWidth > viewportWidth && !toWide) {
+				toWide = true;
+				toNarrow = false;
+				$("div#helpwrapper").css("border-width","0 " + activeBorderWidth);
+				}
+			else if (windowWidth <= viewportWidth && !toNarrow) {
+				toNarrow = true;
+				toWide = false;
+				$("div#helpwrapper").css("border-width","0 0");
+			}
+		}
+		$(window).on("resize",doBorders);
+	}
+	if (!hmDevice.embedded && hmDevice.desktop) { var mB = new manageBorders();}
+    
+		// Page border and Hamburger Menu entry and page border for aspx under SharePoint
+
+		if (hmDevice.embedded && !hmDevice.phone) {
+			
+			if (hmDevice.desktop) {
+				if (true) {
+					$("div#helpwrapper").css("border", "thin solid #888888");
+				}
+				else {
+					$("div#helpwrapper").css("border", "0 solid #888888");
+				}
+			}
+			
+			if (hmBrowser.isaspx ) {
+				let $hmb_zoomentry = $("a[onclick='hmWebHelp.doFullEmbedWindow(this)']");
+				$hmb_zoomentry.attr("title","Open this documentation in a new tab");
+				$hmb_zoomentry.children("span").first().text("Open in New Window");
+			}
+		}
+		
 		// Inline Text Toggles
 		if ($inlineToggles.length > 0) {
-			$inlineToggles.on(hmBrowser.touchstart,function(event){
+			$inlineToggles.on(hmBrowser.touchstart, function(event){
 				event.preventDefault();
 				hmWebHelp.extFuncs("hmDoInlineToggle",$(this));
 			});
@@ -712,10 +1100,15 @@ hmWebHelp.hmTopicPageInit = function() {
 		
 		// Image Toggles
 
-		$("a.imagetogglelink").on("click",function(event){
+		$("a.imagetogglelink").on("click", function(event){
 			event.preventDefault();
-		});
-		$("img.image-toggle,svg.image-toggle-magnifier").on("click",function(event){
+			}).on("keydown", function(event){
+				if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
+				$(this).find("img").click();
+			});
+
+		$("img.image-toggle,svg.image-toggle-magnifier").on("click", function(event){
+			event.preventDefault();
 			let $thisImg = $(this).parent().children("img").first();
 			if (hmDevice.device === "phone")
 				hmWebHelp.extFuncs("hmImageToggleMobile",$thisImg);
@@ -726,7 +1119,7 @@ hmWebHelp.hmTopicPageInit = function() {
 		// Video lightboxes 
 		if ($videoToggles.length > 0) {
 			$videoToggles.each(function(){
-				$(this).children().first("div").on("click",function(event){
+				$(this).find("div").first().on("click", function(event){
 				event.preventDefault();
 				event.stopPropagation();
 				var vData = {};
@@ -738,7 +1131,7 @@ hmWebHelp.hmTopicPageInit = function() {
 				});
 			});
 		} // video lightboxes
-		
+
 		// Responsive xTables, tap images and layout images for mobile devices
 		if (!hmDevice.desktop) {	
 			
@@ -774,6 +1167,7 @@ hmWebHelp.hmCreateVSplitter = function(leftdiv, rightdiv) {
 	oldLeftV,
 	oldWidthV,
 	oldSplitL,
+	navWidthOffset = $("div#navwrapper").width() - $("nav#navcontainer").width(),
 	startTime = 0,
 	dragTime = 0,
 	$dragsurface = $('div#dragsurface'),
@@ -815,7 +1209,7 @@ hmWebHelp.hmCreateVSplitter = function(leftdiv, rightdiv) {
 		$dragsurface.off(".endevents");
 		$dragsurface.hide();
 		$dragarrows.hide();
-		hmpage.navWidth = hmpage.FnavWidth();
+		hmpage.navWidth = hmpage.$navwrapper.width();
 		sessionVariable.setPV("navWidth",hmpage.navWidth.toString());
 		hmWebHelp.nsheader();
 		hmWebHelp.fHeadUpdate();
@@ -864,7 +1258,8 @@ hmWebHelp.hmCreateVSplitter = function(leftdiv, rightdiv) {
 			var ev = event.originalEvent; 
 			performDrag(ev);
 			});
-		hmpage.$navhandle.on(hmBrowser.touchend, function(event) {
+		hmpage.$navhandle.on(hmBrowser.touchend + " keyup.endevents", function(event) {
+			if (event.type == "keyup" && !hmKeys.doenter.includes(event.key)) return;
 			var ev = event.originalEvent; 
 			endDrag(ev);
 			});
@@ -886,6 +1281,7 @@ hmWebHelp.hmCreateVSplitter = function(leftdiv, rightdiv) {
 		dragcount = 0;
 		dragTime = new Date().getTime() - startTime;
 		
+		// Show the drag arrows indicator on touch devices
 		if (hmBrowser.touch && EventType(e) != "mouse" && $dragarrows.is(":hidden") && dragTime > 80) {
 			$dragarrows.show();
 		$dragarrows.css("top", (hmpage.$pageheader.is(":visible") ? (oldY-(hmpage.$pageheader.height()+30)) + "px" : (oldY) + "px"));
@@ -897,12 +1293,11 @@ hmWebHelp.hmCreateVSplitter = function(leftdiv, rightdiv) {
 		
 		var moveX = (!(document.all && !window.opera)) ? touchobj.pageX - oldX : touchobj.clientX - oldX;
 		var moveY = (!(document.all && !window.opera)) ? touchobj.pageY : touchobj.clientY;
-		var newNavW = navWidthV + moveX < minWidthV ? minWidthV : navWidthV + moveX;
-
+		var newNavW = navWidthV + navWidthOffset + moveX;
 		if ((newNavW <= maxWidthV) && (newNavW >= minWidthV) && !hmpage.navclosed) {
 			hmpage.$navwrapper.css("width", (newNavW + 'px'));
 			if (!hmpage.topicleft) {
-				hmpage.$topicbox.css("left",(oldLeftV + newNavW - navWidthV) + 'px');
+				hmpage.$topicbox.css("left",(oldLeftV + newNavW - (navWidthV + navWidthOffset)) + 'px');
 				}
 			$dragarrows.css("top", (hmpage.$pageheader.is(":visible") ? moveY-(hmpage.$pageheader.height()+30) + "px" : (moveY) + "px"));
 			}
@@ -911,13 +1306,14 @@ hmWebHelp.hmCreateVSplitter = function(leftdiv, rightdiv) {
 		
 	} // performDrag();
 	
-	 $("div#dragwrapper").on(hmBrowser.touchstart, function(event) {
+	 $("div#dragwrapper").on(hmBrowser.touchstart + " keydown", function(event) {
+		if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
 		event.stopPropagation();
 		var ev = event.originalEvent; 
 		startDrag(ev);
 		}); 
 	
-	if (hmDevice.desktop) {
+	if (hmDevice.desktop || hmDevice.tablet) {
 	$("div#navsplitbar").on(hmBrowser.touchstart, function(event) {
 		var ev = event.originalEvent; 
 		startDrag(ev);
@@ -927,60 +1323,71 @@ hmWebHelp.hmCreateVSplitter = function(leftdiv, rightdiv) {
 
 }; // createSplitter
 
-// Bug fix for disappearing divs in some Android browsers
-hmWebHelp.navJitter = function() {
-	setTimeout(function(){
-	if (hmpage.currentnav == 1) {
-		$("li#indextab,a#indextablink").trigger("touchstart");
-		}
-	if (hmpage.currentnav == 2) {
-		$("li#searchtab,a#searchtablink").trigger("touchstart");
-		}
-	},500);
-};
+
+// Close menus on click outside the current menu
+hmWebHelp.unClicker = function(elem1, elem2) {
+	
+	var currentFocus = document.getElementById(elem1),
+		secondFocus = elem2 ? document.getElementById(elem2) : currentFocus;
+			$(document).on(hmBrowser.touchstart + '.closemenu', function(event){
+				if (!currentFocus.contains(event.target) && !secondFocus.contains(event.target)) {
+					$(document).off(hmBrowser.touchstart + '.closemenu');
+					hmWebHelp.closeMenus();
+				}
+			});
+}
 
 hmWebHelp.initTopNav = function() {
-	// Set vertical position of menu 
+	// Set vertical position of menu. Move down below tabs when sidetabs are off
 	 function topInit() {
-		 $("ul.topnav li ul.subnav").css("top",$($("ul.topnav")[0]).height() + "px");
+		 $("ul.topnav li ul.subnav").css({top:($($("ul.topnav")[0]).height() + 5) + "px"});
 	 }
 	
 	// Top-level entries can only include an URL with a target if they have no submenu entries
 	
-	$("ul.topnav > li:has(ul) > a").on(hmBrowser.touchstart,function(event) { 	
+	$("ul.topnav > li:has(ul) > a").on(hmBrowser.touchstart + " keydown", function(event) {
+
+		if (event.type != "keydown") {	
+			event.preventDefault();
+			event.stopPropagation();
+			}
+		if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
+		var $menuTarget = $(this).parent().find("ul.subnav");
+		var $menuSwitcher = $("svg:first-child use", this);
+		var menuOpen = $menuTarget.is(":visible");
 		
-		event.preventDefault();
-		event.stopPropagation();
+		if (!hmDevice.phone) {
+			hmWebHelp.closeTopNav(true);
+		}
 		
-		$("ul.topnav > li > a.current").removeClass("current");
+		if (menuOpen && !hmDevice.phone) return;
+		
 		$(this).addClass("current");
 		
-		if ($("div#navigationmenu").is(":visible") && !hmDevice.phone) {
-			hmWebHelp.hamburgerMenu("close");
-			}
-		if ($("#autoTocWrapper").is(":visible") && !hmDevice.phone) {
-			hmWebHelp.extFuncs("hm_autotoc","snap");
+		// Close other menus and popups on click on headers in version in main page header
+		if (!hmDevice.phone) {
+		hmWebHelp.closeMenus();
 		}
-		// Close any popup before opening menu
-		hmWebHelp.closePopup();
-		var $menuTarget = $(this).parent().find("ul.subnav");
+
 	// Close menus on a click or tap anywhere outside the menu
 	
 	if (!hmDevice.phone) {
-		$("div#unclicker").show().on(hmBrowser.touchstart + ".closemenu",function() {
-			$menuTarget.slideUp("fast");
-			$("ul.topnav > li > a.current").removeClass("current");
-			$("div#unclicker").off(hmBrowser.touchstart + ".closemenu").hide();
-			});
+			hmWebHelp.unClicker('header_menu');
 		}
 			if ($menuTarget.is(":hidden")) {
-				$("ul.topnav li").find("ul.subnav").hide();
 				topInit();
-				$menuTarget.slideDown('fast',function(){
+				$menuSwitcher.attr("xlink:href","#menu-open");
+				// Accordeon close any open submenus on phone to save space
+				if (hmDevice.phone) {
+					$("li.header ul.subnav").slideUp('fast');
+				}
+				$menuTarget.slideDown('fast', function(){
 					$(this).find("li:visible").last().not(".last").addClass("last");
 				});
 				} else {
-					$menuTarget.hide();
+					$menuTarget.slideUp('fast', function(){
+						$menuSwitcher.attr("xlink:href","#menu-closed");
+					});
 					$("ul.topnav > li > a.current").removeClass("current");
 				}
 		if (hmDevice.phone) {
@@ -988,11 +1395,11 @@ hmWebHelp.initTopNav = function() {
 		}
 		});
 		
-		// Also close menus when a link in a submenu is clicked
+		// Also close menus when a link in a submenu is clicked, except on phones
 		$("ul.subnav li a").on("click", function(){
-			$("ul.topnav li").find("ul.subnav").hide();
-			$("ul.topnav > li > a.current").removeClass("current");
-			if (hmDevice.phone) {
+			if (!hmDevice.phone) {
+				hmWebHelp.closeTopNav(true);
+			} else {
 			hmWebHelp.funcs.doVibrate();
 			}
 			});	
@@ -1002,21 +1409,30 @@ hmWebHelp.initTopNav = function() {
 // Load scripts and initialize main page
 hmWebHelp.hmMainPageInit = function() {
 
-	if(!hmDevice.desktop) {
+	if(hmDevice.phone) {
+		// Left/right drag handle for nav pane
 		$("svg#draghandleicon_r").find("use").attr("xlink:href", "#draghandle_rm");
 		$("svg#draghandleicon_l").find("use").attr("xlink:href", "#draghandle_lm");
+		
+		// Up/down button for show/hide page header
+		$("svg#toolbar_updown_close").find("use").attr("xlink:href", "#toolbar_updown_icon");
+		$("svg#toolbar_updown_open").find("use").attr("xlink:href", "#toolbar_updown_icon");
 	}
 	  var setNavWidth = sessionVariable.getPV("navWidth");
-	  hmpage.splitter = new hmWebHelp.hmCreateVSplitter("div#navwrapper","div#topicbox");
-		 
-		// if (setNavWidth === null)
-		  // setNavWidth = hmpage.Fem2pix(20.000);
-	  // else
+	  hmpage.splitter = new hmWebHelp.hmCreateVSplitter("div#navwrapper","main#topicbox");
+
 		if (setNavWidth !== null)
 		  hmWebHelp.resizePanes(parseInt(setNavWidth,10));
+		else
+		hmWebHelp.resizePanes(parseInt(hmpage.FnavWidth(),10));
 	   hmWebHelp.pageDimensions = new hmWebHelp.pageDims();
 	   if (hmDevice.embedded) hmWebHelp.pageDimensions.embedInit();
-	   if (!hmDevice.embedded && hmpage.headerclosedonopen && !hmDevice.phone) 	hmWebHelp.pageDimensions.pageHeaderUpDown(false);
+	   if (((hmpage.headerclosedonopen && !hmDevice.embedded) || (true && hmDevice.embedded)) && !hmDevice.phone) {
+		   hmWebHelp.pageDimensions.pageHeaderUpDown(false);
+		   $("svg#toolbar_updown_close").hide();
+	   } else {
+		   $("svg#toolbar_updown_open").hide();
+	   }
 	   if (hmpage.headerclosedonopen && hmDevice.phone)
 		hmWebHelp.funcs.mobileUpDown(null);
 	   if (hmDevice.ipad && !window.navigator.standalone) {
@@ -1035,7 +1451,7 @@ hmWebHelp.hmMainPageInit = function() {
 
 
 	// Bind to history StateChange Event
-		History.Adapter.bind(window,'statechange',function(){ 
+		History.Adapter.bind(window,'statechange', function(){ 
 		
 		// Checking for empty currentTopicID prevents double load on start
 		// if the URL is a path without a file name
@@ -1055,14 +1471,12 @@ hmWebHelp.hmMainPageInit = function() {
 				hmpage.currentURI = encodeURI(document.location.href);
 				hmWebHelp.tocNav({action: "href", href: hmpage.hmHelpUrl.topic, bs: false});
 				hmWebHelp.loadTopic(hmpage.hmHelpUrl);
-				hmWebHelp.track('topic', hmpage.currentTopicID + searchQ);
 			}
 		});
 	
 		if (hmpage.hmHelpUrl.topic != hmFlags.hmCurrentPage) {
 			hmWebHelp.currentAnchor = hmpage.hmHelpUrl.anchor !== "" ? hmpage.hmHelpUrl.anchor : false;			
 			hmWebHelp.loadTopic(hmpage.hmHelpUrl);
-			hmWebHelp.track('topic', hmpage.currentTopicID);
 		}
 
 	if (hmpage.hmHelpUrl.topic !== "") {
@@ -1073,16 +1487,15 @@ hmWebHelp.hmMainPageInit = function() {
 			xMessage.sendObject("hmnavigation",{action: "callfunction", fn: "tocSource.findElement", fa: (hmpage.hmHelpUrl.topic + "#" + hmpage.hmHelpUrl.anchor)});
 				},300);
 			}
-			hmWebHelp.track('topic', hmpage.hmHelpUrl.topic + "?anchor=" + hmpage.hmHelpUrl.anchor);
+
 			} else {
 			// Reset title to current title to stop it getting deleted
 			History.replaceState(null,$("title").text(),hmpage.hmHelpUrl.topic);
-			hmWebHelp.track('topic', hmpage.hmHelpUrl.topic);
 		}
 	}
 
 	// Tap response on navhandle
-	hmpage.$navhandle.on(hmBrowser.touchstart,function(event){
+	hmpage.$navhandle.on(hmBrowser.touchstart, function(event){
 		$('div#dragwrapper').addClass('draghilite');
 		setTimeout(function(){
 		$('div#dragwrapper').removeClass('draghilite');
@@ -1091,31 +1504,181 @@ hmWebHelp.hmMainPageInit = function() {
 	
 	// Main page header on/off on desktop browsers
 	if (hmDevice.desktop) {
-		$("li#showhide_pageheader").on(hmBrowser.touchstart,function(event){
+		$("li#showhide_pageheader").on(hmBrowser.touchstart, function(event){
+			//Catch right-clicks
+			if (typeof(event.button) != "undefined" && event.button !== 0) return;
+			hmWebHelp.pageDimensions.pageHeaderUpDown(false);
+		});
+		$("li#showhide_pageheader a").on("keydown", function(event){
+			if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
 			hmWebHelp.pageDimensions.pageHeaderUpDown(false);
 		});
 	}
 	
-	// Tablet button tab for show/hide toolbar
-	if (hmDevice.tablet) {
-		$("div#toolbutton_wrapper").on(hmBrowser.touchstart,function(event){
-				hmWebHelp.pageDimensions.pageHeaderUpDown(false);
+	// Button tab for show/hide toolbar
+	if (hmDevice.tablet || hmDevice.desktop) {
+		$("div#toolbutton_wrapper").on(hmBrowser.touchstart + " keydown", function(event){
+			if (event.type == "keydown" && !hmKeys.doenter.includes(event.key)) return;
+			hmWebHelp.pageDimensions.pageHeaderUpDown(false);
 		});
 	}
 
 	// Bind tab switching click/tap handlers
-	$("a#contentstablink").on(hmBrowser.touchstart,function(event){
-		event.preventDefault();
-		hmWebHelp.switchNavTab('contents');
-		});
-	$("a#indextablink").on(hmBrowser.touchstart,function(event){
-		event.preventDefault();
-		hmWebHelp.switchNavTab('index');
-		});
-	$("a#searchtablink").on(hmBrowser.touchstart,function(event){
-		event.preventDefault();
-		hmWebHelp.switchNavTab('search');
-		});
+	$("a#contentstablink").on(hmBrowser.touchstart + " keydown", function(event){
+		if (event.type != "keydown") {
+			event.preventDefault();
+			hmWebHelp.switchNavTab('contents');
+		} else if (event.type == "keydown") {
+
+			if (![13,9,37,38,39,40,32,27].includes(event.keyCode)) return;
+			
+			event.stopPropagation();
+			event.preventDefault(); 
+			
+			if (event.keyCode == 27) {
+				hmWebHelp.pageFocus("info");
+				return;
+				}
+			
+			switch (event.keyCode) {
+
+				case 13:
+				case 32:
+				hmWebHelp.switchNavTab('contents');
+				break;
+				
+				case 37:
+				case 38:
+				if ($("a#searchtablink").length > 0) {
+						$("a#searchtablink").focus();
+					} else if ($("a#indextablink").length > 0) {
+						$("a#indextablink").focus();
+					}
+				break;
+				
+				case 39:
+				case 40:
+				if ($("a#indextablink").length > 0) {
+					$("a#indextablink").focus();
+				} else if ($("a#searchtablink").length > 0) {
+					$("a#searchtablink").focus();
+					}
+				break;
+				
+				case 9:
+				if (!event.shiftKey) {
+					
+					if ($("a#indextablink").length > 0) {
+						$("a#indextablink").focus();
+					} else if ($("a#searchtablink").length > 0) {
+						$("a#searchtablink").focus();
+						}
+				} else {
+					if ($("a#searchtablink").length > 0) {
+						$("a#searchtablink").focus();
+						} else if ($("a#indextablink").length > 0) {
+							$("a#indextablink").focus();
+							}
+					}
+				break;
+			} // Switch
+		} // Keydown
+		}).on("click", function(event){event.preventDefault();});
+	$("a#indextablink").on(hmBrowser.touchstart + " keydown", function(event){
+		if (event.type != "keydown") {
+			event.preventDefault();
+			hmWebHelp.switchNavTab('index');
+		} else if (event.type == "keydown") {
+
+			if (![13,9,37,38,39,40,32,27].includes(event.keyCode)) return;
+			
+				event.stopPropagation();
+				event.preventDefault();
+
+			if (event.keyCode == 27) {
+				hmWebHelp.pageFocus("info");
+				return;
+				}
+				
+			switch (event.keyCode) {
+				
+				case 13:
+				case 32:
+				hmWebHelp.switchNavTab('index');
+				break;
+				
+				case 39:
+				case 40:
+				if ($("a#searchtablink").length > 0) {
+					$("a#searchtablink").focus();
+					}
+				break;
+				
+				case 37:
+				case 38:
+					$("a#contentstablink").focus();
+				break;
+				
+				case 9:
+				if (!event.shiftKey) {
+					if ($("a#searchtablink").length > 0) {
+						$("a#searchtablink").focus();
+					} else {
+						$("a#contentstablink").focus();
+					}
+				} else {
+					$("a#contentstablink").focus();
+				}
+			} // Switch
+		} // Keydown
+		}).on("click", function(event){event.preventDefault();});
+	$("a#searchtablink").on(hmBrowser.touchstart + " keydown", function(event){
+		if (event.type != "keydown") {
+			event.preventDefault();
+			hmWebHelp.switchNavTab('search');
+		} else if (event.type == "keydown") {
+
+			if (![13,9,37,38,39,40,32,27].includes(event.keyCode)) return;
+			event.stopPropagation();
+			event.preventDefault();
+			
+			if (event.keyCode == 27) {
+				hmWebHelp.pageFocus("info");
+				return;
+				}
+
+			switch (event.keyCode) {
+
+				case 13:
+				case 32:
+				hmWebHelp.switchNavTab('search');
+				break;
+				
+				case 37:
+				case 38:
+				if ($("a#indextablink").length > 0) {
+					$("a#indextablink").focus();
+				} else {
+					$("a#contentstablink").focus();
+					}
+				break;
+				
+				case 39:
+				case 40:
+				$("a#contentstablink").focus();
+				break;
+				
+				case 9:
+				if (event.shiftKey && $("a#indextablink").length > 0) {
+					$("a#indextablink").focus();
+				} else {
+					$("a#contentstablink").focus();
+					};
+				break;
+				
+			};
+		};
+		}).on("click", function(event){event.preventDefault();});
 
 		// Sync the TOC as soon as it's loaded
 		if (hmTocLoaded) {
@@ -1128,12 +1691,6 @@ hmWebHelp.hmMainPageInit = function() {
 			}
 			},100);
 		}
-	// Toggles and popups if there are any
-	// if (typeof hmInitPageToggles == 'function') hmInitPageToggles();
-	// if (typeof hmInitPagePopups == 'function') hmInitPagePopups();
-	
-	// Initialize the topic page specific events
-	// hmWebHelp.hmTopicPageInit();
 
 /* Mobile browsers  */
 if (!hmDevice.desktop) {
@@ -1161,7 +1718,7 @@ if (!hmDevice.desktop) {
 	
 	// Flag the page as initialized 
 	hmpage.initialized = true;
-	
+
 };  // hmWebHelp.hmMainPageInit()
 
 // Main page dimensions function, encapsulates all its own functions and variables
@@ -1173,7 +1730,7 @@ hmWebHelp.pageDims = function() {
 		staticWindow = true,
 		widthChange = false,
 		heightChange = false,
-		leftmargin = hmDevice.device == "phone" ? 0 : document.getElementById("headerbox").getBoundingClientRect().left;
+		leftmargin = 0;
 		
 		// Shadow for navigation pane when it overlaps the rest of the page
 		function navShadow() {
@@ -1190,14 +1747,7 @@ hmWebHelp.pageDims = function() {
 			$("svg#draghandleicon_r").hide();
 			$("svg#draghandleicon_l").show();
 		}
-		if (hmpage.navclosed || hmpage.topicleft) {
-			$("div#navcontainer").css({"box-shadow": "0.090rem 0.085rem 0.2rem  #676767"});
-			hmpage.navShadowOn = true;
-			}
-				else {
-				$("div#navcontainer").css({"box-shadow": "0 0 0 0"});
-				hmpage.navShadowOn = false;
-				}
+
 			if (!hmpage.navclosed && hmpage.topicleft && !hmDevice.phone) {
 				hmpage.$topicbox.css("opacity", "0.7");
 				} else {
@@ -1241,9 +1791,9 @@ hmWebHelp.pageDims = function() {
 		var headerPos = "0.0rem",
 			navboxPosDown = hmpage.Fpix2em(hmpage.$navwrapper.position().top) + "rem",
 			topicPosDown = hmpage.Fpix2em(hmpage.$topicbox.position().top) + "rem",
-			topicPosUp = "0.300rem",
-			navboxPosUp = "0.300rem",
-			$bothBoxes = $("div#navwrapper, div#topicbox"),
+			topicPosUp = "0rem",
+			navboxPosUp = "0rem",
+			$bothBoxes = $("div#navwrapper, main#topicbox"),
 			headerOn = hmpage.$headerbox.is(":visible"),
 			inProgress =  false;
 			
@@ -1258,6 +1808,10 @@ hmWebHelp.pageDims = function() {
 			
 			if (headerOn) {
 				headerOn = false;
+				if (!hmDevice.phone) {
+					$("svg#toolbar_updown_close").hide();
+					$("svg#toolbar_updown_open").show();
+					}
 				navboxPosDown = hmpage.Fpix2em(hmpage.$navwrapper.position().top) + "rem";
 				topicPosDown = hmpage.Fpix2em(hmpage.$topicbox.position().top) + "rem";
 				hmpage.$headermenu.hide();
@@ -1267,35 +1821,44 @@ hmWebHelp.pageDims = function() {
 				hmpage.$topicbox.animate({
 					"top": topicPosUp
 				},(animate ? 400 : 0));
-				hmpage.$headerbox.slideUp((animate ? "400" : "0"), function(){
+				hmpage.$headerbox.slideUp((animate ? 400 : 0), function(){
 				if (reset) animate = true;
 				if (hmDevice.desktop) {
 					$("svg#showhide_header_icon").find("use").attr("xlink:href","#expand");
-					$("li#showhide_pageheader a").first().attr("title","Show Page Header");
+					$("li#showhide_pageheader a").first().attr("title","Show the banner header at the top of the page");
 					$("li#showhide_pageheader span").first().html("Show Page Header");
+					$("div#toolbutton_wrapper").attr("aria-label","Show Page Header");
 					}
 				inProgress = false;
 				sessionVariable.setSV("headerState","closed");
+				$("div#headerbox").hide();
 				});
 			} else {
 			headerOn = true;
+			if (!hmDevice.phone) {
+				$("svg#toolbar_updown_open").hide();
+				$("svg#toolbar_updown_close").show();
+				$("div#headerbox").show();
+				}
 			navboxPosUp = hmpage.Fpix2em(hmpage.$navwrapper.position().top) + "rem";
 			topicPosUp = hmpage.Fpix2em(hmpage.$topicbox.position().top) + "rem";
 			hmpage.$navwrapper.animate({
 					"top": navboxPosDown
-				},(animate ? 400 : 0),function(){
-					hmpage.$headermenu.show();
+				},(animate ? 400 : 0), function(){
+					if (!hmWebHelp.minTopicHeader)
+						hmpage.$headermenu.show();
 					inProgress = false;
 				});
 			hmpage.$topicbox.animate({
 					"top": topicPosDown
 			},(animate ? 400 : 0));
-			hmpage.$headerbox.slideDown((animate ? "400" : "0"), function(){
+			hmpage.$headerbox.slideDown((animate ? 400 : 0), function(){
 				if (reset) animate = true;
 				if (hmDevice.desktop) {
 					$("svg#showhide_header_icon").find("use").attr("xlink:href","#collapse");
-					$("li#showhide_pageheader a").first().attr("title","Hide Page Header");
+					$("li#showhide_pageheader a").first().attr("title","Hide the banner header at the top of the page");
 					$("li#showhide_pageheader span").first().html("Hide Page Header");
+					$("div#toolbutton_wrapper").attr("aria-label","Hide Page Header");
 					}
 				sessionVariable.setSV("headerState","open");
 			});
@@ -1355,8 +1918,6 @@ hmWebHelp.pageDims = function() {
 			},animate ? 250 : 0, function() {
 				hmWebHelp.nsheader();
 				hmWebHelp.fHeadUpdate();
-				hmpage.$navtools.removeClass("over");
-				hmpage.$navcontainer.removeClass("over");
 				if (reset) animate = true; 
 				setTimeout(hmWebHelp.adjustTopicPos,300);
 				});
@@ -1372,20 +1933,13 @@ hmWebHelp.pageDims = function() {
 				} else animate = true;
 			hmpage.navclosed = true;
 			hmTocWidth = hmpage.$navwrapper.width();
-			if (hmpage.topicleft) {
-				hmpage.$navtools.addClass("over");
-				hmpage.$navcontainer.addClass("over");
-			}
-			else {
-				hmpage.$navtools.removeClass("over");
-				hmpage.$navcontainer.removeClass("over");
-			}
 			hmpage.$navwrapper.animate({
 					left: -hmpage.$navcontainer.width() + "px"
 				},animate ? 250 : 0, function(){
 					//if (!hmDevice.phone) {
 					$("svg#draghandleicon_l").hide();
 					$("svg#draghandleicon_r").show();
+					hmpage.$dragwrapper.attr("aria-label","Show Navigation Pane");
 					hmpage.$navtools.removeClass("over");
 					//}
 					if (hmDevice.phone)
@@ -1400,13 +1954,12 @@ hmWebHelp.pageDims = function() {
 			var reset = false;
 			$("svg#draghandleicon_r").hide();
 			$("svg#draghandleicon_l").show();
-			if (hmpage.topicleft) {
+			hmpage.$dragwrapper.attr("aria-label","Hide Navigation Pane");
+			if (hmpage.topicleft && !hmpage.$navtools.first().hasClass("over")) {
 				hmpage.$navtools.addClass("over");
-				hmpage.$navcontainer.addClass("over");
 			}
 			else {
 				hmpage.$navtools.removeClass("over");
-				hmpage.$navcontainer.removeClass("over");
 			}
 			if ((animOff && animate) || (!hmpage.initialized && animate)) {
 				animate = false;
@@ -1427,21 +1980,17 @@ hmWebHelp.pageDims = function() {
 					sessionVariable.setSV("tocState","open");
 					});
 		}
-		
+
 		// Init for embedded WebHelp 
 		function embedInit() {
-			if (hmDevice.embedded && hmDevice.desktop) {
-				if (hmpage.$headerbox.is(":visible"))
-					hmWebHelp.pageDimensions.pageHeaderUpDown(true);
-					$("p#ptopic_breadcrumbs").hide();
-				
-			} else if (!hmDevice.embedded && hmDevice.desktop) {
-				if (hmpage.$headerbox.is(":hidden"))
+			if (!hmDevice.embedded && hmDevice.desktop) {
+				if (hmpage.$headerbox.is(":hidden") && !false)
 					hmWebHelp.pageDimensions.pageHeaderUpDown(true);
 				if (hmpage.breadcrumbs)
 					$("p#ptopic_breadcrumbs").show();
-			} else if (hmDevice.tablet || hmDevice.phone) {
-				xMessage.sendObject("parent",{action: "callfunction", fn: "hmHelp.doFullWindow"});
+			} else if (hmDevice.embedded && (hmDevice.tablet || hmDevice.phone)) {
+				parentdomain = (/^(https?:\/\/.*?)\/.*?$/i).exec(document.referrer)[1];
+				xMessage.sendObject("parent",{action: "callfunction", fn: "hmHelp.doFullWindow", domain: parentdomain});
 			}
 		} // embedInit()
 	
@@ -1665,6 +2214,9 @@ hmWebHelp.flashTarget = function(obj,repeat,delay) {
 			repeat--;
 			$(obj).css("visibility","visible");
 			if (repeat > 0) doFlash();
+			else {
+				$(obj).attr("tabindex", "0").css("outline","none").focus().click();
+				}
 			},delay);
 	});
 	},delay);
@@ -1676,7 +2228,7 @@ hmWebHelp.scrollTopic = function(anchor, topic) {
 	var $anchor, 
 		$targetTParents = null,
 		$targetThisToggle = null,
-		$scrollBox = hmDevice.phone ? $("div#topicbox") : $("div#hmpagebody_scroller");
+		$scrollBox = hmDevice.phone ? $("main#topicbox") : $("div#hmpagebody_scroller");
 	
 	// Target is already a jQ object
 	if (typeof anchor !== "undefined" && typeof anchor !== "string") {
@@ -1685,7 +2237,7 @@ hmWebHelp.scrollTopic = function(anchor, topic) {
 	else if (typeof anchor === "string") {
 	// Make jQ target object
 		anchor = anchor.replace(/\./g,"\\.");
-		$anchor = anchor === "" ? false : $("a#" + anchor);
+		$anchor = anchor === "" ? false : $("#" + anchor);
 		if ($anchor && $anchor.length === 0) {
 			$anchor = false;
 		}
@@ -1746,7 +2298,7 @@ function hmLoadTopic(topicObj) {
 		titleBarText = $("h1#hm_pageheader").text() + " \> " + topicObj.hmTitle; 
 		break;
 	}
-	titleBarText = $("<textarea/>").html(titleBarText).text();
+	titleBarText = $("<textarea/>").text(titleBarText).text();
 	$("title").text(titleBarText);
 	
 	$("meta[name='keywords']").attr("content",topicObj.hmKeywords);
@@ -1760,17 +2312,17 @@ function hmLoadTopic(topicObj) {
 	
 	// Insert formatted or plain text topic header
 	if (!hmFlags.hdFormat) {
-			$("p.topictitle").html(topicObj.hmTitle);
+			$("h1.topictitle").text(topicObj.hmTitle);
 		} else {
 			if (topicObj.hmHeader !== "")
 			$("span.hdFormat").html(topicObj.hmHeader);
 		else
-			$("span.hdFormat").html('<h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">'+topicObj.hmTitle+'</span></h1>');
+			$("span.hdFormat span").text(topicObj.hmTitle);
 		}
 	$("div#hmpagebody_scroller").html(topicObj.hmBody + hmpage.topicfooter);
 	
 	// Initialize featured images if present and enabled
-		if (false && hmpage.hmPicture !== "") {
+		if (true && hmpage.hmPicture !== "") {
 			$("div#featureheader").remove();
 			if (!hmDevice.phone) {
 				hmWebHelp.extFuncs('hmFeatureHeader');
@@ -1784,7 +2336,7 @@ function hmLoadTopic(topicObj) {
 			if (!hmDevice.phone)
 				$('div#hmpagebody_scroller').css({"padding-top": "0.5rem"});
 			else 
-				$('div#topicbox').css({"padding-top": "0.5rem"});
+				$('main#topicbox').css({"padding-top": "0.5rem"});
 		}
 }
 
@@ -1792,6 +2344,15 @@ function hmLoadTopic(topicObj) {
 hmWebHelp.loadTopic = function(newTopic) {
 	// var topicTimerA = new Date().getTime();
 	// var topicTimerB = 0;
+	
+	// Add entry for previous topic to history
+	scrollHistory.addEntry(hmpage.currentScrollPos);
+	// Get scroll history for new topic if it exists
+	hmpage.tScrollHistory = scrollHistory.getEntry(newTopic.topic);
+	
+	// Create the current history entry for this topic
+	hmpage.currentScrollPos = new ScrollPosEntry(newTopic.topic);
+	
 	var cacheTopic = "";
 	if (hmpage.currentnav === 0)
 		hmWebHelp.currentAnchor = false;
@@ -1816,8 +2377,8 @@ hmWebHelp.loadTopic = function(newTopic) {
 		var acTarget = "";
 		$("div#topicheaderwrapper span").addClass("wraptext");
 		// Hide breadcrumb links when the help is embedded in an iFrame within a larger page
-		if ((hmDevice.desktop && hmDevice.embedded)) $("p#ptopic_breadcrumbs").hide();
-		var $scrollBox = hmDevice.phone ? $("div#topicbox") : $("div#hmpagebody_scroller");
+		// if ((hmDevice.desktop && hmDevice.embedded)) $("p#ptopic_breadcrumbs").hide();
+		var $scrollBox = hmDevice.phone ? $("main#topicbox") : $("div#hmpagebody_scroller");
 		if (newTopic.anchor !== ""){
 			acTarget = hmpage.anchorX + newTopic.anchor;
 			hmWebHelp.scrollTopic(newTopic.anchor,"");
@@ -1844,7 +2405,22 @@ hmWebHelp.loadTopic = function(newTopic) {
 			catch(err) {
 			alert("ERROR executing user topic post-load function: \r\n\r\n" + err);
 			}
-
+		if (hmpage.tScrollHistory) {
+			
+			if (hmpage.tScrollHistory.openToggles.length > 0) {
+				
+				for (var toggle in hmpage.tScrollHistory.openToggles) {
+					let $thisToggle = {
+						target: $("a.dropdown-toggle[id='"+hmpage.tScrollHistory.openToggles[toggle]+"']"),
+						speed: 0,
+						mode: "expand",
+						multi: "multi"
+					};
+					hmWebHelp.extFuncs('hmDoToggle',{method: 'HMToggle', obj: $thisToggle, doFlash: false });
+				}
+			}
+			hmpage.$scrollBox.scrollTo(hmpage.tScrollHistory.scrollPos,0);
+			}
 	}
 
 	cacheTopic = newTopic.jstopic.substr(newTopic.jstopic.lastIndexOf("\/")+1);
@@ -1905,7 +2481,6 @@ hmWebHelp.reloadAfterSleep = function() {
 	setInterval(ecg,interval);
 };
 
-	
 // Call full window function from embedded window
 
 hmWebHelp.doFullEmbedWindow = function(obj) {
@@ -1914,25 +2489,31 @@ hmWebHelp.doFullEmbedWindow = function(obj) {
 		current,
 		newCaption = currentCaption == "Zoom Window Out" ? "Zoom Window In" : "Zoom Window Out",
 		currentIcon = $("svg#fullscreen_toggle").find("use").attr("xlink:href"),
-		newIcon = currentIcon == "#resize-full" ? "#resize-small" : "#resize-full";
-		xMessage.sendObject("parent",{action: "callfunction", fn: "hmHelp.doFullWindow"})
-
-		// hmDevice.embedded = newIcon.indexOf("off") < 0;
-		hmDevice.embedded = newIcon.indexOf("-small") < 0;
-		hmWebHelp.pageDimensions.embedInit();
-		$("svg#fullscreen_toggle").find("use").attr("xlink:href",newIcon);
-		$objCaption.text(newCaption);
-		hmWebHelp.hamburgerMenu();
+		newIcon = currentIcon == "#resize-full" ? "#resize-small" : "#resize-full",
+		parentdomain = (/^(https?:\/\/.*?)\/.*?$/i).exec(document.referrer)[1];
+		
+		if (!hmBrowser.isaspx) {
+			xMessage.sendObject("parent",{action: "callfunction", fn: "hmHelp.doFullWindow", domain: parentdomain});
+			hmDevice.embedded = newIcon.indexOf("-small") < 0;
+			hmWebHelp.pageDimensions.embedInit();
+			$("svg#fullscreen_toggle").find("use").attr("xlink:href",newIcon);
+			$objCaption.text(newCaption);
+			hmWebHelp.hamburgerMenu();
+		} else {
+			window.open(document.location,"webhelp_window");
+		}
 	};
 
 // Switch between the stacked navigation panes	
 hmWebHelp.switchNavTab = function(targetTab) {
 
-	$("li.current").removeClass("current");
-	$("li#" + targetTab + "tab").addClass("current");
+	hmWebHelp.closeMenus();
+
+	$("li.current").removeClass("current").attr("aria-selected","false");
+	$("li#" + targetTab + "tab").addClass("current").attr("aria-selected","true");
 	$("div.navbox.on").removeClass("on").addClass("off");
 	$("div#" + targetTab + "box").removeClass("off").addClass("on");
-	
+
 	// Load search and index pages on first view 
 	if (targetTab === "search" && $("iframe#hmsearch").attr("src") === "") {
 		$("iframe#hmsearch").attr("src",hmFlags.hmSearchPage);
@@ -1940,28 +2521,36 @@ hmWebHelp.switchNavTab = function(targetTab) {
 	if (targetTab === "index" && $("iframe#hmindex").attr("src") === "") {
 		$("iframe#hmindex").attr("src",hmFlags.hmIndexPage);
 		}
+	if (hmpage.navclosed) {
+			hmWebHelp.pageDimensions.dragHandle(true);
+			}
+
 	switch (targetTab) {
+
 		case "contents":
 		xMessage.sendObject("hmnavigation",{action: "callfunction", fn: "tocSource.findElement", fa: hmFlags.hmCurrentPage});
 		if (hmWebHelp.currentAnchor !== "")
 			xMessage.sendObject("hmnavigation",{action: "callfunction", fn: "tocSource.findElement", fa: (hmFlags.hmCurrentPage + "#" + hmWebHelp.currentAnchor)});
 		hmWebHelp.currentAnchor = false;
 		hmpage.currentnav = 0;
+		document.activeElement.blur();
+		$("iframe#hmnavigation")[0].focus();
 		break;
 		case "index": 
 		hmpage.currentnav = 1;
-		if (hmpage.android)
-			hmWebHelp.navJitter();
+		document.activeElement.blur();
+		if (hmDevice.desktop)
+		xMessage.sendObject("hmindex",{action: "callfunction",fn: "hmSetFocus"});
 		break;
 		case "search":
 		hmpage.currentnav = 2;
-		if (hmDevice.android)
-			hmWebHelp.navJitter();
+		document.activeElement.blur();
+		if (hmDevice.desktop)
+		xMessage.sendObject("hmsearch", {action: "callfunction", fn: "focusSearchEntry"});
 		break;
 	}
-	// $("section#"+tab+"_section").removeClass("off").addClass("on");
-
 };
+
 // Adjust relationship between panes and set to rems
 hmWebHelp.adjustTopicPos = function() {
 	var newTopicLeft = 0,
@@ -2108,9 +2697,9 @@ hmWebHelp.parseUrl = function() {
 	// New topic file syntax
 	if (topicFileUrl || indexHashUrl) {
 			if (urlQuery.length > 0) {
-				url.anchor = hmWebHelp.getQueryComponent(urlQuery,"anchor");
+				url.anchor = hmWebHelp.getQueryComponent(urlQuery,"anchor").toLowerCase();
 			} else if (urlHash.length > 1 && !hmBrowser.server) {
-				url.anchor = hmWebHelp.getQueryComponent(urlHash,"anchor");
+				url.anchor = hmWebHelp.getQueryComponent(urlHash,"anchor").toLowerCase();
 			}
 				url.topic = hmBrowser.server ? mainFile : urlHashTopic !== "" ? urlHashTopic : mainFile;
 				url.jstopic = "./jstopics/" + url.topic.replace(/(.*)\..+?$/ig, "$1.js");
@@ -2136,7 +2725,7 @@ hmWebHelp.parseUrl = function() {
 		if (hmFlags.contextID) {
 		url.topic = hmGetContextId(hmFlags.contextID);
 		if (/\#/.test(url.topic)) {
-			url.anchor = url.topic.substr(url.topic.indexOf("\#")+1);
+			url.anchor = url.topic.substr(url.topic.indexOf("\#")+1).toLowerCase();
 			url.topic = url.topic.substr(0,url.topic.indexOf("\#"));
 		}
 		if (url.topic == "undefined") {
@@ -2206,7 +2795,7 @@ hmWebHelp.parseUrl = function() {
 			if (document.location.hash !== "") {
 				var rN = document.location.hash,
 					rX = new RegExp(rN);
-				rN = rN.replace(/\#/,hmpage.anchorX);
+				rN = rN.replace(/\#/,hmpage.anchorX).toLowerCase();
 				newHref = newHref.replace(rX,rN);
 		} 			
 			document.location.href = newHref;
@@ -2215,7 +2804,7 @@ hmWebHelp.parseUrl = function() {
 	
 			url.topic = urlQueryTopic;
 			url.jstopic = "./jstopics/" + url.topic.replace(/(.*)\..+?$/ig, "$1.js");
-			url.anchor = urlHash[0];
+			url.anchor = urlHash[0].toLowerCase();
 			url.valid = true;
 		return url;
 	}
@@ -2260,23 +2849,12 @@ hmWebHelp.parseState = function(state) {
 			valid: false
 		};
 
-		/*url.topic = state.indexOf("?") > -1 ? state.substr(0,state.indexOf("?")) : state;
-		url.jstopic = "jstopics/" + url.topic.replace(/(.*)\..+?$/ig, "$1.js");
-		if (state.indexOf("?") > -1) {
-			urlQuery[0] = state.substr(state.indexOf("?")+1);
-			if (urlQuery[0].indexOf("&") > -1) {
-				urlQuery.splice(0,1,urlQuery[0],urlQuery[1].split("&"));
-				}
-			url.anchor = hmWebHelp.getQueryComponent(urlQuery,"anchor");
-		}
-			return url;*/
-			
 		url.topic = state.indexOf(hmpage.anchorY) > -1 ? state.substr(0,state.indexOf(hmpage.anchorY)) : state;
 		url.jstopic = "\.\/jstopics\/" + url.topic.replace(/(.*)\..+?$/ig, "$1.js");
 		
 		if (state.indexOf(hmpage.anchorY) > -1) {
 		urlQuery = state.substr(state.indexOf(hmpage.anchorY)+1).split("&");
-			url.anchor = hmWebHelp.getQueryComponent(urlQuery,"anchor");
+			url.anchor = hmWebHelp.getQueryComponent(urlQuery,"anchor").toLowerCase();
 		}
 			return url;
 };
@@ -2284,21 +2862,21 @@ hmWebHelp.parseState = function(state) {
 // Non-scrolling header update for topic area
 hmWebHelp.nsheader = function() {
 		if (hmDevice.phone) return;
-		var tHdheight = $("table#topicheadertable").height(),
+		var tHdheight = $("nav#hmpageheader").outerHeight(),
 		tNavMinHeight = $("a#hamburgerlink").outerHeight()+7;
 		tNavHeight = tHdheight;
-		$("div#hmpagebody").css("top",(tNavHeight) + "px");
+		$("div#hmpagebody").css("top",(tNavHeight + 3) + "px");
 		$("div#navigationmenu").css("top",(tNavHeight) + "px");
 };
 
 hmWebHelp.fHeadUpdate = function() {
-	if (!false) return;
+	if (!true) return;
 	if ($("div#featureheader").length < 1) return;
 	if (typeof hmWebHelp.funcs.hmFeatureHeader !== "undefined")
 			hmWebHelp.funcs.hmFeatureHeader("resize");
 	if (typeof hmWebHelp.funcs.hmFeatureHeaderM !== "undefined")
 			hmWebHelp.funcs.hmFeatureHeaderM("resize");
-};
+	};
 
 // Additional functions menu in topic area
 hmWebHelp.hamburgerMenu = function(swCommand) {
@@ -2311,23 +2889,21 @@ hmWebHelp.hamburgerMenu = function(swCommand) {
 	if ($("#autoTocWrapper").is(":visible") && !hmDevice.phone) {
 		hmWebHelp.extFuncs("hm_autotoc","snap");
 		}
-	
-	if ($("div#unclicker").length < 1) {
-			$("div#hmpagebody").prepend('<div id="unclicker" />');
-		}
-	
+
 	function openMenu() {
-		$("div#unclicker").on(hmBrowser.touchstart,function(){
-			hmWebHelp.hamburgerMenu("close");
-			}).show();
-		$hMenu.slideDown(150,function(){
+		hmWebHelp.unClicker("navigationmenu");
+		$hMenu.slideDown(150, function(){
 		$("ul#hamburgermenu li:visible").last().not(".last").addClass("last");
 		});
 	}
 	
-	function closeMenu() {
-		$hMenu.slideUp(150);
-		$("div#unclicker").off(hmBrowser.touchstart).hide();
+	function closeMenu(instant) {
+		if (!instant)
+			$hMenu.slideUp(150);
+		else
+			$hMenu.hide();
+		$(document).off(hmBrowser.touchstart + '.closemenu');
+		$(document).off("keydown.hamburger");
 		}
 	
 	if (!switcher) {
@@ -2340,7 +2916,7 @@ hmWebHelp.hamburgerMenu = function(swCommand) {
 			closeMenu();
 			} else {
 				if (switcher == "close")
-					closeMenu();
+					closeMenu(true);
 				else
 					openMenu();
 					
@@ -2351,23 +2927,22 @@ hmWebHelp.hamburgerMenu = function(swCommand) {
 // Parse the current URL before it's gone...
 hmpage.hmHelpUrl = hmWebHelp.parseUrl();
 hmpage.currentURI = encodeURI(document.location.href);
+hmpage.currentScrollPos = new ScrollPosEntry(hmpage.hmHelpUrl.topic);
+
 // Set the starting values for the page aspects
 hmpage.narrowpageX = hmpage.Fnarrowpage();
 hmpage.shortpageX = hmpage.Fshortpage();
 
 $(document).ready(function() {
 
-	// Prevent touchmove bounce on mobile devices
-	// Not possible on iOS because keyboard then shifts layout
-	/*if (hmDevice.tablet && (hmDevice.android || window.navigator.standalone)) {
-		$(document).on("touchmove",function(e) {e.preventDefault()});
-		$("div#topicbox").on("touchmove",function(e){
-			if (document.getElementById('hmpagebody').scrollHeight >  $('div#hmpagebody').innerHeight() + 10) {
-			e.stopPropagation();
-			} else {}
-		});
-	} */
-	
+	/* Redirect button for ASPX in SharePoint on Phones */
+
+	if ( hmDevice.embedded && hmDevice.phone && hmBrowser.isaspx && /SharePoint for iOS|SharePoint for Android/i.test(navigator.userAgent) ) {
+		$("#fouc").prepend('<p class="aspxlinkpara"><a class="aspxbutton" href="' + document.location.href + '" target="_blank">Open WebHelp</a></p>');
+		} else if (!hmFlags.isEWriter) {
+			$("#fouc").remove();
+			}
+
 	$("div#topicheaderwrapper span").addClass("wraptext");
 		var nsDelay = hmDevice.desktop ? 0 : 800;
 		$(window).on(hmBrowser.orientationevent, function() {
@@ -2385,11 +2960,78 @@ $(document).ready(function() {
 			},nsDelay);
 			});
 		hmWebHelp.nsheader(); 
-		hmpage.$scrollBox = hmDevice.phone ? $("div#topicbox") : $("div#hmpagebody_scroller");
-	hmpage.$scrollContainer = hmDevice.phone ? $("body") : $("div#hmpagebody");
+		hmpage.$scrollBox = hmDevice.phone ? $("main#topicbox") : $("div#hmpagebody_scroller");
+		hmpage.$scrollContainer = hmDevice.phone ? $("body") : $("div#hmpagebody");
+
+	// Keyboard control
 	
-	// Execute highlighting if a Zoom search highlighter was included in the URL
-	/*if (hmFlags.searchHighlight != "") hmWebHelp.extFuncs("highlight");*/
+	$(window).on("keydown", function(event) {
+		
+		if (![27,81,78,84,72,66].includes(event.keyCode)) return;
+		
+		if (event.altKey) {
+			$(window).off("keydown.firstTab");
+			}
+		
+		switch(event.keyCode) {
+			case 27:
+			hmWebHelp.closeMenus();
+			break;
+			case 81:
+			if (event.altKey) {
+				hmWebHelp.pageFocus("info");
+				event.preventDefault();
+				}
+			break;
+			case 78:
+			if (event.altKey) {
+				event.preventDefault();
+				hmWebHelp.pageFocus("nav");
+				}
+			break;
+			case 84:
+			if (event.altKey) {
+				event.preventDefault();
+				hmWebHelp.pageFocus("topic");
+				}
+			break;
+			case 72:
+			if (event.altKey) {
+				event.preventDefault();
+				hmWebHelp.pageFocus("header");
+				}
+			break;
+			case 66:
+			if (event.altKey) {
+				event.preventDefault();
+				hmWebHelp.pageFocus("body");
+				}
+			break;
+		}
+	});
+	
+	// Close nav on click in topic if nav overlapping
+	$("div#hmpagebody_scroller").on(hmBrowser.touchstart, function(event) {
+		if ($(this)[0].contains(event.target)) {
+		if (!hmpage.navclosed && (hmpage.Fnarrowpage() || hmDevice.phone)) {
+			hmWebHelp.pageDimensions.dragHandle(false);
+			}
+		}
+	});
+
+	// Activate keyboard info on first navigation key 
+	if (hmDevice.desktop && false) {
+		
+		hmWebHelp.pageFocus("info");
+		/*$(window).on("keydown.firstTab", function(event){
+		if ([9,32,37,38,39,40].includes(event.keyCode)) {
+				event.preventDefault();
+				event.stopPropagation();
+				hmWebHelp.pageFocus("info");
+				$(window).off("keydown.firstTab");
+			}
+		}); */
+	} // First nav key
 	
 	// Load index and search frames a little later
 	
@@ -2403,7 +3045,6 @@ $(document).ready(function() {
 	if ($("iframe#hmsearch").attr("src") === "" && hmSearchActive) {
 			$("iframe#hmsearch").attr("src",hmFlags.hmSearchPage);
 		}
-
 	},1000);
 		},1000);
 });

@@ -1,4 +1,4 @@
-var hmContextIds = new Array();
+﻿var hmContextIds = new Array();
 function hmGetContextId(query) {
     var urlParams;
     var match,

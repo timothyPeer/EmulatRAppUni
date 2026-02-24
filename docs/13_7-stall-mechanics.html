@@ -1,13 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-   <title>Introduction &gt; Architecture Overview &gt; Chapter 13 – AlphaPipeline Implementation &gt; 13.7 Stall Mechanics</title>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Architecture Overview &gt; Chapter 13 – AlphaPipeline Implementation &gt; 13.7 Stall Mechanics</title>
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
-   <meta name="keywords" content="" />
-   <meta name="description" content="A PipelineSlot may stall (slot.stalled = true) due to: memory barrier pending (needsMemoryBarrier &amp;&amp; !memoryBarrierCompleted), write buffer drain pending (needsWriteBufferDrain..." />
+   <meta name="keywords" content="Backpressure,Barrier,BoxResult,Bubble,CBox,Completion,Device,Drain,EX,EXCB,execute,FloatingPoint,ForwardProgress,Freeze,isPipelineStalled,MB,MEM,memoryBarrierCompleted,MemoryBarrierCoordinator,MultiCycle,needsMemoryBarrier,needsWriteBufferDrain,Pipeline,Propagation,Retry,RingBuffer,Serialization,Stall,stalled,stallPipeline,tick,TLBMiss,TRAPB,WMB,WriteBuffer,writeBufferDrained" />
+   <meta name="description" content="13.7.1 Stall Conditions &nbsp;A PipelineSlot may stall (slot.stalled = true) under the following conditions: &nbsp;Memory barrier pending — needsMemoryBarrier &amp;&amp; !memoryBarrierCompleted." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
 
@@ -24,16 +24,16 @@
         margin: 0;
         position: fixed;
         top: 0;
-        background: #F0F0F0;
+        background: #2C5D88;
         z-index: 2;
       } 
       /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
          has at least the same height as the header of the navigation panel left of it */
       #idheader table { min-height: 59px;}             
-      #idheader h1 span { color: #000000 }     
+      #idheader h1 span { color: #FFF }     
       #idnav {
         text-align: right;
-        width: 126px;
+        width: 158px;
         vertical-align: middle;        
       } 
       #idnav a { text-decoration: none }
@@ -42,13 +42,13 @@
         width: 24px;
         height: 24px;
         margin-left: 4px;
-        background:url('hm_webhelp_buttons_white.png') top left no-repeat;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
       } 
       #idnav a span {
-        background-image:url('hm_webhelp_buttons_grey.png');
+        background-image:url('hm_webhelp_buttons_white.png');
       } 
       #idnav a span:hover {
-        background-image:url('hm_webhelp_buttons_yellow.png');
+        background-image:url('hm_webhelp_buttons_orange.png');
       } 
       #idnav span.hmbtnprev { background-position: 0 -32px }
       #idnav span.hmbtnnext { background-position: -24px -32px }
@@ -69,9 +69,9 @@
 	  p.help-url a:visited { color: black; }
 	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
       #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
-      .sync-toc { color: #000000; font-size: 8pt; font-weight: bold; display: none; }
-      .sync-toc a { color: #000000; text-decoration: none; font-weight: bold;}
-      .sync-toc a:visited { color: #000000; }
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
       .sync-toc a:hover { text-decoration: underline; }
 	  a#printbuttonlink { cursor: pointer; }
       a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
@@ -105,7 +105,7 @@
       <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?13_7-stall-mechanics.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
       <p class="crumbs"><b>Navigation:</b>&nbsp;
       
-      <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="alphapipeline-implementation.html">Chapter 13 – AlphaPipeline Implementation</a>&nbsp;&gt;</p>
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="architecture-overview.html">Architecture Overview</a> &gt; <a href="alphapipeline-implementation.html">Chapter 13 – AlphaPipeline Implementation</a>&nbsp;&gt;</p>
    
       <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">13.7 Stall Mechanics</span></h1>
 
@@ -115,7 +115,7 @@
       <a href="13_6-stage-implementations.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
       <a href="alphapipeline-implementation.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
       <a href="13_8-flush-semantics.html" title="Next Topic"><span class="hmbtnnext"></span></a>
-      
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
     </td>
   </tr>  
 </table>
@@ -127,17 +127,48 @@
 <!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
 
 <!--ZOOMRESTART-->
-<p class="p_Normal">A PipelineSlot may stall (slot.stalled = true) due to: memory barrier pending (needsMemoryBarrier &amp;&amp; !memoryBarrierCompleted), write buffer drain pending (needsWriteBufferDrain &amp;&amp; !writeBufferDrained), multi-cycle FP execution (slot blocked in EX until complete), or device backpressure.</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.7.1 Stall Conditions</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Stalls propagate forward only. If stage N stalls, stage N-1 cannot advance, earlier stages remain frozen, but later stages continue draining. This guarantees forward progress — older instructions always retire before younger ones can proceed.</p>
+<p class="p_Normal">A PipelineSlot may stall (slot.stalled = true) under the following conditions:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The stall is checked in execute() after all stages run: if isPipelineStalled() returns true, the ring buffer does not advance, and BoxResult::stallPipeline() is returned. The stalled stage will be re-evaluated on the next tick.</p>
+<p class="p_Normal"><span style="font-weight: bold;">Memory barrier pending</span> — needsMemoryBarrier &amp;&amp; !memoryBarrierCompleted. Detected in stage_MEM(). The slot holds in MEM until CBox signals completion via MemoryBarrierCoordinator. Applies to MB (global visibility) and EXCB (pending exception resolution).</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: Section 6.5 – Pipeline Behavior (barrier stalls).</span></p>
+<p class="p_Normal"><span style="font-weight: bold;">Write buffer drain pending</span> — needsWriteBufferDrain &amp;&amp; !writeBufferDrained. Detected in stage_MEM(). The slot holds in MEM until the write buffer confirms all prior stores are committed. Applies to WMB (local write ordering).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Multi-cycle FP execution</span> — the grain blocks the slot in stage_EX() until the floating-point operation completes. The slot remains in EX for the duration of the operation; stage_EX() re-evaluates completion on each tick.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">TRAPB/EXCB serialization</span> — the instruction must wait for all prior instructions that may generate traps or exceptions to complete before proceeding. Enforced through the barrier stall mechanism in stage_MEM().</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Device backpressure</span> — an MMIO access to a device that cannot accept the operation immediately. The slot stalls in EX until the device signals readiness.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.7.2 Stall Detection and Enforcement</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Stalls are detected at two stages: stage_EX() detects multi-cycle operation stalls and device backpressure. stage_MEM() detects barrier and write-buffer-drain stalls. In both cases, the detecting stage sets slot.stalled = true and returns without advancing the slot.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Stall clearing:</span> The stall condition is re-evaluated on every subsequent tick. For barrier stalls, CBox sets memoryBarrierCompleted = true via the MemoryBarrierCoordinator when the barrier is satisfied. For write buffer drains, CBox sets writeBufferDrained = true when all prior stores are flushed. For multi-cycle FP, the FBox signals completion and the grain updates the slot. The clearing agent is always the subsystem that owns the completion condition — never the pipeline itself.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Critical detail:</span> When a barrier stall clears in stage_MEM(), the grain does not re-execute. Execution already completed in stage_EX() on a prior tick — the result sits in slot.payLoad and slot.m_pending. The stall only delayed the register writeback (commitPending) and progression to WB. On clearing, stage_MEM() performs commitPending() normally and the slot advances to WB on the next tick.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">13.7.3 Stall Propagation</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Stalls propagate forward only (toward younger instructions). If stage N stalls, stage N−1 cannot advance, and all earlier stages remain frozen. Later stages (toward WB) continue draining. This guarantees forward progress — older instructions always retire before younger ones can proceed.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Bubbles vs stalls:</span> A bubble is an empty slot (slot.valid = false) flowing through the pipeline — it occupies a position but performs no work. A stall is a live slot frozen in place — it contains a valid instruction that cannot advance. Bubbles pass through harmlessly. Stalls block all upstream stages until the stall condition clears.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The stall is checked in execute() after all stages run: if isPipelineStalled() returns true, the ring buffer does not advance (advanceRing() is skipped), and BoxResult::stallPipeline() is returned to AlphaCPU. The stalled stage will be re-evaluated on the next tick.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: Section 6.5 – Pipeline Behavior (barrier stalls); <a href="chapter-15---memory-system-imp.html" class="topiclink">Chapter 15 – Memory System Implementation Details</a> (MemoryBarrierCoordinator).</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
 <script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
 
 
 
@@ -181,11 +212,19 @@ function normHeaders() {
 	normHeaders();
     });
     
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
 	 $(window).resize(); //trigger event for initially small displays
   });
  
 
 if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?13_7-stall-mechanics.html" target="_top">'+baseurl+'index.html?13_7-stall-mechanics.html</a></p>');
 
 </script>
 </body>

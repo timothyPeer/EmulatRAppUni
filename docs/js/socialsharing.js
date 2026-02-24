@@ -1,5 +1,5 @@
-/*! Help & Manual WebHelp 3 Script functions
-Copyright (c) 2015-2020 by Tim Green. All rights reserved. Contact tg@it-authoring.com
+﻿/*! Help+Manual WebHelp 3 Script functions
+Copyright (c) 2015-2026 by Tim Green. All rights reserved. Contact: https://www.helpandmanual.com
 */
 window.onerror = function(){return false;};
 if ($("div#navigationmenu").is(":visible")) { 
@@ -35,13 +35,13 @@ hmLoadPopup({
 hmTitle:"Share This Topic",
 hmBody:
 '<div class="sharebox">' +
-'<a id="xplShareFacebook" class="sharebutton" title="Share on Facebook" onclick="hmSharePage(\'facebook\')">' +
+'<a id="xplShareFacebook" class="sharebutton" title="Share topic on Facebook" onclick="hmSharePage(\'facebook\')">' +
 '<svg viewBox="0 0 32 32" style="width:50px;height:50px">' +
 '<rect width="32" height="32" style="fill:#3B5998;stroke:none"></rect>' +
 '<path d="M22,32V20h4l1-5h-5v-2c0-2,1.002-3,3-3h2V5c-1,0-2.24,0-4,0c-3.675,0-6,2.881-6,7v3h-4v5h4v12H22z" style="fill:#FFFFFF;stroke:none"></path>' +
 '</svg>' +
 '</a>' +
-'<a class="sharebutton" title="Share on Twitter" onclick="hmSharePage(\'twitter\')">' +
+'<a class="sharebutton" title="Tweet link to topic" onclick="hmSharePage(\'twitter\')">' +
 '<svg viewBox="0 0 32 32" style="width:50px;height:50px">' +
 '<g>' +
 '<rect width="32" height="32" style="fill:#00ACED;stroke:none"></rect>' +
@@ -49,7 +49,7 @@ hmBody:
 '</g>' +
 '</svg>' +
 '</a>' +
-'<a class="sharebutton" title="Share by Email" onclick="hmSharePage(\'email\')" title="Share topic by mail">' +
+'<a class="sharebutton" onclick="hmSharePage(\'email\')" title="Share topic by mail">' +
 '<svg viewBox="0 0 32 32" style="width:50px;height:50px">' +
 '<g>' +
 '<rect width="32" height="32" style="fill:#DD4B39;stroke:none"></rect>'+
@@ -57,7 +57,7 @@ hmBody:
 '</g>' +
 '</svg>' +
 '</a>'+
-'<a class="sharebutton" title="Share on LinkedIn" onclick="hmSharePage(\'linkedin\')">' +
+'<a class="sharebutton" title="Share topic on LinkedIn" onclick="hmSharePage(\'linkedin\')">' +
 '<svg viewBox="0 0 32 32" style="width:50px;height:50px">' +
 '<g>' +
 '<rect width="32" height="32" style="fill:#007BB6;stroke:none"></rect>' +
