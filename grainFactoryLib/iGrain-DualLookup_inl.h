@@ -164,6 +164,10 @@ static AXP_HOT AXP_ALWAYS_INLINE void decodeInstruction(DecodedInstruction& di, 
         (opcode >= 0x20 && opcode <= 0x2F)) {
         formatSem = static_cast<InstrSemantics>(formatSem | S_MemFmt);
 
+        // LDA (0x08) and LDAH (0x09) — address compute, always write Ra
+        if (opcode == 0x08 || opcode == 0x09) {
+            formatSem = static_cast<InstrSemantics>(formatSem | S_Load);
+        }
         // Determine if load or store
         // Loads: 0x0A (LDBU), 0x0C (LDWU), 0x28-0x2B (LDL, LDQ, etc.)
         // Stores: 0x0E (STB), 0x0F (STW), 0x2C-0x2F (STL, STQ, etc.)
