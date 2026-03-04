@@ -1090,6 +1090,23 @@ private:
         // ================================================================
         slot.pcReason = PipelineSlot::PCReason::Sequential;
         slot.nextPC   = slot.di.pc + 4;
+
+        // ================================================================
+        // REGISTER READ — populate slot source values from register file
+        // Must occur AFTER stage_MEM() has committed pending writes
+        // (intra-cycle RAW hazard resolution — MEM fires before EX in tick)
+        // ================================================================
+        slot.ra_value = slot.readIntReg(slot.di.ra);
+        slot.rb_value = slot.readIntReg(slot.di.rb);
+
+        // Float source registers for FP instructions
+        if (isFloatFormat(slot.di))
+        {
+            slot.ra_value = slot.readFpReg(slot.di.ra);
+            slot.rb_value = slot.readFpReg(slot.di.rb);
+        }
+
+
         slot.grain->execute(slot);
 
 #if AXP_INSTRUMENTATION_TRACE

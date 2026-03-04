@@ -225,6 +225,7 @@ struct  PipelineSlot
 	// ====================================================================
 	quint64 payLoad = 0;	// PayLoad for Box side effect only
 	quint64 ra_value{ 0 };	// Payload for RA register only
+	quint64 rb_value{ 0 };	// Payload for RB register only
 	quint64 slotSequence = 0;
 	RegisterBankInteger::RegIndex registerIndex;
 

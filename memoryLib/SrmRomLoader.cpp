@@ -17,6 +17,7 @@
 #include "coreLib/LoggingMacros.h"
 #include <QFile>
 #include <cstring>
+#include <QDebug>
 
 #define COMPONENT_NAME "SrmRomLoader"
 
@@ -189,7 +190,8 @@ SrmRomLoadResult SrmRomLoader::decompress(
         {
             currentPC = singleStep();
             stepCount++;
-
+            if (stepCount >= 20)
+                qDebug() << "break cpu bringup";
             if ((currentPC & ~1ULL) < kDecompDonePC)
                 goto done;
         }
