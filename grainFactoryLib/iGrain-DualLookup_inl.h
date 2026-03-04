@@ -98,9 +98,10 @@ static AXP_HOT AXP_ALWAYS_INLINE void decodeBranchDisp(DecodedInstruction& di) n
  */
 AXP_HOT AXP_ALWAYS_INLINE void setSemanticFlags(DecodedInstruction& di, InstrSemantics flags) noexcept
 {
-    quint64 semantics_test = di.semantics;
-    quint32 flag_test = flags;
-    di.semantics = (di.semantics & 0xFFFFFFFF00000000ULL) | static_cast<quint32>(flags);
+    // Preserve upper 32 bits (raw instruction), write full 64-bit semantics flags
+   // Do NOT narrow-cast flags to quint32 — InstrSemantics is a quint64 enum
+    di.semantics = (di.semantics & 0xFFFFFFFF00000000ULL)
+    | (static_cast<quint64>(flags) & 0x00000000FFFFFFFFULL);
 }
 
 /**
@@ -108,7 +109,7 @@ AXP_HOT AXP_ALWAYS_INLINE void setSemanticFlags(DecodedInstruction& di, InstrSem
  */
 AXP_HOT AXP_ALWAYS_INLINE InstrSemantics getSemanticFlags(const DecodedInstruction& di) noexcept
 {
-    return static_cast<InstrSemantics>(di.semantics & 0xFFFFFFFFu);
+    return static_cast<InstrSemantics>(di.semantics & 0x00000000FFFFFFFFull);
 }
 
 
@@ -149,7 +150,7 @@ static AXP_HOT AXP_ALWAYS_INLINE void decodeInstruction(DecodedInstruction& di, 
     // ========================================================================
 
     // Operate format: opcodes 0x10-0x13
-    if (opcode >= 0x10 && opcode <= 0x13) {
+    if ((opcode >= 0x10 && opcode <= 0x13) || opcode == 0x1C) {
         formatSem = static_cast<InstrSemantics>(formatSem | S_OperFmt | S_IntFormat);
 
         const quint16 func = GrainResolver::extractFunctionCode(rawBits, opcode);
@@ -206,7 +207,12 @@ static AXP_HOT AXP_ALWAYS_INLINE void decodeInstruction(DecodedInstruction& di, 
     else if (opcode >= 0x14 && opcode <= 0x17) {
         formatSem = static_cast<InstrSemantics>(formatSem | S_FloatFormat);
     }
-   
+    // Float format: opcodes 0x14-0x17 (VAX float, IEEE float, float operate, misc)
+    else if (opcode >= 0x14 && opcode <= 0x17) {
+        formatSem = static_cast<InstrSemantics>(formatSem | S_FloatFormat | S_OperFmt);
+        // 0x14 = ITOFS/ITOFF (mem-like), 0x15 = VAX float, 0x16 = IEEE float, 0x17 = float misc
+        // Note: 0x14 mem-format variants need special handling if you implement ITOFS/ITOFF
+    }
     setSemanticFlags(di, formatSem);
     
 
