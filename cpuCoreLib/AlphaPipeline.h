@@ -1316,6 +1316,11 @@ private:
         // Pending is from an instruction that passed EX without faulting.
         // WB is empty (pipeline filling or post-flush), safe to commit.
         
+        if (!slot.valid)
+        {
+            result.action = PipelineAction::ADVANCED;
+            return;
+        }
 
         // ================================================================
         // 1. FAULT CHECK — discard pending (younger instruction)
