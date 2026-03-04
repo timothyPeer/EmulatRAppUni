@@ -452,7 +452,7 @@ inline void debugStageExit(const char* stageName, const PipelineSlot& slot)  noe
 	if (slot.valid) {
 		qDebug() << "[" << stageName << "::EXIT] PC:" << Qt::hex << Qt::showbase << slot.di.pc
 			<< "needsWriteback:" << slot.needsWriteback
-			<< "writeRa:" << slot.writeRa
+			//<< "writeRa:" << slot.writeRa
 			<< "branchTaken:" << slot.branchTaken;
 	}
 #else
@@ -505,7 +505,7 @@ inline void debugSlotState(const PipelineSlot& slot, const char* location)  noex
 		<< "valid:" << slot.valid
 		<< "PC:" << Qt::hex << Qt::showbase << slot.di.pc
 		<< "needsWB:" << slot.needsWriteback
-		<< "writeRa:" << slot.writeRa
+		//<< "writeRa:" << slot.writeRa
 		<< "Ra:" << slot.di.ra
 		<< "payload:" << slot.payLoad;
 #else

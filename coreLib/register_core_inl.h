@@ -25,6 +25,14 @@ AXP_HOT AXP_ALWAYS_INLINE quint8 destRegister(const DecodedInstruction& di)  noe
     const quint8 opcode = extractOpcode(di.rawBits());
 
     // ================================================================
+    // ADDRESS COMPUTATION (LDA, LDAH)
+    // Memory-format encoding but NOT memory operations
+    // ================================================================
+    if (opcode == 0x08 || opcode == 0x09) {  // LDA, LDAH
+        return di.ra;
+    }
+
+    // ================================================================
     // MEMORY FORMAT INSTRUCTIONS
     // ================================================================
     if (isMemoryFormat(di)) {
@@ -36,13 +44,7 @@ AXP_HOT AXP_ALWAYS_INLINE quint8 destRegister(const DecodedInstruction& di)  noe
         }
     }
 
-    // ================================================================
-    // ADDRESS COMPUTATION (LDA, LDAH)
-    // Memory-format encoding but NOT memory operations
-    // ================================================================
-    if (opcode == 0x08 || opcode == 0x09) {  // LDA, LDAH
-        return di.ra;
-    }
+    
 
     // ================================================================
     // INTEGER OPERATE FORMAT

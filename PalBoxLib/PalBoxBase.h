@@ -1508,7 +1508,7 @@ public:
 
         // Also set slot result fields for writeback stage
         slot.ra_value = value;
-        slot.writeRa  = (ra != 31);
+ 
 
         DEBUG_LOG(QString("PalBox CPU %1: HW_LD%2 %3 EA=0x%4 -> R%5=0x%6")
             .arg(m_cpuId)

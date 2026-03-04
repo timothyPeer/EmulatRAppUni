@@ -1516,7 +1516,7 @@ private:
             QString wbFlag = "";
             if (slot.valid)
             {
-                if (slot.needsWriteback && slot.writeRa)
+                if (slot.needsWriteback )
                 {
                     wbFlag = QString(" → R%1").arg(slot.di.ra);
                 }

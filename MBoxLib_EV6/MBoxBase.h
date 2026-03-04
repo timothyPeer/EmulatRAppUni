@@ -833,7 +833,7 @@ public:
 
         if (slot.di.ra != 31) {
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            //
         }
 
         qDebug() << "LDQ: di.ra =" << slot.di.ra;
@@ -842,13 +842,13 @@ public:
         if (slot.di.ra != 31) {
             qDebug() << "LDQ: Setting needsWriteback and writeRa TRUE";
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            //
         }
         else {
             qDebug() << "LDQ: Ra is 31, skipping writeback";
         }
 
-        qDebug() << "LDQ: After setting, writeRa =" << slot.writeRa;
+       // qDebug() << "LDQ: After setting, writeRa =" << slot.writeRa;
 
         slot.pa = pa;
         m_isBusy = false;
@@ -885,7 +885,7 @@ public:
 
         if (slot.di.ra != 31) {
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            //
         }
 
         slot.pa = pa;
@@ -944,7 +944,7 @@ public:
         if (slot.di.ra != 31) {
             slot.payLoad = result;
             slot.needsWriteback = true;
-            slot.writeRa = true;  // Write to integer register Ra
+            //  // Write to integer register Ra
         }
         else {
             slot.needsWriteback = false;  // R31 writes are no-ops
@@ -988,7 +988,7 @@ public:
 
          slot.payLoad = result;
          slot.needsWriteback = true;
-         slot.writeRa = true;
+        // 
 
          DEBUG_LOG(QString("LDAH: R%1 <-  R%2(0x%3) + (0x%4 << 16) = 0x%5")
              .arg(slot.di.ra)
@@ -1061,7 +1061,7 @@ public:
 
          if (slot.di.ra != 31) {
              slot.needsWriteback = true;
-             slot.writeRa = true;
+            // 
          }
 
          slot.pa = pa;
@@ -1803,7 +1803,7 @@ public:
          if (slot.di.ra != 31) {
              slot.payLoad = value64;
              slot.needsWriteback = true;
-             slot.writeRa = true;
+             //
          }
 
          slot.pa = pa;
@@ -1860,7 +1860,7 @@ public:
          if (slot.di.ra != 31) {
              slot.payLoad = value;
              slot.needsWriteback = true;
-             slot.writeRa = true;
+             //
          }
 
          slot.pa = pa;
@@ -1935,7 +1935,7 @@ public:
          if (slot.di.ra != 31) {
              slot.payLoad = resultValue;
              slot.needsWriteback = true;
-             slot.writeRa = true;
+            // 
          }
 
          slot.pa = pa;
@@ -2005,7 +2005,7 @@ public:
          if (slot.di.ra != 31) {
              slot.payLoad = resultValue;
              slot.needsWriteback = true;
-             slot.writeRa = true;
+             
          }
 
          slot.pa = pa;

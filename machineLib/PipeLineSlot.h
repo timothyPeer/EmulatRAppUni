@@ -21,16 +21,16 @@
 #ifndef PIPELINE_SLOT_H
 #define PIPELINE_SLOT_H
 
-#include "../coreLib/types_core.h"
-#include "../faultLib/fault_core.h"
-#include "../CBoxLib/cBox_core.h"
-#include "../cpuCoreLib/registerBank_coreFramework.h"
-#include "../grainFactoryLib/DecodedInstruction.h"
-#include "../coreLib/MemoryBarrierKind_enum.h"
-#include "../faultLib/FaultDispatcher.h"
-#include "../faultLib/PendingEvent_Refined.h"
+#include "coreLib/types_core.h"
+#include "faultLib/fault_core.h"
+#include "CBoxLib/cBox_core.h"
+#include "cpuCoreLib/registerBank_coreFramework.h"
+#include "grainFactoryLib/DecodedInstruction.h"
+#include "coreLib/MemoryBarrierKind_enum.h"
+#include "faultLib/FaultDispatcher.h"
+#include "faultLib/PendingEvent_Refined.h"
 
-#include "../palLib_EV6/PAL_core.h"
+#include "palLib_EV6/PAL_core.h"
 #include "coreLib/global_RegisterMaster_hot.h"
 #include "faultLib/GlobalFaultDispatcherBank.h"
 
@@ -192,7 +192,7 @@ struct  PipelineSlot
 	quint64 ra{ 0 };
 	quint64 outPAData{ 0 };
 	bool pcModified{ false };		// flag to track PC changes in the pipeline
-	bool writeRa{ false };			// used by PalBox::execute_MFPR
+	//bool writeRa{ false };			// used by PalBox::execute_MFPR
 	bool writeFa{ false };			// Write to float register, not Ra
 
 	// ====================================================================
@@ -273,27 +273,50 @@ struct  PipelineSlot
 
 	}
 
+
+
+
+	// ============================================================================
 	// Register Global Accessors
-	AXP_HOT AXP_ALWAYS_INLINE   void writeIntReg(quint8 index, quint64 argValue) const noexcept
+	// ============================================================================
+
+	AXP_HOT AXP_ALWAYS_INLINE void writeIntReg(quint8 index, quint64 argValue) const noexcept
 	{
+#if AXP_INSTRUMENTATION_TRACE
+		const quint64 oldValue = m_iprGlobalMaster->i->read(index);
+		qDebug().noquote()
+			<< QString("[REG::WRITE::INT] CPU=%1 PC=0x%2 R%3: 0x%4 -> 0x%5")
+			.arg(cpuId)
+			.arg(di.pc, 16, 16, QChar('0'))
+			.arg(index)
+			.arg(oldValue, 16, 16, QChar('0'))
+			.arg(argValue, 16, 16, QChar('0'));
+#endif
 		return m_iprGlobalMaster->i->write(index, argValue);
 	}
 
-	AXP_HOT AXP_ALWAYS_INLINE  quint64 readIntReg( quint8 index) const noexcept
+	AXP_HOT AXP_ALWAYS_INLINE void writeFpReg(quint8 index, quint64 argValue) const noexcept
 	{
-		return m_iprGlobalMaster->i->read(index);
-	}
-	// Register Global Accessors
-	AXP_HOT AXP_ALWAYS_INLINE   void writeFpReg(quint8 index, quint64 argValue) const noexcept
-	{
+#if AXP_INSTRUMENTATION_TRACE
+		const quint64 oldValue = m_iprGlobalMaster->f->read(index);
+		qDebug().noquote()
+			<< QString("[REG::WRITE::FP ] CPU=%1 PC=0x%2 F%3: 0x%4 -> 0x%5")
+			.arg(cpuId)
+			.arg(di.pc, 16, 16, QChar('0'))
+			.arg(index)
+			.arg(oldValue, 16, 16, QChar('0'))
+			.arg(argValue, 16, 16, QChar('0'));
+#endif
 		return m_iprGlobalMaster->f->write(index, argValue);
 	}
-
 	AXP_HOT AXP_ALWAYS_INLINE  quint64 readFpReg( quint8 index) const noexcept
 	{
 		return m_iprGlobalMaster->f->read(index);
 	}
-
+	AXP_HOT AXP_ALWAYS_INLINE  quint64 readIntReg(quint8 index) const noexcept
+	{
+		return m_iprGlobalMaster->i->read(index);
+	}
 
 	// PalBox 
 
@@ -330,7 +353,7 @@ struct  PipelineSlot
 		ra = 0;
 		outPAData = 0;
 		pcModified = false;
-		writeRa = false;
+		//writeRa = false;
 		writeFa = false;
 		branchTaken = false;
 		predictionTaken = false;

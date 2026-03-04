@@ -68,6 +68,7 @@ m_iprGlobalMaster->o->   OSF          vptptr, ent_int/arith/mm/fault/una/sys, wr
 #include <QString>
 #include <cstring>
 #include <atomic>
+#include <QDebug>
 
 #include "HWPCB_SwapContext.h"
 #include "coreLib/types_core.h"
@@ -183,6 +184,15 @@ struct alignas(64) IPRStorage_IntRegs final
 
     AXP_HOT AXP_ALWAYS_INLINE void write(quint8 regNum, quint64 value) noexcept
     {
+#if AXP_INSTRUMENTATION_TRACE
+        if (regNum == 31)
+        {
+            qDebug().noquote()
+                << QString("[REG::WRITE::INT] CPU=0 PC=not available R31: DISCARDED (hardwired zero)");
+             
+            return;   // do not call write() — R31 is architecturally immutable
+        }
+#endif
         if (regNum != 31) r[regNum & 31u] = value;
     }
 

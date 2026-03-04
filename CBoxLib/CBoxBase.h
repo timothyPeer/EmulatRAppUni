@@ -615,7 +615,7 @@ public:
         {
             slot.payLoad = slot.di.pc + 4;
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            
         }
 
         
@@ -693,7 +693,7 @@ public:
         {
             slot.payLoad        = returnAddr;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
             slot.branchTaken = true;       // BSR is always taken
             slot.branchTarget = targetPC;  // Actual target
         }
@@ -1099,7 +1099,7 @@ public:
         if (slot.di.ra != 31) {  // R31 writes are discarded
             slot.payLoad = returnAddr;
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            
 
             slot.branchTaken = true;
             slot.branchTarget = (rb_val & ~0x3ULL);
@@ -1163,7 +1163,7 @@ public:
         if (slot.di.ra != 31) {
             slot.payLoad = slot.di.pc + 4;
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            
 
 
             debugLog(QString("RET unusual: writing R%1 (not R31)")
@@ -1203,7 +1203,7 @@ public:
         if (slot.di.ra != 31) {
             slot.payLoad = returnAddr;
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            
 
             debugLog(QString("JSR_COROUTINE will write R%1 <- 0x%2")
                 .arg(slot.di.ra)

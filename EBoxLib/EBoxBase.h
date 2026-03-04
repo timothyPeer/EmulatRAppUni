@@ -157,7 +157,7 @@ public:
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -187,7 +187,7 @@ public:
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -297,7 +297,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -345,7 +345,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -540,7 +540,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -555,7 +555,7 @@ Bit	Name	EV6 status	Notes
     {
         slot.payLoad                   = m_iprGlobalMaster->r->intrFlag ? 1 : 0;
         slot.needsWriteback            = true;
-        slot.writeRa                   = true;
+      
         m_iprGlobalMaster->r->intrFlag = false;
     }
 
@@ -568,7 +568,7 @@ Bit	Name	EV6 status	Notes
     {
         slot.payLoad                   = m_iprGlobalMaster->r->intrFlag ? 1 : 0;
         slot.needsWriteback            = true;
-        slot.writeRa                   = true;
+      
         m_iprGlobalMaster->r->intrFlag = true;
     }
 
@@ -594,7 +594,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -621,7 +621,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -649,7 +649,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -677,7 +677,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -705,7 +705,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -733,7 +733,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -780,7 +780,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -800,7 +800,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -819,7 +819,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -838,7 +838,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -857,7 +857,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -877,7 +877,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -899,7 +899,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -918,7 +918,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -937,7 +937,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -977,7 +977,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -998,7 +998,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Generic "write int register" flag
+              // Generic "write int register" flag
         }
         else
         {
@@ -1019,7 +1019,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Generic "write int register" flag
+              // Generic "write int register" flag
         }
         else
         {
@@ -1040,7 +1040,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Generic "write int register" flag
+              // Generic "write int register" flag
         }
         else
         {
@@ -1061,7 +1061,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Generic "write int register" flag
+              // Generic "write int register" flag
         }
         else
         {
@@ -1092,7 +1092,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1262,7 +1262,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -1297,7 +1297,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -1331,7 +1331,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -1365,7 +1365,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -1400,7 +1400,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -1435,7 +1435,7 @@ Bit	Name	EV6 status	Notes
         {  // Don't write to R31
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;  // Actually writes to Rc
+              // Actually writes to Rc
         }
         else
         {
@@ -1465,7 +1465,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1490,7 +1490,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;   // THIS WAS MISSING
+               // THIS WAS MISSING
         }
         else
         {
@@ -1520,7 +1520,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1539,7 +1539,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1558,7 +1558,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1577,7 +1577,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1596,7 +1596,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1615,7 +1615,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1634,7 +1634,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1654,7 +1654,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1673,7 +1673,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1692,7 +1692,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1711,7 +1711,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1730,7 +1730,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1749,7 +1749,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1768,7 +1768,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1787,7 +1787,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1806,7 +1806,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1825,7 +1825,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1844,7 +1844,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1863,7 +1863,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1882,7 +1882,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
@@ -1901,7 +1901,7 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
         }
         else
         {
