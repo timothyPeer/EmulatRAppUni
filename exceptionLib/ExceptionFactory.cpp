@@ -51,7 +51,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeInvalidPTE(
 	ev.kind = PendingEventKind::Exception;
 	ev.exceptionClass = ExceptionClass_EV6::Dfault;  // Data fault (invalid PTE)
 	ev.faultVA = va;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC() ;
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM() ;
 
@@ -111,7 +111,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeAccessViolationFault(
 	ev.kind = PendingEventKind::Exception;
 	ev.exceptionClass = ExceptionClass_EV6::Dfault;  // Data fault (ACV)
 	ev.faultVA = va;
-	ev.faultPC = globalHWPCB(cpuId).pc;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM();
 
@@ -155,7 +155,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeSmpBarrierTimeoutEvent(
 	// Use MachineCheck as the canonical fatal path.
 	ev.exceptionClass = ExceptionClass_EV6::MachineCheck;
 
-	ev.faultPC = globalHWPCB(cpuId).pc;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.faultVA = 0;
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM();
@@ -207,7 +207,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeMemoryFault(
 	ev.kind = PendingEventKind::Exception;
 	ev.exceptionClass = ExceptionClass_EV6::MachineCheck;  // Machine check
 	ev.faultVA = va;
-	ev.faultPC = globalHWPCB(cpuId).pc;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM();
 
@@ -236,7 +236,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeFaultOnReadEvent(
 	ev.kind = PendingEventKind::Exception;
 	ev.exceptionClass = ExceptionClass_EV6::Dfault;  // Data fault
 	ev.faultVA = faultVA;
-	ev.faultPC = globalHWPCB(cpuId).pc;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM();
 
@@ -265,7 +265,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeFaultOnWriteEvent(
 	ev.kind = PendingEventKind::Exception;
 	ev.exceptionClass = ExceptionClass_EV6::Dfault;  // Data fault
 	ev.faultVA = faultVA;
-	ev.faultPC = globalHWPCB(cpuId).pc;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM() ;
 
@@ -320,7 +320,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeTranslationFault(
 	TranslationResult tr,
 	bool isWrite) noexcept
 {
-    quint64 pc = globalHWPCB(cpuId).pc ;
+    quint64 pc = globalHWPCB(cpuId).getPC();
     ASNType asn = globalHWPCB(cpuId).asn;
 	switch (tr) {
 	case TranslationResult::Success:
@@ -402,7 +402,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeMemoryAccessFault(
 	ev.exceptionClass = ExceptionClass_EV6::MachineCheck;
 
 	ev.faultVA = faultVA;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM() ;
 
@@ -451,7 +451,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeMemoryStreamFault(
 	ev.exceptionClass = ExceptionClass_EV6::DStream;  // D-stream error
 
 	ev.faultVA = faultVA;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM() ;
 
@@ -482,7 +482,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeNonCanonicalAddressEvent(
 	ev.kind = PendingEventKind::Exception;
 	ev.exceptionClass = ExceptionClass_EV6::Dfault;  // Data fault
 	ev.faultVA = faultVA;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM() ;
 
@@ -519,7 +519,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeDTBDoubleMissEvent(
 	ev.kind = PendingEventKind::Exception;
 	ev.exceptionClass = ExceptionClass_EV6::Dtb_miss_double_4;  // Double miss
 	ev.faultVA = faultVA;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.cm = globalHWPCB(cpuId).getCM() ;
 
@@ -547,7 +547,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeDTBMissDouble3Event(
 	ev.exceptionClass = ExceptionClass_EV6::Dtb_miss_double_4;
 	ev.faultVA = faultVA;
 	ev.asn = globalHWPCB(cpuId).asn;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.pendingEvent_Info.isInstruction = false;
 	ev.pendingEvent_Info.isWrite = isWrite;
 	ev.pendingEvent_Info.faultType = MemoryFaultType::DTB_MISS_READ;
@@ -598,7 +598,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeITBAccessViolationEvent(
 	ev.exceptionClass = ExceptionClass_EV6::ItbAcv;
 	ev.faultVA = faultVA;
 	ev.asn = globalHWPCB(cpuId).asn;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.pendingEvent_Info.isInstruction = true;
 	ev.pendingEvent_Info.isExecute = true;
 	ev.pendingEvent_Info.faultType = MemoryFaultType::ITB_ACCESS_VIOLATION;
@@ -619,7 +619,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeITBMissEvent(
 	ev.kind = PendingEventKind::Exception;
 	ev.exceptionClass = ExceptionClass_EV6::ItbMiss;
 	ev.faultVA = faultVA;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.asn = globalHWPCB(cpuId).asn;
 	ev.pendingEvent_Info.isInstruction = true;
 	ev.pendingEvent_Info.isExecute = true;
@@ -645,7 +645,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeMachineCheckEvent(
 	ev.exceptionClass = ExceptionClass_EV6::MachineCheck;
 	ev.mcReason = reason;
 	ev.faultVA = errorAddr;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 
@@ -658,7 +658,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeResetEvent(CPUIdType cpuId) noexcept
 	PendingEvent ev;
 	ev.kind = PendingEventKind::Reset;
 	ev.exceptionClass = ExceptionClass_EV6::Reset;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 
@@ -680,7 +680,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeSoftwareTrapEvent(
 	if (faultPC == 0)
 		ev.faultPC = faultPC;
 	else
-		ev.faultPC = globalHWPCB(cpuId).pc ;
+		ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 
@@ -702,7 +702,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeCallPalEvent(
 	if (faultPC == 0)
 		ev.faultPC = faultPC;
 	else
-		ev.faultPC = globalHWPCB(cpuId).pc ;
+		ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 
@@ -722,7 +722,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeBreakpointEvent(
 	if (faultPC == 0)
 		ev.faultPC = faultPC;
 	else
-		ev.faultPC = globalHWPCB(cpuId).pc ;
+		ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 
@@ -742,7 +742,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeBugcheckEvent(
 	if (faultPC == 0)
 		ev.faultPC = faultPC;
 	else
-		ev.faultPC = globalHWPCB(cpuId).pc;
+		ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 
@@ -762,7 +762,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeMTFPCREvent(
 	if (faultPC == 0)
 		ev.faultPC = faultPC;
 	else
-		ev.faultPC = globalHWPCB(cpuId).pc;
+		ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 
@@ -784,7 +784,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeArithmeticEvent(
 	if (faultPC == 0)
 		ev.faultPC = faultPC;
 	else
-		ev.faultPC = globalHWPCB(cpuId).pc ;
+		ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 /**
@@ -805,7 +805,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeIllegalOpcodeEvent(
 	if (faultPC == 0)
 		ev.faultPC = faultPC;
 	else
-		ev.faultPC = globalHWPCB(cpuId).pc ;
+		ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 
@@ -824,7 +824,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeFENEvent(
 	if (faultPC == 0)
 		ev.faultPC = faultPC;
 	else
-		ev.faultPC = globalHWPCB(cpuId).pc ;
+		ev.faultPC = globalHWPCB(cpuId).getPC();
 	return ev;
 }
 
@@ -844,7 +844,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeUnalignedEvent(
 	ev.exceptionClass = ExceptionClass_EV6::Unalign;
 	ev.faultVA = faultVA;
 	ev.asn = globalHWPCB(cpuId).asn;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.pendingEvent_Info.isUnaligned = true;
 	ev.pendingEvent_Info.isWrite = isWrite;
 	ev.pendingEvent_Info.accessType = isWrite ?
@@ -868,7 +868,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeDTBAccessViolationEvent(
 	ev.exceptionClass = ExceptionClass_EV6::Dfault;
 	ev.faultVA = faultVA;
 	ev.asn = globalHWPCB(cpuId).asn;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.pendingEvent_Info.isInstruction = false;
 	ev.pendingEvent_Info.isWrite = isWrite;
     ev.pendingEvent_Info.faultType = MemoryFaultType::DTB_ACCESS_VIOLATION_READ;
@@ -895,7 +895,7 @@ AXP_HOT AXP_FLATTEN PendingEvent makeDTBFaultEvent(
 	ev.exceptionClass = ExceptionClass_EV6::Dfault;
 	ev.faultVA = faultVA;
 	ev.asn = globalHWPCB(cpuId).asn;
-	ev.faultPC = globalHWPCB(cpuId).pc ;
+	ev.faultPC = globalHWPCB(cpuId).getPC();
 	ev.pendingEvent_Info.isInstruction = false;
 	ev.pendingEvent_Info.isWrite = isWrite;
 	ev.pendingEvent_Info.faultType = faultType;
@@ -936,7 +936,7 @@ AXP_HOT AXP_FLATTEN void updateMemoryTrap_IPR(CPUIdType cpuId, quint64 faultVA, 
 		.arg(faultVA, 16, 16, QChar('0'))
 		.arg(isWrite)
 		.arg(static_cast<int>(faultType))
-		.arg(globalHWPCB(cpuId).pc , 16, 16, QChar('0'))
+		.arg(globalHWPCB(cpuId).getPC(), 16, 16, QChar('0'))
 	);
 
 	// Map MEMORY_FAULT exception -> PAL vector via PAL vector table.
@@ -962,7 +962,7 @@ AXP_HOT AXP_FLATTEN void updateMemoryTrap_IPR(CPUIdType cpuId, quint64 faultVA, 
 
 	// Architecturally: EXC_ADDR = PC of faulting instruction,
 	// VA = virtual address that caused the fault.
-	globalHWPCB(cpuId).exc_addr = globalHWPCB(cpuId).pc ;
+	globalHWPCB(cpuId).exc_addr = globalHWPCB(cpuId).getPC();
 	globalHWPCB(cpuId).va_fault = faultVA;  // TODO check
 }
 

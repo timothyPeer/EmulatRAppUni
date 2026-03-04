@@ -313,7 +313,7 @@ public:
        stage(m_head).m_pending = PendingCommit{};
 
 #if AXP_INSTRUMENTATION_TRACE
-        EXECTRACE_PIPELINE_FLUSH(m_cpuId, caller, m_iprGlobalMaster->h->pc);
+        EXECTRACE_PIPELINE_FLUSH(m_cpuId, caller, m_iprGlobalMaster->h->getPC());
 #endif
         for (int i = 0; i < STAGE_COUNT; i++)
         {
@@ -809,11 +809,20 @@ public:
         // Execute pipeline stages
         BoxResult result = execute(fetchResult);
 
+        if (result.needsPipelineFlush())
+        {
+            fetchResult = FetchResult{};   // discard stale speculative fetch
+        }
+
         advanceRing();  // Rotate the ring buffer!
         if (m_cycleCount % 500 == 0)
         {
             debugPipelineSummary();
         }
+
+        if (m_cycleCount == 55) {
+            qDebug() << "breakpoint";
+       } 
 
         m_cycleCount++;
 
@@ -859,9 +868,11 @@ private:
         */
     AXP_HOT AXP_ALWAYS_INLINE auto stage_IF() -> void
     {
-        if (m_iprGlobalMaster->h->pc == 0x9001B8)
+        if (m_cycleCount > 50)
         {
-            qDebug() << "out profiling starts here";
+
+            qDebug() << "stop here";
+
         }
 
         PipelineSlot& slot = stage(0);
@@ -923,6 +934,10 @@ private:
         else
         {
             // Not a branch: sequential
+            // for reporting we need to carry the updated PC to predictedTarget to ensure we report it later.
+            slot.predictionValid = false;
+            slot.predictionTaken = false;
+            slot.predictionTarget = slot.di.pc + 4;
             nextPC = slot.di.pc + 4;
         }
 
@@ -930,7 +945,6 @@ private:
         slot.predictedPC = slot.predictionTarget;
 
         m_iprGlobalMaster->h->advancePC(nextPC);
-        //setPC_Active(slot.cpuId, nextPC);
         m_pendingFetch = FetchResult{};
 
         qDebug().noquote()
@@ -940,7 +954,7 @@ private:
                .arg(hx8(getOpcodeFromPacked(slot.di)))
                .arg(getMnemonicFromRaw(slot.di.rawBits()))
                .arg(extractDisp21(slot.di.rawBits()))
-               .arg(hx64(target))
+               .arg(hx64(slot.predictionTarget))
                .arg(slot.predictionValid ? 1 : 0)
                .arg(slot.predictionTaken ? 1 : 0)
                .arg(hx64(slot.predictionTarget))
@@ -1259,6 +1273,13 @@ private:
 
         if (!slot.valid) return;
 
+        // If mispredict was already resolved in stage_EX, do not re-flush
+        if (slot.mispredict && slot.branchTaken)
+        {
+            // Flush was handled in stage_EX — just commit the slot normally
+            slot.mispredict = false;   // clear flag — already actioned
+        }
+
         // ================================================================
         // STALL CONDITIONS
         // ================================================================
@@ -1552,7 +1573,7 @@ private:
         }
 
         qDebug() << QString("[   ][PC] Next: 0x%1")
-            .arg(m_iprGlobalMaster->h->pc, 16, 16, QChar('0'));
+            .arg(m_iprGlobalMaster->h->getPC(), 16, 16, QChar('0'));
         qDebug() << "================================================================================";
 #endif
     }

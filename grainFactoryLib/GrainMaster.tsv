@@ -562,7 +562,6 @@ Opcode	Function	Mnemonic	Description	Type	Box
 0x1A	0x0001	JSR	JSR	Branch	CBox
 0x1A	0x0002	RET	RET	Branch	CBox
 0x1A	0x0003	JSR_COROUTINE	JSR_COROUTINE	Branch	CBox
-0x1B	0x0000	PAL1B	PAL1B	Miscellaneous	PalBox
 0x1D	0x0000	PAL1D	PAL1D	Miscellaneous	PalBox
 0x1E	0x0000	PAL1E	PAL1E	Miscellaneous	PalBox
 0x1F	0x0000	PAL1F	PAL1F	Miscellaneous	PalBox

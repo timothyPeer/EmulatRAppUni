@@ -634,7 +634,9 @@ public:
 
         // Flush and redirect if needed
         if (mispredicted) {
-            m_iprGlobalMaster->h->pc = targetPC;  // Direct write is fine for hot path
+            // advancePC preserves current PAL mode bit — misprediction is a
+            // control flow correction, not a mode transition
+            m_iprGlobalMaster->h->advancePC(targetPC);
             slot.flushPipeline = true;
         }
 

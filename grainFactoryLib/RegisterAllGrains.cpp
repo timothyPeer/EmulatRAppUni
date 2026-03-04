@@ -586,7 +586,6 @@
 #include "grainFactoryLib/grains/generated/PAL/OPC06_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/OPC07_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/PAL19_InstructionGrain.h"
-#include "grainFactoryLib/grains/generated/PAL/PAL1B_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/PAL1D_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/PAL1E_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/PAL1F_InstructionGrain.h"

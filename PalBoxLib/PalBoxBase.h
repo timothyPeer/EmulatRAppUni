@@ -27,6 +27,7 @@
 
 
 #include "coreLib/types_core.h"
+#include "coreLib/alpha_int_byteops_inl.h"
 #include "coreLib/Axp_Attributes_core.h"
 #include "coreLib/LoggingMacros.h"
 #include "palLib_EV6/PAL_core.h"
@@ -1029,18 +1030,6 @@ public:
         m_palService->executeSWASTEN(slot, slot.palResult);
         commitPalResult(slot);                    // Commit Pal Results
     }
-
-    AXP_HOT AXP_ALWAYS_INLINE auto executePAL1F(PipelineSlot& slot) -> void
-    {
-        // HW_ST - Hardware Store (opcode 0x1F, PALmode only)
-        applyBoxResult(slot, executeHW_ST(slot));
-        commitPalResult(slot);                    // Commit Pal Results
-    }
-
-    // AXP_HOT AXP_ALWAYS_INLINE auto executeOPC03(PipelineSlot& slot) -> void
-    // {
-    //     m_palService->executeSWASTEN(slot, slot.palResult);
-    // }
     AXP_HOT AXP_ALWAYS_INLINE auto executeOPC01(PipelineSlot& slot) -> void
     {
         static bool warned = false;
@@ -1118,11 +1107,16 @@ public:
         commitPalResult(slot);                    // Commit Pal Results
     }
 
-    AXP_HOT AXP_ALWAYS_INLINE auto executePAL1B(PipelineSlot& slot) -> void
+    AXP_HOT AXP_ALWAYS_INLINE auto executePAL1F(PipelineSlot& slot) -> void
     {
-        // HW_LD - Hardware Load (opcode 0x1B, PALmode only)
-        applyBoxResult(slot, executeHW_LD(slot));
-        commitPalResult(slot);                    // Commit Pal Results
+        // Opcode 0x1F — bit 15 selects HW_LD vs HW_ST
+        if (slot.di.rawBits() & 0x8000)
+            applyBoxResult(slot, executeHW_ST(slot));   // bit 15 = 1 -> store
+        else
+            applyBoxResult(slot, executeHW_LD(slot));   // bit 15 = 0 -> load
+
+        if (!slot.faultPending)                         // only commit on clean execution
+        commitPalResult(slot);                          // Commit Pal Results
     }
 
     AXP_HOT AXP_ALWAYS_INLINE auto executePAL1D(PipelineSlot& slot) -> void
@@ -1270,7 +1264,7 @@ public:
         // 5. Enter PAL mode (CENTRALIZED - only place PC[0] set)
         // setCM_Active(m_cpuId, CM_KERNEL);
         //setPC_Active(m_cpuId, entryPC | 0x1ULL);
-        m_iprGlobalMaster->h->pc = entryPC | 0x1ULL;             // fast path // updates the PC
+        m_iprGlobalMaster->h->advancePC(entryPC);             // fast path // updates the PC
         m_iprGlobalMaster->h->setIPL_Unsynced( 7);
         m_iprGlobalMaster->h->setCM(CM_KERNEL);    // fast path // updates the PS and shadow CM
 
@@ -1425,17 +1419,17 @@ public:
                    .flushPipeline();
         }
 
-        const quint32 raw  = slot.di.rawBits();
-        const quint8  ra   = (raw >> 21) & 0x1F;
-        const quint8  rb   = (raw >> 16) & 0x1F;
-        const bool    phys = (raw >> 15) & 1;
-        // const bool alt  = (raw >> 14) & 1;  // TODO: alternate mode access
-        const bool wchk = (raw >> 13) & 1;
-        const bool quad = (raw >> 12) & 1;
+        const quint32 raw = slot.di.rawBits();
+        const quint8  ra = (raw >> 21) & 0x1F;
+        const quint8  rb = (raw >> 16) & 0x1F;
+        // bit 15 = HW_LD/HW_ST selector — already consumed by executePAL1F dispatcher
+        const bool    phys = (raw >> 14) & 1;   // bit 14 = physical access
+        const bool    alt = (raw >> 13) & 1;   // bit 13 = alternate mode
+        const bool    wchk = (raw >> 12) & 1;   // bit 12 = write check
+       // const bool    quad = (raw >> 11) & 1;   // bit 11 = quadword (1) / longword (0)
+        // Sign-extend 11-bit displacement — bits 10:0
+        const qint64 disp = signExtend<12>(static_cast<quint64>(raw) & 0x7FF);
 
-        // Sign-extend 12-bit displacement to 64 bits
-        const qint64 disp = static_cast<qint64>(
-            static_cast<qint16>(static_cast<quint16>((raw & 0xFFF) << 4))) >> 4;
 
         // Compute effective address: EA = Rb + SEXT(disp)
         const quint64 rbVal = (rb == 31) ? 0ULL : slot.readIntReg(rb);
@@ -1448,17 +1442,18 @@ public:
         {
             // Physical mode: bypass TLB, access guest physical memory directly
             //       auto& guestMem = global_GuestMemory();
-            if (quad)
+            //if (quad)
             {
                 status = m_guestMemory->read64(ea, value);          // Fast Path
             }
-            else
+           /* else
             {
                 quint32 tmp = 0;
                 status      = m_guestMemory->read32(ea, tmp);                //Fast Path
                 // Longword loads are sign-extended to 64 bits (EV6 spec)
                 value = static_cast<quint64>(static_cast<qint32>(tmp));
             }
+            */
         }
         else
         {
@@ -1467,10 +1462,14 @@ public:
             AlphaPTE pte = {};
             auto     cm  = static_cast<Mode_Privilege>(m_iprGlobalMaster->h->cm);
 
-            TranslationResult tResult = m_ev6Translator->ev6TranslateFullVA(
+
+            // invoke PAL mode fast-path.
+            TranslationResult tResult = m_ev6Translator->translateVA_Data(ea, m_iprGlobalMaster->h->getPC(), false, pa );
+
+     /*       TranslationResult tResult = m_ev6Translator->ev6TranslateFullVA(
                 ea,
                 wchk ? AccessKind::WRITE : AccessKind::READ,
-                cm, pa, pte);
+                cm, pa, pte); */
 
             if (tResult != TranslationResult::Success)
             {
@@ -1483,14 +1482,29 @@ public:
             }
 
             //auto& guestMem = global_GuestMemory();
-            if (quad)
+            //if (quad)
+
+            quint64 value10; quint64 value00; quint64 value18; quint64 value08; quint64 value20; quint32 valuePa;
+
                 status = m_guestMemory->read64(pa, value);      // Fast Path
-            else
-            {
-                quint32 tmp = 0;
-                status      = m_guestMemory->read32(pa, tmp);        // Fast Path
-                value       = static_cast<quint64>(static_cast<qint32>(tmp));
-            }
+#if AXP_INSTRUMENTATION_TRACE
+                quint64 dbg0, dbg8, dbg10, dbg18, dbg20;
+                m_guestMemory->read64(0x900000, dbg0);
+                m_guestMemory->read64(0x900008, dbg8);
+                m_guestMemory->read64(0x900010, dbg10);
+                m_guestMemory->read64(0x900018, dbg18);
+                m_guestMemory->read64(0x900020, dbg20);
+                qDebug().noquote()
+                    << QString("[HW_LD::MEMCHECK] "
+                        "900000:%1 900008:%2 900010:%3 "
+                        "900018:%4 900020:%5 read64(pa):%6")
+                    .arg(dbg0, 16, 16, QChar('0'))
+                    .arg(dbg8, 16, 16, QChar('0'))
+                    .arg(dbg10, 16, 16, QChar('0'))
+                    .arg(dbg18, 16, 16, QChar('0'))
+                    .arg(dbg20, 16, 16, QChar('0'))
+                    .arg(pa, 16, 16, QChar('0'));
+#endif
         }
 
         if (status != MEM_STATUS::Ok)
@@ -1510,9 +1524,9 @@ public:
         slot.ra_value = value;
  
 
-        DEBUG_LOG(QString("PalBox CPU %1: HW_LD%2 %3 EA=0x%4 -> R%5=0x%6")
+        DEBUG_LOG(QString("PalBox CPU %1: HW_LDQ %3 EA=0x%4 -> R%5=0x%6")
             .arg(m_cpuId)
-            .arg(quad ? "Q" : "L")
+            //.arg(quad ? "Q" : "L")
             .arg(phys ? "PHYS" : "VIRT")
             .arg(ea, 16, 16, QChar('0'))
             .arg(ra)
@@ -1543,16 +1557,16 @@ public:
                    .flushPipeline();
         }
 
-        const quint32 raw  = slot.di.rawBits();
-        const quint8  ra   = (raw >> 21) & 0x1F;
-        const quint8  rb   = (raw >> 16) & 0x1F;
-        const bool    phys = (raw >> 15) & 1;
-        // const bool alt  = (raw >> 14) & 1;  // TODO: alternate mode
-        const bool quad = (raw >> 12) & 1;
-
-        // Sign-extend 12-bit displacement
-        const qint64 disp = static_cast<qint64>(
-            static_cast<qint16>(static_cast<quint16>((raw & 0xFFF) << 4))) >> 4;
+        const quint32 raw = slot.di.rawBits();
+        const quint8  ra = (raw >> 21) & 0x1F;
+        const quint8  rb = (raw >> 16) & 0x1F;
+        // bit 15 = HW_LD/HW_ST selector — already consumed by executePAL1F dispatcher
+        const bool    phys = (raw >> 14) & 1;   // bit 14 = physical access
+        const bool    alt = (raw >> 13) & 1;   // bit 13 = alternate mode
+        const bool    wchk = (raw >> 12) & 1;   // bit 12 = write check
+        //const bool    quad = (raw >> 11) & 1;   // bit 11 = quadword (1) / longword (0)
+        // Sign-extend 11-bit displacement — bits 10:0
+        const qint64 disp = signExtend<12>(static_cast<quint64>(raw) & 0x7FF);
 
         // Compute effective address
         const quint64 rbVal = (rb == 31) ? 0ULL : slot.readIntReg(rb);
@@ -1567,10 +1581,10 @@ public:
         {
             // Physical mode: bypass TLB
             //auto& guestMem = global_GuestMemory();
-            if (quad)
+            //if (quad)
                 status = m_guestMemory->write64(ea, raVal);                 // Fast Path
-            else
-                status = m_guestMemory->write32(ea, static_cast<quint32>(raVal));   // Fast Path
+            //else
+            //    status = m_guestMemory->write32(ea, static_cast<quint32>(raVal));   // Fast Path
         }
         else
         {
@@ -1593,10 +1607,10 @@ public:
             }
 
             //auto& guestMem = global_GuestMemory();
-            if (quad)
+            //if (quad)
                 status = m_guestMemory->write64(pa, raVal);                             // Fast Path
-            else
-                status = m_guestMemory->write32(pa, static_cast<quint32>(raVal));             // Fast Path
+            //else
+            //    status = m_guestMemory->write32(pa, static_cast<quint32>(raVal));             // Fast Path
         }
 
         if (status != MEM_STATUS::Ok)
@@ -1671,7 +1685,7 @@ public:
             .arg(targetPC, 16, 16, QChar('0')));
 
         // Exit PAL mode, set new PC
-        m_iprGlobalMaster->h->forceUserPC(targetPC);
+        m_iprGlobalMaster->h->advancePC(targetPC);
 
         // Deactivate shadow registers
         m_shadowRegsActive = false;
@@ -1826,7 +1840,7 @@ public:
         // 3. Transfer control to OS
         //setPC_Active(m_cpuId, osEntry);  // No PC[0] - exit PAL mode
         //setCM_Active(m_cpuId, CM_KERNEL);
-        m_iprGlobalMaster->h->pc = osEntry;                                                      // Fast Path
+        m_iprGlobalMaster->h->advancePC( osEntry);                                                      // Fast Path
         m_iprGlobalMaster->h->setCM(CM_KERNEL);                                     // Fast Path
 
         DEBUG_LOG(QString("PalBox CPU %1: Transferred to OS @ 0x%2")
@@ -1889,7 +1903,7 @@ public:
         // 2. PC update
         if (pr.pcModified)
         {
-            m_iprGlobalMaster->h->pc = pr.newPC;
+            m_iprGlobalMaster->h->advancePC( pr.newPC);
         }
 
         // 3. Side-effect flags -> pipeline signals
@@ -2102,7 +2116,7 @@ public:
         // ============================================================
         if (pr.pcModified)
         {
-            m_iprGlobalMaster->h->pc = pr.newPC;
+            m_iprGlobalMaster->h->advancePC( pr.newPC);
             br.pcModified = true;
         }
         if (pr.hasRequestPipelineFlush() )

@@ -47,7 +47,7 @@ public:
             1,   // latency (cycles)
             1 // throughput (instructions/cycle)
           )
-        , m_mnemonic("PAL1F")
+        , m_mnemonic("HW_LD")
         , m_opcode(0x1F)
         , m_functionCode(0x0000)
         , m_platform(GrainPlatform::Alpha)

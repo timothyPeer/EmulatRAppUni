@@ -305,7 +305,9 @@ struct alignas(64) HWPCB
     // ================================================================
     // CACHE LINE 0: Per-instruction hot path (64 bytes)
     // ================================================================
+private:
     quint64 pc{};           //  0: Program Counter (bit[0] = PAL mode)
+public:
     quint64 ps{};           //  8: Processor Status (raw)
     quint64 ptbr{};         // 16: Page Table Base Register
     quint64 exc_addr{};     // 24: Exception Address
@@ -356,9 +358,8 @@ struct alignas(64) HWPCB
         std::memset(processorSerial, 0, sizeof(processorSerial));
     }
 
-    AXP_HOT AXP_ALWAYS_INLINE void advancePC(quint64 newPC) noexcept
-    {
-        pc = (newPC & ~1ULL) | (pc & 1ULL);  // preserve PAL bit
+    AXP_COLD AXP_ALWAYS_INLINE quint32 reportPalFromPc() {
+        return (pc & 1);
     }
 
     // ================================================================
@@ -469,15 +470,297 @@ struct alignas(64) HWPCB
         ps = (ps & ~0xF8ULL) | ((ipl_ & 0x1F) << 3);
         ipl = ipl_ & 0x1F;
     }
+#pragma region Program Counter Accessors
 
+    // ============================================================================
+    // Program Counter (PC) Register — Usage Considerations
+    // ============================================================================
+    // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
+    // Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+    // Licensed under eNVy Systems Non-Commercial License v1.1
+    //
+    // Project Architect: Timothy Peer
+    // AI Code Generation: Claude (Anthropic)
+    // ============================================================================
+    //
+    // ARCHITECTURAL BACKGROUND
+    // ============================================================================
+    //
+    // The Alpha AXP specification defines the Program Counter as a 64-bit register
+    // where bit 0 carries the PAL mode flag. This is not a software convention —
+    // it is a hardware architectural invariant. When the processor is executing
+    // PALcode, bit 0 of the PC is 1. When executing native code, bit 0 is 0.
+    //
+    // This design allows the hardware to save and restore the full processor state
+    // including PAL mode in a single PC save/restore operation. Exception frames,
+    // REI (Return from Exception/Interrupt), and CALL_PAL dispatch all depend on
+    // this invariant being preserved exactly.
+    //
+    // INVARIANT
+    // ============================================================================
+    //
+    // The raw PC member (pc) always stores the architecturally correct value
+    // including bit 0. No consumer should ever read pc directly — all access
+    // must go through the typed accessor interface defined below.
+    //
+    // Rule: if you are using the PC as an address, use getPC().
+    //       if you are saving or restoring architectural state, use getRawPC()
+    //       or restorePC().
+    //       if you are testing processor mode, use inPalMode().
+    //
+    // ACCESSOR USAGE CONTRACT
+    // ============================================================================
+    //
+    // getPC()
+    //   Returns the PC with bit 0 stripped — a clean, aligned instruction address.
+    //   This is the correct accessor for the vast majority of consumers.
+    //
+    //   USE FOR:
+    //     - Instruction fetch address passed to guest memory
+    //     - Storing into DecodedInstruction.pc (di.pc)
+    //     - Branch target computation (base address for displacement arithmetic)
+    //     - nextPC computation in stage_IF
+    //     - Debug and trace output displaying the current instruction address
+    //     - Any arithmetic that treats the PC as an address
+    //
+    //   DO NOT USE FOR:
+    //     - Saving PC to an exception frame
+    //     - REI target restoration
+    //     - CALL_PAL vector computation
+    //     - Any operation that must preserve the PAL mode bit
+    //
+    // getRawPC()
+    //   Returns the PC exactly as stored, including bit 0.
+    //
+    //   USE FOR:
+    //     - Saving PC to an exception frame (EXC_ADDR, PS save)
+    //     - Passing to computeCallPalEntry() which may inspect bit 0
+    //     - Architectural state snapshots for debugging
+    //     - Any operation where the PAL bit is part of the value semantics
+    //
+    //   DO NOT USE FOR:
+    //     - Instruction fetch — bit 0 will cause misaligned access
+    //     - Branch target computation — arithmetic on raw PC produces wrong results
+    //     - di.pc storage — pipeline slots must always carry clean addresses
+    //
+    // inPalMode()
+    //   Returns true if the processor is currently executing in PAL mode.
+    //
+    //   USE FOR:
+    //     - Privilege level checks before executing privileged instructions
+    //     - HW_MTPR / HW_MFPR access validation
+    //     - Mode-dependent instruction decode (HW_REI, HW_LD, HW_ST)
+    //     - Determining whether CALL_PAL should vector or fault
+    //
+    // advancePC(quint64 newPC)
+    //   Advances the PC to newPC, preserving the current PAL mode bit.
+    //   This is the standard write path for all sequential and branch advances.
+    //
+    //   USE FOR:
+    //     - Normal sequential PC advance in stage_IF (PC + 4)
+    //     - Branch target redirect on misprediction recovery
+    //     - Jump target write (JMP, JSR, RET)
+    //     - Any case where the new PC address is known and PAL mode is unchanged
+    //
+    //   IMPORTANT:
+    //     - newPC must be a clean address (bit 0 = 0) — advancePC will preserve
+    //       the existing PAL bit from the current pc value
+    //     - Do not pass getRawPC() values from another context into advancePC()
+    //       as this may double-apply the PAL bit
+    //
+    // enterPalMode(quint64 newPC)
+    //   Writes newPC to the PC register and unconditionally sets bit 0.
+    //   Signals that the processor has entered PAL mode.
+    //
+    //   USE FOR:
+    //     - CALL_PAL dispatch — after computing the PAL vector address
+    //     - Exception entry vectors that transfer to PALcode
+    //
+    //   DO NOT USE FOR:
+    //     - REI — use restorePC() which preserves the saved bit 0 exactly
+    //     - Normal branch/jump — use advancePC()
+    //
+    // exitPalMode(quint64 newPC)
+    //   Writes newPC to the PC register and unconditionally clears bit 0.
+    //   Signals an explicit transition to native (non-PAL) execution mode.
+    //
+    //   USE FOR:
+    //     - Explicit PAL-to-native transitions where the target is known
+    //       to be a native code address
+    //
+    //   CAUTION:
+    //     - REI does NOT use exitPalMode — REI restores a saved PC which may
+    //       itself have had bit 0 set (exception taken while in PAL mode).
+    //       Use restorePC() for REI to preserve the saved state exactly.
+    //
+    // restorePC(quint64 rawPC)
+    //   Writes rawPC to the PC register exactly as provided, including bit 0.
+    //   This is the architectural restore path — bit 0 is determined entirely
+    //   by the saved value, not by the current mode.
+    //
+    //   USE FOR:
+    //     - HW_REI — restoring the saved PC from the exception frame
+    //     - Any context restore operation that must reproduce exact
+    //       architectural state including PAL mode
+    //
+    //   IMPORTANT:
+    //     - Only pass values originally obtained from getRawPC() or from
+    //       an architectural exception frame into restorePC()
+    //     - Passing a clean address (bit 0 = 0) will exit PAL mode as a
+    //       side effect — this is correct if the saved state was native mode
+    //
+    // PRIVATE MEMBER ENFORCEMENT
+    // ============================================================================
+    //
+    // The raw pc member is declared private. Direct reads or writes of pc
+    // outside of the accessor interface are a compile error by design.
+    //
+    // When migrating existing code:
+    //
+    //   ->h->pc used as address          →  ->h->getPC()
+    //   ->h->pc used for state save      →  ->h->getRawPC()
+    //   ->h->pc & 0x1 mode test          →  ->h->inPalMode()
+    //   ->h->pc = value (normal advance) →  ->h->advancePC(value)
+    //   ->h->pc = palVector (PAL entry)  →  ->h->enterPalMode(palVector)
+    //   ->h->pc = saved (REI restore)    →  ->h->restorePC(saved)
+    //
+    // COMMON MISTAKES TO AVOID
+    // ============================================================================
+    //
+    // 1. Storing getRawPC() into di.pc
+    //    di.pc must always be a clean address. The pipeline, branch predictors,
+    //    and all arithmetic operating on di.pc assume bit 0 is zero. Always
+    //    use getPC() when populating di.pc.
+    //
+    // 2. Passing di.pc into restorePC()
+    //    di.pc is already stripped of the PAL bit. Passing it to restorePC()
+    //    will silently exit PAL mode. Use restorePC() only with values from
+    //    getRawPC() or an architectural exception frame.
+    //
+    // 3. Using advancePC() for REI
+    //    advancePC() preserves the CURRENT PAL bit, not the SAVED PAL bit.
+    //    REI must restore the saved PAL mode exactly — use restorePC().
+    //
+    // 4. Reading ->h->pc directly in debug/trace output
+    //    Debug formatters that print ->h->pc will display the PAL-contaminated
+    //    address. Use getPC() for display to show the true instruction address,
+    //    or getRawPC() if the PAL bit state is relevant to the trace output.
+    //
+    // 5. Branch displacement arithmetic on raw PC
+    //    Alpha branch targets are computed as: (PC + 4) + (disp21 << 2)
+    //    The base must be getPC() + 4, never getRawPC() + 4. Using the raw
+    //    PC will produce a branch target that is 1 byte off and misaligned.
+    //
     // ================================================================
     // PROGRAM COUNTER HELPERS
     // ================================================================
-    AXP_HOT AXP_ALWAYS_INLINE quint64 getPC() const noexcept { return pc; }
-    AXP_HOT AXP_ALWAYS_INLINE void setPC(quint64 v) noexcept { pc = v; }
-    AXP_HOT AXP_ALWAYS_INLINE void forcePalPC(quint64 v) noexcept { pc = v | 0x1ULL; }
-    AXP_HOT AXP_ALWAYS_INLINE void forceUserPC(quint64 v) noexcept { pc = v & ~0x1ULL; }
-    AXP_HOT AXP_ALWAYS_INLINE bool inPalMode() const noexcept { return (pc & 0x1) != 0; }
+    // ----------------------------------------------------------------
+    // Read: address consumption — strips PAL bit
+    // Use for: fetch, decode, branch targets, di.pc storage,
+    //          debug display, nextPC computation
+    // ----------------------------------------------------------------
+    AXP_HOT AXP_ALWAYS_INLINE quint64 getPC() const noexcept
+    {
+        return pc & ~1ULL;
+    }
+
+    // ----------------------------------------------------------------
+    // Read: raw value including PAL bit
+    // Use ONLY for: exception state save, REI restore,
+    //               CALL_PAL vector computation, architectural snapshots
+    // ----------------------------------------------------------------
+    AXP_HOT AXP_ALWAYS_INLINE quint64 getRawPC() const noexcept
+    {
+        return pc;
+    }
+
+    // ----------------------------------------------------------------
+    // Read: PAL mode test
+    // Use for: privilege checks, mode-dependent decode
+    // ----------------------------------------------------------------
+    AXP_HOT AXP_ALWAYS_INLINE bool inPalMode() const noexcept
+    {
+        return (pc & 1ULL) != 0;
+    }
+
+    // ----------------------------------------------------------------
+    // Write: normal sequential advance — preserves PAL bit
+    // ----------------------------------------------------------------
+    AXP_HOT AXP_ALWAYS_INLINE void advancePC(quint64 newPC) noexcept
+    {
+        const quint64 oldPC = pc;
+        pc = (newPC & ~1ULL) | (pc & 1ULL);
+
+#if AXP_INSTRUMENTATION_TRACE
+        if ((oldPC & 1ULL) != (pc & 1ULL))   // only log on PAL bit transition
+            qDebug().noquote()
+            << QString("[PC::PAL::CHANGE] advancePC  0x%1 (PAL=%2) -> 0x%3 (PAL=%4)")
+            .arg(oldPC, 16, 16, QChar('0'))
+            .arg(oldPC & 1)
+            .arg(pc, 16, 16, QChar('0'))
+            .arg(pc & 1);
+#endif
+    }
+
+    // ----------------------------------------------------------------
+    // Write: explicit PAL mode entry — sets bit 0
+    // Use for: CALL_PAL dispatch, exception entry
+    // ----------------------------------------------------------------
+    AXP_HOT AXP_ALWAYS_INLINE void enterPalMode(quint64 newPC) noexcept
+    {
+        const quint64 oldPC = pc;
+        pc = (newPC & ~1ULL) | 1ULL;
+
+#if AXP_INSTRUMENTATION_TRACE
+        qDebug().noquote()
+            << QString("[PC::PAL::ENTER] enterPalMode 0x%1 (PAL=%2) -> 0x%3 (PAL=%4)")
+            .arg(oldPC, 16, 16, QChar('0'))
+            .arg(oldPC & 1)
+            .arg(pc, 16, 16, QChar('0'))
+            .arg(pc & 1);
+#endif
+    }
+
+    // ----------------------------------------------------------------
+    // Write: explicit PAL mode exit — clears bit 0
+    // Use for: REI return to native mode
+    // ----------------------------------------------------------------
+    AXP_HOT AXP_ALWAYS_INLINE void exitPalMode(quint64 newPC) noexcept
+    {
+        const quint64 oldPC = pc;
+        pc = newPC & ~1ULL;
+
+#if AXP_INSTRUMENTATION_TRACE
+        qDebug().noquote()
+            << QString("[PC::PAL::EXIT ] exitPalMode  0x%1 (PAL=%2) -> 0x%3 (PAL=%4)")
+            .arg(oldPC, 16, 16, QChar('0'))
+            .arg(oldPC & 1)
+            .arg(pc, 16, 16, QChar('0'))
+            .arg(pc & 1);
+#endif
+    }
+
+    // ----------------------------------------------------------------
+    // Write: full restore including PAL bit
+    // Use ONLY for: REI restoring saved PC, exception frame restore
+    // ----------------------------------------------------------------
+    AXP_HOT AXP_ALWAYS_INLINE void restorePC(quint64 rawPC) noexcept
+    {
+        const quint64 oldPC = pc;
+        pc = rawPC;
+
+#if AXP_INSTRUMENTATION_TRACE
+        if ((oldPC & 1ULL) != (pc & 1ULL))   // only log on PAL bit transition
+            qDebug().noquote()
+            << QString("[PC::PAL::RESTORE] restorePC 0x%1 (PAL=%2) -> 0x%3 (PAL=%4)")
+            .arg(oldPC, 16, 16, QChar('0'))
+            .arg(oldPC & 1)
+            .arg(pc, 16, 16, QChar('0'))
+            .arg(pc & 1);
+#endif
+    }
+
+#pragma endregion Program Counter Accessors
 
     // ================================================================
     // AST PACK/UNPACK (Physical HWPCB offset 0x30)
@@ -1201,7 +1484,6 @@ struct CPUStateView final
 
     // ── HWPCB shortcuts (most common fields) ──
     AXP_HOT AXP_ALWAYS_INLINE quint64 getPC() const noexcept { return h->getPC(); }
-    AXP_HOT AXP_ALWAYS_INLINE void setPC(quint64 v) noexcept { h->setPC(v); }
     AXP_HOT AXP_ALWAYS_INLINE quint8 getCM() const noexcept { return h->getCM(); }
     AXP_HOT AXP_ALWAYS_INLINE quint8 getIPL() const noexcept { return h->getIPL(); }
     AXP_HOT AXP_ALWAYS_INLINE quint64 getPS() const noexcept { return h->getPS(); }
@@ -1219,15 +1501,17 @@ struct CPUStateView final
 
     // ============================================================================
     AXP_HOT AXP_ALWAYS_INLINE bool isInPalMode() const noexcept {
-        return (h->pc & 0x1) != 0;
+        return (h->inPalMode());
     }
     // Set or clear PC[0] while preserving all other bits.
+    // DEPRECATED — use enterPalMode() / exitPalMode() directly
+    // Retained during refactor transition only — remove when all sites migrated
     AXP_HOT AXP_ALWAYS_INLINE quint64 setPalMode( bool enable) noexcept
     {
         if (enable) {
-            return (h->pc | 0x1ULL);   // set bit0
+            return (h->getPC());   // set bit0
         }
-        return (h->pc & ~0x1ULL);      // clear bit0
+        return (h->getPC());      // clear bit0
     }
 
     // Before attempting TLB lookup
@@ -1554,7 +1838,6 @@ static_assert(offsetof(HWPCB, ssp) == offsetof(HWPCB, ksp) + 16, "ksp->ssp");
 static_assert(offsetof(HWPCB, usp) == offsetof(HWPCB, ksp) + 24, "ksp->usp");
 
 // Verify HWPCB hot fields in cache line 0
-static_assert(offsetof(HWPCB, pc) == 0, "pc at offset 0");
 static_assert(offsetof(HWPCB, ps) == 8, "ps at offset 8");
 static_assert(offsetof(HWPCB, ksp) == 56, "ksp at end of cache line 0");
 

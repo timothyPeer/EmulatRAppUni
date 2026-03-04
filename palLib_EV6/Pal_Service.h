@@ -283,7 +283,7 @@ public:
 		const quint64 r16q64 = m_iprGlobalMaster->readInt(16);
 		const quint64 r17q64 = m_iprGlobalMaster->readInt(17);
 
-		requestPalCallEvent(palFunction, r16q64, r17q64, m_iprGlobalMaster->h->pc);
+		requestPalCallEvent(palFunction, r16q64, r17q64, m_iprGlobalMaster->h->getPC());
 	}
 	
 	AXP_HOT AXP_ALWAYS_INLINE  void executePalCall(PipelineSlot& slot) noexcept
@@ -340,7 +340,7 @@ public:
 		ev.kind = PendingEventKind::Exception;
 		ev.exceptionClass = ExceptionClass_EV6::Dfault;
 		ev.faultVA = va;
-		ev.faultPC = m_iprGlobalMaster->h->pc; 
+		ev.faultPC = m_iprGlobalMaster->h->getPC(); 
 		ev.cm = m_iprGlobalMaster->h->cm;
 
 		m_faultDispatcher->raiseFault(ev);
@@ -360,7 +360,7 @@ public:
 		setPalMode(true);
 		m_iprGlobalMaster->h->setCM( 0) ; // kernel
 
-		m_iprGlobalMaster->h->forcePalPC(canonicalizePalPC(entryPC));
+		m_iprGlobalMaster->h->advancePC(canonicalizePalPC(entryPC));
 		// Jump to PAL entry (PC[0] = 1)
 
 		slot.needsWriteback = false;
@@ -444,7 +444,7 @@ public:
 		// 6. Transfer control to PAL entry point
 		// ====================================================================
 		
-		m_iprGlobalMaster->h->forcePalPC(canonicalizePalPC(entry->entryPC));
+		m_iprGlobalMaster->h->advancePC(canonicalizePalPC(entry->entryPC));
 		
 		DEBUG_LOG(QString("CPU%1: Entered PAL vector %2 at PC 0x%3")
 			.arg(slot.cpuId)
@@ -737,22 +737,32 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE void setPalMode(bool enable, bool reset = false) noexcept
 	{
-		// Update IPRHot (architectural state)
-		quint64 pc = m_iprGlobalMaster->h->pc;
 		if (reset)
-			m_iprGlobalMaster->setPC(0x0000000000008001); // EV6 starts at 0x0000_0000_0000_8001 (PAL mode bit set)
+		{
+			// EV6 cold reset — PC = 0x8000, PAL mode bit set
+			// restorePC preserves bit 0 exactly as provided
+			m_iprGlobalMaster->h->restorePC(0x0000000000008001ULL);
+		}
+		else if (enable)
+		{
+			m_iprGlobalMaster->h->enterPalMode(
+				m_iprGlobalMaster->h->getPC());
+		}
 		else
-			m_iprGlobalMaster->setPC((pc & 0x1));
+		{
+			m_iprGlobalMaster->h->exitPalMode(
+				m_iprGlobalMaster->h->getPC());
+		}
 
-		// Update local cache
-		m_cachedInPalMode = enable;
-		m_iprGlobalMaster->setPalMode(true);
+		// Update local cache to match architectural state
+		m_cachedInPalMode = m_iprGlobalMaster->h->inPalMode();
 	}
+
 	// ------------------------------------------------------------------------
-  // PC bit[0] policy (architectural PAL-mode tagging convention)
-  // - You already synchronize PAL mode with PC[0] in other code paths.
-  // - Move that authority here: callers request "PAL PC" or "User PC".
-  // ------------------------------------------------------------------------
+	// PC bit[0] policy (architectural PAL-mode tagging convention)
+	// - You already synchronize PAL mode with PC[0] in other code paths.
+	// - Move that authority here: callers request "PAL PC" or "User PC".
+	// ------------------------------------------------------------------------
 	// ReSharper disable once CppMemberFunctionMayBeStatic
 	AXP_HOT AXP_ALWAYS_INLINE  quint64 canonicalizePalPC(quint64 pc) noexcept {
 		// Convention used in your code base: PC[0]=1 indicates PAL context.
@@ -1232,7 +1242,7 @@ public:
 		const quint64 variantOffset = palVariant * 0x1000;  // 4KB spacing typical
 		const quint64 newPalEntry = palBase + variantOffset;
 		// Jump to new PAL (PC[0] = 1 for PAL mode)
-		m_iprGlobalMaster->h->forcePalPC(canonicalizePalPC(newPalEntry));
+		m_iprGlobalMaster->h->advancePC(canonicalizePalPC(newPalEntry));
 
 		// Set R0 = 0 (success) for new PAL
 		writeIntReg(slot, 0, 0);
@@ -3003,7 +3013,7 @@ public:
 		// Translate virtual address (with alignment check)
 		quint64 pa;
 		
-		TranslationResult transResult = m_ev6Translation->translateVA_STQ( va, m_iprGlobalMaster->h->pc, pa);
+		TranslationResult transResult = m_ev6Translation->translateVA_STQ( va, m_iprGlobalMaster->h->getPC(), pa);
 
 		if (transResult != TranslationResult::Success) {
 			// Exception already queued by translateVA_STQ
@@ -3481,7 +3491,7 @@ public:
 		result.doesReturn = true;
 
 		// Capture context for console/debug UI if you want
-		const quint64 haltPC = m_iprGlobalMaster->h->pc;
+		const quint64 haltPC = m_iprGlobalMaster->h->getPC();
 		const quint64 haltPS = m_iprGlobalMaster->h->ps;
 
 		// Record halt code somewhere canonical (cold IPR or HWPCB field)
@@ -4037,7 +4047,7 @@ public:
 		// Drain write buffers (Alpha memory ordering primitive)
 		result.drainWriteBuffers()
 		.memoryBarrier()
-		.requestPipelineFlush(m_iprGlobalMaster->h->pc);
+		.requestPipelineFlush(m_iprGlobalMaster->h->getPC());
 		result.doesReturn = true;
 		slot.needsWriteback = false;
 	}
@@ -4220,7 +4230,7 @@ public:
 		PalArgumentPack palArgPack;
 		palArgPack.ipl =m_iprGlobalMaster->h->ipl;
 
-		enterPALVector(slot, palVectorId, m_iprGlobalMaster->h->pc, palArgPack);
+		enterPALVector(slot, palVectorId, m_iprGlobalMaster->h->getPC(), palArgPack);
 
 
 		result.doesReturn = false;
@@ -4269,7 +4279,7 @@ public:
 		ev.kind = PendingEventKind::Exception;
 		ev.exceptionClass = ExceptionClass_EV6::CallPal;
 		ev.palFunc = static_cast<quint16>(PalCallPalFunction_enum::BPT);  // or your field type
-		ev.faultPC = m_iprGlobalMaster->h->pc;
+		ev.faultPC = m_iprGlobalMaster->h->getPC();
 
 		m_faultDispatcher->raiseFault(ev);
 
@@ -4377,7 +4387,7 @@ public:
 		// 10. PC - Set to PAL reset vector
 		// ========================================================================
 		// Reset vector is at PAL_BASE + 0x0000
-		m_iprGlobalMaster->h->pc = m_iprGlobalMaster->x->pal_base;
+		m_iprGlobalMaster->h->advancePC(m_iprGlobalMaster->x->pal_base);
 
 		// ========================================================================
 		// 11. PAL Mode - Enter PAL execution
@@ -4412,7 +4422,7 @@ public:
 	}
 	AXP_HOT AXP_ALWAYS_INLINE  void final_stage_before_exit(quint64 pc) noexcept
 	{
-		m_iprGlobalMaster->h->forceUserPC(pc);
+		m_iprGlobalMaster->h->advancePC(pc);
 	}
 
 	// ============================================================================
@@ -4433,7 +4443,7 @@ public:
 		// Extract CPU ID and PAL function code
 
 		const quint64 palFunction = getFunctionCode(slot.di); // or slot.palFunction, depending on your structure
-		quint64 faultPc = m_iprGlobalMaster->h->pc;
+		quint64 faultPc = m_iprGlobalMaster->h->getPC();
 		// Log the unimplemented PAL call
 		WARN_LOG(
 			QString("CPU %1: Unimplemented PAL function 0x%2")
@@ -5358,7 +5368,7 @@ public:
 		ev.kind = PendingEventKind::Exception;
 		ev.exceptionClass = ExceptionClass_EV6::CallPal;
 		ev.palFunc = static_cast<quint16>(PalCallPalFunction_enum::KBPT);
-		ev.faultPC = m_iprGlobalMaster->h->pc;
+		ev.faultPC = m_iprGlobalMaster->h->getPC();
 
 		m_faultDispatcher->raiseFault(ev);
 
@@ -5500,7 +5510,7 @@ public:
 		const ClaimedInterrupt& claimed) noexcept
 	{
 		// Interrupted PC is simply the current PC (next instruction not yet fetched)
-		const quint64 savedPC = m_iprGlobalMaster->h->pc;
+		const quint64 savedPC = m_iprGlobalMaster->h->getPC();
 		const quint64 savedPS = m_iprGlobalMaster->h->ps;
 
 		m_iprGlobalMaster->h->setCM(CM_KERNEL);
@@ -5524,12 +5534,12 @@ public:
 			// TODO comment for VMS device interrupts that use disposition 01 (interrupt stack).
 			auto decoded = decodeScbHandler(handlerPC);
 			writeIntReg(4, handlerParam);
-			m_iprGlobalMaster->h->pc = decoded.handlerPc | 0x1; // PAL mode bit
+			m_iprGlobalMaster->h->advancePC(decoded.handlerPc); // PAL mode bit
 		}
 		else {
 			writeIntReg(16, claimed.vector);
 			writeIntReg(17, static_cast<quint64>(claimed.ipl));
-			m_iprGlobalMaster->h->pc = m_iprGlobalMaster->o->ent_int | 0x1;
+			m_iprGlobalMaster->h->advancePC(m_iprGlobalMaster->o->ent_int);
 		}
 	}
 

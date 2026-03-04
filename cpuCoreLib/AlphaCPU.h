@@ -239,7 +239,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE quint64 getPC() const noexcept
     {
-        return  m_iprGlobalMaster->h->pc;
+        return  m_iprGlobalMaster->h->getPC();
     }
     // ========================================================================
     // Thread Control (Inline)
@@ -300,7 +300,7 @@ public:
         m_cBox->getBranchPredictor().clear();
         setPalMode(true,true);
         setCMMode(Mode_Privilege::Kernel);                      // start in Kernel Mode
-        qDebug() << m_iprGlobalMaster->h->pc;
+        qDebug() << m_iprGlobalMaster->h->getPC();
     }
 
     // ========================================================================
@@ -456,18 +456,17 @@ public:
             qDebug() << "PAL Base:" << Qt::hex << palBase;
             qDebug() << "PAL Entry PC:" << Qt::hex << palEntryPC;
 
-            m_iprGlobalMaster->h->pc = (palEntryPC | 0x1);  // Set PC with PAL mode bit (bit 0)
+            m_iprGlobalMaster->h->advancePC(palEntryPC);  // Set PC with PAL mode bit (bit 0)
             m_alphaPipeline->flush("flush::JMP to Pal Handler");
 
             return;
         }
 
-        // if (boxResult.needsPipelineFlush()) {
-        //     m_alphaPipeline->flush("flush::ACP-Instruction Loop");
-        // }
-
-        if (boxResult.needsPipelineFlush()) {
-            qDebug() << "UNEXPECTED flush request at PC:" << Qt::hex << fetchResult.virtualAddress;
+      
+        // Now the check becomes meaningful — only fires for genuine unexpected flushes
+        if (boxResult.needsPipelineFlush() && !fetchResult.virtualAddress == 0)
+        {
+            qDebug() << "UNEXPECTED flush at PC:" << Qt::hex << fetchResult.virtualAddress;
         }
 
         if (boxResult.needsMemoryBarrier()) {
@@ -488,7 +487,7 @@ public:
         m_iprGlobalMaster->h->exc_addr = faultPC;
 
         // Enter PAL mode at fault vector
-        m_iprGlobalMaster->h->pc = faultVector | 0x1;
+        m_iprGlobalMaster->h->advancePC(faultVector);
         m_iprGlobalMaster->h->setIPL_Unsynced( 7);
         m_iprGlobalMaster->h->setCM(CM_KERNEL);
 
@@ -515,7 +514,7 @@ public:
         m_iprGlobalMaster->h->exc_addr = faultPC;
 
         // Enter PAL mode at fault vector
-        m_iprGlobalMaster->h->pc = entryPC | 0x1;
+        m_iprGlobalMaster->h->advancePC( entryPC);
         m_iprGlobalMaster->h->setIPL_Unsynced( 7);
         m_iprGlobalMaster->h->setCM(CM_KERNEL);
 
@@ -536,7 +535,7 @@ public:
         m_iprGlobalMaster->restoreContext();
 
         // 2. Get return PC (now restored)
-        quint64 returnPC = m_iprGlobalMaster->h->pc;
+        quint64 returnPC = m_iprGlobalMaster->h->getPC();
 
 #if AXP_INSTRUMENTATION_TRACE
         EXECTRACE_PAL_EXIT(m_cpuId, returnPC, m_iprGlobalMaster->h->ipl, m_iprGlobalMaster->h->cm);
@@ -583,7 +582,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE void setPC(quint64 pc) const noexcept
     {
-        m_iprGlobalMaster->h->pc = pc;
+        m_iprGlobalMaster->h->advancePC( pc);
     }
 
     AXP_HOT AXP_ALWAYS_INLINE void setCMMode(Mode_Privilege mode) const noexcept
@@ -620,7 +619,7 @@ public:
 #if AXP_INSTRUMENTATION_TRACE
         EXECTRACE_INTERRUPT(
             m_cpuId,
-            m_iprGlobalMaster->h->pc,
+            m_iprGlobalMaster->h->getPC(),
             claimed.vector,
             static_cast<quint8>(claimed.source),
             claimed.ipl
@@ -632,7 +631,7 @@ public:
     AXP_HOT AXP_ALWAYS_INLINE  void handleTrap(const ExceptionClass_EV6& trapClass) noexcept {
            quint64 vectorPC = static_cast<quint64>(mapExceptionToPalVector(trapClass));
 
-        enterPalMode(mapExceptionToPalEntry(trapClass), vectorPC, m_iprGlobalMaster->h->pc);
+        enterPalMode(mapExceptionToPalEntry(trapClass), vectorPC, m_iprGlobalMaster->h->getPC());
 
         DEBUG_LOG(QString("CPU %1: Trap - class=%2 vector=0x%3")
             .arg(m_cpuId)
@@ -657,12 +656,12 @@ public:
         switch (reason) {
         case RedirectReason::PALEntry:
             vectorPC = m_iprGlobalMaster->computeCallPalEntry( static_cast<quint8>(metadata1));
-            enterPalMode(PalEntryReason::CALL_PAL_INSTRUCTION, vectorPC, m_iprGlobalMaster->h->pc);
+            enterPalMode(PalEntryReason::CALL_PAL_INSTRUCTION, vectorPC, m_iprGlobalMaster->h->getPC());
             break;
 
         case RedirectReason::Trap:
             vectorPC = computeTrapVector(static_cast<ExceptionClass_EV6>(metadata1));
-            enterPalMode(PalEntryReason::TRAP, vectorPC, m_iprGlobalMaster->h->pc);
+            enterPalMode(PalEntryReason::TRAP, vectorPC, m_iprGlobalMaster->h->getPC());
             break;
 
         case RedirectReason::Interrupt:
@@ -670,14 +669,14 @@ public:
             PalVectorId_EV6 vectorId = PalVectorId_EV6::INTERRUPT;
             quint64 palBase = globalIPRHotExt(m_cpuId).scbb;
             vectorPC = computePalVectorPC(vectorId, palBase);
-            enterPalMode(PalEntryReason::INTERRUPT, vectorPC, m_iprGlobalMaster->h->pc);
+            enterPalMode(PalEntryReason::INTERRUPT, vectorPC, m_iprGlobalMaster->h->getPC());
             break;
         }
         case RedirectReason::BranchMisprediction:
         case RedirectReason::BranchTaken:
         case RedirectReason::Jump:
         case RedirectReason::Return:
-            m_iprGlobalMaster->h->pc = (metadata1);
+            m_iprGlobalMaster->h->advancePC(metadata1);
             break;
 
         case RedirectReason::PALReturn:

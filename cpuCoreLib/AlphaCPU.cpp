@@ -168,7 +168,7 @@ void AlphaCPU::initializeFirmware()  noexcept
 {
     setPC(0x900001);
     setPAL_BASE(0x900000);
-    while ((m_iprGlobalMaster->h->pc & ~1ULL) >= 0x200000) {
+    while (m_iprGlobalMaster->h->getPC() >= 0x200000) {
         runOneInstruction();
     }
 }

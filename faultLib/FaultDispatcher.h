@@ -365,7 +365,7 @@ public:
 		astEvent.kind = PendingEventKind::Ast;
 		astEvent.exceptionClass = ExceptionClass_EV6::Interrupt;
 		astEvent.astMode = astMode;
-		astEvent.faultPC = m_iprGlobalMaster->h->pc;
+		astEvent.faultPC = m_iprGlobalMaster->h->getPC();
 		astEvent.cm = currentMode;
 		astEvent.palVectorId = PalVectorId_EV6::INTERRUPT;
 

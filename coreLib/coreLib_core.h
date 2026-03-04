@@ -123,7 +123,7 @@ namespace ASTEN
 //   - PC bits 30:29
 //   - SI bits 28:14 (15 bits)
 //
-// NOTE: �ISUM� naming/fields can be implementation-specific (EV6/21264 style).
+// NOTE: ISUM naming/fields can be implementation-specific (EV6/21264 style).
 // If you have an EV6 IPR spec page for ISUM, align to that SSOT.
 // ============================================================================
 
@@ -165,6 +165,7 @@ namespace ISUM
 		return (reg & mask) != 0;
 	}
 }
+
 
 
 

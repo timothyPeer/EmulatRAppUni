@@ -37,20 +37,20 @@
 // ============================================================================
 
 #include <array>
-#include "../coreLib/types_core.h"
-#include "../faultLib/FaultDispatcher.h"
-#include "../grainFactoryLib/DecodedInstruction.h"
-#include "../grainFactoryLib/iGrain-KeyIdenties.h"
-#include "../grainFactoryLib/DecodedInstruction_inl.h"
-#include "../grainFactoryLib/InstructionGrain.h"
-#include "../grainFactoryLib/iGrain-DualLookup_inl.h"
-#include "../grainFactoryLib/instructionFormatClassifier.h"
-#include "../coreLib/LoggingMacros.h"
-#include "../faultLib/PendingEvent_refined.h"
-#include "../exceptionLib/ExceptionFactory.h"
-#include "../emulatrLib/global_ExecutionCoordinator.h"
+#include "coreLib/types_core.h"
+#include "faultLib/FaultDispatcher.h"
+#include "grainFactoryLib/DecodedInstruction.h"
+#include "grainFactoryLib/iGrain-KeyIdenties.h"
+#include "grainFactoryLib/DecodedInstruction_inl.h"
+#include "grainFactoryLib/InstructionGrain.h"
+#include "grainFactoryLib/iGrain-DualLookup_inl.h"
+#include "grainFactoryLib/instructionFormatClassifier.h"
+#include "coreLib/LoggingMacros.h"
+#include "faultLib/PendingEvent_refined.h"
+#include "exceptionLib/ExceptionFactory.h"
+#include "emulatrLib/global_ExecutionCoordinator.h"
 #include "coreLib/FetchResult.h"
-#include "../memoryLib/GuestMemory.h"
+#include "memoryLib/GuestMemory.h"
 #include "coreLib/ExecTraceMacros.h"
 #include "pteLib/ev6Translation_struct.h"
 
@@ -244,7 +244,7 @@ public:
         fr.valid = false;
         fr.m_cpuId = m_cpuId;
 
-        fr.virtualAddress = m_iprGlobalMaster->h->pc;
+        fr.virtualAddress = m_iprGlobalMaster->h->getPC();
 
         if (!fetchAndDecode(fr)) {
             m_stats.translationFaults++;
@@ -262,7 +262,7 @@ public:
     }
 
     AXP_HOT AXP_FLATTEN bool fetchAndDecode(FetchResult& fr) noexcept {
-        const quint64 pc = m_iprGlobalMaster->h->pc;
+        const quint64 pc = m_iprGlobalMaster->h->getPC();
         
         fr.virtualAddress = pc;
         fr.physicalAddress = 0;

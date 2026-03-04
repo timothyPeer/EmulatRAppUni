@@ -406,4 +406,14 @@ AXP_HOT AXP_ALWAYS_INLINE quint64 packLE64(const quint8 in[8]) noexcept
 
 } // namespace alpha_byteops 
 
+
+template<int Bits>
+AXP_ALWAYS_INLINE static constexpr qint64 signExtend(quint64 value) noexcept
+{
+    static_assert(Bits > 0 && Bits < 64, "Invalid sign extension width");
+    const int shift = 64 - Bits;
+    return static_cast<qint64>(
+        static_cast<qint64>(value << shift) >> shift);
+}
+
 #endif // ALPHA_INT_BYTEOPS_INL_H
