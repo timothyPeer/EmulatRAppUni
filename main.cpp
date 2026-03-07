@@ -18,11 +18,21 @@
 #include "emulatrLib/global_EmulatR_init.h"
 #include "coreLib/LoggingMacros.h"
 #include "configLib/global_EmulatorSettings.h"
-#include "emulatrLib/EmulatR_init.h"      
+#include "emulatrLib/EmulatR_init.h"   
+#include "coreLib/cpuTrace.h"
 
 int main(int argc, char* argv[])
 {
 	QCoreApplication app(argc, argv);
+
+	// DEC ASSM Trace
+
+	
+
+#ifdef AXP_EXEC_TRACE
+	CpuTrace::initialize("traces\cpu_trace.lst", "traces\cpu_trace.log");
+	CpuTrace::setTraceMask(CpuTrace::TRACE_ALL);
+#endif
 
 	// ========================================================================
    // PHASE 0: Critical Infrastructure (BEFORE anything else)

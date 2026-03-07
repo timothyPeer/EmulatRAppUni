@@ -42,7 +42,7 @@ inline void onSyncPALcodeMemoryMapping(AlphaCPU* argCpu, quint64 palBase)
 	// 2. Register PAL region as MMU-bypass
 	//    PAL instruction fetches should bypass TLB and use physical addr
 	// ----------------------------------------------------------------
-#ifdef USE_MEMORY_REGIONS
+#ifndef USE_MEMORY_REGIONS
 // Register with your memory subsystem
 	globalMemoryManager().registerPALRegion(cpuId, palStart, palEnd);
 #endif
@@ -67,7 +67,7 @@ inline void onSyncPALcodeMemoryMapping(AlphaCPU* argCpu, quint64 palBase)
 	// 5. Allow PAL loads/stores to bypass DTB (optional)
 	//    Some implementations give PAL physical memory access
 	// ----------------------------------------------------------------
-#ifdef PAL_BYPASS_DTB
+#ifndef PAL_BYPASS_DTB
 	argCpu->setPALBypassDTB(true);
 #endif
 }

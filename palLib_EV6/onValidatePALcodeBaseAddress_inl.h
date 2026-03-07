@@ -43,7 +43,7 @@ inline bool onValidatePALcodeBaseAddress(AlphaCPU* argCpu, quint64 palBase)
     // 2. Check for physical memory limit
     //    PAL_BASE must not exceed installed RAM
     // ----------------------------------------------------------------
-#ifdef CHECK_PHYSICAL_MEMORY_BOUNDS
+#ifndef CHECK_PHYSICAL_MEMORY_BOUNDS
     quint64 physicalMemoryLimit = globalMemoryManager().getPhysicalMemorySize();
     if (palEnd > physicalMemoryLimit) {
         qWarning() << "PAL_BASE exceeds physical memory:"
@@ -62,7 +62,7 @@ inline bool onValidatePALcodeBaseAddress(AlphaCPU* argCpu, quint64 palBase)
     if (gm.isMMIO(palStart, palEnd - palStart)) {
         WARN_LOG(QString("PAL_BASE overlaps MMIO region: 0x%1").arg(0, 1, palBase));
     }
-    // #ifdef CHECK_MMIO_CONFLICTS
+    // #ifndef CHECK_MMIO_CONFLICTS
     // 	if (globalMemoryManager().isMMIORegion(palStart, palEnd)) {
     // 		qWarning() << "PAL_BASE overlaps MMIO region:" << Qt::hex << palBase;
     // 		return false;
@@ -72,7 +72,7 @@ inline bool onValidatePALcodeBaseAddress(AlphaCPU* argCpu, quint64 palBase)
     // ----------------------------------------------------------------
     // 4. Verify region is RAM or ROM (not empty/unmapped)
     // ----------------------------------------------------------------
-#ifdef VERIFY_PAL_MEMORY_TYPE
+#ifndef VERIFY_PAL_MEMORY_TYPE
     MemoryType memType = globalMemoryManager().getMemoryType(palStart);
     if (memType != MemoryType::RAM && memType != MemoryType::ROM) {
         qWarning() << "PAL_BASE not in RAM/ROM:" << Qt::hex << palBase;
@@ -84,7 +84,7 @@ inline bool onValidatePALcodeBaseAddress(AlphaCPU* argCpu, quint64 palBase)
     // 5. Check for CPU scratch area conflicts
     //    Some implementations reserve low physical memory
     // ----------------------------------------------------------------
-#ifdef CHECK_SCRATCH_CONFLICTS
+#ifndef CHECK_SCRATCH_CONFLICTS
     if (palStart < 0x1000ULL) {
         qWarning() << "PAL_BASE conflicts with scratch area:" << Qt::hex << palBase;
         return false;
@@ -95,7 +95,7 @@ inline bool onValidatePALcodeBaseAddress(AlphaCPU* argCpu, quint64 palBase)
     // 6. Check for reasonable address range
     //    PAL typically lives in first few MB of physical memory
     // ----------------------------------------------------------------
-#ifdef WARN_UNUSUAL_PAL_BASE
+#ifndef WARN_UNUSUAL_PAL_BASE
     if (palBase > 0x100000000ULL) {  // > 4GB is unusual
         qWarning() << "PAL_BASE unusually high:" << Qt::hex << palBase;
         // Not fatal, but suspicious

@@ -131,85 +131,25 @@ public:
         }
     }
 
-    /*
-    // ====================================================================
-    // Address Calculation Instructions
-    // ====================================================================
-    AXP_HOT AXP_ALWAYS_INLINE auto executeLDA(PipelineSlot& slot) const noexcept -> void
-    {
-        // LDA RC, displacement(RA)
-        // RC = RA + sign_extend(displacement)
-        quint64 raValue      = slot.readIntReg(slot.di.ra);
-        qint16  displacement = static_cast<qint16>(slot.di.branch_disp);
-        quint64 result       = raValue + static_cast<qint64>(displacement);
+   
 
 
-        quint32 raw2 = slot.di.rawBits();
-        qDebug() << "=== LDA GRAIN EXECUTE ===";
-        qDebug() << "         raw:" << Qt::hex << raw2;
-        qDebug() << "          PC:" << Qt::hex << slot.di.pc;
-        qDebug() << "      PC + 4:" << Qt::hex << (slot.di.pc + 4);
-        qDebug() << "          ra: " << raValue;
-        qDebug() << "br displment: " << displacement;
-        qDebug() << " result: " << result;
-
-        if (slot.di.rc != 31)
-        {
-            slot.payLoad        = result;
-            slot.needsWriteback = true;
-            
-        }
-        else
-        {
-            slot.needsWriteback = false;
-        }
-    }
-
-    AXP_HOT AXP_ALWAYS_INLINE auto executeLDAH(PipelineSlot& slot) const noexcept -> void
-    {
-        // LDAH RC, displacement(RA) 
-        // RC = RA + (sign_extend(displacement) << 16)
-        quint64 raValue      = slot.readIntReg(slot.di.ra);
-        qint16  displacement = static_cast<qint16>(slot.di.branch_disp);
-        qint64  shiftedDisp  = static_cast<qint64>(displacement) << 16;
-        quint64 result       = raValue + shiftedDisp;
-
-        quint32 raw2 = slot.di.rawBits();
-        qDebug() << "=== LDAH GRAIN EXECUTE ===";
-        qDebug() << "         raw:" << Qt::hex << raw2;
-        qDebug() << "          PC:" << Qt::hex << slot.di.pc;
-        qDebug() << "      PC + 4:" << Qt::hex << (slot.di.pc + 4);
-        qDebug() << "          ra: " << raValue;
-        qDebug() << "br displment: " << displacement;
-        qDebug() << "shift displt: " << shiftedDisp;
-        qDebug() << " result: " << result;
-        if (slot.di.rc != 31)
-        {
-            slot.payLoad        = result;
-            slot.needsWriteback = true;
-            
-        }
-        else
-        {
-            slot.needsWriteback = false;
-        }
-    }*/
 
 
     /*
-AMASK is used by system software to query which architectural extensions are implemented by the processor.
-Architecturally safe EV6 AMASK bits
+    AMASK is used by system software to query which architectural extensions are implemented by the processor.
+    Architecturally safe EV6 AMASK bits
 
-These are the bits that EV6-class systems commonly expose and OSes expect:
+    These are the bits that EV6-class systems commonly expose and OSes expect:
 
-Bit	Name	EV6 status	Notes
-0	BWX	x Yes	Byte/word extensions
-1	FIX	x Yes	Integer extensions
-2	CIX	x Yes	Count extensions
-3	MVI	! Optional	Multimedia (only if implemented)
-4	PAT	! Optional	Prefetch assist
-5	PM	! Optional	Performance monitoring
-*/
+    Bit	Name	EV6 status	Notes
+    0	BWX	x Yes	Byte/word extensions
+    1	FIX	x Yes	Integer extensions
+    2	CIX	x Yes	Count extensions
+    3	MVI	! Optional	Multimedia (only if implemented)
+    4	PAT	! Optional	Prefetch assist
+    5	PM	! Optional	Performance monitoring
+    */
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeAMASK(PipelineSlot& slot) noexcept -> void
     {
@@ -242,8 +182,8 @@ Bit	Name	EV6 status	Notes
             break;
         }
 
-
-        slot.needsWriteback = false;
+        slot.payLoad = mask;
+        slot.needsWriteback = true;
     }
 
     // ====================================================================
@@ -252,7 +192,7 @@ Bit	Name	EV6 status	Notes
     AXP_HOT AXP_ALWAYS_INLINE auto executeADDL(PipelineSlot& slot) noexcept -> void
     {
         const qint32 srcA = static_cast<qint32>(slot.readIntReg(slot.di.ra));
-        const qint32 srcB = getOperandB_32(slot);
+        const qint32 srcB = static_cast<qint32>(getOperandB_32(slot));
 
         IntStatus    status;
         const qint32 result = addL(srcA, srcB, status);
@@ -272,8 +212,16 @@ Bit	Name	EV6 status	Notes
         qDebug() << "     rb: " << srcB;
         qDebug() << " result: " << result;
 
-        slot.payLoad        = static_cast<qint64>(result);  // Sign-extend
-        slot.needsWriteback = true;
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = static_cast<qint64>(result);
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeADDQ(PipelineSlot& slot) const noexcept -> void
@@ -308,7 +256,7 @@ Bit	Name	EV6 status	Notes
     AXP_HOT AXP_ALWAYS_INLINE auto executeSUBL(PipelineSlot& slot) noexcept -> void
     {
         const qint32 srcA = static_cast<qint32>(slot.readIntReg(slot.di.ra));
-        const qint32 srcB = getOperandB_32(slot);
+        const qint32 srcB = static_cast<qint32>(getOperandB_32(slot));
 
         IntStatus    status;
         const qint32 result = subL(srcA, srcB, status);
@@ -321,16 +269,24 @@ Bit	Name	EV6 status	Notes
 
 
         /**
-             * @brief Check if instruction can dual-issue
-             *
-             * Dual-issue instructions can execute in parallel with another instruction
-             * in the same cycle (superscalar execution).
-             *
-             * @return true if can dual-issue, false otherwise
-             */
-
-        slot.payLoad        = static_cast<qint64>(result);  // Sign-extend
-        slot.needsWriteback = true;
+        * @brief Check if instruction can dual-issue
+        *
+        * Dual-issue instructions can execute in parallel with another instruction
+        * in the same cycle (superscalar execution).
+        *
+        * @return true if can dual-issue, false otherwise
+        */
+               
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = static_cast<qint64>(result);
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeSUBQ(PipelineSlot& slot) const noexcept -> void
@@ -367,9 +323,16 @@ Bit	Name	EV6 status	Notes
             slot.faultPending = true;
         }
 
-
-        slot.payLoad        = static_cast<qint64>(result);  // Sign-extend
-        slot.needsWriteback = true;
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = static_cast<qint64>(result);
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // ============================================================================
@@ -400,11 +363,11 @@ Bit	Name	EV6 status	Notes
     // ----------------------------------------------------------------------------
     AXP_HOT AXP_ALWAYS_INLINE auto executeSEXTB(PipelineSlot& slot) noexcept -> void
     {
-        if (slot.ra != 31) //  must be R31
+        if (slot.di.ra != 31)
         {
-            slot.faultEvent.eventClass     = EventClass::Exception;
+            slot.faultEvent.eventClass = EventClass::Exception;
             slot.faultEvent.exceptionClass = ExceptionClass_EV6::IllegalInstruction;
-            slot.faultPending              = true;
+            slot.faultPending = true;
             return;
         }
 
@@ -428,7 +391,7 @@ Bit	Name	EV6 status	Notes
     // ----------------------------------------------------------------------------
     AXP_HOT AXP_ALWAYS_INLINE auto executeSEXTW(PipelineSlot& slot) noexcept -> void
     {
-        if (slot.ra != 31) //  must be R31
+        if (slot.di.ra != 31) //  must be R31
         {
             slot.faultEvent.eventClass     = EventClass::Exception;
             slot.faultEvent.exceptionClass = ExceptionClass_EV6::IllegalInstruction;
@@ -491,11 +454,11 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeMULQ(PipelineSlot& slot) noexcept -> void
     {
-        const qint64 srcA = static_cast<qint64>(slot.readIntReg(slot.di.ra));
-        const qint64 srcB = getOperandB_64(slot);
+        const quint64 srcA = slot.readIntReg(slot.di.ra);
+        const quint64 srcB = getOperandB_64(slot);
 
         IntStatus    status;
-        const qint64 result = mulQ(srcA, srcB, status);
+        const quint64 result = mulQ(srcA, srcB, status);
 
         if (status.hasError())
         {
@@ -503,9 +466,17 @@ Bit	Name	EV6 status	Notes
             slot.faultPending = true;
         }
 
-        debugInteger("EXEC", slot, srcA, srcB, result, "SUBQ");
-        slot.payLoad        = static_cast<quint64>(result);
-        slot.needsWriteback = true;
+        debugInteger("EXEC", slot, srcA, srcB, result, "MULQ");
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeUMULH(PipelineSlot& slot) const noexcept -> void
@@ -551,7 +522,7 @@ Bit	Name	EV6 status	Notes
     /*
      *VAX Compatibility Read and Set
      */
-    AXP_HOT AXP_ALWAYS_INLINE auto executeRS(PipelineSlot& slot) const -> void
+    AXP_HOT AXP_ALWAYS_INLINE auto executeRS(PipelineSlot& slot) noexcept -> void
     {
         slot.payLoad                   = m_iprGlobalMaster->r->intrFlag ? 1 : 0;
         slot.needsWriteback            = true;
@@ -579,7 +550,7 @@ Bit	Name	EV6 status	Notes
     {
         // RC = (RA * 4) + RB (32-bit, sign-extended)
         const qint32 raValue = static_cast<qint32>(slot.readIntReg(slot.di.ra));
-        const qint32 rbValue = getOperandB_32(slot);
+        const qint32 rbValue = static_cast<qint32>(getOperandB_32(slot));
         const qint32 result  = (raValue * 4) + rbValue;
 
         // ================================================================
@@ -606,7 +577,7 @@ Bit	Name	EV6 status	Notes
     {
         // RC = (RA * 8) + RB (32-bit, sign-extended)
         const qint32 raValue = static_cast<qint32>(slot.readIntReg(slot.di.ra));
-        const qint32 rbValue = getOperandB_32(slot);
+        const qint32 rbValue = static_cast<qint32>(getOperandB_32(slot));
         const qint32 result  = (raValue * 8) + rbValue;
 
         // ================================================================
@@ -632,9 +603,9 @@ Bit	Name	EV6 status	Notes
     AXP_HOT AXP_ALWAYS_INLINE auto executeS4ADDQ(PipelineSlot& slot) const noexcept -> void
     {
         // RC = (RA * 4) + RB (64-bit)
-        const qint64 raValue = static_cast<qint64>(slot.readIntReg(slot.di.ra));
-        const qint64 rbValue = getOperandB_64(slot);
-        const qint64 result  = (raValue * 4) + rbValue;
+        const quint64 raValue = slot.readIntReg(slot.di.ra);
+        const quint64 rbValue = getOperandB_64(slot);
+        const quint64 result  = (raValue * 4) + rbValue;
 
 
         // ================================================================
@@ -660,24 +631,41 @@ Bit	Name	EV6 status	Notes
     AXP_HOT AXP_ALWAYS_INLINE auto executeS8ADDQ(PipelineSlot& slot) const noexcept -> void
     {
         // RC = (RA * 8) + RB (64-bit)
-        const qint64 raValue = static_cast<qint64>(slot.readIntReg(slot.di.ra));
-        const qint64 rbValue = getOperandB_64(slot);
-        const qint64 result  = (raValue * 8) + rbValue;
+        const quint64 raValue = slot.readIntReg(slot.di.ra);
+        const quint64 rbValue = getOperandB_64(slot);
+        const quint64 result = (raValue * 8ULL) + rbValue;
 
 
         // ================================================================
         // DEBUG: Show integer operation
         // ================================================================
-        debugInteger("EXEC", slot, raValue, rbValue, result, "S8ADDQ");
+        debugInteger("EXEC", slot, raValue, rbValue, result, "S4ADDQ");
 
         // ================================================================
         // Writeback setup
         // ================================================================
         if (slot.di.rc != 31)
         {  // Don't write to R31
-            slot.payLoad        = result;
+            slot.payLoad = result;
             slot.needsWriteback = true;
-              // Actually writes to Rc
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto executeS8SUBQ(PipelineSlot& slot) const noexcept -> void
+    {
+        const quint64 raValue = slot.readIntReg(slot.di.ra);
+        const quint64 rbValue = getOperandB_64(slot);
+        const quint64 result = (raValue * 8ULL) - rbValue;
+
+        if (slot.di.rc != 31)
+        {
+            slot.payLoad = result;
+            slot.needsWriteback = true;
         }
         else
         {
@@ -689,7 +677,7 @@ Bit	Name	EV6 status	Notes
     {
         // RC = (RA * 4) - RB (32-bit, sign-extended)
         const qint32 raValue = static_cast<qint32>(slot.readIntReg(slot.di.ra));
-        const qint32 rbValue = getOperandB_32(slot);
+        const qint32 rbValue = static_cast<qint32>(getOperandB_32(slot));
         const qint32 result  = (raValue * 4) - rbValue;
 
 
@@ -715,25 +703,17 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeS8SUBL(PipelineSlot& slot) const noexcept -> void
     {
-        // RC = (RA * 8) - RB (32-bit, sign-extended)
+        // RC = (RA * 8) - RB (32-bit, sign-extended to 64)
         const qint32 raValue = static_cast<qint32>(slot.readIntReg(slot.di.ra));
         const qint32 rbValue = getOperandB_32(slot);
-        const qint32 result  = (raValue * 8) - rbValue;
+        const qint32 result = (raValue * 8) - rbValue;
 
+        debugInteger("EXEC", slot, raValue, rbValue, result, "S8SUBL");
 
-        // ================================================================
-        // DEBUG: Show integer operation
-        // ================================================================
-        debugInteger("EXEC", slot, raValue, rbValue, result, "ADDQ");
-
-        // ================================================================
-        // Writeback setup
-        // ================================================================
         if (slot.di.rc != 31)
-        {  // Don't write to R31
-            slot.payLoad        = result;
+        {
+            slot.payLoad = static_cast<quint64>(static_cast<qint64>(result));
             slot.needsWriteback = true;
-              // Actually writes to Rc
         }
         else
         {
@@ -744,26 +724,23 @@ Bit	Name	EV6 status	Notes
     AXP_HOT AXP_ALWAYS_INLINE auto executeS4SUBQ(PipelineSlot& slot) const noexcept -> void
     {
         // RC = (RA * 4) - RB (64-bit)
-        const qint64 raValue = static_cast<qint64>(slot.readIntReg(slot.di.ra));
-        const qint64 rbValue = getOperandB_64(slot);
-        const qint64 result  = (raValue * 4) - rbValue;
+        const quint64 raValue = slot.readIntReg(slot.di.ra);
+        const quint64 rbValue = getOperandB_64(slot);
+        const quint64 result  = (raValue * 4) - rbValue;
 
-
-        slot.payLoad        = static_cast<quint64>(result);
-        slot.needsWriteback = true;
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
-    AXP_HOT AXP_ALWAYS_INLINE auto executeS8SUBQ(PipelineSlot& slot) const noexcept -> void
-    {
-        // RC = (RA * 8) - RB (64-bit)
-        const qint64 raValue = static_cast<qint64>(slot.readIntReg(slot.di.ra));
-        const qint64 rbValue = getOperandB_64(slot);
-        const qint64 result  = (raValue * 8) - rbValue;
-
-
-        slot.payLoad        = static_cast<quint64>(result);
-        slot.needsWriteback = true;
-    }
+   
 
     // ====================================================================
     // Logical Operations
@@ -787,6 +764,9 @@ Bit	Name	EV6 status	Notes
             slot.needsWriteback = false;
         }
     }
+
+
+
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeBIS(PipelineSlot& slot) const noexcept -> void
     {
@@ -813,7 +793,6 @@ Bit	Name	EV6 status	Notes
         const quint64 srcA   = slot.readIntReg(slot.di.ra);
         const quint64 srcB   = getOperandB_64(slot);
         const quint64 result = srcA ^ srcB;
-
 
         if (slot.di.rc != 31)
         {
@@ -852,7 +831,6 @@ Bit	Name	EV6 status	Notes
         const quint64 srcB   = getOperandB_64(slot);
         const quint64 result = srcA | (~srcB);
 
-
         if (slot.di.rc != 31)
         {
             slot.payLoad        = result;
@@ -871,7 +849,6 @@ Bit	Name	EV6 status	Notes
         const quint64 srcA   = slot.readIntReg(slot.di.ra);
         const quint64 srcB   = getOperandB_64(slot);
         const quint64 result = ~(srcA ^ srcB);
-
 
         if (slot.di.rc != 31)
         {
@@ -894,7 +871,6 @@ Bit	Name	EV6 status	Notes
         const quint64 srcB   = getOperandB_64(slot);
         const quint64 result = alpha_alu::sll(srcA, srcB);
 
-
         if (slot.di.rc != 31)
         {
             slot.payLoad        = result;
@@ -913,7 +889,6 @@ Bit	Name	EV6 status	Notes
         const quint64 srcB   = getOperandB_64(slot);
         const quint64 result = alpha_alu::srl(srcA, srcB);
 
-
         if (slot.di.rc != 31)
         {
             slot.payLoad        = result;
@@ -931,7 +906,6 @@ Bit	Name	EV6 status	Notes
         const quint64 srcA   = slot.readIntReg(slot.di.ra);
         const quint64 srcB   = getOperandB_64(slot);
         const quint64 result = alpha_alu::sra(srcA, srcB);
-
 
         if (slot.di.rc != 31)
         {
@@ -953,15 +927,17 @@ Bit	Name	EV6 status	Notes
         const DecodedInstruction& di = slot.di;
 
         // Read operands
-        const quint64 raValue = slot.readIntReg(di.ra);
-        const quint64 rbValue = (di.literal_val != 0)
-                                    ? static_cast<quint64>(di.literal_val)
-                                    : slot.readIntReg(di.rb);
+        const qint64 raValue = static_cast<qint64>(slot.readIntReg(di.ra));
+        const qint64 rbValue = static_cast<qint64>(getOperandB_64(slot));
+        // consistency
+        //const quint64 rbValue = (di.literal_val != 0)
+        //                            ? static_cast<quint64>(di.literal_val)
+        //                            : slot.readIntReg(di.rb);
 
         // Compare
         const quint64 result = (raValue == rbValue) ? 1ULL : 0ULL;
 
-        // Debug
+#ifdef AXP_DEBUG
         qDebug() << QString("[EXEC::INTEGER] CMPEQ | PC: 0x%1 | Ra: R%2 | Rb: R%3 | Rc: R%4")
                     .arg(di.pc, 16, 16, QChar('0'))
                     .arg(di.ra)
@@ -971,13 +947,12 @@ Bit	Name	EV6 status	Notes
                     .arg(raValue, 16, 16, QChar('0'))
                     .arg(rbValue, 16, 16, QChar('0'))
                     .arg(result);
-
+#endif
         // Writeback (EXACT SAME PATTERN!)
         if (di.rc != 31)
         {
             slot.payLoad        = result;
-            slot.needsWriteback = true;
-            
+            slot.needsWriteback = true;     
         }
         else
         {
@@ -987,8 +962,8 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeCMPLT(PipelineSlot& slot) const noexcept -> void
     {
-        const qint64  srcA   = slot.readIntReg(slot.di.ra);
-        const qint64  srcB   = getOperandB_64(slot);
+        const qint64  srcA   = static_cast<qint64>(slot.readIntReg(slot.di.ra));
+        const qint64  srcB   = static_cast<qint64>(getOperandB_64(slot));
         const quint64 result = (srcA < srcB) ? 1ULL : 0ULL;
 
         debugInteger("EXEC", slot, srcA, srcB, result, "CMPLT");
@@ -1008,8 +983,8 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeCMPLE(PipelineSlot& slot) const noexcept -> void
     {
-        const qint64  srcA   = slot.readIntReg(slot.di.ra);
-        const qint64  srcB   = getOperandB_64(slot);
+        const qint64  srcA   = static_cast<qint64>(slot.readIntReg(slot.di.ra));
+        const qint64  srcB   = static_cast<qint64>(getOperandB_64(slot));
         const quint64 result = (srcA <= srcB) ? 1ULL : 0ULL;
 
         debugInteger("EXEC", slot, srcA, srcB, result, "CMPLE");
@@ -1137,7 +1112,7 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeCMOVLT(PipelineSlot& slot) const noexcept -> void
     {
-        const qint64  srcA = static_cast<qint64>(slot.readIntReg(slot.di.ra));
+        const quint64  srcA = slot.readIntReg(slot.di.ra);
         const quint64 srcB = getOperandB_64(slot);
 
         if (srcA < 0)
@@ -1153,7 +1128,7 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeCMOVGE(PipelineSlot& slot) const noexcept -> void
     {
-        const qint64  srcA = static_cast<qint64>(slot.readIntReg(slot.di.ra));
+        const quint64  srcA = slot.readIntReg(slot.di.ra);
         const quint64 srcB = getOperandB_64(slot);
 
         if (srcA >= 0)
@@ -1169,7 +1144,7 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeCMOVLE(PipelineSlot& slot) const noexcept -> void
     {
-        const qint64  srcA = static_cast<qint64>(slot.readIntReg(slot.di.ra));
+        const quint64  srcA = slot.readIntReg(slot.di.ra);
         const quint64 srcB = getOperandB_64(slot);
 
         if (srcA <= 0)
@@ -1185,7 +1160,7 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeCMOVGT(PipelineSlot& slot) const noexcept -> void
     {
-        const qint64  srcA = static_cast<qint64>(slot.readIntReg(slot.di.ra));
+        const quint64  srcA = slot.readIntReg(slot.di.ra);
         const quint64 srcB = getOperandB_64(slot);
 
         if (srcA > 0)
@@ -1239,7 +1214,7 @@ Bit	Name	EV6 status	Notes
     AXP_HOT AXP_ALWAYS_INLINE auto executeADDL_V(PipelineSlot& slot) noexcept -> void
     {
         const qint32 srcA = static_cast<qint32>(slot.readIntReg(slot.di.ra));
-        const qint32 srcB = getOperandB_32(slot);
+        const qint32 srcB = static_cast<qint32>(getOperandB_32(slot));
 
         IntStatus    status;
         const qint32 result = addL(srcA, srcB, status);
@@ -1272,11 +1247,11 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeADDQ_V(PipelineSlot& slot) noexcept -> void
     {
-        const qint64 srcA = slot.readIntReg(slot.di.ra);
-        const qint64 srcB = getOperandB_64(slot);
+        const quint64 srcA = slot.readIntReg(slot.di.ra);
+        const quint64 srcB = getOperandB_64(slot);
 
         IntStatus    status;
-        const qint64 result = addQ(srcA, srcB, status);
+        const quint64 result = addQ(srcA, srcB, status);
 
         if (status.hasError())
         {
@@ -1341,11 +1316,11 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeSUBQ_V(PipelineSlot& slot) noexcept -> void
     {
-        const qint64 srcA = slot.readIntReg(slot.di.ra);
-        const qint64 srcB = getOperandB_64(slot);
+        const quint64 srcA = slot.readIntReg(slot.di.ra);
+        const quint64 srcB = getOperandB_64(slot);
 
         IntStatus    status;
-        const qint64 result = subQ(srcA, srcB, status);
+        const quint64 result = subQ(srcA, srcB, status);
 
         if (status.hasError())
         {
@@ -1410,32 +1385,26 @@ Bit	Name	EV6 status	Notes
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeMULQ_V(PipelineSlot& slot) noexcept -> void
     {
-        const qint64 srcA = slot.readIntReg(slot.di.ra);
-        const qint64 srcB = getOperandB_64(slot);
+        const quint64 srcA = slot.readIntReg(slot.di.ra);
+        const quint64 srcB = getOperandB_64(slot);
 
         IntStatus    status;
-        const qint64 result = mulQ(srcA, srcB, status);
+        const quint64 result = mulQ(srcA, srcB, status);
 
         if (status.hasError())
         {
             handleTrap(slot, status);
             slot.faultPending = true;
+            slot.needsWriteback = false;
+            return;
         }
 
-
-        // ================================================================
-        // DEBUG: Show integer operation
-        // ================================================================
         debugInteger("EXEC", slot, srcA, srcB, result, "MULQ_V");
 
-        // ================================================================
-        // Writeback setup
-        // ================================================================
         if (slot.di.rc != 31)
-        {  // Don't write to R31
-            slot.payLoad        = result;
+        {
+            slot.payLoad = static_cast<quint64>(result);
             slot.needsWriteback = true;
-              // Actually writes to Rc
         }
         else
         {
@@ -1490,25 +1459,13 @@ Bit	Name	EV6 status	Notes
         {
             slot.payLoad        = result;
             slot.needsWriteback = true;
-               // THIS WAS MISSING
         }
         else
         {
             slot.needsWriteback = false;
         }
     }
-
-    // TODO - Multimedia Support 
-    AXP_HOT AXP_ALWAYS_INLINE auto executeMAXUB8(PipelineSlot& slot) -> void
-    {
-        static bool warned = false;
-        if (!warned)
-        {
-            ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
-            warned = true;
-        }
-    }
-
+    
     AXP_HOT AXP_ALWAYS_INLINE auto executeMSKBL(PipelineSlot& slot) const noexcept -> void
     {
         // MSKBL - Mask Byte Low
@@ -1968,8 +1925,17 @@ Bit	Name	EV6 status	Notes
             const quint8 b = (Rb >> (i * 8)) & 0xFF;
             result         |= static_cast<quint64>(a > b ? a : b) << (i * 8);
         }
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // MAXSB8 - Max signed byte (vector)
@@ -1984,8 +1950,17 @@ Bit	Name	EV6 status	Notes
             const qint8 b = static_cast<qint8>((Rb >> (i * 8)) & 0xFF);
             result        |= static_cast<quint64>(static_cast<quint8>(a > b ? a : b)) << (i * 8);
         }
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // MAXUW4 - Max unsigned word (vector)
@@ -2016,8 +1991,17 @@ Bit	Name	EV6 status	Notes
             const qint16 b = static_cast<qint16>((Rb >> (i * 16)) & 0xFFFF);
             result         |= static_cast<quint64>(static_cast<quint16>(a > b ? a : b)) << (i * 16);
         }
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // MINUB8 - Min unsigned byte (vector)
@@ -2032,8 +2016,17 @@ Bit	Name	EV6 status	Notes
             const quint8 b = (Rb >> (i * 8)) & 0xFF;
             result         |= static_cast<quint64>(a < b ? a : b) << (i * 8);
         }
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // MINSB8 - Min signed byte (vector)
@@ -2048,8 +2041,17 @@ Bit	Name	EV6 status	Notes
             const qint8 b = static_cast<qint8>((Rb >> (i * 8)) & 0xFF);
             result        |= static_cast<quint64>(static_cast<quint8>(a < b ? a : b)) << (i * 8);
         }
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // MINUW4 - Min unsigned word (vector)
@@ -2064,8 +2066,17 @@ Bit	Name	EV6 status	Notes
             const quint16 b = (Rb >> (i * 16)) & 0xFFFF;
             result          |= static_cast<quint64>(a < b ? a : b) << (i * 16);
         }
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // MINSW4 - Min signed word (vector)
@@ -2080,8 +2091,17 @@ Bit	Name	EV6 status	Notes
             const qint16 b = static_cast<qint16>((Rb >> (i * 16)) & 0xFFFF);
             result         |= static_cast<quint64>(static_cast<quint16>(a < b ? a : b)) << (i * 16);
         }
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // PERR - Pixel error (sum of absolute byte differences)
@@ -2096,8 +2116,17 @@ Bit	Name	EV6 status	Notes
             const quint8 b = (Rb >> (i * 8)) & 0xFF;
             result         += (a >= b) ? (a - b) : (b - a);
         }
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // UNPKBW - Unpack bytes to words
@@ -2109,8 +2138,17 @@ Bit	Name	EV6 status	Notes
             ((Rb >> 8) & 0xFF) << 16 |
             ((Rb >> 16) & 0xFF) << 32 |
             ((Rb >> 24) & 0xFF) << 48;
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // UNPKBL - Unpack bytes to longwords
@@ -2120,8 +2158,17 @@ Bit	Name	EV6 status	Notes
         const quint64 result =
             (Rb & 0xFF) |
             ((Rb >> 8) & 0xFF) << 32;
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // PKWB - Pack words to bytes
@@ -2133,8 +2180,17 @@ Bit	Name	EV6 status	Notes
             ((Rb >> 16) & 0xFF) << 8 |
             ((Rb >> 32) & 0xFF) << 16 |
             ((Rb >> 48) & 0xFF) << 24;
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // PKLB - Pack longwords to bytes
@@ -2144,50 +2200,106 @@ Bit	Name	EV6 status	Notes
         const quint64 result =
             (Rb & 0xFF) |
             ((Rb >> 32) & 0xFF) << 8;
-        slot.payLoad        = result;
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = result;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // CTPOP - Count population (number of set bits)
     AXP_HOT AXP_ALWAYS_INLINE auto executeCTPOP(PipelineSlot& slot) const noexcept -> void
     {
         const quint64 Rb    = getOperandB_64(slot);
-        slot.payLoad        = static_cast<quint64>(BitUtils::popcount(Rb));
-        slot.needsWriteback = true;
+
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = static_cast<quint64>(BitUtils::popcount(Rb));
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // CTLZ - Count leading zeros
     AXP_HOT AXP_ALWAYS_INLINE auto executeCTLZ(PipelineSlot& slot) const noexcept -> void
     {
-        const quint64 Rb    = static_cast<quint64>(getOperandB_64(slot));
-        slot.payLoad        = Rb ? (63 - BitUtils::highestSetBit(Rb)) : 64;
-        slot.needsWriteback = true;
+        const quint64 Rb    = getOperandB_64(slot);
+     
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = Rb ? (63 - static_cast<quint64>(BitUtils::highestSetBit(Rb))) : 64ULL;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
     // CTTZ - Count trailing zeros
     AXP_HOT AXP_ALWAYS_INLINE auto executeCTTZ(PipelineSlot& slot) const noexcept -> void
     {
-        const quint64 Rb    = static_cast<quint64>(getOperandB_64(slot));
-        slot.payLoad        = Rb ? BitUtils::lowestSetBit(Rb) : 64;
-        slot.needsWriteback = true;
+        const quint64 Rb    = getOperandB_64(slot);
+    
+        if (slot.di.rc != 31)
+        {  // Don't write to R31
+            slot.payLoad = Rb ? static_cast<quint64>(BitUtils::lowestSetBit(Rb)) : 64ULL;
+            slot.needsWriteback = true;
+            // Actually writes to Rc
+        }
+        else
+        {
+            slot.needsWriteback = false;
+        }
     }
 
 private:
     // ====================================================================
     // Helper Methods
     // ====================================================================
-    AXP_HOT AXP_ALWAYS_INLINE auto getOperandB_32(PipelineSlot& slot) const noexcept -> qint32
+    AXP_HOT AXP_ALWAYS_INLINE auto getOperandB_32(PipelineSlot& slot) const noexcept -> quint32
     {
         if (hasLiteralBit(slot.di))
-            return static_cast<qint32>(slot.di.literal_val);
-        return static_cast<qint32>(slot.readIntReg(slot.di.rb));
+            return static_cast<quint32>(slot.di.literal_val);
+        return static_cast<quint32>(slot.readIntReg(slot.di.rb));
     }
 
-    AXP_HOT AXP_ALWAYS_INLINE auto getOperandB_64(PipelineSlot& slot) const noexcept -> qint64
+    /**    * @brief Retrieve the 64-bit B operand for operate-format instructions.
+     *
+     * This function returns either the literal value or the RB register value
+     * depending on the instruction encoding. It centralizes the literal vs
+     * register decoding for all EBox ALU instructions.
+     *
+     * @param slot  The pipeline slot containing the decoded instruction and register context.
+     * @return The 64-bit value of operand B (literal or register).
+     *
+     * Notes:
+     * - If the instruction has the L-bit set, returns `slot.di.literal_val` (sign-extended).
+     * - Otherwise, reads the value from register `RB` via `slot.readIntReg(slot.di.rb)`.
+     *
+     * Example usage:
+     * @code
+     * quint64 srcB = getOperandB_64(slot);
+     * quint64 result = alpha_alu::srl(srcA, srcB);
+     * @endcode
+     */
+ 
+    AXP_HOT AXP_ALWAYS_INLINE auto getOperandB_64(PipelineSlot& slot) const noexcept -> quint64
     {
         if (hasLiteralBit(slot.di))
-            return static_cast<qint64>(slot.di.literal_val);
-        return static_cast<qint64>(slot.readIntReg(slot.di.rb));
+            return static_cast<quint64>(slot.di.literal_val);
+        return static_cast<quint64>(slot.readIntReg(slot.di.rb));
     }
 
     // ====================================================================
@@ -2253,5 +2365,6 @@ private:
     // ====================================================================
     quint32 m_intRegisterDirty;   // Bits 0-31 for R0-R31 integer registers
 };
+
 
 #endif // EBOXBASE_INL_H

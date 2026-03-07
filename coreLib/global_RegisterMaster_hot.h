@@ -184,7 +184,7 @@ struct alignas(64) IPRStorage_IntRegs final
 
     AXP_HOT AXP_ALWAYS_INLINE void write(quint8 regNum, quint64 value) noexcept
     {
-#if AXP_INSTRUMENTATION_TRACE
+#ifdef AXP_DEBUG
         if (regNum == 31)
         {
             qDebug().noquote()

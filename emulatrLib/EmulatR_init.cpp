@@ -22,7 +22,7 @@
 #include <QStringList>
 #include <QString>
 #include <QDir>
-#include "/Qt/6.9.1/msvc2022_64/include/QtCore/qminmax.h"
+#include "d:/Qt/6.9.3/msvc2022_64/include/QtCore/qminmax.h"
 #include "configLib/global_EmulatorSettings.h"
 #include "coreLib/globalCPUCount.h"
 #include "memoryLib/global_writeBufferManager.h"
@@ -912,6 +912,7 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase5_FirmwareLoading()
 		// Use embedded ROM
 		phase.logDetail("Using embedded ES45 V6.2 SRM ROM");
 
+
 		if (!m_srmRomLoader.useEmbedded()) {
 			ERROR_LOG("Failed to load embedded SRM ROM");
 			return false;
@@ -1123,6 +1124,8 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 	// ====================================================================
 
 	INFO_LOG("--- Phase 14b: SRM Firmware Decompression ---");
+	const QString settings = m_configSettings.getConfigFilePath();
+	SrmLoaderConfig srmCfg = SrmLoaderConfig::fromSettings(QSettings(m_configSettings.getConfigFilePath()));
 
 	if (!m_srmRomLoader.isLoaded()) {
 		ERROR_LOG("SRM ROM not loaded -- Phase 5 failed?");
@@ -1130,14 +1133,20 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 		return false;
 	}
 
+	INFO_LOG(QString("Phase 14: SRM load PA=0x%1  startPC=0x%2  mirrorPA=0x%3")
+		.arg(srmCfg.loadPA, 0, 16)
+		.arg(srmCfg.startPC, 0, 16)
+		.arg(srmCfg.mirrorPA, 0, 16));
+
 	auto& guestMem = global_GuestMemory();
 
 	SrmRomLoadResult result = m_srmRomLoader.decompress(
-		// writeToPhysical: copy ROM payload into guest RAM
+		srmCfg,                                         // new first argument
+		// writeToPhysical
 		[&guestMem](quint64 pa, const quint8* data, size_t len) {
 			guestMem.writePA(pa, data, static_cast<qsizetype>(len));
 		},
-		// singleStep: execute one instruction through the full pipeline
+		// singleStep
 		[cpu0]() -> quint64 {
 			cpu0->runOneInstruction();
 			return cpu0->getPC();
@@ -1154,11 +1163,10 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 		[cpu0]() -> quint64 {
 			return cpu0->getPAL_BASE();
 		},
-		// progress (optional)
+		// progress
 		[](int percent) {
-			if (percent % 10 == 0) {
+			if (percent % 10 == 0)
 				INFO_LOG(QString("  Decompression: %1%%").arg(percent));
-			}
 		}
 	);
 

@@ -194,7 +194,7 @@ Opcode	Function	Mnemonic	Description	Type	Box
 0x12	0x0030	ZAP	ZAP	IntegerOperate	EBox
 0x12	0x0031	ZAPNOT	ZAPNOT	IntegerOperate	EBox
 0x12	0x0032	MSKQL	MSKQL	IntegerOperate	EBox
-0x12	0x0034	SRL	SRL	Memory	MBox
+0x12	0x0034	SRL	shift instruction	IntegerOperate	EBox
 0x12	0x0036	EXTQL	EXTQL	IntegerOperate	EBox
 0x12	0x0039	SLL	SLL	IntegerOperate	EBox
 0x12	0x003B	INSQL	INSQL	IntegerOperate	EBox
@@ -557,14 +557,15 @@ Opcode	Function	Mnemonic	Description	Type	Box
 0x18	0xE000	RC	RC	IntegerOperate	EBox
 0x18	0xE800	ECB	ECB	Memory	CBox
 0x18	0xF000	RS	RS	IntegerOperate	EBox
-0x19	0x0000	PAL19	PAL19	Miscellaneous	PalBox
+0x19	0x0000	HW_MFPR	Hardware Move From Processor Register	Miscellaneous	PalBox
 0x1A	0x0000	JMP	JMP	Branch	CBox
 0x1A	0x0001	JSR	JSR	Branch	CBox
 0x1A	0x0002	RET	RET	Branch	CBox
 0x1A	0x0003	JSR_COROUTINE	JSR_COROUTINE	Branch	CBox
-0x1D	0x0000	PAL1D	PAL1D	Miscellaneous	PalBox
-0x1E	0x0000	PAL1E	PAL1E	Miscellaneous	PalBox
-0x1F	0x0000	PAL1F	PAL1F	Miscellaneous	PalBox
+0x1B	0x0000	HW_ST	Hardware Store	Miscellaneous	PalBox
+0x1D	0x0000	HW_MTPR	Hardware Move To PR	Miscellaneous	PalBox
+0x1E	0x0000	HW_REI	Hardware Return From Exception	Miscellaneous	PalBox
+0x1F	0x0000	HW_LD	Hardware Load	Miscellaneous	PalBox
 0x20	0x0000	LDF	LDF	Memory	MBox
 0x20	0x052F	CVTBQ_SVC	CVTBQ_SVC SVC	FloatingPoint	FBox
 0x21	0x0000	LDG	LDG	Memory	MBox

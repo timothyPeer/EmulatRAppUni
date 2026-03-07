@@ -1,8 +1,8 @@
 // ============================================================================
-// BIC_InstructionGrain.h - BIC Instruction Grain
+// BIC_InstructionGrain.h - BIC - BIC
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -19,7 +19,7 @@
 //  Format: GF_OperateFormat
 //  Latency: 1 cycles, Throughput: 1/cycle
 //
-//  Generated: 2026-02-18 12:45:23
+//  Generated: 2026-03-05 19:26:54
 //
 // ============================================================================
 
@@ -27,6 +27,7 @@
 #define BIC_INSTRUCTIONGRAIN_H
 
 #include "coreLib/Axp_Attributes_core.h"
+#include "coreLib/cpuTrace.h"
 #include "EBoxLib/EBoxBase.h"
 #include "grainFactoryLib/InstructionGrain.h"
 #include "grainFactoryLib/InstructionGrainRegistry.h"
@@ -57,12 +58,27 @@ public:
     // ========================================================================
     // Virtual Method Implementations
     // ========================================================================
-    
+
     AXP_HOT AXP_ALWAYS_INLINE
     void execute(PipelineSlot& slot) const noexcept override
     {
         // Delegate to execution box via slot member
+
         slot.m_eBox->executeBIC(slot);
+#ifdef AXP_EXEC_TRACE
+        {
+            QString operands = slot.getOperandsString();
+            QString result   = slot.getResultString();
+            CpuTrace::instruction(
+                slot.cycle,
+                slot.di.pc,
+                slot.di.rawBits(),
+                "BIC",
+                operands,
+                result
+            );
+        }
+#endif // AXP_EXEC_TRACE
     }
 
     AXP_HOT AXP_ALWAYS_INLINE
@@ -80,7 +96,7 @@ public:
     // ========================================================================
     // Pure Virtual Accessor Implementations
     // ========================================================================
-    
+
     AXP_HOT AXP_ALWAYS_INLINE
     QString mnemonic() const noexcept override
     {
@@ -106,9 +122,9 @@ public:
     }
 
 private:
-    QString m_mnemonic;
-    quint8 m_opcode;
-    quint16 m_functionCode;
+    QString     m_mnemonic;
+    quint8      m_opcode;
+    quint16     m_functionCode;
     GrainPlatform m_platform;
 };
 

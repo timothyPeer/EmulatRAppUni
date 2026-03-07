@@ -36,7 +36,7 @@
 #include <QtGlobal>
 #include <type_traits>
 
-#ifdef _MSC_VER
+#ifndef _MSC_VER
 #include <intrin.h>
 #endif
 

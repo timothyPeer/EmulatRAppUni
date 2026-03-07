@@ -259,6 +259,12 @@ AXP_HOT AXP_ALWAYS_INLINE quint64 umulh(quint64 a, quint64 b, IntStatus& status)
 		// Use 128-bit arithmetic if available
 		__uint128_t wide = static_cast<__uint128_t>(a) * static_cast<__uint128_t>(b);
 		return static_cast<quint64>(wide >> 64);
+#elif defined(_MSC_VER)
+		// MSVC: use intrinsic
+#include <intrin.h>
+		quint64 hi = 0;
+		_umul128(a, b, &hi);
+		return hi;
 #else
 		// Portable fallback using 32x32->64 multiplication
 		// Split into high/low 32-bit parts

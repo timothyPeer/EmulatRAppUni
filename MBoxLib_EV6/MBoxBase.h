@@ -115,19 +115,7 @@ public:
 
 
 
-    AXP_HOT AXP_ALWAYS_INLINE void executeSRL(PipelineSlot& slot) noexcept
-    {
-        WARN_LOG(QString("CPU %1: SRL routed to MBox (should be EBox)").arg(slot.cpuId));
 
-        const quint64 srcA = slot.readIntReg(slot.di.ra);
-        const quint64 srcB = slot.readIntReg(slot.di.rb);
-        const quint64 shiftAmount = srcB & 0x3F;
-
-        const quint64 result = srcA >> shiftAmount;
-
-        slot.payLoad = result;
-        slot.needsWriteback = true;
-    }
 
     AXP_HOT AXP_ALWAYS_INLINE void executeCTPOP(PipelineSlot& slot) noexcept
     {
@@ -338,11 +326,14 @@ public:
         bool success = spam.tlbInsert(m_cpuId, Realm::I, va, asn, pte);
 
         if (success) {
+
+#ifdef AXP_DEBUG
             DEBUG_LOG(QString("CPU %1: ITB entry committed - VA=0x%2 ASN=%3 PFN=0x%4")
                 .arg(m_cpuId)
                 .arg(va, 16, 16, QChar('0'))
                 .arg(asn)
                 .arg(pte.pfn(), 8, 16, QChar('0')));
+#endif
         }
         else {
             ERROR_LOG(QString("CPU %1: ITB insertion failed - VA=0x%2")
@@ -474,11 +465,14 @@ public:
         bool success = spam.tlbInsert(m_cpuId, realm, va, asn, pte);
 
         if (success) {
+
+#ifdef AXP_DEBUG
             DEBUG_LOG(QString("CPU %1: TLB miss entry committed - Realm=%2 VA=0x%3 ASN=%4")
                 .arg(m_cpuId)
                 .arg(realm == Realm::I ? "I" : "D")
                 .arg(va, 16, 16, QChar('0'))
                 .arg(asn));
+#endif
 
             // Clear staging after successful commit
             clearMissStaging();
@@ -804,8 +798,11 @@ public:
 
         // Alignment check
         if (slot.va & 0x7) {
+
+#ifdef AXP_DEBUG
             debugLog(QString(" LDQ UNALIGNED: 0x%1")
                 .arg(slot.va, 16, 16, QChar('0')));
+#endif
             slot.faultPending = true;
             slot.trapCode = TrapCode_Class::UN_ALIGNED;
             slot.faultVA = slot.va;
@@ -822,10 +819,11 @@ public:
             return;
         }
 
+#ifdef AXP_DEBUG
         qDebug() << QString("LDQ: VA 0x%1 -> PA 0x%2")
             .arg(slot.va, 16, 16, QChar('0'))
             .arg(pa, 16, 16, QChar('0'));
-
+#endif
         // Physical memory read
         m_guestMemory->read64(pa, slot.payLoad);
 
@@ -836,6 +834,7 @@ public:
             //
         }
 
+#ifdef AXP_DEBUG
         qDebug() << "LDQ: di.ra =" << slot.di.ra;
         qDebug() << "LDQ: About to check if di.ra != 31";
 
@@ -849,6 +848,8 @@ public:
         }
 
        // qDebug() << "LDQ: After setting, writeRa =" << slot.writeRa;
+
+#endif
 
         slot.pa = pa;
         m_isBusy = false;
@@ -865,6 +866,7 @@ public:
         slot.va = virtualAddr & ~0x7ULL;
 
         if (virtualAddr != slot.va) {
+
             debugLog(QString("LDQ_U: 0x%1 aligned to 0x%2")
                 .arg(virtualAddr, 16, 16, QChar('0'))
                 .arg(slot.va, 16, 16, QChar('0')));
@@ -925,6 +927,7 @@ public:
         // Compute effective address (this is the RESULT, not a memory address!)
         const quint64 result = rbValue + static_cast<quint64>(signExtDisp);
 
+#ifdef AXP_DEBUG
         // ================================================================
         // DEBUG: Integer operation (NOT memory!)
         // ================================================================
@@ -937,7 +940,7 @@ public:
             .arg(slot.di.rb)
             .arg(disp)
             .arg(result, 16, 16, QChar('0'));
-
+#endif
         // ================================================================
         // SETUP WRITEBACK (pipeline style, not direct write!)
         // ================================================================
@@ -988,7 +991,8 @@ public:
 
          slot.payLoad = result;
          slot.needsWriteback = true;
-        // 
+
+#ifdef AXP_DEBUG
 
          DEBUG_LOG(QString("LDAH: R%1 <-  R%2(0x%3) + (0x%4 << 16) = 0x%5")
              .arg(slot.di.ra)
@@ -996,7 +1000,7 @@ public:
              .arg(rbValue, 16, 16, QChar('0'))
              .arg(static_cast<quint16>(disp), 4, 16, QChar('0'))
              .arg(result, 16, 16, QChar('0')));
-
+#endif
      }
 
 
@@ -1038,11 +1042,12 @@ public:
              slot.m_faultDispatcher->setPendingEvent(ev);
              slot.va = va;
              slot.faultPending = true;
-           
+       
+#ifdef AXP_DEBUG
 
              debugLog(QString("x LDBU MEMORY FAULT at PA 0x%1")
                  .arg(pa, 16, 16, QChar('0')));
-
+#endif
              m_isBusy = false;
              return ;
          }
@@ -2080,12 +2085,13 @@ private:
         ASNType asn,
         Realm realm) const noexcept
     {
+#ifdef AXP_DEBUG
         DEBUG_LOG(QString("CPU %1: TLB miss - Realm=%2 VA=0x%3 ASN=%4")
             .arg(m_cpuId)
             .arg(realm == Realm::I ? "I" : "D")
             .arg(va, 16, 16, QChar('0'))
             .arg(asn));
-
+#endif
         // TODO: Implement page table walk
         // For now, return TLB_MISS to trigger PAL handler
         return (realm == Realm::I)

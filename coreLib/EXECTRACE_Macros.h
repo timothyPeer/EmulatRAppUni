@@ -2,7 +2,7 @@
 // EXECTRACE_Macros.h - Instrumentation Macros for Alpha AXP Emulator
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -13,8 +13,6 @@
 // Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
 // ============================================================================
 
-#ifndef EXECTRACE_MACROS_H
-#define EXECTRACE_MACROS_H
 // ============================================================================
 // EXECTRACE_Macros.h - Instrumentation Macros for Alpha AXP Emulator
 // ============================================================================
@@ -28,13 +26,13 @@
 //                       -> AlphaCPU.h       (runOneInstruction fault handler)
 //   TIER 4 (IPR)       -> PalBoxBase.h     (executeHW_MFPR, executeHW_MTPR)
 // ============================================================================
-
+#pragma once
 #include "ExecTrace.h"
 #include "machineLib/PipeLineSlot.h"
 #include "grainFactoryLib/InstructionGrain.h"
 #include "grainFactoryLib/iGrain_helper_inl.h"
 
-#ifdef EXECTRACE_ENABLED
+#ifndef AXP_INSTRUMENTATION_TRACE
 
 // ============================================================================
 // EXISTING: Instruction Commit (stage_EX)
@@ -281,7 +279,7 @@
     } while(0)
 
 
-#ifdef AXP_INSTRUMENTATION_TRACE
+
 
 /**
  * @brief Record interrupt event in execution trace
@@ -300,12 +298,8 @@
         (ipl)                                                 \
     )
 
-#else
 
-#define EXECTRACE_INTERRUPT(cpuId, fromPC, vector, type, ipl) \
-    ((void)0)
 
-#endif
 // ============================================================================
 // EXISTING: Grain Debug
 // ============================================================================
@@ -322,11 +316,10 @@
              << __VA_ARGS__
 
 // ============================================================================
-#else // EXECTRACE_ENABLED not defined
 // ============================================================================
 // All macros compile to nothing
 // ============================================================================
-
+#else
 // Existing
 #define EXECTRACE_COMMIT_GRAIN_ASM(slot)                                      do {} while(0)
 #define EXECTRACE_COMMIT_GRAIN(slot)                                          do {} while(0)
@@ -359,5 +352,5 @@
 // Grain debug
 #define GRAIN_DEBUG(mnemonic, ...)                                            do {} while(0)
 
-#endif // EXECTRACE_ENABLED
-#endif // EXECTRACE_MACROS_H
+
+#endif // AXP_INSTRUMENTATION_TRACE

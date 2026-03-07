@@ -33,6 +33,7 @@
 #include "palLib_EV6/PAL_core.h"
 #include "coreLib/global_RegisterMaster_hot.h"
 #include "faultLib/GlobalFaultDispatcherBank.h"
+#include <grainFactoryLib/InstructionGrain.h>
 
 
 // ============================================================================
@@ -189,7 +190,7 @@ struct  PipelineSlot
 	// ====================================================================
 	quint64 va{ 0 };
 	quint64 pa{ 0 };
-	quint64 ra{ 0 };
+	//quint64 ra{ 0 };
 	quint64 outPAData{ 0 };
 	bool pcModified{ false };		// flag to track PC changes in the pipeline
 	//bool writeRa{ false };			// used by PalBox::execute_MFPR
@@ -275,6 +276,170 @@ struct  PipelineSlot
 	}
 
 
+	// =====================================================================
+	// Trace Accessors
+	// =====================================================================
+
+	// ============================================================================
+	// PipelineSlot trace accessor methods
+	// Add these inside the PipelineSlot struct, after the existing Methods region.
+	// Guard with AXP_EXEC_TRACE so they compile away in release builds.
+	// ============================================================================
+
+#ifdef AXP_EXEC_TRACE
+
+	// ========================================================================
+	// getOperandsString()
+	// Returns a DEC ASM style operand string based on instruction format.
+	//
+	// Memory:   "R16, 0x8(R2)"
+	// Operate:  "R1, R2, R3"       (register form)
+	//           "R1, #0x20, R3"    (literal form)
+	// Branch:   "R4, 0x900260"
+	// PAL:      "func=0x0083"
+	// ========================================================================
+	QString getOperandsString() const noexcept
+	{
+		if (!grain)
+			return QStringLiteral("?");
+
+		const quint32 raw = di.rawBits();
+		const quint8  ra = di.ra;
+		const quint8  rb = di.rb;
+		const quint8  rc = di.rc;
+		const quint8  flags = grain->flags();
+
+		// PAL format
+		if (flags & GF_PALFormat)
+		{
+			// HW_LD / HW_ST: Ra, disp(Rb)
+			const quint8 op = grain->opcode();
+			if (op == 0x1B || op == 0x1F)
+			{
+				const qint64 disp = static_cast<qint64>(
+					static_cast<qint32>((raw & 0xFFF) << 20) >> 20);
+				return QString("R%1, 0x%2(R%3)")
+					.arg(ra)
+					.arg(static_cast<quint64>(disp) & 0xFFF, 3, 16, QChar('0'))
+					.arg(rb);
+			}
+			// HW_MFPR / HW_MTPR
+			if (op == 0x19 || op == 0x1D)
+			{
+				const quint16 ipr = static_cast<quint16>(raw & 0xFF);
+				return QString("R%1, IPR=0x%2")
+					.arg(ra)
+					.arg(ipr, 2, 16, QChar('0'));
+			}
+			// CALL_PAL
+			if (op == 0x00)
+				return QString("func=0x%1").arg(raw & 0x03FFFFFF, 8, 16, QChar('0'));
+
+			return QString("0x%1").arg(raw, 8, 16, QChar('0'));
+		}
+
+		// Branch format: Ra, target
+		if (flags & GF_BranchFormat)
+		{
+			// JSR/JMP/RET — Ra, (Rb)
+			if (grain->opcode() == 0x1A)
+			{
+				return QString("R%1, (R%2)").arg(ra).arg(rb);
+			}
+			// BSR/BR write link — show target
+			return QString("R%1, 0x%2")
+				.arg(ra)
+				.arg(branchTarget, 16, 16, QChar('0'));
+		}
+
+		// Memory format: Ra, disp(Rb)
+		if (flags & GF_MemoryFormat)
+		{
+			const qint16 disp = static_cast<qint16>(raw & 0xFFFF);
+			return QString("R%1, %2%3(R%4)")
+				.arg(ra)
+				.arg(disp < 0 ? "-" : "")
+				.arg(static_cast<quint16>(disp < 0 ? -disp : disp), 0, 16)
+				.arg(rb);
+		}
+
+		// Operate format
+		if (flags & GF_OperateFormat)
+		{
+			const bool literalForm = (raw >> 12) & 1;
+			if (literalForm)
+			{
+				const quint8 lit = static_cast<quint8>((raw >> 13) & 0xFF);
+				return QString("R%1, #0x%2, R%3")
+					.arg(ra)
+					.arg(lit, 2, 16, QChar('0'))
+					.arg(rc);
+			}
+			return QString("R%1, R%2, R%3").arg(ra).arg(rb).arg(rc);
+		}
+
+		// Fallback — raw hex
+		return QString("0x%1").arg(raw, 8, 16, QChar('0'));
+	}
+
+	// ========================================================================
+	// getResultString()
+	// Returns a DEC ASM style result string showing what changed.
+	//
+	// Integer writeback:  "R16 = 0x0000000000900018"
+	// FP writeback:       "F16 = 0x3FF0000000000000"
+	// Branch taken:       "-> 0x0000000000900260"
+	// Branch not taken:   ""
+	// Store / no result:  ""
+	// ========================================================================
+	QString getResultString() const noexcept
+	{
+		// Branch result
+		if (branchTaken)
+			return QString("-> 0x%1").arg(branchTarget, 16, 16, QChar('0'));
+
+		// No writeback — store, barrier, or branch not taken
+		if (!needsWriteback)
+			return QString();
+
+		// FP writeback
+		if (writeFa)
+		{
+			const quint8 dest = di.ra;
+			return QString("F%1 = 0x%2")
+				.arg(dest)
+				.arg(payLoad, 16, 16, QChar('0'));
+		}
+
+		// Integer writeback — destination is rc for operate, ra for load/branch
+		const quint8 flags = grain ? grain->flags() : 0;
+		quint8 dest = 0;
+
+		if (flags & GF_MemoryFormat)
+			dest = di.ra;       // load destination
+		else if (flags & GF_BranchFormat)
+			dest = di.ra;       // link register
+		else
+			dest = di.rc;       // operate destination
+
+		return QString("R%1 = 0x%2")
+			.arg(dest)
+			.arg(payLoad, 16, 16, QChar('0'));
+	}
+
+#else // AXP_EXEC_TRACE
+
+	// Release build stubs — return empty strings, optimised away
+	AXP_HOT AXP_ALWAYS_INLINE
+		QString getOperandsString() const noexcept { return {}; }
+
+	AXP_HOT AXP_ALWAYS_INLINE
+		QString getResultString() const noexcept { return {}; }
+
+#endif // AXP_EXEC_TRACE
+
+
+
 
 
 	// ============================================================================
@@ -283,7 +448,7 @@ struct  PipelineSlot
 
 	AXP_HOT AXP_ALWAYS_INLINE void writeIntReg(quint8 index, quint64 argValue) const noexcept
 	{
-#if AXP_INSTRUMENTATION_TRACE
+#ifdef AXP_DEBUG
 		const quint64 oldValue = m_iprGlobalMaster->i->read(index);
 		qDebug().noquote()
 			<< QString("[REG::WRITE::INT] CPU=%1 PC=0x%2 R%3: 0x%4 -> 0x%5")
@@ -298,7 +463,7 @@ struct  PipelineSlot
 
 	AXP_HOT AXP_ALWAYS_INLINE void writeFpReg(quint8 index, quint64 argValue) const noexcept
 	{
-#if AXP_INSTRUMENTATION_TRACE
+#ifndef AXP_INSTRUMENTATION_TRACE
 		const quint64 oldValue = m_iprGlobalMaster->f->read(index);
 		qDebug().noquote()
 			<< QString("[REG::WRITE::FP ] CPU=%1 PC=0x%2 F%3: 0x%4 -> 0x%5")
@@ -351,7 +516,7 @@ struct  PipelineSlot
 		mustComplete = false;
 		va = 0;
 		pa = 0;
-		ra = 0;
+		//ra = 0;
 		outPAData = 0;
 		pcModified = false;
 		//writeRa = false;
@@ -407,8 +572,8 @@ struct  PipelineSlot
      uint64_t linkValue;         // value written to Ra for BSR/JSR (return addr)
      uint64_t jumpTarget;        // actual resolved target for JSR/JMP/RET
      uint64_t branchTestValue;   // register value tested for conditional branches
-     uint32_t cycle;             // cycle number when instruction was fetched
-     uint32_t retireCycle;       // cycle number when instruction retired (WB)
+     uint64_t cycle;             // cycle number when instruction was fetched
+     uint64_t retireCycle;       // cycle number when instruction retired (WB)
 
      enum class PCReason : uint8_t {
          Sequential = 0,         // PC + 4

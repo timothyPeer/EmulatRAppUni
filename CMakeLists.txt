@@ -21,7 +21,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_PREFIX_PATH "D:/Qt/6.9.1/msvc2022_64")
+set(CMAKE_PREFIX_PATH "D:/Qt/6.9.3/msvc2022_64/")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Network Concurrent)
 
@@ -33,14 +33,17 @@ endif()
 # Preprocessor Definitions
 # ============================================================================
 add_compile_definitions(
-    EXECTRACE_ENABLED
+#    EXECTRACE_ENABLED
     QT_DEPRECATED_WARNINGS
     QT_DISABLE_DEPRECATED_BEFORE=0x060000
-    AXP_DEBUG_PIPELINE
-    AXP_DEBUG_DECODE
-    AXP_DEBUG_FETCH
-    AXP_INSTRUMENTATION_TRACE
+# AXP_DEBUG_PIPELINE
+#    AXP_DEBUG_DECODE
+#    AXP_DEBUG_FETCH
+#    AXP_INSTRUMENTATION_TRACE
+    AXP_EXEC_TRACE
     WIN32_LEAN_AND_MEAN
+#    USE_EMBEDDED_SRM
+#    AXP_DEBUG
 )
 
 # ============================================================================
@@ -98,6 +101,7 @@ set(PROJECT_SOURCES
     "configLib/global_EmulatorSettings.cpp"
     "coreLib/EventLog.cpp"
     "coreLib/ExecTrace.cpp"
+    "coreLib/cpuTrace.cpp"
     "cpuCoreLib/AlphaCPU.cpp"
     "cpuCoreLib/global_ReservationManager.cpp"
     "deviceLib/ConsoleManager.cpp"
@@ -119,6 +123,7 @@ set(PROJECT_SOURCES
     "grainFactoryLib/GrainRegistry.cpp"
     "grainFactoryLib/InstructionGrainRegistry.cpp"
     "grainFactoryLib/RegisterAllGrains.cpp"
+    "grainFactoryLib/grains/RegisterAllGrains.cpp"
     "main.cpp"  # Entry point
     "memoryLib/GuestMemory.cpp"
     "memoryLib/SafeMemory.cpp"
@@ -241,6 +246,7 @@ set(PROJECT_HEADERS
     "coreLib/astEligibility_inl.h"
     "coreLib/cboxCSRState.h"
     "coreLib/coreLib_core.h"
+    "coreLib/cpuTrace.h"
     "coreLib/cpu_struct_inline.h"
     "coreLib/enum_MCES.h"
     "coreLib/enum_header.h"
@@ -759,6 +765,7 @@ set(PROJECT_HEADERS
     "grainFactoryLib/grains/generated/Integer/SEXTW_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/SLL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/SRA_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/Integer/SRL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/SUBL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/SUBL_V_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Integer/SUBQ_InstructionGrain.h"
@@ -784,7 +791,6 @@ set(PROJECT_HEADERS
     "grainFactoryLib/grains/generated/Memory/LDT_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Memory/RDUNIQUE_64_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Memory/RPCC_InstructionGrain.h"
-    "grainFactoryLib/grains/generated/Memory/SRL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Memory/STF_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Memory/STG_InstructionGrain.h"
     "grainFactoryLib/grains/generated/Memory/STL_C_InstructionGrain.h"
@@ -814,6 +820,11 @@ set(PROJECT_HEADERS
     "grainFactoryLib/grains/generated/PAL/EI_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/GENTRAP_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/HALT_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/PAL/HW_LD_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/PAL/HW_MFPR_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/PAL/HW_MTPR_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/PAL/HW_REI_InstructionGrain.h"
+    "grainFactoryLib/grains/generated/PAL/HW_ST_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/IMB_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/INITPAL_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/INSQHILR_InstructionGrain.h"
@@ -872,11 +883,6 @@ set(PROJECT_HEADERS
     "grainFactoryLib/grains/generated/PAL/OPC05_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/OPC06_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/OPC07_InstructionGrain.h"
-    "grainFactoryLib/grains/generated/PAL/PAL19_InstructionGrain.h"
-    
-    "grainFactoryLib/grains/generated/PAL/PAL1D_InstructionGrain.h"
-    "grainFactoryLib/grains/generated/PAL/PAL1E_InstructionGrain.h"
-    "grainFactoryLib/grains/generated/PAL/PAL1F_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/PROBER_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/PROBEW_InstructionGrain.h"
     "grainFactoryLib/grains/generated/PAL/RDCOUNTERS_InstructionGrain.h"
@@ -1272,5 +1278,5 @@ message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Qt Version: ${Qt6_VERSION}")
 message(STATUS "Entry Point: main.cpp")
-message(STATUS "Definitions: EXECTRACE_ENABLED, QT_DEPRECATED_WARNINGS, QT_DISABLE_DEPRECATED_BEFORE=0x060000, AXP_DEBUG_PIPELINE, AXP_DEBUG_DECODE, AXP_DEBUG_FETCH, AXP_INSTRUMENTATION_TRACE, WIN32_LEAN_AND_MEAN")
+message(STATUS "Definitions: EXECTRACE_ENABLED, QT_DEPRECATED_WARNINGS, QT_DISABLE_DEPRECATED_BEFORE=0x060000, AXP_DEBUG_PIPELINE, AXP_DEBUG_DECODE, AXP_DEBUG_FETCH, AXP_INSTRUMENTATION_TRACE, AXP_EXEC_TRACE, WIN32_LEAN_AND_MEAN")
 message(STATUS "========================================")

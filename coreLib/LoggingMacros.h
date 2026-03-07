@@ -37,7 +37,7 @@ ERROR_LOG_CPU(cpuId, "TLB miss");
 
 #include "EventLog.h"
 
-#ifdef EXECTRACE_ENABLED
+#ifndef EXECTRACE_ENABLED
 #define DEBUG_LOG(msg) qDebug() << msg
 #define DEBUG_LOGF(fmt, ...) qDebug().noquote() << QString::asprintf(fmt, __VA_ARGS__)
 #else

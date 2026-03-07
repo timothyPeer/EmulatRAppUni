@@ -2,7 +2,7 @@
 // PipeLineSlot_inl.h - Pipe Line Slot inl
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -58,7 +58,7 @@ AXP_HOT AXP_ALWAYS_INLINE void ExecTraceCommitSlot(const PipelineSlot& slot) noe
 inline void debugBranch(const char* stageName, const PipelineSlot& slot,
 						bool taken, quint64 target, quint64 predicted)  noexcept
 {
-#ifdef AXP_DEBUG_PIPELINE
+#ifdef AXP_DEBUG
 	const quint32 raw = slot.di.rawBits();
 	const QString mnemonic = getMnemonicFromRaw(raw);
 
@@ -538,7 +538,7 @@ inline void debugLogStage(const char* stageName, const QString& message)  noexce
 // Slot with message (shows PC, opcode, mnemonic + custom message)
 inline void debugLogSlot(const char* stageName, const PipelineSlot& slot, const QString& message)  noexcept
 {
-#ifdef AXP_DEBUG_PIPELINE
+#ifdef AXP_DEBUG
 	if (slot.valid) {
 		const quint32 raw = slot.di.rawBits();
 		const quint8 opcode = (raw >> 26) & 0x3F;
@@ -560,7 +560,7 @@ inline void debugLogSlot(const char* stageName, const PipelineSlot& slot, const 
 // PC-focused log
 inline void debugLogPC(const QString& message, quint64 pc)  noexcept
 {
-#ifdef AXP_DEBUG_PIPELINE
+#ifdef AXP_DEBUG
 	qDebug() << "[PIPELINE]" << message << "PC:" << Qt::hex << Qt::showbase << pc;
 #else
 	Q_UNUSED(message);
@@ -571,7 +571,7 @@ inline void debugLogPC(const QString& message, quint64 pc)  noexcept
 // Branch-specific log
 inline void debugLogBranch(const QString& message, quint64 pc, quint64 target)  noexcept
 {
-#ifdef AXP_DEBUG_PIPELINE
+#ifdef AXP_DEBUG
 	qDebug() << "[BRANCH]" << message
 		<< "| PC:" << Qt::hex << Qt::showbase << pc
 		<< "-> TARGET:" << target;

@@ -262,7 +262,7 @@ class FaultDispatcher;
 struct WriteEntry;
 
 
-#ifdef EXECTRACE_ENABLED
+#ifndef EXECTRACE_ENABLED
 #pragma message("EXECTRACE_ENABLED is DEFINED")
 #else
 #pragma message("EXECTRACE_ENABLED is NOT DEFINED")
@@ -286,6 +286,11 @@ enum class R31CounterType : quint8
 // Per-CPU counters (declare in AlphaPipeline class)
 static quint64 m_r31Counters[6];
 
+// ============================================================================
+// Debug output interval — set to 1 during bringup, increase later
+// ============================================================================
+static constexpr quint64 kLogFlushInterval = 1;   // flush every N cycles
+
 
 // ============================================================================
 // AlphaPipeline - 6-Stage In-Order Pipeline
@@ -308,19 +313,13 @@ public:
    // ============================================================================
     AXP_HOT AXP_ALWAYS_INLINE auto flush(const char* caller) -> void
     {
-        // m_pending was already committed by stage_WB earlier this tick.
-        // Clear defensively — should already be empty at this point.
-       stage(m_head).m_pending = PendingCommit{};
-
-#if AXP_INSTRUMENTATION_TRACE
-        EXECTRACE_PIPELINE_FLUSH(m_cpuId, caller, m_iprGlobalMaster->h->getPC());
-#endif
+        stage(m_head).m_pending = PendingCommit{};
         for (int i = 0; i < STAGE_COUNT; i++)
         {
             stage(i).clear();
             stage(i).valid = false;
         }
-
+        m_head = 0;  // reset to known state — all slots cleared
         if (m_mBox)
         {
             m_mBox->clearMissStaging();
@@ -820,7 +819,7 @@ public:
             debugPipelineSummary();
         }
 
-        if (m_cycleCount == 55) {
+        if (m_cycleCount == 158) {
             qDebug() << "breakpoint";
        } 
 
@@ -868,13 +867,6 @@ private:
         */
     AXP_HOT AXP_ALWAYS_INLINE auto stage_IF() -> void
     {
-        if (m_cycleCount > 50)
-        {
-
-            qDebug() << "stop here";
-
-        }
-
         PipelineSlot& slot = stage(0);
         slot.clear();
 
@@ -947,7 +939,7 @@ private:
         m_iprGlobalMaster->h->advancePC(nextPC);
         m_pendingFetch = FetchResult{};
 
-        qDebug().noquote()
+       /* qDebug().noquote()
             << QString("IF: PC=%1 RAW=%2 OP=%3 MNE=%4 disp21=%5 tgt=%6 pred(V=%7,T=%8,PC=%9) nextPC=%10")
                .arg(hx64(slot.di.pc))
                .arg(hx32(slot.di.rawBits()))
@@ -959,6 +951,7 @@ private:
                .arg(slot.predictionTaken ? 1 : 0)
                .arg(hx64(slot.predictionTarget))
                .arg(hx64(nextPC));
+               */
     }
 
     /**
@@ -1028,7 +1021,7 @@ private:
         PipelineSlot& slot = stage(2); // IS stage
         if (!slot.valid || slot.stalled)
         {
-            qDebug().noquote()
+           /* qDebug().noquote()
                 << QString("IS: STALL PC=%1 MNE=%2 reason=%3 valid=%4 stalled=%5 dual=%6")
                    .arg(hx64(slot.di.pc))
                    .arg(getMnemonicFromRaw(slot.di.rawBits()))
@@ -1036,7 +1029,7 @@ private:
                    .arg(slot.valid ? 1 : 0)
                    .arg(slot.stalled ? 1 : 0)
                    .arg(slot.dualIssued ? 1 : 0);
-
+            */
             return;
         }
         slot.currentStage = 2;
@@ -1076,10 +1069,7 @@ private:
         if (!slot.valid || slot.stalled || slot.faultPending)
             return;
 
-        debugStageTransition("FETCH", "EXECUTE", slot.di.pc, true);
-        debugExecutionEntry(slot.di);
-
-        // ================================================================
+          // ================================================================
         // ILLEGAL INSTRUCTION CHECK
         // ================================================================
         if (!slot.grain)
@@ -1090,12 +1080,6 @@ private:
             quint16 fcCode    = getFunctionCode(slot.di);
             DEBUG_LOG(QString("Illegal Instruction opc: %1 fc: %2 seq: %3")
                 .arg(opcCode).arg(fcCode).arg(slot.slotSequence));
-#if AXP_INSTRUMENTATION_TRACE
-            EXECTRACE_DISCARD_PENDING(                       //  Instrumentation Trace
-                m_cpuId,
-                DiscardReason::FAULT,
-                slot.m_pending.isValid() ? slot.m_pending.instrPC : 0);
-#endif
             return;  // No deferral — faulting instruction produces no result
         }
 
@@ -1120,20 +1104,8 @@ private:
             slot.rb_value = slot.readFpReg(slot.di.rb);
         }
 
-
+        
         slot.grain->execute(slot);
-
-#if AXP_INSTRUMENTATION_TRACE
-
-        if (slot.faultPending) {
-            EXECTRACE_FAULT_RAISED(m_cpuId,                  
-                static_cast<quint8>(slot.trapCode),
-                slot.faultVA,
-                slot.di.pc,
-                PipelineStage_enum::EX);
-        }
-
-#endif
 
         // ================================================================
         // BRANCH / JUMP MISPREDICTION DETECTION
@@ -1191,8 +1163,8 @@ private:
 
             if (predictedTaken)
             {
-                DEBUG_LOG(QString("Branch @0x%1: Predicted taken, actually not taken -> MISPREDICTION")
-                    .arg(slot.di.pc, 16, 16, QChar('0')));
+               // DEBUG_LOG(QString("Branch @0x%1: Predicted taken, actually not taken -> MISPREDICTION")
+               //    .arg(slot.di.pc, 16, 16, QChar('0')));
 
                 for (int i = 0; i < STAGEEX; i++)
                 {
@@ -1202,8 +1174,8 @@ private:
 
                 m_iprGlobalMaster->h->advancePC(fallThrough);
 
-                DEBUG_LOG(QString("FLUSHED pipeline and redirected PC -> 0x%1 (fall-through)")
-                    .arg(fallThrough, 16, 16, QChar('0')));
+              //  DEBUG_LOG(QString("FLUSHED pipeline and redirected PC -> 0x%1 (fall-through)")
+              //      .arg(fallThrough, 16, 16, QChar('0')));
             }
 
             if (slot.m_cBox)
@@ -1591,6 +1563,7 @@ private:
     }
 
 private:
+ 
     AXP_HOT AXP_ALWAYS_INLINE auto commitPending(PipelineSlot& slot) noexcept -> void
     {
         if (slot.m_pending.intValid)
@@ -1612,8 +1585,9 @@ private:
         if (slot.m_pending.fpValid)
         {
             slot.writeFpReg(slot.m_pending.fpReg, slot.m_pending.fpValue);
-            if (slot.m_pending.fpClearDirty)
+            if (slot.m_pending.fpClearDirty) {
                 m_fBox->clearDirty(slot.m_pending.fpReg);
+            }
             slot.m_pending.fpValid = false;
         }
     }

@@ -2,7 +2,7 @@
 // BoxRequest.h - ============================================================================
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -16,7 +16,7 @@
 #ifndef BOXREQUEST_H
 #define BOXREQUEST_H
 #include <QtGlobal>
-#include "../faultLib/fault_core.h"
+#include "faultLib/fault_core.h"
 
 // ============================================================================
 // BOX RESULT FLAGS (Bitwise)

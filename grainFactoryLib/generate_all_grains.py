@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """
 generate_all_grains.py - Generate Alpha AXP instruction grain files from GrainMaster.tsv
-
-Copyright (c) 2025 Timothy Peer / eNVy Systems, Inc.
+with integrated CPU trace hooks (DEC ASM style).
+Copyright (c) 2025, 2026 Timothy Peer / eNVy Systems, Inc.
 Non-Commercial Use Only.
-"""
 
+Usage:
+    python generate_all_grains.py GrainMaster.tsv [output_dir]
+
+    output_dir defaults to ./grains (relative to script location)
+"""
 import csv
 import sys
 from pathlib import Path
@@ -14,14 +18,36 @@ from datetime import datetime
 # ============================================================================
 # Configuration
 # ============================================================================
+ENABLE_CPU_TRACE = True   # Set True to add CpuTrace hooks to all grains
+BASE_INCLUDE_PATH = "grainFactoryLib/grains"
 
+# Box-specific output subdirectories
+BOX_DIRECTORIES = {
+    'EBox':   'generated/Integer',
+    'FBox':   'generated/FloatingPoint',
+    'MBox':   'generated/Memory',
+    'CBox':   'generated/Branch',
+    'PalBox': 'generated/PAL',
+}
+
+# Box-specific base class headers
+BOX_HEADERS = {
+    'EBox':   'EBoxLib/EBoxBase.h',
+    'FBox':   'FBoxLib/FBoxBase.h',
+    'MBox':   'MBoxLib_EV6/MBoxBase.h',
+    'CBox':   'CBoxLib/CBoxBase.h',
+    'PalBox': 'palBoxLib/PalBoxBase.h',
+}
+
+# ============================================================================
+# Copyright Header
+# ============================================================================
 def get_copyright_header(filename, description):
-    """Generate copyright header with actual filename and description."""
     return f"""// ============================================================================
 // {filename} - {description}
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -32,294 +58,257 @@ def get_copyright_header(filename, description):
 // Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
 // ============================================================================"""
 
-BASE_INCLUDE_PATH = "grainFactoryLib/grains"
+# ============================================================================
+# Name / identifier helpers
+# ============================================================================
+def sanitize_mnemonic(mnemonic):
+    """Make mnemonic safe for use in C++ identifiers and filenames."""
+    return mnemonic.replace('/', '_').replace('-', '_').replace('.', '_')
 
-# Box-specific directories
-BOX_DIRECTORIES = {
-    'EBox': 'generated/Integer',
-    'FBox': 'generated/FloatingPoint',
-    'MBox': 'generated/Memory',
-    'CBox': 'generated/Branch',
-    'PalBox': 'generated/PAL',
-}
+def generate_header_guard(mnemonic):
+    return f"{sanitize_mnemonic(mnemonic).upper()}_INSTRUCTIONGRAIN_H"
 
-# Box-specific headers
-BOX_HEADERS = {
-    'EBox': 'EBoxLib/EBoxBase.h',
-    'FBox': 'FBoxLib/FBoxBase.h',
-    'MBox': 'MBoxLib_EV6/MBoxBase.h',
-    'CBox': 'CBoxLib/CBoxBase.h',
-    'PalBox': 'palBoxLib/PalBoxBase.h',
-}
+def get_grain_class_name(mnemonic):
+    return f"{sanitize_mnemonic(mnemonic)}_InstructionGrain"
+
+def get_grain_filename(mnemonic):
+    return f"{sanitize_mnemonic(mnemonic)}_InstructionGrain.h"
+
+def get_execute_method_name(mnemonic):
+    return f"execute{sanitize_mnemonic(mnemonic)}"
+
+def get_box_member(box):
+    """Return the PipelineSlot member name for the given box."""
+    members = {
+        'EBox':   'm_eBox',
+        'FBox':   'm_fBox',
+        'MBox':   'm_mBox',
+        'CBox':   'm_cBox',
+        'PalBox': 'm_palBox',
+    }
+    return members.get(box, f"m_{box[0].lower()}{box[1:]}")
 
 # ============================================================================
-# Instruction Format Detection
+# Instruction format flags
+# Matches enum GrainFlags : quint8 in InstructionGrain.h:
+#   GF_None          = 0
+#   GF_OperateFormat = 1 << 0   integer and FP operate (Rc = Ra op Rb)
+#   GF_MemoryFormat  = 1 << 1   memory load/store
+#   GF_BranchFormat  = 1 << 2   branch and jump
+#   GF_PALFormat     = 1 << 3   PAL / privileged instructions
+#   GF_CanDualIssue  = 1 << 4   eligible for dual issue pairing
+#   GF_NeedsStall    = 1 << 5   serializing, cannot pair
 # ============================================================================
-
 def get_instruction_format(opcode_hex, mnemonic, box):
-    """
-    Determine instruction format based on opcode.
-    Returns GrainFlags format constant.
-    """
-    # Convert hex string to integer
-    opcode = int(opcode_hex, 16)
-    
-    # Operate format - Integer arithmetic/logical
-    if opcode in [0x10, 0x11, 0x12, 0x13]:
-        return "GF_OperateFormat"
-    
-    # Operate format - Floating point arithmetic
-    elif opcode in [0x14, 0x15, 0x16, 0x17]:
-        return "GF_OperateFormat"
-    
-    # Operate format - Byte manipulation
-    elif opcode == 0x1C:
-        return "GF_OperateFormat"
-    
-    # Memory format - Integer loads
-    elif opcode in [0x0A, 0x0B, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F]:
-        return "GF_MemoryFormat"
-    
-    # Memory format - Integer stores
-    elif opcode in [0x0C, 0x0D, 0x0E, 0x0F]:
-        return "GF_MemoryFormat"
-    
-    # Memory format - FP loads
-    elif opcode in [0x20, 0x21, 0x22, 0x23]:
-        return "GF_MemoryFormat"
-    
-    # Memory format - FP stores
-    elif opcode in [0x24, 0x25, 0x26, 0x27]:
-        return "GF_MemoryFormat"
-    
-    # Memory format - LDA/LDAH (address calculation)
-    elif opcode in [0x08, 0x09]:
-        return "GF_MemoryFormat"
-    
-    # Branch format - Unconditional
-    elif opcode in [0x30, 0x34]:  # BR, BSR
-        return "GF_BranchFormat"
-    
-    # Branch format - Conditional integer
-    elif opcode in [0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F]:
-        return "GF_BranchFormat"
-    
-    # Branch format - Conditional FP
-    elif opcode in [0x31, 0x32, 0x33, 0x35, 0x36, 0x37]:
-        return "GF_BranchFormat"
-    
-    # Jump format (treat as branch for dest register purposes)
-    elif opcode == 0x1A:  # JMP, JSR, RET, JSR_COROUTINE
-        return "GF_BranchFormat"
-    
-    # PAL format
-    elif opcode == 0x00:
-        return "GF_PALFormat"
-    
-    # Misc format
-    elif opcode == 0x18:  # MISC (TRAPB, EXCB, MB, WMB, FETCH, etc.)
-        return "GF_MemoryFormat"  # Most MISC treated as memory ops
-    
-    else:
-        return "GF_None"
+    """Return the primary GrainFlags format for this instruction."""
+    try:
+        op = int(opcode_hex, 16)
+    except (ValueError, TypeError):
+        return 'GF_None'
 
-# ============================================================================
-# Execution Flags Detection
-# ============================================================================
+    mne = mnemonic.upper()
+
+    # PAL box — all privileged / HW instructions
+    if box == 'PalBox':
+        return 'GF_PALFormat'
+
+    # Memory format: LDx/STx opcodes 0x08-0x0F, 0x20-0x2F
+    if op in range(0x08, 0x10) or op in range(0x20, 0x30):
+        return 'GF_MemoryFormat'
+
+    # Branch / jump format: 0x1A, 0x30-0x3F
+    if op == 0x1A or op in range(0x30, 0x40):
+        return 'GF_BranchFormat'
+
+    # Integer and FP operate: 0x10-0x17
+    if op in range(0x10, 0x18):
+        return 'GF_OperateFormat'
+
+    # Miscellaneous operate (MISC opcode 0x18)
+    if op == 0x18:
+        return 'GF_OperateFormat'
+
+    return 'GF_None'
+
 
 def get_execution_flags(mnemonic, opcode_hex, box):
     """
-    Determine execution characteristics.
-    Returns list of GrainFlags execution flags.
+    Return list of additional GrainFlags for scheduling hints.
+    Only uses flags that exist in the enum.
     """
     flags = []
-    
-    # Convert to uppercase for comparison
-    mnem = mnemonic.upper()
-    
-    # Dual-issue capable instructions (simple ALU ops)
-    dual_issue_ops = [
-        'ADDL', 'ADDQ', 'SUBL', 'SUBQ', 'S4ADDL', 'S4ADDQ', 'S8ADDL', 'S8ADDQ',
-        'S4SUBL', 'S4SUBQ', 'S8SUBL', 'S8SUBQ',
-        'AND', 'BIS', 'XOR', 'BIC', 'ORNOT', 'EQV',
-        'CMPEQ', 'CMPLT', 'CMPLE', 'CMPULT', 'CMPULE',
-        'SLL', 'SRL', 'SRA',
-        'ZAP', 'ZAPNOT', 'EXTBL', 'EXTWL', 'EXTLL', 'EXTQL',
-        'INSBL', 'INSWL', 'INSLL', 'INSQL',
-        'MSKBL', 'MSKWL', 'MSKLL', 'MSKQL',
-        'LDA', 'LDAH',  # Address computation
-    ]
-    
-    if mnem in dual_issue_ops:
-        flags.append('GF_CanDualIssue')
-    
-    # Instructions that need pipeline stalls
-    stall_ops = [
-        'TRAPB', 'EXCB', 'MB', 'WMB', 'RC', 'RS',
-        'HW_REI', 'HW_RET',  # PAL ops
-    ]
-    
-    if mnem in stall_ops:
+    mne = mnemonic.upper()
+
+    try:
+        op = int(opcode_hex, 16)
+    except (ValueError, TypeError):
+        op = 0
+
+    # Serializing instructions — cannot pair, require pipeline drain
+    stall_mnemonics = {
+        'MB', 'WMB', 'TRAPB', 'EXCB', 'FETCH', 'FETCH_M',
+        'CALL_PAL', 'HW_REI', 'HW_MTPR', 'HW_MFPR',
+        'RPCC', 'RC', 'RS',
+    }
+    if mne in stall_mnemonics:
         flags.append('GF_NeedsStall')
-    
-    return flags
+        return flags  # stall implies no dual issue
+
+    # Dual-issue eligible — simple integer operates and most branches
+    dual_issue_boxes = {'EBox', 'CBox'}
+    no_dual = {
+        'MULL', 'MULQ', 'MULL_V', 'MULQ_V', 'UMULH',
+        'DIVF', 'DIVG', 'DIVS', 'DIVT',
+        'SQRTF', 'SQRTG', 'SQRTS', 'SQRTT',
+    }
+    if box in dual_issue_boxes and mne not in no_dual:
+        flags.append('GF_CanDualIssue')
+
+    return flags if flags else ['GF_None']
 
 # ============================================================================
-# Latency Tables
+# Latency
 # ============================================================================
-
 def get_latency(mnemonic, opcode_hex, box):
     """
-    Get instruction latency in cycles (EV6/21264 timings).
+    Return the execution latency in cycles for this instruction.
+    Based on EV6 microarchitecture latencies.
     """
-    opcode = int(opcode_hex, 16)
-    mnem = mnemonic.upper()
-    
-    # Integer multiply: 7 cycles
-    if mnem in ['MULL', 'MULQ', 'UMULH']:
-        if mnem == 'UMULH':
-            return 14  # High multiply takes longer
-        return 7
-    
-    # Integer loads: 3 cycles (to use, can forward earlier)
-    elif opcode in [0x0A, 0x0B, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F]:
-        return 3
-    
-    # FP loads: 4 cycles
-    elif opcode in [0x20, 0x21, 0x22, 0x23]:
+    mne = mnemonic.upper()
+
+    try:
+        op = int(opcode_hex, 16)
+    except (ValueError, TypeError):
+        op = 0
+
+    # FP divide — very high latency
+    if mne in ('DIVF', 'DIVG', 'DIVS', 'DIVT'):
+        return 15
+
+    # FP sqrt
+    if mne in ('SQRTF', 'SQRTG', 'SQRTS', 'SQRTT'):
+        return 12
+
+    # FP multiply
+    if mne in ('MULF', 'MULG', 'MULS', 'MULT', 'FMUL'):
         return 4
-    
-    # Stores: 1 cycle (to store buffer)
-    elif opcode in [0x0C, 0x0D, 0x0E, 0x0F, 0x24, 0x25, 0x26, 0x27]:
-        return 1
-    
-    # FP arithmetic (most ops): 6 cycles
-    elif opcode in [0x15, 0x16, 0x17]:
-        if mnem.startswith('DIV'):
-            return 63  # FP divide
-        elif mnem.startswith('SQRT'):
-            return 70  # FP square root
-        else:
-            return 6  # FADD, FSUB, FMUL, FCMP
-    
-    # FP conversions: 10 cycles
-    elif opcode == 0x14 or opcode == 0x1C:
-        if mnem in ['CVTQS', 'CVTQT', 'CVTTS', 'CVTTQ']:
-            return 10
-    
-    # Branches: 1 cycle (misprediction penalty handled elsewhere)
-    elif box == 'CBox':
-        return 1
-    
-    # Most other instructions: 1 cycle
-    else:
-        return 1
+
+    # Integer multiply
+    if mne in ('MULL', 'MULQ', 'MULL_V', 'MULQ_V', 'UMULH'):
+        return 7
+
+    # Memory loads
+    if mne in ('LDL', 'LDQ', 'LDB', 'LDW', 'LDL_L', 'LDQ_L', 'LDQ_U',
+               'LDF', 'LDG', 'LDS', 'LDT'):
+        return 3
+
+    # FP general operate
+    if box == 'FBox':
+        return 4
+
+    # Everything else — 1 cycle
+    return 1
 
 # ============================================================================
 # Throughput
 # ============================================================================
-
 def get_throughput(mnemonic, opcode_hex):
     """
-    Get throughput (instructions per cycle).
-    Most Alpha instructions: 1 per cycle.
-    Some complex ops may be lower.
+    Return the throughput (instructions per cycle) for this instruction.
     """
-    mnem = mnemonic.upper()
-    
-    # Low throughput ops (less than 1 per cycle)
-    if mnem in ['MULL', 'MULQ', 'UMULH', 'DIVS', 'DIVT', 'SQRTS', 'SQRTT']:
-        return 1  # Simplified - still show as 1
-    
-    return 1
+    mne = mnemonic.upper()
+
+    # Divides and sqrt — not pipelined
+    if mne in ('DIVF', 'DIVG', 'DIVS', 'DIVT',
+               'SQRTF', 'SQRTG', 'SQRTS', 'SQRTT'):
+        return 1
+
+    return 1  # EV6 issue rate is 1 per pipe per cycle
 
 # ============================================================================
-# Template Generator (Updated)
+# Grain flags string
 # ============================================================================
-
-def sanitize_mnemonic(mnemonic):
-    """Convert mnemonic to valid C++ identifier (replace special chars)."""
-    return mnemonic.replace('/', '_').replace('-', '_')
-
-def generate_header_guard(mnemonic):
-    """Generate header guard name."""
-    return f"{sanitize_mnemonic(mnemonic).upper()}_INSTRUCTIONGRAIN_H"
-
-def get_grain_class_name(mnemonic):
-    """Generate grain class name."""
-    return f"{sanitize_mnemonic(mnemonic)}_InstructionGrain"
-
-def get_grain_filename(mnemonic):
-    """Generate grain filename."""
-    return f"{sanitize_mnemonic(mnemonic)}_InstructionGrain.h"
-
-def get_execute_method_name(box, mnemonic):
-    """Generate execute method name for the box."""
-    return f"execute{sanitize_mnemonic(mnemonic)}"
-
-def get_box_member_name(box):
-    """Get box member variable name (e.g., EBox -> m_eBox)."""
-    return f"m_{box[0].lower()}{box[1:]}"
-
 def generate_grain_flags(grain):
-    """Generate complete flags expression for constructor."""
-    opcode = grain['Opcode']
+    opcode   = grain['Opcode']
     mnemonic = grain['Mnemonic']
-    box = grain['Box']
-    
-    # Get format flag
-    format_flag = get_instruction_format(opcode, mnemonic, box)
-    
-    # Get execution flags
-    exec_flags = get_execution_flags(mnemonic, opcode, box)
-    
-    # Combine flags
-    all_flags = [format_flag] + exec_flags
-    
-    # Remove GF_None if other flags present
-    if len(all_flags) > 1 and 'GF_None' in all_flags:
-        all_flags.remove('GF_None')
-    
-    # Return combined expression
-    if len(all_flags) == 0 or (len(all_flags) == 1 and all_flags[0] == 'GF_None'):
-        return 'GF_None'
-    else:
-        return ' | '.join(all_flags)
+    box      = grain['Box']
 
-def generate_grain_template(grain, box_dir):
-    """Generate complete grain header file content."""
-    
-    opcode = grain['Opcode']
-    function = grain['Function']
-    mnemonic = grain['Mnemonic']
+    fmt   = get_instruction_format(opcode, mnemonic, box)
+    extra = get_execution_flags(mnemonic, opcode, box)
+
+    # Build combined list, removing GF_None placeholders
+    combined = [fmt] + [f for f in extra if f != 'GF_None']
+    real = [f for f in combined if f != 'GF_None']
+
+    if not real:
+        return 'GF_None'
+
+    # Deduplicate preserving order
+    seen = set()
+    deduped = []
+    for f in real:
+        if f not in seen:
+            seen.add(f)
+            deduped.append(f)
+
+    return ' | '.join(deduped)
+
+# ============================================================================
+# Grain template generator
+# ============================================================================
+def generate_grain_template(grain):
+    opcode      = grain['Opcode']
+    function    = grain['Function']
+    mnemonic    = grain['Mnemonic']
     description = grain['Description']
-    box = grain['Box']
-    grain_type = grain['Type']
-    
-    class_name = get_grain_class_name(mnemonic)
-    header_guard = generate_header_guard(mnemonic)
-    box_header = BOX_HEADERS[box]
-    execute_method = get_execute_method_name(box, mnemonic)
-    filename = get_grain_filename(mnemonic)
-    box_member = get_box_member_name(box)
-    
-    # Generate flags, latency, throughput
-    flags = generate_grain_flags(grain)
-    latency = get_latency(mnemonic, opcode, box)
-    throughput = get_throughput(mnemonic, opcode)
-    
-    # Generate copyright with actual filename and description
-    copyright = get_copyright_header(filename, f"{mnemonic} Instruction Grain")
-    
-    template = f"""{copyright}
+    box         = grain['Box']
+    grain_type  = grain['Type']
+
+    class_name     = get_grain_class_name(mnemonic)
+    header_guard   = generate_header_guard(mnemonic)
+    filename       = get_grain_filename(mnemonic)
+    box_header     = BOX_HEADERS[box]
+    execute_method = get_execute_method_name(mnemonic)
+    box_member     = get_box_member(box)
+    flags          = generate_grain_flags(grain)
+    latency        = get_latency(mnemonic, opcode, box)
+    throughput     = get_throughput(mnemonic, opcode)
+    fmt            = get_instruction_format(opcode, mnemonic, box)
+    registrar_name = sanitize_mnemonic(mnemonic).lower()
+    copyright      = get_copyright_header(filename, f"{mnemonic} - {description}")
+    timestamp      = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    if ENABLE_CPU_TRACE:
+        execute_body = f"""        // Delegate to execution box via slot member
+
+        slot.{box_member}->{execute_method}(slot);
+#ifdef AXP_EXEC_TRACE
+        {{
+            QString operands = slot.getOperandsString();
+            QString result   = slot.getResultString();
+            CpuTrace::instruction(
+                slot.cycle,
+                slot.di.pc,
+                slot.di.rawBits(),
+                "{mnemonic}",
+                operands,
+                result
+            );
+        }}
+#endif // AXP_EXEC_TRACE"""
+    else:
+        execute_body = f"""        // Delegate to execution box via slot member
+        slot.{box_member}->{execute_method}(slot);"""
+
+    content = f"""{copyright}
 //
 //  Instruction: {mnemonic} - {description}
 //  Opcode: {opcode}, Function: {function}
 //  Execution Box: {box}
-//  Format: {get_instruction_format(opcode, mnemonic, box)}
+//  Format: {fmt}
 //  Latency: {latency} cycles, Throughput: {throughput}/cycle
 //
-//  Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+//  Generated: {timestamp}
 //
 // ============================================================================
 
@@ -327,6 +316,7 @@ def generate_grain_template(grain, box_dir):
 #define {header_guard}
 
 #include "coreLib/Axp_Attributes_core.h"
+#include "coreLib/cpuTrace.h"
 #include "{box_header}"
 #include "grainFactoryLib/InstructionGrain.h"
 #include "grainFactoryLib/InstructionGrainRegistry.h"
@@ -357,12 +347,11 @@ public:
     // ========================================================================
     // Virtual Method Implementations
     // ========================================================================
-    
+
     AXP_HOT AXP_ALWAYS_INLINE
     void execute(PipelineSlot& slot) const noexcept override
     {{
-        // Delegate to execution box via slot member
-        slot.{box_member}->{execute_method}(slot);
+{execute_body}
     }}
 
     AXP_HOT AXP_ALWAYS_INLINE
@@ -380,7 +369,7 @@ public:
     // ========================================================================
     // Pure Virtual Accessor Implementations
     // ========================================================================
-    
+
     AXP_HOT AXP_ALWAYS_INLINE
     QString mnemonic() const noexcept override
     {{
@@ -406,9 +395,9 @@ public:
     }}
 
 private:
-    QString m_mnemonic;
-    quint8 m_opcode;
-    quint16 m_functionCode;
+    QString     m_mnemonic;
+    quint8      m_opcode;
+    quint16     m_functionCode;
     GrainPlatform m_platform;
 }};
 
@@ -417,223 +406,149 @@ private:
 // ============================================================================
 
 namespace {{
-    static GrainAutoRegistrar<{class_name}> s_{sanitize_mnemonic(mnemonic).lower()}_registrar(
+    static GrainAutoRegistrar<{class_name}> s_{registrar_name}_registrar(
         {opcode}, {function}
     );
 }}
 
 #endif // {header_guard}
 """
-    
-    return template
+    return content
 
 # ============================================================================
-# RegisterAllGrains.cpp Generator
+# TSV reader
 # ============================================================================
-
-def generate_registration_file(grains, output_dir):
-    """Generate RegisterAllGrains.cpp that includes all grain headers."""
-    
-    # Group by box
-    grains_by_box = {}
-    for grain in grains:
-        box = grain['Box']
-        if box not in grains_by_box:
-            grains_by_box[box] = []
-        grains_by_box[box].append(grain)
-    
-    # Generate copyright
-    copyright = get_copyright_header("RegisterAllGrains.cpp", "Auto-Generated Grain Registration")
-    
-    content = f"""{copyright}
-//
-//  Purpose: Include all instruction grain headers to force registration
-//  Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-//
-//  DO NOT EDIT MANUALLY - changes will be overwritten
-//
-// ============================================================================
-
-#include "grainFactoryLib/InstructionGrainRegistry.h"
-#include <QDebug>
-
-// ============================================================================
-// Include all grain headers (triggers auto-registration)
-// Total grains: {len(grains)}
-// ============================================================================
-
-"""
-    
-    # Add includes organized by box
-    for box in sorted(grains_by_box.keys()):
-        box_dir = BOX_DIRECTORIES[box]
-        box_grains = grains_by_box[box]
-        
-        content += f"\n// {box} Instructions ({len(box_grains)} grains)\n"
-        
-        for grain in sorted(box_grains, key=lambda g: g['Mnemonic']):
-            mnemonic = grain['Mnemonic']
-            filename = get_grain_filename(mnemonic)
-            include = f"{BASE_INCLUDE_PATH}/{box_dir}/{filename}"
-            content += f'#include "{include}"\n'
-    
-    # Add footer
-    content += f"""
-// ============================================================================
-// Force linker to include this translation unit
-// ============================================================================
-
-namespace {{
-    struct GrainRegistrationForcer {{
-        GrainRegistrationForcer() {{
-            auto& registry = InstructionGrainRegistry::instance();
-            qDebug() << "RegisterAllGrains: Loaded" 
-                     << registry.grainCount() << "instruction grains";
-        }}
-    }};
-    
-    // Static object instantiated before main()
-    static GrainRegistrationForcer s_forcer;
-}}
-
-// End of auto-generated file
-"""
-    
-    output_file = output_dir / "grainFactoryLib" / "RegisterAllGrains.cpp"
-    output_file.parent.mkdir(parents=True, exist_ok=True)
-    output_file.write_text(content, encoding='utf-8')
-    
-    print(f"✓ Generated: {output_file}")
-    return output_file
-
-# ============================================================================
-# Main Generator
-# ============================================================================
-
 def read_tsv(tsv_file):
-    """Read GrainMaster.tsv and parse grain definitions."""
+    """Read GrainMaster.tsv and return list of grain dicts."""
     grains = []
-    
-    with open(tsv_file, 'r', encoding='utf-8') as f:
+    path = Path(tsv_file)
+    if not path.exists():
+        print(f"ERROR: TSV file not found: {tsv_file}", file=sys.stderr)
+        sys.exit(1)
+
+    with open(path, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f, delimiter='\t')
-        
         for row in reader:
-            # Skip comment lines
-            if row['Opcode'].startswith('#'):
+            # Skip blank rows
+            if not row.get('Mnemonic', '').strip():
                 continue
-            
-            # Parse opcode and function
-            try:
-                opcode = row['Opcode'].strip()
-                function = row['Function'].strip()
-                
-                grains.append({
-                    'Opcode': opcode,
-                    'Function': function,
-                    'Mnemonic': row['Mnemonic'].strip(),
-                    'Description': row['Description'].strip(),
-                    'Type': row['Type'].strip(),
-                    'Box': row['Box'].strip(),
-                })
-            except (ValueError, KeyError) as e:
-                print(f"Warning: Skipping invalid row: {row} ({e})")
+            # Validate required columns
+            for col in ('Opcode', 'Function', 'Mnemonic', 'Description', 'Type', 'Box'):
+                if col not in row:
+                    print(f"WARNING: Missing column '{col}' in row: {row}", file=sys.stderr)
+                    continue
+            # Skip unknown boxes
+            if row['Box'] not in BOX_DIRECTORIES:
+                print(f"WARNING: Unknown box '{row['Box']}' for {row['Mnemonic']} -- skipping",
+                      file=sys.stderr)
                 continue
-    
+            grains.append(row)
+
     return grains
 
-def generate_all_grains(tsv_file, output_dir):
-    """Main entry point - generate all grain files."""
-    
-    print("=" * 80)
-    print("Alpha AXP Grain Code Generator (with Base Constructor Initialization)")
-    print("=" * 80)
-    
-    # Read TSV
-    print(f"\nReading: {tsv_file}")
-    grains = read_tsv(tsv_file)
-    print(f"Loaded {len(grains)} grain definitions")
-    
-    # Create output directories
-    output_dir = Path(output_dir)
-    for box, box_dir in BOX_DIRECTORIES.items():
-        full_dir = output_dir / BASE_INCLUDE_PATH / box_dir
-        full_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Generate individual grain headers
-    print(f"\nGenerating grain headers with proper initialization...")
-    generated_count = 0
-    
+# ============================================================================
+# Registration file generator
+# ============================================================================
+def generate_registration_file(grains, output_dir):
+    """Generate RegisterAllGrains.cpp that #includes every grain header."""
+    lines = []
+    lines.append(get_copyright_header('RegisterAllGrains.cpp',
+                                       'Auto-generated grain registration'))
+    lines.append('')
+    lines.append('// Auto-generated — do not edit manually.')
+    lines.append(f'// Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+    lines.append('')
+    lines.append('#include "grainFactoryLib/InstructionGrainRegistry.h"')
+    lines.append('')
+    lines.append('// ============================================================================')
+    lines.append('// Grain header includes — triggers static auto-registration')
+    lines.append('// ============================================================================')
+    lines.append('')
+
     for grain in grains:
-        box = grain['Box']
-        box_dir = BOX_DIRECTORIES[box]
         mnemonic = grain['Mnemonic']
-        
-        # Generate content
-        content = generate_grain_template(grain, box_dir)
-        
-        # Write file
+        box      = grain['Box']
+        box_dir  = BOX_DIRECTORIES[box]
         filename = get_grain_filename(mnemonic)
-        output_file = output_dir / BASE_INCLUDE_PATH / box_dir / filename
-        output_file.write_text(content, encoding='utf-8')
-        
-        generated_count += 1
-        if generated_count % 50 == 0:
-            print(f"  Generated {generated_count}/{len(grains)} grains...")
-    
-    print(f"✓ Generated {generated_count} grain headers")
-    
-    # Generate RegisterAllGrains.cpp
-    print(f"\nGenerating registration file...")
-    generate_registration_file(grains, output_dir)
-    
-    print("\n" + "=" * 80)
-    print("GENERATION COMPLETE")
-    print("=" * 80)
-    print(f"\nGenerated files:")
-    print(f"  - {generated_count} grain headers in {BASE_INCLUDE_PATH}/generated/")
-    print(f"  - RegisterAllGrains.cpp")
-    print(f"\nKey changes:")
-    print(f"  ✓ Added InstructionGrain base constructor calls")
-    print(f"  ✓ Automatic format detection (Operate/Memory/Branch/PAL)")
-    print(f"  ✓ Execution flags (CanDualIssue, NeedsStall)")
-    print(f"  ✓ EV6/21264 latency timings")
-    print(f"  ✓ Throughput specifications")
-    print(f"\nNext steps:")
-    print(f"  1. Add format flags to InstructionGrain.h enum")
-    print(f"  2. Add isOperateFormat() helpers to InstructionGrain class")
-    print(f"  3. Regenerate all grains with this script")
-    print(f"  4. Update destRegister() to use grain->isOperateFormat()")
-    print(f"  5. Rebuild project")
-    print(f"\n🎉 All grains will have proper initialization! 🎉")
+        lines.append(f'#include "{BASE_INCLUDE_PATH}/{box_dir}/{filename}"')
+
+    lines.append('')
+    lines.append('// ============================================================================')
+    lines.append('// RegisterAllGrains — called once at startup')
+    lines.append('// ============================================================================')
+    lines.append('')
+    lines.append('void RegisterAllGrains()')
+    lines.append('{')
+    lines.append('    // Registration is automatic via static GrainAutoRegistrar<T> instances.')
+    lines.append('    // This function exists as an explicit call site to force TU instantiation.')
+    lines.append('}')
+    lines.append('')
+
+    reg_path = output_dir / 'RegisterAllGrains.cpp'
+    reg_path.write_text('\n'.join(lines), encoding='utf-8')
+    print(f"  -> Written: {reg_path}")
 
 # ============================================================================
-# Entry Point
+# Main generation loop
 # ============================================================================
+def generate_all_grains(tsv_file, output_dir):
+    output_dir = Path(output_dir)
+    grains = read_tsv(tsv_file)
 
+    if not grains:
+        print("ERROR: No grains found in TSV.", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"Loaded {len(grains)} grains from {tsv_file}")
+
+    # Create box output directories
+    box_dirs = {}
+    for box, subdir in BOX_DIRECTORIES.items():
+        d = output_dir / subdir
+        d.mkdir(parents=True, exist_ok=True)
+        box_dirs[box] = d
+
+    written  = 0
+    skipped  = 0
+    errors   = 0
+
+    for grain in grains:
+        mnemonic = grain['Mnemonic']
+        box      = grain['Box']
+        filename = get_grain_filename(mnemonic)
+        dest     = box_dirs[box] / filename
+
+        try:
+            content = generate_grain_template(grain)
+            dest.write_text(content, encoding='utf-8')
+            written += 1
+        except Exception as e:
+            print(f"ERROR generating {mnemonic}: {e}", file=sys.stderr)
+            errors += 1
+
+    # Generate registration file at output root
+    try:
+        generate_registration_file(grains, output_dir)
+    except Exception as e:
+        print(f"ERROR generating RegisterAllGrains.cpp: {e}", file=sys.stderr)
+        errors += 1
+
+    print(f"\nDone.")
+    print(f"  Written : {written}")
+    print(f"  Skipped : {skipped}")
+    print(f"  Errors  : {errors}")
+    print(f"  Output  : {output_dir.resolve()}")
+
+# ============================================================================
+# Entry point
+# ============================================================================
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print("Usage: python generate_all_grains.py GrainMaster.tsv [output_dir]")
+        print(f"Usage: python {sys.argv[0]} GrainMaster.tsv [output_dir]")
+        print(f"  output_dir defaults to ./grains")
         sys.exit(1)
-    
-    tsv_file = Path(sys.argv[1])
-    output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path(".")
-    
-    # Validate TSV file exists and is a file
-    if not tsv_file.exists():
-        print(f"Error: TSV file not found: {tsv_file}")
-        sys.exit(1)
-    
-    if not tsv_file.is_file():
-        print(f"Error: {tsv_file} is not a file")
-        sys.exit(1)
-    
-    # Validate output directory exists and is a directory
-    if not output_dir.exists():
-        print(f"Error: Output directory not found: {output_dir}")
-        sys.exit(1)
-    
-    if not output_dir.is_dir():
-        print(f"Error: {output_dir} is not a directory")
-        sys.exit(1)
-    
-    generate_all_grains(str(tsv_file), str(output_dir))
+
+    tsv_file   = sys.argv[1]
+    output_dir = sys.argv[2] if len(sys.argv) > 2 else 'grains'
+
+    generate_all_grains(tsv_file, output_dir)

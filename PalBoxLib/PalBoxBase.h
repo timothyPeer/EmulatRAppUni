@@ -1100,37 +1100,41 @@ public:
         }
     }
 
-    AXP_HOT AXP_ALWAYS_INLINE auto executePAL19(PipelineSlot& slot) -> void
+    
+    AXP_HOT AXP_ALWAYS_INLINE auto executeHW_LD (PipelineSlot& slot) -> BoxResult
     {
-        // HW_MFPR - Move From Processor Register (opcode 0x19, PALmode only)
-        applyBoxResult(slot, executeHW_MFPR(slot));
-        commitPalResult(slot);                    // Commit Pal Results
+        applyBoxResult(slot, executePAL1F(slot));
+
+        if (slot.faultPending) {                       // only commit on clean execution
+            return BoxResult().faultDispatched();      // Commit Pal Results
+        }
+        commitPalResult(slot);
+        return BoxResult().advance();
     }
 
-    AXP_HOT AXP_ALWAYS_INLINE auto executePAL1F(PipelineSlot& slot) -> void
+    AXP_HOT AXP_ALWAYS_INLINE auto executeHW_ST(PipelineSlot& slot) -> BoxResult
     {
-        // Opcode 0x1F — bit 15 selects HW_LD vs HW_ST
-        if (slot.di.rawBits() & 0x8000)
-            applyBoxResult(slot, executeHW_ST(slot));   // bit 15 = 1 -> store
-        else
-            applyBoxResult(slot, executeHW_LD(slot));   // bit 15 = 0 -> load
-
-        if (!slot.faultPending)                         // only commit on clean execution
-        commitPalResult(slot);                          // Commit Pal Results
+        
+        // Opcode 0x1B = HW_ST on EV5 SRM firmware
+        applyBoxResult(slot, executePAL1B(slot));
+        if (slot.faultPending) {                      // only commit on clean execution
+            return BoxResult().faultDispatched();
+        }
+        commitPalResult(slot);
+        return BoxResult().advance();
     }
 
-    AXP_HOT AXP_ALWAYS_INLINE auto executePAL1D(PipelineSlot& slot) -> void
-    {
-        // HW_MTPR - Move To Processor Register (opcode 0x1D, PALmode only)
-        applyBoxResult(slot, executeHW_MTPR(slot));
-        commitPalResult(slot);                    // Commit Pal Results
-    }
-
-    AXP_HOT AXP_ALWAYS_INLINE auto executePAL1E(PipelineSlot& slot) -> void
+    
+    AXP_HOT AXP_ALWAYS_INLINE auto executeHW_REI(PipelineSlot& slot) -> BoxResult
     {
         // HW_RET / HW_REI - Return from PALmode (opcode 0x1E)
         applyBoxResult(slot, executeREI(slot));
+        if (slot.faultPending) {
+
+            return BoxResult().faultDispatched();
+        }
         commitPalResult(slot);                    // Commit Pal Results
+        return BoxResult().advance();
     }
 
     auto executeRDKSP(PipelineSlot& slot) -> void
@@ -1408,7 +1412,7 @@ public:
     // Virtual mode  (phys=0): EA is virtual, translated through DTB
     // ====================================================================
 
-    AXP_HOT inline auto executeHW_LD(PipelineSlot& slot) const noexcept -> BoxResult
+    AXP_HOT inline auto executePAL1F(PipelineSlot& slot) const noexcept -> BoxResult
     {
         // Validate PAL mode
         if (!(m_iprGlobalMaster->isInPalMode()))
@@ -1546,7 +1550,7 @@ public:
     // MEM[EA] = Ra (quad: 8 bytes, !quad: low 4 bytes)
     // ====================================================================
 
-    AXP_HOT inline auto executeHW_ST(PipelineSlot& slot) const noexcept -> BoxResult
+    AXP_HOT inline auto executePAL1B(PipelineSlot& slot) const noexcept -> BoxResult
     {
         // Validate PAL mode
         if (!(m_iprGlobalMaster->isInPalMode()))
@@ -1576,7 +1580,9 @@ public:
         const quint64 raVal = (ra == 31) ? 0ULL : slot.readIntReg(ra);
 
         auto status = MEM_STATUS::Ok;
-
+#ifdef AXP_DEBUG
+        qDebug() << QString("raw pointer: %1").arg(raw, 16, 16, QChar('0'));
+#endif
         if (phys)
         {
             // Physical mode: bypass TLB
@@ -1593,9 +1599,11 @@ public:
             AlphaPTE pte = {};
             auto     cm  = static_cast<Mode_Privilege>(m_iprGlobalMaster->h->getCM());
 
-            TranslationResult tResult = m_ev6Translator->ev6TranslateFullVA(
-                ea, AccessKind::WRITE, cm, pa, pte);
-
+  //       We should not perform a full PT walk - the DTB has not be initialized while in SRM boot
+  //          TranslationResult tResult = m_ev6Translator->ev6TranslateFullVA(
+  //              ea, AccessKind::WRITE, cm, pa, pte);
+             // invoke PAL mode fast-path.
+            TranslationResult tResult = m_ev6Translator->translateVA_Data(ea, m_iprGlobalMaster->h->getPC(), true, pa);
             if (tResult != TranslationResult::Success)
             {
                 DEBUG_LOG(QString("PalBox CPU %1: HW_ST virtual xlate failed EA=0x%2")

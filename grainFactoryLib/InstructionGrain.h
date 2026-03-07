@@ -38,13 +38,13 @@ enum GrainFlags : quint8 {
 
 struct InstructionGrain
 {
-    quint8 flags = GF_None;
+    quint8 m_flags = GF_None;
     quint8 latency = 1;
     quint8 throughput = 1;
     quint8 _pad = 0;
    // not used. -- use DecodedInstruction::rawBits()
     InstructionGrain(quint32 raw, quint8 f, quint8 lat, quint8 thr)
-        : flags(f), latency(lat), throughput(thr)
+        : m_flags(f), latency(lat), throughput(thr)
     {
     }
     virtual ~InstructionGrain() = default;
@@ -63,8 +63,11 @@ struct InstructionGrain
     virtual GrainPlatform platform() const noexcept { return GrainPlatform::Alpha; }
 
     AXP_HOT AXP_ALWAYS_INLINE bool hasFlag(GrainFlags f) const noexcept {
-        return (flags & static_cast<quint8>(f)) != 0;
+        return (m_flags & static_cast<quint8>(f)) != 0;
     }
+
+    AXP_HOT AXP_ALWAYS_INLINE quint8 flags() const noexcept { return m_flags; }
+
     AXP_HOT AXP_ALWAYS_INLINE bool eligibleForDualIssue() const noexcept {
         return hasFlag(GF_CanDualIssue);
     }

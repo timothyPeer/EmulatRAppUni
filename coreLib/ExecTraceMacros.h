@@ -19,7 +19,7 @@
 
 #pragma once
 
-#ifdef EXECTRACE_ENABLED
+#ifndef EXECTRACE_ENABLED
 
 // ============================================================================
 // Instruction Commit Macros

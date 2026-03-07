@@ -153,17 +153,17 @@ namespace alpha_alu
 	// SHIFT HELPERS: SLL, SRL, SRA (Alpha rules)
 	// Count uses low 6 bits of shift amount (0..63)
 	// ========================================================================
-	inline u64 sll(u64 v, u64 count) noexcept
+	AXP_HOT AXP_ALWAYS_INLINE u64 sll(u64 v, u64 count) noexcept
 	{
 		return v << (count & 0x3F);
 	}
 
-	inline u64 srl(u64 v, u64 count) noexcept
+	AXP_HOT AXP_ALWAYS_INLINE u64 srl(u64 v, u64 count) noexcept
 	{
 		return v >> (count & 0x3F);
 	}
 
-	inline u64 sra(u64 v, u64 count) noexcept
+	AXP_HOT AXP_ALWAYS_INLINE u64 sra(u64 v, u64 count) noexcept
 	{
 		return static_cast<u64>(static_cast<s64>(v) >> (count & 0x3F));
 	}

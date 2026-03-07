@@ -154,32 +154,23 @@ inline quint64 mskql(quint64 value, quint64 offset) noexcept
 // MSKWH: Mask word at high position
 inline quint64 mskwh(quint64 value, quint64 offset) noexcept
 {
-    const int bytePos = static_cast<int>(offset & 0x7);
-    if (bytePos == 0) return value;
-    const int shift = (8 - bytePos) * 8;
-    if (shift >= 64) return value;
-    const quint64 mask = ~(0xFFFFULL << shift);
-    return value & mask;
+    const int spillBytes = static_cast<int>(offset & 0x7) + 2 - 8; // bytePos - 6
+    if (spillBytes <= 0) return value;
+    return value & ~((1ULL << (spillBytes * 8)) - 1);
 }
 
-// MSKLH: Mask longword at high position
 inline quint64 msklh(quint64 value, quint64 offset) noexcept
 {
-    const int bytePos = static_cast<int>(offset & 0x7);
-    if (bytePos == 0) return value;
-    const int shift = (8 - bytePos) * 8;
-    if (shift >= 64) return value;
-    const quint64 mask = ~(0xFFFFFFFFULL << shift);
-    return value & mask;
+    const int spillBytes = static_cast<int>(offset & 0x7) + 4 - 8; // bytePos - 4
+    if (spillBytes <= 0) return value;
+    return value & ~((1ULL << (spillBytes * 8)) - 1);
 }
 
-// MSKQH: Mask quadword at high position
 inline quint64 mskqh(quint64 value, quint64 offset) noexcept
 {
-    const int bytePos = static_cast<int>(offset & 0x7);
-    if (bytePos == 0) return value;
-    const quint64 mask = (1ULL << ((8 - bytePos) * 8)) - 1;
-    return value & mask;
+    const int spillBytes = static_cast<int>(offset & 0x7); // bytePos + 8 - 8
+    if (spillBytes == 0) return value;
+    return value & ~((1ULL << (spillBytes * 8)) - 1);
 }
 
 // ============================================================================

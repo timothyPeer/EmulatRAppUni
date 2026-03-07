@@ -149,13 +149,42 @@ static AXP_HOT AXP_ALWAYS_INLINE bool hasSem(quint64 m, InstrSemantics s) noexce
     return (m & static_cast<quint64>(s)) != 0;
 }
 
-AXP_HOT AXP_ALWAYS_INLINE bool hasLiteralBit(quint32 raw) noexcept
+
+ /**
+  * @brief Check if the instruction has the literal (L) bit set.
+  *
+  * This function determines if an Alpha AXP operate-format instruction
+  * uses an 8-bit literal operand instead of the RB register.
+  *
+  * @param rawBits  The 32-bit raw instruction encoding.
+  * @return true if the instruction uses a literal operand (L-bit set), false otherwise.
+  *
+  * Example usage:
+  * @code
+  * if (hasLiteralBit(di.rawBits()))
+  *     ...
+  * @endcode
+  */
+AXP_HOT AXP_ALWAYS_INLINE
+bool hasLiteralBit(quint32 raw) noexcept
 {
-    // Alpha Operate-format literal bit is bit 12
     return ((raw >> 12) & 0x1U) != 0;
 }
 
-AXP_HOT AXP_ALWAYS_INLINE bool hasLiteralBit(const DecodedInstruction& di) noexcept
+/**
+ * @brief Overload: Check if the instruction has a literal bit using DecodedInstruction.
+ *
+ * @param di  The decoded instruction.
+ * @return true if the instruction uses a literal operand (L-bit set), false otherwise.
+ *
+ * Example usage:
+ * @code
+ * if (hasLiteralBit(di))
+ *     ...
+ * @endcode
+ */
+AXP_HOT AXP_ALWAYS_INLINE
+bool hasLiteralBit(const DecodedInstruction& di) noexcept
 {
     return hasLiteralBit(di.rawBits());
 }

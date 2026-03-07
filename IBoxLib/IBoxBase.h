@@ -224,7 +224,10 @@ public:
         , m_iprGlobalMaster(getCPUStateView(cpuId))
     {
         m_ev6Translator.reset(new Ev6Translator(cpuId));
+
+#ifdef AXP_DEBUG
         DEBUG_LOG(QString("CPU %1: IBox initialized").arg(m_cpuId));
+#endif
 
     }
 
@@ -294,10 +297,12 @@ public:
             PendingEvent ev = makeIllegalInstruction(TrapCode_Class::ILLEGAL_INSTRUCTION, pc);
             m_faultSink->setPendingEvent(ev);
 
+#ifdef AXP_DEBUG
             DEBUG_LOG(QString("CPU %1: Decode failed for PC=0x%2 instr=0x%3 - no grain found")
                 .arg(m_cpuId)
                 .arg(pc, 16, 16, QChar('0'))
                 .arg(getRaw(fr.di), 8, 16, QChar('0')));
+#endif
 
             return false;
         }
@@ -309,10 +314,12 @@ public:
             fr.isCallPal = true;
             fr.palFunction = getRaw(fr.di) & 0x7F;
 
+#ifdef AXP_DEBUG
             DEBUG_LOG(QString("CPU %1: CALL_PAL instruction PC=0x%2 function=0x%3")
                 .arg(m_cpuId)
                 .arg(pc, 16, 16, QChar('0'))
                 .arg(fr.palFunction, 2, 16, QChar('0')));
+#endif
         }
 
         // ================================================================
@@ -322,14 +329,13 @@ public:
 
         fr.valid = true;
 
+#ifdef AXP_DEBUG
         DEBUG_LOG(QString("CPU %1: Decode successful PC=0x%2 grain=%3 format=%4")
             .arg(m_cpuId)
             .arg(pc, 16, 16, QChar('0'))
             .arg(fr.di.grain ? "valid" : "null")
             .arg(getInstructionFormatName(getInstructionFormat(fr.di))));
-
-      
-
+#endif
 
         return true;
     }
@@ -366,7 +372,10 @@ public:
 
     void resetStats() noexcept {
         m_stats = {};
+
+#ifdef AXP_DEBUG
         DEBUG_LOG(QString("CPU %1: IBox statistics reset").arg(m_cpuId));
+#endif
     }
 
 private:
@@ -383,8 +392,10 @@ private:
             fr.pcKey = pcKey;
             fr.valid = true;
 
+#ifdef AXP_DEBUG
             DEBUG_LOG(QString("CPU %1: PC cache hit for 0x%2")
                 .arg(m_cpuId).arg(fr.di.pc, 16, 16, QChar('0')));
+#endif
             return true;
         }
 
@@ -596,17 +607,19 @@ private:
                 // PC CACHE HIT - Fast path!
                 fr.di = *cachedDI;  // Copy cached DI to FetchResult
                 fr.valid = true;
+#ifdef AXP_DEBUG
                 qDebug() << cachedDI->getMneumonic() << "*** cachedDI HIT  PC:  0x" << Qt::hex << cachedDI->pc;
                 TRACE_LOG(QString("PC cache HIT: PC=0x%1").arg(pc, 16, 16, QChar('0')));
+#endif
                 return true;
             }
-
+#ifdef AXP_DEBUG
             // PA mismatch - page was remapped, invalidate stale PC entry
             DEBUG_LOG(QString("PC cache STALE: PC=0x%1 (PA changed 0x%2 -> 0x%3)")
                 .arg(pc, 16, 16, QChar('0'))
                 .arg(cachedDI->physicalAddress(), 16, 16, QChar('0'))
                 .arg(pa, 16, 16, QChar('0')));
-
+#endif
             pcDecodeCache().invalidateEntry(pcKey);
         }
 
@@ -628,8 +641,10 @@ private:
             qDebug() << cachedDI->getMneumonic() << "*** Inserted into pcDecodeCache PC:  0x" << Qt::hex << cachedDI->pc;
             pcDecodeCache().insert(pcKey, fr.di);
            
+#ifdef AXP_DEBUG
             TRACE_LOG(QString("PA cache HIT: PA=0x%1 (promoted to PC cache)")
                 .arg(pa, 16, 16, QChar('0')));
+#endif
             return true;
         }
         // Record to trace BEFORE execution
@@ -645,6 +660,7 @@ private:
         quint32 rawBits = 0;
         const MEM_STATUS fetchStatus = m_guestMemory->readInst32(pa, rawBits);
 
+#ifdef AXP_DEBUG
         if (pc == 0x9000C8)
         {
             qDebug() << "HIT: FetchFromMemory at PC=0x9000C8";  // breakpoint here
@@ -653,7 +669,7 @@ private:
         qDebug() << QString("Fetched from PA 0x%1: 0x%2")
             .arg(pa, 16, 16, QChar('0'))
             .arg(rawBits, 8, 16, QChar('0'));
-
+#endif
 
         if (fetchStatus != MEM_STATUS::Ok) {
             // Memory fetch failed - bus error, access violation, etc.
@@ -665,12 +681,23 @@ private:
         }
 
         const quint8 opcode = (rawBits >> 26) & 0x3F;
+
+#ifdef AXP_DEBUG
+
         if (opcode == 0x19 || opcode == 0x1B || opcode == 0x1D ||
             opcode == 0x1E || opcode == 0x1F)
         {
             qDebug() << "PAL HW opcode:" << Qt::hex << opcode
                 << "func:" << ((rawBits >> 0) & 0xFFFF);
         }
+#endif
+#ifdef AXP_DEBUG
+        if (rawBits == 0x6c621000)
+        {
+            qDebug() << "we need to break here";
+        }
+#endif
+
         TRACE_LOG(QString("Fetched instruction: 0x%1 from PA=0x%2")
             .arg(rawBits, 8, 16, QChar('0'))
             .arg(pa, 16, 16, QChar('0')));
@@ -686,10 +713,12 @@ private:
             fr.fetchStatus = MEM_STATUS::IllegalInstruction;
 
             const quint8 opcode = (rawBits >> 26) & 0x3F;
+#ifdef AXP_DEBUG
             if (opcode == 26)
             {
                 qDebug() << " break here"; // JMP instruction
             }
+#endif
             const quint16 func = GrainResolver::extractFunctionCode(rawBits, opcode);
 
             
@@ -724,12 +753,13 @@ private:
         di.pc = pc & ~1ULL;         // instructions always see clean PC
         di.setPhysicalAddress(pa);
         di.setRawBits(rawBits);
-      
+
+#ifdef AXP_DEBUG
         TRACE_LOG(QString("Resolved grain: %1 (opcode=0x%2 func=0x%3)")
             .arg(grain->mnemonic())
             .arg(grain->opcode(), 2, 16, QChar('0'))
             .arg(grain->functionCode(), 4, 16, QChar('0')));
-
+#endif
         // ========================================================================
         // STEP 7: Decode Instruction Metadata
         // ========================================================================
@@ -770,15 +800,19 @@ private:
         // Guard: Only cache valid fetch results with valid keys
         // ================================================================
         if (!fr.valid) {
+#ifdef AXP_DEBUG
             DEBUG_LOG(QString("CPU %1: Skipping cache update - invalid fetch result at PC=0x%2")
                 .arg(m_cpuId).arg(fr.di.pc, 16, 16, QChar('0')));
+#endif
             return;
         }
 
         // Guard: Verify keys are valid (non-zero)
         if (!fr.paKey.isValid() || !fr.pcKey.isValid()) {
+#ifdef AXP_DEBUG
             DEBUG_LOG(QString("CPU %1: Skipping cache update - invalid keys at PC=0x%2")
                 .arg(m_cpuId).arg(fr.di.pc, 16, 16, QChar('0')));
+#endif
             return;
         }
 

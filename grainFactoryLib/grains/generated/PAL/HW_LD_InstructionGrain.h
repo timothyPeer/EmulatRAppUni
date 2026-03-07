@@ -1,8 +1,8 @@
 // ============================================================================
-// PAL1F_InstructionGrain.h - PAL1F Instruction Grain
+// HW_LD_InstructionGrain.h - HW_LD - Hardware Load
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -13,20 +13,21 @@
 // Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
 // ============================================================================
 //
-//  Instruction: PAL1F - PAL1F
+//  Instruction: HW_LD - Hardware Load
 //  Opcode: 0x1F, Function: 0x0000
 //  Execution Box: PalBox
-//  Format: GF_None
+//  Format: GF_PALFormat
 //  Latency: 1 cycles, Throughput: 1/cycle
 //
-//  Generated: 2026-02-18 12:45:23
+//  Generated: 2026-03-05 19:26:54
 //
 // ============================================================================
 
-#ifndef PAL1F_INSTRUCTIONGRAIN_H
-#define PAL1F_INSTRUCTIONGRAIN_H
+#ifndef HW_LD_INSTRUCTIONGRAIN_H
+#define HW_LD_INSTRUCTIONGRAIN_H
 
 #include "coreLib/Axp_Attributes_core.h"
+#include "coreLib/cpuTrace.h"
 #include "palBoxLib/PalBoxBase.h"
 #include "grainFactoryLib/InstructionGrain.h"
 #include "grainFactoryLib/InstructionGrainRegistry.h"
@@ -34,16 +35,16 @@
 #include "machineLib/PipeLineSlot.h"
 
 // ============================================================================
-// PAL1F Instruction Grain
+// HW_LD Instruction Grain
 // ============================================================================
 
-class PAL1F_InstructionGrain : public InstructionGrain
+class HW_LD_InstructionGrain : public InstructionGrain
 {
 public:
-    PAL1F_InstructionGrain()
+    HW_LD_InstructionGrain()
         : InstructionGrain(
             0,           // rawBits (updated per-fetch)
-            GF_None,     // flags
+            GF_PALFormat,     // flags
             1,   // latency (cycles)
             1 // throughput (instructions/cycle)
           )
@@ -57,12 +58,27 @@ public:
     // ========================================================================
     // Virtual Method Implementations
     // ========================================================================
-    
+
     AXP_HOT AXP_ALWAYS_INLINE
     void execute(PipelineSlot& slot) const noexcept override
     {
         // Delegate to execution box via slot member
-        slot.m_palBox->executePAL1F(slot);
+
+        slot.m_palBox->executeHW_LD(slot);
+#ifdef AXP_EXEC_TRACE
+        {
+            QString operands = slot.getOperandsString();
+            QString result   = slot.getResultString();
+            CpuTrace::instruction(
+                slot.cycle,
+                slot.di.pc,
+                slot.di.rawBits(),
+                "HW_LD",
+                operands,
+                result
+            );
+        }
+#endif // AXP_EXEC_TRACE
     }
 
     AXP_HOT AXP_ALWAYS_INLINE
@@ -80,7 +96,7 @@ public:
     // ========================================================================
     // Pure Virtual Accessor Implementations
     // ========================================================================
-    
+
     AXP_HOT AXP_ALWAYS_INLINE
     QString mnemonic() const noexcept override
     {
@@ -106,9 +122,9 @@ public:
     }
 
 private:
-    QString m_mnemonic;
-    quint8 m_opcode;
-    quint16 m_functionCode;
+    QString     m_mnemonic;
+    quint8      m_opcode;
+    quint16     m_functionCode;
     GrainPlatform m_platform;
 };
 
@@ -117,9 +133,9 @@ private:
 // ============================================================================
 
 namespace {
-    static GrainAutoRegistrar<PAL1F_InstructionGrain> s_pal1f_registrar(
+    static GrainAutoRegistrar<HW_LD_InstructionGrain> s_hw_ld_registrar(
         0x1F, 0x0000
     );
 }
 
-#endif // PAL1F_INSTRUCTIONGRAIN_H
+#endif // HW_LD_INSTRUCTIONGRAIN_H

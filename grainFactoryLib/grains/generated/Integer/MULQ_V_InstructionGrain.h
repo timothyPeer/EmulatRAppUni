@@ -1,8 +1,8 @@
 // ============================================================================
-// MULQ_V_InstructionGrain.h - MULQ_V Instruction Grain
+// MULQ_V_InstructionGrain.h - MULQ_V - MULQ_V
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -17,9 +17,9 @@
 //  Opcode: 0x13, Function: 0x0060
 //  Execution Box: EBox
 //  Format: GF_OperateFormat
-//  Latency: 1 cycles, Throughput: 1/cycle
+//  Latency: 7 cycles, Throughput: 1/cycle
 //
-//  Generated: 2026-02-18 12:45:23
+//  Generated: 2026-03-05 19:26:54
 //
 // ============================================================================
 
@@ -27,6 +27,7 @@
 #define MULQ_V_INSTRUCTIONGRAIN_H
 
 #include "coreLib/Axp_Attributes_core.h"
+#include "coreLib/cpuTrace.h"
 #include "EBoxLib/EBoxBase.h"
 #include "grainFactoryLib/InstructionGrain.h"
 #include "grainFactoryLib/InstructionGrainRegistry.h"
@@ -44,7 +45,7 @@ public:
         : InstructionGrain(
             0,           // rawBits (updated per-fetch)
             GF_OperateFormat,     // flags
-            1,   // latency (cycles)
+            7,   // latency (cycles)
             1 // throughput (instructions/cycle)
           )
         , m_mnemonic("MULQ_V")
@@ -57,12 +58,27 @@ public:
     // ========================================================================
     // Virtual Method Implementations
     // ========================================================================
-    
+
     AXP_HOT AXP_ALWAYS_INLINE
     void execute(PipelineSlot& slot) const noexcept override
     {
         // Delegate to execution box via slot member
+
         slot.m_eBox->executeMULQ_V(slot);
+#ifdef AXP_EXEC_TRACE
+        {
+            QString operands = slot.getOperandsString();
+            QString result   = slot.getResultString();
+            CpuTrace::instruction(
+                slot.cycle,
+                slot.di.pc,
+                slot.di.rawBits(),
+                "MULQ_V",
+                operands,
+                result
+            );
+        }
+#endif // AXP_EXEC_TRACE
     }
 
     AXP_HOT AXP_ALWAYS_INLINE
@@ -80,7 +96,7 @@ public:
     // ========================================================================
     // Pure Virtual Accessor Implementations
     // ========================================================================
-    
+
     AXP_HOT AXP_ALWAYS_INLINE
     QString mnemonic() const noexcept override
     {
@@ -106,9 +122,9 @@ public:
     }
 
 private:
-    QString m_mnemonic;
-    quint8 m_opcode;
-    quint16 m_functionCode;
+    QString     m_mnemonic;
+    quint8      m_opcode;
+    quint16     m_functionCode;
     GrainPlatform m_platform;
 };
 

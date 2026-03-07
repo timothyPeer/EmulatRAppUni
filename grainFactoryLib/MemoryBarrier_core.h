@@ -203,7 +203,7 @@ namespace Alpha {
          * Includes Qt logging and debug checks when QT_DEBUG is enabled
          */
         inline void debugBarrier(const char* location = nullptr) noexcept {
-#ifdef QT_DEBUG
+#ifndef QT_DEBUG
             if (location) {
                 qDebug("Alpha memory barrier at: %s", location);
             }
