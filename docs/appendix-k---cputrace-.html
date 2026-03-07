@@ -1,0 +1,948 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Appendix &gt; Appendix K - CpuTrace&nbsp;</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="arg,AXP_DEBUG,axpsnap,COMPONENT_NAME,console,cpu_trace.log,cpu_trace.lst,cpuTrace,CpuTrace,cycle,DEBUG,DEC,decOut,elapsedMs,elapsedTime,ERROR_LOG,event,EVT,flush,FLUSH_EVERY,getFpRegs,getTraceMask,GitHub,INFO_LOG,initialize,INS,instruction,lineCounter,listing,log,LoggingMacros,machineOut,milestone,mnemonic,mutex,operands,PIP,pipeline,progress,QDebug,QElapsedTimer,QFile,QMutex,QTextStream,rawInstr,REG,registerDeltas,result,sample,setTraceMask,shadowFpRegs,shadowIntRegs,startElapsedTime,timestamp,trace,TRACE_ALL,TRACE_EVENT,TRACE_FP,TRACE_INSTR,TRACE_INTEGER,TRACE_MEMORY,TRACE_NONE,TRACE_PAL,TRACE_PIPELINE,TRACE_TLB,TraceMask,WARN_LOG,writeDecLine,writeElapsedToMachineLine,writeMachineLine" />
+   <meta name="description" content="This appendix is the authoritative reference for the ASA-EMulatR trace and logging subsystems. The trace subsystem (CpuTrace) records every instruction executed by the emulated..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        min-height: 60px; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        background: #2C5D88;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 158px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "appendix-k---cputrace-.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix K – Instruction Trace and Console Logging</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:middle">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?appendix-k---cputrace-.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a>&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix K – Instruction Trace and Console Logging</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="appendix-j_---srm-snapshot-mac.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <span class="hmbtnnext"></span>
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">This appendix is the authoritative reference for the ASA-EMulatR trace and logging subsystems. The trace subsystem (<span class="f_CodeExample">CpuTrace</span>) records every instruction executed by the emulated Alpha AXP CPU to persistent log files in two complementary formats. The console logging subsystem (<span class="f_CodeExample">LoggingMacros</span>) records emulator-level diagnostic messages to the application console. Both subsystems are active across all phases of execution — from Phase 14 SRM decompression through normal SRM console firmware execution — and are the primary tools for post-mortem analysis, instruction-level debugging, and performance measurement.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.1 CpuTrace Architecture</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">CpuTrace</span> is a static singleton class providing thread-safe, dual-format instruction logging. It writes to two files simultaneously: a human-readable DEC-style listing (<span class="f_CodeExample">.lst</span>) and a machine-parsable structured log (<span class="f_CodeExample">.log</span>). Both files are written on every instruction — they are always synchronized. <span class="f_CodeExample">CpuTrace</span> is initialized once at emulator startup via <span class="f_CodeExample">CpuTrace::initialize()</span> and remains active for the lifetime of the process.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All public methods are static. There is no instance to create or manage. Thread safety is provided by a <span class="f_CodeExample">QMutex</span> held for the duration of each write operation. A static line counter triggers a flush every 4096 lines to reduce I/O pressure without sacrificing durability.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Key design decisions:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">No qDebug() in the trace path.</span> High-volume instruction trace lines are written directly to <span class="f_CodeExample">QTextStream</span> and never pass through <span class="f_CodeExample">qDebug()</span>. Routing trace through <span class="f_CodeExample">qDebug()</span> doubles every write — once to the installed message handler and once to the stream. At 5.7 million instructions per decompressor run, that overhead is measurable. The <span class="f_CodeExample">qInstallMessageHandler</span> path is reserved for emulator-level diagnostic messages only.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">AXP_DEBUG gate for grain-level trace.</span> Verbose per-grain execution logging (register values, intermediate computations) is wrapped in <span class="f_CodeExample">#ifdef AXP_DEBUG</span> blocks. When <span class="f_CodeExample">AXP_DEBUG</span> is not defined in CMakeLists.txt, these blocks compile out entirely. The outer <span class="f_CodeExample">CpuTrace::instruction()</span> call at the pipeline level always fires regardless of <span class="f_CodeExample">AXP_DEBUG</span> — it is not a debug-only path.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Inline static QElapsedTimer.</span> <span class="f_CodeExample">m_timer</span> is declared <span class="f_CodeExample">inline static</span> in the header (C++17). No <span class="f_CodeExample">.cpp</span> definition is required. This eliminates the LNK2001 link error that occurs when a static member is declared but not defined in a translation unit.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.2 Trace File Formats</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.2.1 DEC-Style Listing (.lst)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The <span class="f_CodeExample">.lst</span> file is a fixed-width human-readable listing in the style of DEC Alpha hardware debug tools. Each instruction occupies one line. The format is optimized for visual scanning — column alignment allows the eye to track PC progression, instruction encoding, and register results without parsing.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">File header (3 lines):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CPU&nbsp;TRACE&nbsp;LOG&nbsp;-&nbsp;DEC&nbsp;Style&nbsp;ListingGenerated:&nbsp;Fri&nbsp;Mar&nbsp;6&nbsp;19:00:07&nbsp;2026---------------------------------------------------------------</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Instruction line format:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SSSSSSSS&nbsp;PPPPPPPPPPPPPPPP&nbsp;RRRRRRRR&nbsp;MMMMMM&nbsp;OOOOOOOOOOOOOOOOOOOO&nbsp;RESULT</span></p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Field</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Width</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Format</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Description</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Sequence</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">8</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Decimal, zero-padded</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Monotonic instruction counter from emulator start</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">16</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Hex, zero-padded</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Physical address of instruction</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Raw bits</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">8</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Hex, zero-padded</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">32-bit instruction encoding</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Mnemonic</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">6 (left-justified)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ASCII</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Instruction name (e.g. ADDQ, HW_ST, BNE)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Operands</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">20 (left-justified)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ASCII</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Decoded operand string (e.g. R1, #0x08, R1)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Result</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Variable</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ASCII</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Register writeback or branch target (empty if none)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Representative excerpt — copy loop exit sequence (ES40 V6.2, 2026-03-06):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">05767318&nbsp;00000000009002b8&nbsp;40211521&nbsp;SUBQ&nbsp;R1,&nbsp;#0x08,&nbsp;R1&nbsp;R1&nbsp;=&nbsp;0x000000000000000005767319&nbsp;00000000009002bc&nbsp;7c601000&nbsp;HW_LD&nbsp;R3,&nbsp;0x000(R0)05767320&nbsp;00000000009002c0&nbsp;e8800003&nbsp;BLT&nbsp;R4,&nbsp;0x00000000009002d005767321&nbsp;00000000009002c4&nbsp;40011400&nbsp;ADDQ&nbsp;R0,&nbsp;#0x08,&nbsp;R0&nbsp;R0&nbsp;=&nbsp;0x000000000040000005767322&nbsp;00000000009002c8&nbsp;f43ffff8&nbsp;BNE&nbsp;R1,&nbsp;0x00000000009002ac05767323&nbsp;00000000009002cc&nbsp;6c1a1000&nbsp;HW_ST&nbsp;R0,&nbsp;0x000(R26)05767324&nbsp;00000000009002d0&nbsp;e8800003&nbsp;BLT&nbsp;R4,&nbsp;0x00000000009002e005767325&nbsp;00000000009002d4&nbsp;47e0041e&nbsp;BIS&nbsp;R31,&nbsp;R0,&nbsp;R30&nbsp;R30&nbsp;=&nbsp;0x000000000040000005767326&nbsp;00000000009002d8&nbsp;201a05c0&nbsp;LDA&nbsp;R0,&nbsp;5c0(R26)&nbsp;R0&nbsp;=&nbsp;0x00000000000005c005767327&nbsp;00000000009002dc&nbsp;6be04000&nbsp;JSR&nbsp;R31,&nbsp;(R0)&nbsp;-&gt;&nbsp;0x00000000000005c0</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The result field is absent for instructions with no register writeback (stores, unresolved branches, NOPs). Branch targets are shown as <span class="f_CodeExample">-&gt; 0x...</span> when the branch is taken. When a branch is not taken the result field is empty.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.2.2 Machine-Parsable Log (.log)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The <span class="f_CodeExample">.log</span> file is a structured key=value format suitable for automated parsing, grep, and scripted analysis. Each record type is identified by a leading tag.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">File header (2 lines):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;CPU&nbsp;TRACE&nbsp;LOG&nbsp;-&nbsp;Machine&nbsp;Parsable#&nbsp;Generated:&nbsp;Fri&nbsp;Mar&nbsp;6&nbsp;19:00:07&nbsp;2026</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Record types:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Tag</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Format</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Description</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">INS</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">cycle= pc= instr= mnem= ops=&quot;&quot; result=&quot;&quot;</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Instruction execution record</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">REG</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">cycle= rN=... fN=...</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Register delta (only changed registers)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">EVT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">cycle= type= pc=</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Architectural or system event</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PIP</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">cycle= stage= info=&quot;&quot;</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Pipeline stage diagnostic</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">#</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"># Elapsed hh:mm:ss.mmm</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Elapsed time banner (written at decompressor completion)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">INS record example:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">INS&nbsp;cycle=5767327&nbsp;pc=00000000009002dc&nbsp;instr=6be04000&nbsp;mnem=JSR&nbsp;ops=&quot;R31,&nbsp;(R0)&quot;&nbsp;result=&quot;-&gt;&nbsp;0x00000000000005c0&quot;</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">REG record example:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">REG&nbsp;cycle=5767325&nbsp;r30=0000000000400000</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Elapsed time banner example:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Elapsed&nbsp;00:16:39.224</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The <span class="f_CodeExample">cycle=</span> field in INS records is a decimal integer matching the sequence field in the <span class="f_CodeExample">.lst</span> file. Both files can be correlated line-for-line using the cycle number. The <span class="f_CodeExample">pc=</span> field is always 16 hex digits zero-padded. The <span class="f_CodeExample">instr=</span> field is always 8 hex digits zero-padded.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Known issue — QString::arg comma in result field.</span> When the result string contains a comma (e.g. a multi-register result), Qt emits a <span class="f_CodeExample">QString::arg: Argument missing</span> warning to the console. This is a cosmetic issue in the log formatting code and does not affect trace correctness. The INS record is still written correctly — only the Qt warning is spurious. This will be corrected in a future revision by concatenating the result field rather than passing it as a <span class="f_CodeExample">.arg()</span> parameter.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.3 Trace Mask Reference</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The trace mask is a 32-bit bitmask that controls which categories of trace records are written. It is set via <span class="f_CodeExample">CpuTrace::setTraceMask(uint32_t)</span> and read via <span class="f_CodeExample">CpuTrace::getTraceMask()</span>. The default mask at initialization is <span class="f_CodeExample">TRACE_ALL</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Constant</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Bit</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Value</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Controls</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_NONE</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">—</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">All trace output suppressed</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_INSTR</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000001</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">INS records — instruction execution (primary trace)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_INTEGER</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">1</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000002</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">EBox integer grain detail (gated by AXP_DEBUG)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_FP</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">2</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000004</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">FBox floating-point grain detail</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_MEMORY</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">3</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000008</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">MBox memory access detail (address, data)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_PAL</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">4</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000010</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PAL hardware instruction detail (HW_LD, HW_ST, HW_MFPR)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_TLB</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">5</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000020</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TLB miss, fill, and invalidation events</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_PIPELINE</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">6</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000040</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PIP records — pipeline stage transitions</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_EVENT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">7</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000080</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">EVT records — architectural events (flush, fault, stall)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">TRACE_ALL</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">—</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0xFFFFFFFF</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">All categories enabled (default)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Recommended masks for common scenarios:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Instruction&nbsp;trace&nbsp;only&nbsp;--&nbsp;minimum&nbsp;overheadCpuTrace::setTraceMask(CpuTrace::TRACE_INSTR);//&nbsp;Instruction&nbsp;+&nbsp;event&nbsp;--&nbsp;useful&nbsp;for&nbsp;fault/flush&nbsp;analysisCpuTrace::setTraceMask(CpuTrace::TRACE_INSTR&nbsp;|&nbsp;CpuTrace::TRACE_EVENT);//&nbsp;Full&nbsp;debug&nbsp;--&nbsp;all&nbsp;categories&nbsp;(default,&nbsp;maximum&nbsp;file&nbsp;size)CpuTrace::setTraceMask(CpuTrace::TRACE_ALL);//&nbsp;Suppress&nbsp;all&nbsp;trace&nbsp;--&nbsp;maximum&nbsp;throughputCpuTrace::setTraceMask(CpuTrace::TRACE_NONE);</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The trace mask can be changed at runtime without restarting the emulator. Calling <span class="f_CodeExample">setTraceMask(TRACE_NONE)</span> before the SRM decompressor run and <span class="f_CodeExample">setTraceMask(TRACE_ALL)</span> after Phase 14 completes significantly reduces decompressor run time in debug builds — the copy loop executes 524,288 iterations and trace I/O is the dominant overhead.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.4 Elapsed Time and Timing Fields</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.4.1 Elapsed Time Format</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">CpuTrace::elapsedTime()</span> returns a formatted string representing the wall-clock time elapsed since <span class="f_CodeExample">CpuTrace::startElapsedTime()</span> was called. The format is:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">hh:mm:ss.mmm</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">where <span class="f_CodeExample">hh</span> is zero-padded hours, <span class="f_CodeExample">mm</span> is zero-padded minutes, <span class="f_CodeExample">ss</span> is zero-padded seconds, and <span class="f_CodeExample">mmm</span> is zero-padded milliseconds. The format is fixed-width and suitable for log correlation and lexicographic sort.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Examples:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">00:00:00.031&nbsp;--&nbsp;31&nbsp;ms&nbsp;(copy&nbsp;loop&nbsp;entered)00:00:00.056&nbsp;--&nbsp;56&nbsp;ms&nbsp;(copy&nbsp;loop&nbsp;phase&nbsp;detection&nbsp;fired)00:16:39.224&nbsp;--&nbsp;16&nbsp;min&nbsp;39.224&nbsp;sec&nbsp;(decompression&nbsp;complete)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">API:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">//&nbsp;Start&nbsp;the&nbsp;elapsed&nbsp;timer&nbsp;(call&nbsp;at&nbsp;decompress()&nbsp;entry)CpuTrace::startElapsedTime();//&nbsp;Get&nbsp;formatted&nbsp;string&nbsp;for&nbsp;log&nbsp;outputQString&nbsp;t&nbsp;=&nbsp;CpuTrace::elapsedTime();&nbsp;//&nbsp;e.g.&nbsp;&quot;00:16:39.224&quot;//&nbsp;Get&nbsp;raw&nbsp;milliseconds&nbsp;for&nbsp;calculationsqint64&nbsp;ms&nbsp;=&nbsp;CpuTrace::elapsedMs();//&nbsp;Write&nbsp;&quot;#&nbsp;Elapsed&nbsp;hh:mm:ss.mmm&quot;&nbsp;banner&nbsp;to&nbsp;machine&nbsp;log&nbsp;+&nbsp;flushCpuTrace::writeElapsedToMachineLine();</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.4.2 Phase Milestone Timing</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The decompressor emits four phase milestone log lines, each prefixed with the elapsed time in <span class="f_CodeExample">hh:mm:ss.mmm</span> format. These are written via <span class="f_CodeExample">INFO_LOG</span> and appear in the console log only — they are not written to the trace files.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Milestone</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Trigger</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Typical Time (debug)</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Message</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Start</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">decompress() entry</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:00:00.000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[T+00:00:00.000] Decompressor started -- PC=0x900001, limit=200000000 steps</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Copy loop enter</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC == kCopyLoopPC (0x9002AC)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:00:00.031</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[T+00:00:00.031] Copy loop entered -- step 158</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Copy loop exit</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC == kCopyExitPC (0x9002CC)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:00:00.056</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[T+00:00:00.056] Copy loop complete -- 8 steps in 25.0 ms</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Done</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt; donePC (0x200000)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:16:39.224</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[T+00:16:39.224] Decompression complete</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Note on copy loop step count:</span> The copy loop exit milestone currently reports 8 steps due to a fetch-vs-commit PC detection issue. The actual copy loop executes 524,288 quadword iterations. See Appendix J, Section J.3.3 for full explanation. The timing fields (<span class="f_CodeExample">copyLoopMs</span>) are correct regardless of the step count inaccuracy.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.5 Console Log Format</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.5.1 Log Levels</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The console logging subsystem uses four levels, implemented as macros in <span class="f_CodeExample">coreLib/LoggingMacros.h</span>. Each macro prepends a level tag and the component name to the message string.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Macro</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Level</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Qt Channel</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Use</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">INFO_LOG(msg)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">INFO</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">qInfo()</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Normal operational messages, phase milestones, load progress</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">WARN_LOG(msg)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">WARN</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">qWarning()</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Non-fatal anomalies -- snapshot hash mismatch, ROM warnings</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ERROR_LOG(msg)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ERROR</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">qCritical()</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Fatal errors -- file not found, validation failure, missing callbacks</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">DEBUG_LOG(msg)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">DEBUG</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">qDebug()</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Developer diagnostic detail -- compiled out in Release builds</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.5.2 Console Line Format</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Each console log line follows this format:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">[LEVEL]&nbsp;[YYYY-MM-DD&nbsp;hh:mm:ss.ffffff]&nbsp;[LEVEL&nbsp;]&nbsp;[ComponentName]&nbsp;Message</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Example lines:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">[DEBUG]&nbsp;[2026-03-06&nbsp;19:00:08.864295]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;===&nbsp;SRM&nbsp;Decompression&nbsp;starting&nbsp;===[DEBUG]&nbsp;[2026-03-06&nbsp;19:00:08.864295]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;ROM&nbsp;payload&nbsp;:&nbsp;2799616&nbsp;bytes[DEBUG]&nbsp;[2026-03-06&nbsp;19:00:08.864295]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;Mirror&nbsp;PA&nbsp;:&nbsp;0x0[DEBUG]&nbsp;[2026-03-06&nbsp;19:00:08.864295]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;Load&nbsp;PA&nbsp;:&nbsp;0x900000[DEBUG]&nbsp;[2026-03-06&nbsp;19:00:08.896067]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;[T+00:00:00.031]&nbsp;Copy&nbsp;loop&nbsp;entered&nbsp;--&nbsp;step&nbsp;158[DEBUG]&nbsp;[2026-03-06&nbsp;19:20:11.302307]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;Decompression:&nbsp;100%[DEBUG]&nbsp;[2026-03-06&nbsp;19:20:11.525940]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;[T+00:16:39.224]&nbsp;Decompression&nbsp;complete[DEBUG]&nbsp;[2026-03-06&nbsp;19:20:11.704657]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;Final&nbsp;PC&nbsp;:&nbsp;0x5c0[DEBUG]&nbsp;[2026-03-06&nbsp;19:20:12.097118]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;PAL_BASE&nbsp;:&nbsp;0x900000[DEBUG]&nbsp;[2026-03-06&nbsp;19:20:12.366973]&nbsp;[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;Total&nbsp;steps&nbsp;:&nbsp;5767331</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The leading <span class="f_CodeExample">[DEBUG]</span> prefix is emitted by the Qt message handler installed at startup — it reflects the Qt message type routing through <span class="f_CodeExample">qInstallMessageHandler</span>. The second <span class="f_CodeExample">[INFO ]</span> / <span class="f_CodeExample">[WARN ]</span> tag is the application-level severity from the logging macro. The <span class="f_CodeExample">COMPONENT_NAME</span> define in each <span class="f_CodeExample">.cpp</span> file controls the component tag (e.g. <span class="f_CodeExample">#define COMPONENT_NAME &quot;SrmRomLoader&quot;</span>).</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.5.3 Progress Reporting</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The decompressor emits progress percentage messages through the <span class="f_CodeExample">ProgressFn</span> callback. The call site in <span class="f_CodeExample">Emulatr_Init.cpp</span> logs every 10% increment:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;Decompression:&nbsp;30%&nbsp;(at&nbsp;~4&nbsp;min&nbsp;32&nbsp;sec)[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;Decompression:&nbsp;60%&nbsp;(at&nbsp;~9&nbsp;min&nbsp;08&nbsp;sec)[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;Decompression:&nbsp;90%&nbsp;(at&nbsp;~13&nbsp;min&nbsp;38&nbsp;sec)[INFO&nbsp;]&nbsp;[SrmRomLoader]&nbsp;Decompression:&nbsp;100%&nbsp;(at&nbsp;~20&nbsp;min&nbsp;11&nbsp;sec)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Progress is emitted between batch boundaries (every 1,800,000 steps). Because the copy loop and decompressor engine run within a single batch, the 10%/20% early progress points may not fire if the batch boundary is not reached. The 30% first emission seen in the verified run reflects this — the first batch boundary after the copy loop completes is already at approximately 30% of total work.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.6 Phase Milestone Reference</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The following table is the complete reference for all phase milestone messages emitted during Phase 14 SRM firmware load. Timestamps are from the verified ES40 V6.2 decompressor run on 2026-03-06 in a debug build with full trace I/O enabled.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Wall Clock</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Elapsed</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Message</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:00:08.864</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:00:00.000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[T+00:00:00.000] Decompressor started -- PC=0x900001, limit=200000000 steps</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:00:08.896</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:00:00.031</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[T+00:00:00.031] Copy loop entered -- step 158</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:00:08.920</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:00:00.056</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[T+00:00:00.056] Copy loop complete -- 8 steps in 25.0 ms (*)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:04:40.775</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:04:32.000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Decompression: 30%</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:09:08.164</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:09:00.000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Decompression: 60%</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:13:38.220</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:13:30.000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Decompression: 90%</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:20:11.302</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:20:03.000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Decompression: 100%</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:20:11.526</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00:16:39.224</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">[T+00:16:39.224] Decompression complete</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:20:11.705</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Final PC : 0x5c0</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:20:12.097</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PAL_BASE : 0x900000</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:20:12.367</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Total steps : 5767331</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:20:12.552</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Init steps : 158</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">19:20:12.752</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><br />
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Post steps : 5767165</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">(*) Copy loop step count inaccuracy — see <a href="appendix-j_---srm-snapshot-mac.html" class="topiclink">Appendix J - SRM Snapshot Machinery (SRM-D)</a> Section J.3.3.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.7 Interpreting Decompressor Trace Output</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.7.1 Trace File Sizes and Storage</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A complete decompressor run at <span class="f_CodeExample">TRACE_ALL</span> produces large trace files. The ES40 V6.2 verified run on 2026-03-06 produced:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">File</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Lines</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Uncompressed Size</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Trace Output/tracescpu_trace.lst</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">4,194,401</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">323 MB</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Trace Output/tracescpu_trace.log</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">~5,767,331</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">~15 MB (estimated)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">These files are stored in the project git repository. They are available as compressed ZIP. </p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">A curated sample covering the copy loop exit and boot handoff sequence is included in the repository at:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">docs/traces/sample_decompressor_exit.lst</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">K.7.2 Navigating a Large Trace</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The recommended tool for searching large trace files on Windows is <span class="f_CodeExample">ripgrep</span> (<span class="f_CodeExample">rg</span>). Install via:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">winget&nbsp;install&nbsp;BurntSushi.ripgrep.MSVC</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Useful search patterns:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">#&nbsp;Find&nbsp;all&nbsp;executions&nbsp;of&nbsp;a&nbsp;specific&nbsp;PCrg&nbsp;&quot;009002dc&quot;&nbsp;tracescpu_trace.lst#&nbsp;Find&nbsp;all&nbsp;branch-taken&nbsp;instructionsrg&nbsp;&quot;\-\&gt;&nbsp;0x&quot;&nbsp;tracescpu_trace.lst#&nbsp;Find&nbsp;all&nbsp;HW_ST&nbsp;instructionsrg&nbsp;&quot;HW_ST&quot;&nbsp;tracescpu_trace.lst#&nbsp;Find&nbsp;last&nbsp;N&nbsp;lines&nbsp;(loop&nbsp;exit&nbsp;region)rg&nbsp;&quot;&quot;&nbsp;tracescpu_trace.lst&nbsp;|&nbsp;tail&nbsp;-20#&nbsp;Find&nbsp;R1&nbsp;reaching&nbsp;zerorg&nbsp;&quot;R1&nbsp;=&nbsp;0x0000000000000000&quot;&nbsp;tracescpu_trace.lst#&nbsp;Count&nbsp;total&nbsp;instructionsrg&nbsp;-c&nbsp;&quot;^[0-9]&quot;&nbsp;tracescpu_trace.lst</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-weight: bold;">Key sequence numbers for the ES40 V6.2 verified run:</span></p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Sequence</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">PC</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-weight: bold;">Significance</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00000000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x900000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Decompressor entry -- first instruction</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00000003</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x90000C</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BSR to 0x900060 -- CPU probe begins</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">00000158</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x9002AC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Copy loop entry -- first HW_ST</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">05767318</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x9002B8</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">R1 reaches zero -- copy loop exhausted</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">05767322</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x9002C8</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BNE falls through -- copy loop exits</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">05767323</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x9002CC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Final HW_ST -- last quadword stored to PA 0x0</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">05767326</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x9002D8</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">LDA loads boot entry R0 = 0x5C0</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">05767327</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x9002DC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">JSR R31,(R0) -- boot handoff to 0x5C0</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="appendix-j_---srm-snapshot-mac.html" class="topiclink">Appendix J - SRM Snapshot Machinery (SRM-D)</a> (decompressor phase timing, copy loop exit sequence); <a href="appendixg-instructiongrainmechanics.html" class="topiclink">Appendix G - Instruction Grain Mechanics</a> (grain execution and AXP_DEBUG trace injection); coreLib/cpuTrace.h; coreLib/cpuTrace.cpp; coreLib/LoggingMacros.h; docs/traces/sample_decompressor_exit.lst; github.com/timothypeer/ASA-EMulatR/releases (full trace archive).</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
+
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
+  $(document).ready(function(){
+    $(window).on('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
+      }
+	normHeaders();
+    });
+    
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
+	 $(window).resize(); //trigger event for initially small displays
+  });
+ 
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?appendix-k---cputrace-.html" target="_top">'+baseurl+'index.html?appendix-k---cputrace-.html</a></p>');
+
+</script>
+</body>
+</html>
