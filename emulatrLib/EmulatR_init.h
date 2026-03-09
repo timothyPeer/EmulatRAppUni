@@ -58,88 +58,121 @@
 #include "memoryLib/GuestMemory.h"
 #include "memoryLib/SrmRomLoader.h"
 
+#include <QCoreApplication>
+#include <QFileInfo>
+#include "coreLib/global_RegisterMaster_hot.h"
+#include <memoryLib/GuestPhysicalRegionRegistry.h>
+
 // Forward decarations
 class SafeMemory;
 struct PlatformAddressMap;
 class IRQController;
 
+
+// ============================================================================
+// Symbolic IPR IDs for snapshot serialisation
+// Must match between saveSnapshot (getIPRs) and loadSnapshot (setIPRs).
+// Using a private enum local to this translation unit -- no header required.
+// ============================================================================
+
+namespace SnapIPR {
+    // PalIPR scalar fields
+    constexpr quint32 vptb = 0x01;
+    constexpr quint32 pal_base = 0x02;
+    constexpr quint32 scbb = 0x03;
+    constexpr quint32 pcbb = 0x04;
+    constexpr quint32 prbr = 0x05;
+    constexpr quint32 virbnd = 0x06;
+    constexpr quint32 sysptbr = 0x07;
+    constexpr quint32 mces = 0x08;
+    constexpr quint32 i_ctl = 0x09;
+    constexpr quint32 m_ctl = 0x0A;
+    constexpr quint32 dc_ctl = 0x0B;
+    constexpr quint32 va_ctl = 0x0C;
+    constexpr quint32 exc_sum = 0x0D;
+    constexpr quint32 exc_mask = 0x0E;
+    constexpr quint32 mm_stat = 0x0F;
+    // pal_temp[32] mapped as 0x100 + N
+    constexpr quint32 pal_temp_base = 0x100;
+}
+
 class InitializationVerifier {
 public:
-	enum class InitStatus { NotInitialized, Initializing, Initialized, Failed };
+    enum class InitStatus { NotInitialized, Initializing, Initialized, Failed };
 
-	[[nodiscard]] explicit InitializationVerifier()
-	{
-	}
+    [[nodiscard]] explicit InitializationVerifier()
+    {
+    }
 
-	static bool markInitializing(const QString& subsystem) noexcept {
-		QMutexLocker lock(&s_mutex);
-		if (s_status.contains(subsystem) && s_status[subsystem] != InitStatus::NotInitialized) {
-			CRITICAL_LOG(QString("INITIALIZATION VIOLATION: %1 already initialized/initializing").arg(subsystem));
-			return false;
-		}
-		s_status[subsystem] = InitStatus::Initializing;
-		DEBUG_LOG(QString("Initializing: %1").arg(subsystem));
-		return true;
-	}
+    static bool markInitializing(const QString& subsystem) noexcept {
+        QMutexLocker lock(&s_mutex);
+        if (s_status.contains(subsystem) && s_status[subsystem] != InitStatus::NotInitialized) {
+            CRITICAL_LOG(QString("INITIALIZATION VIOLATION: %1 already initialized/initializing").arg(subsystem));
+            return false;
+        }
+        s_status[subsystem] = InitStatus::Initializing;
+        DEBUG_LOG(QString("Initializing: %1").arg(subsystem));
+        return true;
+    }
 
-	static void markInitialized(const QString& subsystem) noexcept {
-		QMutexLocker lock(&s_mutex);
-		s_status[subsystem] = InitStatus::Initialized;
-		s_initOrder.append(subsystem);
-		INFO_LOG(QString("Initialized: %1 (order: %2)").arg(subsystem).arg(s_initOrder.size()));
-	}
+    static void markInitialized(const QString& subsystem) noexcept {
+        QMutexLocker lock(&s_mutex);
+        s_status[subsystem] = InitStatus::Initialized;
+        s_initOrder.append(subsystem);
+        INFO_LOG(QString("Initialized: %1 (order: %2)").arg(subsystem).arg(s_initOrder.size()));
+    }
 
-	static void markFailed(const QString& subsystem) noexcept {
-		QMutexLocker lock(&s_mutex);
-		s_status[subsystem] = InitStatus::Failed;
-		ERROR_LOG(QString("FAILED: %1").arg(subsystem));
-	}
+    static void markFailed(const QString& subsystem) noexcept {
+        QMutexLocker lock(&s_mutex);
+        s_status[subsystem] = InitStatus::Failed;
+        ERROR_LOG(QString("FAILED: %1").arg(subsystem));
+    }
 
-	static bool isInitialized(const QString& subsystem) noexcept {
-		QMutexLocker lock(&s_mutex);
-		return s_status.value(subsystem) == InitStatus::Initialized;
-	}
+    static bool isInitialized(const QString& subsystem) noexcept {
+        QMutexLocker lock(&s_mutex);
+        return s_status.value(subsystem) == InitStatus::Initialized;
+    }
 
-	static QString getInitializationReport() noexcept {
-		QMutexLocker lock(&s_mutex);
-		QString report = "=== INITIALIZATION REPORT ===\n";
-		report += QString("Total subsystems: %1\n").arg(s_status.size());
+    static QString getInitializationReport() noexcept {
+        QMutexLocker lock(&s_mutex);
+        QString report = "=== INITIALIZATION REPORT ===\n";
+        report += QString("Total subsystems: %1\n").arg(s_status.size());
 
-		int initialized = 0;
-		for (auto it = s_status.begin(); it != s_status.end(); ++it) {
-			QString status;
-			switch (it.value()) {
-			case InitStatus::NotInitialized: status = "NOT_INIT"; break;
-			case InitStatus::Initializing: status = "PENDING"; break;
-			case InitStatus::Initialized: status = "OK"; initialized++; break;
-			case InitStatus::Failed: status = "FAILED"; break;
-			}
-			report += QString("  %-25s: %1\n").arg(it.key()).arg(status);
-		}
+        int initialized = 0;
+        for (auto it = s_status.begin(); it != s_status.end(); ++it) {
+            QString status;
+            switch (it.value()) {
+            case InitStatus::NotInitialized: status = "NOT_INIT"; break;
+            case InitStatus::Initializing: status = "PENDING"; break;
+            case InitStatus::Initialized: status = "OK"; initialized++; break;
+            case InitStatus::Failed: status = "FAILED"; break;
+            }
+            report += QString("  %-25s: %1\n").arg(it.key()).arg(status);
+        }
 
-		report += QString("\nInitialization Order:\n");
-		for (int i = 0; i < s_initOrder.size(); ++i) {
-			report += QString("  %1. %2\n").arg(i + 1, 2).arg(s_initOrder[i]);
-		}
+        report += QString("\nInitialization Order:\n");
+        for (int i = 0; i < s_initOrder.size(); ++i) {
+            report += QString("  %1. %2\n").arg(i + 1, 2).arg(s_initOrder[i]);
+        }
 
-		report += QString("\nSummary: %1/%2 subsystems initialized\n").arg(initialized).arg(s_status.size());
-		return report;
-	}
+        report += QString("\nSummary: %1/%2 subsystems initialized\n").arg(initialized).arg(s_status.size());
+        return report;
+    }
 
-	static void reset() noexcept {
-		QMutexLocker lock(&s_mutex);
-		s_status.clear();
-		s_initOrder.clear();
-	}
+    static void reset() noexcept {
+        QMutexLocker lock(&s_mutex);
+        s_status.clear();
+        s_initOrder.clear();
+    }
 
 private:
-	inline static QMap<QString, InitStatus> s_status;
-	inline static QStringList s_initOrder;
-	inline static QMutex s_mutex;
+    inline static QMap<QString, InitStatus> s_status;
+    inline static QStringList s_initOrder;
+    inline static QMutex s_mutex;
 
 
     // private helpers. 
-        
+
 
 };
 class ConsoleManager;
@@ -159,12 +192,14 @@ class ReservationManager;
 class EmulatR_init final {
 
     ConsoleManager* m_consoleManager;  // 
-	SrmRomLoader             m_srmRomLoader;
+    SrmRomLoader             m_srmRomLoader;
+    SrmLoaderConfig         srmCfg;                 // the SRM Config Struct
+    GuestPhysicalRegionRegistry m_regionRegistry;           // Region Registry -- owns the full registry
 
-	/*	friend EmulatR_init& global_EmulatR_init() noexcept;*/
+    /*	friend EmulatR_init& global_EmulatR_init() noexcept;*/
 public:
 
-	~EmulatR_init();
+    ~EmulatR_init();
     EmulatR_init(SubsystemCoordinator* coordinator);
 
     // ========================================================================
@@ -177,7 +212,7 @@ public:
     // INITIALIZATION API
     // ========================================================================
     AXP_HOT AXP_FLATTEN auto initializePhase8_5_PalHandlers() -> bool;
-	bool                     initialize();
+    bool                     initialize();
     /**
      * @brief Phase 1: System initialization.
      *
@@ -186,18 +221,18 @@ public:
      * @param configPath Path to configuration directory
      * @return true if successful, false on error
      */
- 
+
     AXP_HOT AXP_FLATTEN bool initializeSystem() noexcept;
 
-	/**
+    /**
      * @brief Clean shutdown of all subsystems.
      */
-	AXP_HOT AXP_FLATTEN void shutdown()  noexcept;
-	AXP_HOT AXP_FLATTEN void shutdownConsoles();
-    
+    AXP_HOT AXP_FLATTEN void shutdown()  noexcept;
+    AXP_HOT AXP_FLATTEN void shutdownConsoles();
 
 
-	// ========================================================================
+
+    // ========================================================================
     // ACCESSORS (for wiring to global_*() functions)
     // ========================================================================
 
@@ -234,25 +269,24 @@ private:
     AXP_HOT AXP_FLATTEN bool initializePhase0_Bootstrap();
     AXP_HOT AXP_FLATTEN bool initializePhase1_Logging();
     AXP_HOT AXP_FLATTEN bool initializePhase1_2_ExecTrace();
-	bool                     initializePhase9_5_InstructionSet();
+    bool                     initializePhase9_5_InstructionSet();
     /*   AXP_HOT AXP_FLATTEN bool validateConfiguration() noexcept;*/
     AXP_HOT AXP_FLATTEN bool initializePhase2_Configuration();
     AXP_HOT AXP_FLATTEN bool initializePhase3_PlatformIdentity();
-    AXP_HOT AXP_FLATTEN bool initializePhase4_MemorySystem() ;           // SRM Support 20260113
+    AXP_HOT AXP_FLATTEN bool initializePhase4_MemorySystem();           // SRM Support 20260113
     AXP_HOT AXP_FLATTEN bool initializePhase5_5_TLBSystem() const;
     AXP_HOT AXP_FLATTEN bool initializePhase6_ReservationSystem() const;
     AXP_HOT AXP_FLATTEN bool initializePhase7_ExceptionInfrastructure() const;
     AXP_HOT AXP_FLATTEN bool initializePhase7_5_DeviceTree();
     AXP_HOT AXP_FLATTEN bool initializePhase8_PALInfrastructure() const;
-	bool                     initializePhase8_5_CallPalHandlers();
-	AXP_HOT AXP_FLATTEN bool initializePhase9_InstructionSystem();
+    AXP_HOT AXP_FLATTEN bool initializePhase9_InstructionSystem();
     AXP_HOT AXP_FLATTEN bool initializePhase10_DeviceInfrastructure();
     AXP_HOT AXP_FLATTEN bool initializePhase5_FirmwareLoading();
     AXP_HOT AXP_FLATTEN bool initializePhase11_CoordinationLayer();
-	AXP_HOT AXP_FLATTEN bool initializePhase13_InitializeConsole();
-	AXP_HOT AXP_FLATTEN bool initializePhase13_ConsoleEnvironment() const;
+    AXP_HOT AXP_FLATTEN bool initializePhase13_InitializeConsole();
+    AXP_HOT AXP_FLATTEN bool initializePhase13_ConsoleEnvironment() const;
     AXP_HOT AXP_FLATTEN bool initializePhase14_CPUBringUp();
-	AXP_HOT AXP_FLATTEN bool initializePhase15_FinalVerification();
+    AXP_HOT AXP_FLATTEN bool initializePhase15_FinalVerification();
 
     AXP_HOT AXP_FLATTEN bool validateConfiguration() noexcept;
     AXP_HOT AXP_FLATTEN void dumpMemoryMap();
@@ -260,19 +294,19 @@ private:
     // ========================================================================
     // SINGLETON ENFORCEMENT
     // ========================================================================
-	
+
     Q_DISABLE_COPY(EmulatR_init)
 
 
-    // ========================================================================
-    // VALIDATION
-    // ========================================================================
+        // ========================================================================
+        // VALIDATION
+        // ========================================================================
 
-    // ========================================================================
-    // STATE
-    // ========================================================================
+        // ========================================================================
+        // STATE
+        // ========================================================================
 
-    EmulatorPaths m_emulatorPaths;                           // 20260113
+        EmulatorPaths m_emulatorPaths;                           // 20260113
     EmulatorConfig m_emulatorConfig;
     quint16  m_cpuCount{ 1 };
     quint64  m_memorySizeGB{ 4 };
@@ -281,19 +315,19 @@ private:
     QString m_currentPhase;
 
 private:
-	// Helper method that MUST be called inside function scope
-	bool beginInitialization(const QString& subsystemName);
+    // Helper method that MUST be called inside function scope
+    bool beginInitialization(const QString& subsystemName);
 
-	void markSuccess();
+    void markSuccess();
 
-	void markFailure();
+    void markFailure();
 
-    EmulatorSettingsInline m_configSettings; 
+    EmulatorSettingsInline m_configSettings;
     SubsystemCoordinator* m_coordinator;
 
 
 
-	
+
 
 };
 

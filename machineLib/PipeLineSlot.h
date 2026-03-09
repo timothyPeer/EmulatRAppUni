@@ -341,12 +341,12 @@ struct  PipelineSlot
 		// Branch format: Ra, target
 		if (flags & GF_BranchFormat)
 		{
-			// JSR/JMP/RET — Ra, (Rb)
+			// JSR/JMP/RET -- Ra, (Rb)
 			if (grain->opcode() == 0x1A)
 			{
 				return QString("R%1, (R%2)").arg(ra).arg(rb);
 			}
-			// BSR/BR write link — show target
+			// BSR/BR write link -- show target
 			return QString("R%1, 0x%2")
 				.arg(ra)
 				.arg(branchTarget, 16, 16, QChar('0'));
@@ -378,7 +378,7 @@ struct  PipelineSlot
 			return QString("R%1, R%2, R%3").arg(ra).arg(rb).arg(rc);
 		}
 
-		// Fallback — raw hex
+		// Fallback -- raw hex
 		return QString("0x%1").arg(raw, 8, 16, QChar('0'));
 	}
 
@@ -398,7 +398,7 @@ struct  PipelineSlot
 		if (branchTaken)
 			return QString("-> 0x%1").arg(branchTarget, 16, 16, QChar('0'));
 
-		// No writeback — store, barrier, or branch not taken
+		// No writeback -- store, barrier, or branch not taken
 		if (!needsWriteback)
 			return QString();
 
@@ -411,7 +411,7 @@ struct  PipelineSlot
 				.arg(payLoad, 16, 16, QChar('0'));
 		}
 
-		// Integer writeback — destination is rc for operate, ra for load/branch
+		// Integer writeback -- destination is rc for operate, ra for load/branch
 		const quint8 flags = grain ? grain->flags() : 0;
 		quint8 dest = 0;
 
@@ -429,7 +429,7 @@ struct  PipelineSlot
 
 #else // AXP_EXEC_TRACE
 
-	// Release build stubs — return empty strings, optimised away
+	// Release build stubs -- return empty strings, optimised away
 	AXP_HOT AXP_ALWAYS_INLINE
 		QString getOperandsString() const noexcept { return {}; }
 
@@ -498,7 +498,7 @@ struct  PipelineSlot
 		instructionWord = static_cast<quint32>(-1);
 		palDecoded = decoded_Pal{};
 		execUnit = ExecUnit::None;
-		// cpuId — intentionally NOT cleared (per-CPU constant)
+		// cpuId -- intentionally NOT cleared (per-CPU constant)
 		faultEvent = PendingEvent{};
 		stage = PipelineStage::Empty;
 		valid = false;
@@ -537,7 +537,7 @@ struct  PipelineSlot
 		serializeType = SerializationType::Barrier_MB;
 		payLoad = 0;
 		ra_value = 0;
-		// slotSequence — intentionally NOT cleared (monotonic)
+		// slotSequence -- intentionally NOT cleared (monotonic)
 		registerIndex = RegisterBankInteger::NONE;
 		memResultValid = false;
 		flushPipeline = false;
@@ -550,9 +550,9 @@ struct  PipelineSlot
 		branchTestValue = 0;
 		mispredict = false;
 		pcReason = static_cast<PCReason>(0xFF);
-		// Box pointers (m_eBox, m_fBox, etc.) — intentionally NOT cleared
-		// m_faultDispatcher — intentionally NOT cleared (per-CPU constant)
-		// m_iprGlobalMaster — intentionally NOT cleared (per-CPU constant)
+		// Box pointers (m_eBox, m_fBox, etc.) -- intentionally NOT cleared
+		// m_faultDispatcher -- intentionally NOT cleared (per-CPU constant)
+		// m_iprGlobalMaster -- intentionally NOT cleared (per-CPU constant)
 	}
 
 	// Context accessors

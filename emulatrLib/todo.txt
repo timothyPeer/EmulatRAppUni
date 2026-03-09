@@ -1,0 +1,17 @@
+// Read and log HWRPB header from PA 0x2000
+quint64 hwrpbPA = 0x2000;
+quint64 sysType = 0, sysVar = 0, sysRev = 0;
+quint64 nProc = 0, memOffset = 0, ctbOffset = 0;
+guestMem.read64(hwrpbPA + 0x18, sysType);
+guestMem.read64(hwrpbPA + 0x20, sysVar);
+guestMem.read64(hwrpbPA + 0x28, sysRev);
+guestMem.read64(hwrpbPA + 0xA0, nProc);
+guestMem.read64(hwrpbPA + 0xB0, memOffset);
+guestMem.read64(hwrpbPA + 0xC0, ctbOffset);
+INFO_LOG(QString("HWRPB post-decompress:"));
+INFO_LOG(QString("  sys_type   : 0x%1").arg(sysType,  0, 16));
+INFO_LOG(QString("  sys_var    : 0x%1").arg(sysVar,   0, 16));
+INFO_LOG(QString("  sys_rev    : 0x%1").arg(sysRev,   0, 16));
+INFO_LOG(QString("  nproc      : %1").arg(nProc));
+INFO_LOG(QString("  mem_offset : 0x%1").arg(memOffset, 0, 16));
+INFO_LOG(QString("  ctb_offset : 0x%1").arg(ctbOffset, 0, 16));

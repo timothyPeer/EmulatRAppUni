@@ -2,6 +2,42 @@
   "version": 3,
   "configurePresets": [
     {
+      "name": "msvc-debug",
+      "displayName": "MSVC 2022 x64 Debug",
+      "generator": "Visual Studio 17 2022",
+      "architecture": {
+        "value": "x64",
+        "strategy": "set"
+      },
+      "toolset": {
+        "value": "host=x64",
+        "strategy": "set"
+      },
+      "binaryDir": "${sourceDir}/out/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_PREFIX_PATH": "D:/Qt/6.9.3/msvc2022_64"
+      }
+    },
+    {
+      "name": "msvc-release",
+      "displayName": "MSVC 2022 x64 Release",
+      "generator": "Visual Studio 17 2022",
+      "architecture": {
+        "value": "x64",
+        "strategy": "set"
+      },
+      "toolset": {
+        "value": "host=x64",
+        "strategy": "set"
+      },
+      "binaryDir": "${sourceDir}/out/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_PREFIX_PATH": "D:/Qt/6.9.3/msvc2022_64"
+      }
+    },
+    {
       "hidden": true,
       "name": "Qt",
       "cacheVariables": {
@@ -14,9 +50,21 @@
       }
     }
   ],
+  "buildPresets": [
+    {
+      "name": "msvc-debug",
+      "configurePreset": "msvc-debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "msvc-release",
+      "configurePreset": "msvc-release",
+      "configuration": "Release"
+    }
+  ],
   "vendor": {
     "qt-project.org/Presets": {
-      "checksum": "67SmY24ZeVbebyKD0fGfIzb/bGI="
+      "checksum": "6xA9KiA/Mve7Atvnwz+R4x2uopo="
     }
   }
 }

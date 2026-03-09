@@ -21,14 +21,16 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_PREFIX_PATH "D:/Qt/6.9.3/msvc2022_64/")
+#set(CMAKE_PREFIX_PATH "D:/Qt/6.9.3/msvc2022_64/")
+#set(CMAKE_PREFIX_PATH "D:/Qt/6.9.3/msvc2022_64/" CACHE PATH "Qt6 installation path" FORCE)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Network Concurrent)
 
+
 if(MINGW)
     add_compile_options(-Wa,-mbig-obj)
+    message(STATUS "MinGW detected -- applying -Wa,-mbig-obj")
 endif()
-
 # ============================================================================
 # Preprocessor Definitions
 # ============================================================================
@@ -1050,6 +1052,11 @@ set(PROJECT_HEADERS
 add_executable(${PROJECT_NAME}
     ${PROJECT_SOURCES}
     ${PROJECT_HEADERS}
+    memoryLib/GuestPhysicalRegionRegistry.cpp
+    memoryLib/GuestPhysicalRegionRegistry.h
+    memoryLib/GuestPhysicalRegion.h
+    MarkDown/GuestPhysicalRegionRegistry_Spec.md
+    memoryLib/GuestPhysicalRegion.h memoryLib/GuestPhysicalRegionRegistry.cpp memoryLib/GuestPhysicalRegionRegistry.h
 )
 
 # ============================================================================
@@ -1108,10 +1115,10 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 # ============================================================================
 # Deploy Firmware Files (glob pattern match)
-#   - Copy all firmware/*_64.exe into <target>/bin/firmware
+#   - Copy all firmware/*_V6_2.exe into <target>/bin/firmware
 # ============================================================================
 file(GLOB CONFIGURE_DEPENDS FIRMWARE_64_FILES
-    "${PROJECT_SOURCE_DIR}/firmware/*_64.exe"
+    "${PROJECT_SOURCE_DIR}/firmware/*_V6_2.exe"
 )
 
 if(FIRMWARE_64_FILES)
@@ -1121,10 +1128,10 @@ if(FIRMWARE_64_FILES)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${FIRMWARE_64_FILES}
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>/bin/firmware/"
-        COMMENT "Deploying firmware images (*_64.exe) to bin/firmware"
+        COMMENT "Deploying firmware images (*_V6_2.exe) to bin/firmware"
     )
 else()
-    message(WARNING "No firmware files matching *_64.exe found in firmware/")
+    message(WARNING "No firmware files matching *_V6_2.exe found in firmware/")
 endif()
 
 # ============================================================================

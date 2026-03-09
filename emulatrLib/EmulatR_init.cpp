@@ -51,6 +51,7 @@
 #include "grainFactoryLib/GrainArchitectureDump.h"
 #include "grainFactoryLib/iGrain-DualCache_singleton.h"
 #include "memoryLib/SrmRomLoader.h"
+#include "memoryLib/GuestPhysicalRegionRegistry.h"
 // Include all grain headers
 
 // ============================================================================
@@ -485,6 +486,8 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase2_Configuration()
 	m_memorySizeBytes = static_cast<quint64>(m_memorySizeGB) * GB;
 	m_sysType = config.podData.system.sysType;
 
+
+
 	// ========================================================================
 	// Log configuration summary
 	// ========================================================================
@@ -513,6 +516,30 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase2_Configuration()
 	return true;
 }
 
+// ============================================================================
+// resolveSnapshotPath -- derive .axpsnap path from ROM file name
+// ============================================================================
+// Path: <bindir>/snapshot/<romBaseName>.axpsnap
+// If no ROM file (embedded), uses "embedded.axpsnap".
+// Staleness is handled internally by loadSnapshot() via romHash + checksum.
+// ============================================================================
+
+static QString resolveSnapshotPath(const QString& romFilePath)
+{
+	const QString binDir = QCoreApplication::applicationDirPath();
+	const QDir    snapDir(binDir + "/snapshot");
+
+	if (!snapDir.exists())
+		QDir(binDir).mkpath("snapshot");
+
+	const QString stem = romFilePath.isEmpty()
+		? QStringLiteral("embedded")
+		: QFileInfo(romFilePath).baseName();
+
+	return snapDir.filePath(stem + ".axpsnap");
+}
+
+
 AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase3_PlatformIdentity() {
 	InitPhaseLogger phase("Platform Identity");
 
@@ -535,7 +562,7 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase3_PlatformIdentity() {
 // No SRMFirmwareRegion -- firmware goes into SafeMemory via SrmRomLoader.
 // ============================================================================
 
-AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase4_MemorySystem() 
+AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase4_MemorySystem()
 {
 	InitPhaseLogger phase("Memory Subsystem");
 
@@ -628,6 +655,25 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase4_MemorySystem()
 	}
 
 	phase.logDetail("PA routing verification passed");
+
+	// ========================================================================
+	// 6. Register memory regions in GuestPhysicalRegionRegistry
+	//    Firmware/DecompressedFW/PALcode/HWRPB entries are added in Phase 5
+	//    after the ROM descriptor is populated.
+	// ========================================================================
+
+	//const quint64 ramBase  = config.podData.memoryMap.ramBase;
+	const quint64 ramSize = m_memorySizeBytes;
+	const quint64 mmioBase = config.podData.memoryMap.mmioBase;
+	const quint64 mmioSize = config.podData.memoryMap.mmioSize;
+	const quint64 pciBase = config.podData.memoryMap.pciMemBase;
+	const quint64 pciSize = config.podData.memoryMap.pciMemSize;
+
+	m_regionRegistry.addRam(ramBase, ramSize);
+	m_regionRegistry.addMmio(mmioBase, mmioSize, "MMIO device registers");
+	m_regionRegistry.addPci(pciBase, pciSize, "PCI BAR space");
+
+	phase.logDetail("GuestPhysicalRegionRegistry: RAM/MMIO/PCI entries registered");
 
 	return true;
 }
@@ -748,8 +794,8 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase8_PALInfrastructure() cons
 	return true;
 }
 
-	AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase8_5_PalHandlers()
-	{
+AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase8_5_PalHandlers()
+{
 	InitPhaseLogger phase("PAL Handler Infrastructure");
 
 	// ====================================================================
@@ -789,70 +835,70 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase8_PALInfrastructure() cons
 	return true;
 }
 
-	// ReSharper disable once CppMemberFunctionMayBeStatic
-	AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase9_InstructionSystem()
-	{
-		InitPhaseLogger phase("Instruction Decode System");
+// ReSharper disable once CppMemberFunctionMayBeStatic
+AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase9_InstructionSystem()
+{
+	InitPhaseLogger phase("Instruction Decode System");
 
-		// ====================================================================
-		// 1. Configure GrainResolver
-		// ====================================================================
-		INFO_LOG("Configuring GrainResolver...");
-		GrainResolver& grainResolver = global_GrainResolver();
-		grainResolver.setPlatform(GrainPlatform::Alpha);
-		phase.logDetail("GrainResolver configured for OpenVMS");
-		phase.logConfig("Platform", "VMS");
+	// ====================================================================
+	// 1. Configure GrainResolver
+	// ====================================================================
+	INFO_LOG("Configuring GrainResolver...");
+	GrainResolver& grainResolver = global_GrainResolver();
+	grainResolver.setPlatform(GrainPlatform::Alpha);
+	phase.logDetail("GrainResolver configured for OpenVMS");
+	phase.logConfig("Platform", "VMS");
 
-	
-	
 
-		// ====================================================================
-		// 3. Verify Grain Registry
-		// ====================================================================
-		auto& registry = InstructionGrainRegistry::instance();
-		int grainCount = registry.grainCount();
 
-		if (grainCount == 0) {
-			ERROR_LOG("CRITICAL: No grains registered!");
-			return false;
-		}
 
-		INFO_LOG(QString("Grain registry: %1 grains registered").arg(grainCount));
-		phase.logConfig("Total Grains", QString::number(grainCount));
+	// ====================================================================
+	// 3. Verify Grain Registry
+	// ====================================================================
+	auto& registry = InstructionGrainRegistry::instance();
+	int grainCount = registry.grainCount();
 
-		// ====================================================================
-		// 4. Test Grain Lookup (CALL_PAL HALT)
-		// ====================================================================
-		quint32 testInstruction = 0x00000000; // CALL_PAL 0x00
-		quint8 opcode = (testInstruction >> 26) & 0x3F;
-		quint16 function = testInstruction & 0x3FFFFFF;
-
-		const InstructionGrain* grain = registry.lookup(opcode, function);
-		if (!grain) {
-			ERROR_LOG("CRITICAL: CALL_PAL grain lookup failed!");
-			return false;
-		}
-
-		if (grain->opcode() != 0x00) {
-			ERROR_LOG(QString("CRITICAL: Wrong grain - expected 0x00, got 0x%1")
-				.arg(grain->opcode(), 2, 16, QChar('0')));
-			return false;
-		}
-
-		INFO_LOG(QString("-- Grain lookup test passed: %1").arg(grain->mnemonic()));
-		phase.logDetail("Grain lookup verification: PASSED");
-
-		// ====================================================================
-		// 5. Initialize Decode Caches
-		// ====================================================================
-		INFO_LOG("Initializing decode caches...");
-		auto& pcCache = pcDecodeCache();
-		auto& paCache = paDecodeCache();
-		phase.logDetail("PC and PA decode caches initialized");
-
-		InitializationVerifier::markInitialized("InstructionSystem");
-		return true;
+	if (grainCount == 0) {
+		ERROR_LOG("CRITICAL: No grains registered!");
+		return false;
 	}
+
+	INFO_LOG(QString("Grain registry: %1 grains registered").arg(grainCount));
+	phase.logConfig("Total Grains", QString::number(grainCount));
+
+	// ====================================================================
+	// 4. Test Grain Lookup (CALL_PAL HALT)
+	// ====================================================================
+	quint32 testInstruction = 0x00000000; // CALL_PAL 0x00
+	quint8 opcode = (testInstruction >> 26) & 0x3F;
+	quint16 function = testInstruction & 0x3FFFFFF;
+
+	const InstructionGrain* grain = registry.lookup(opcode, function);
+	if (!grain) {
+		ERROR_LOG("CRITICAL: CALL_PAL grain lookup failed!");
+		return false;
+	}
+
+	if (grain->opcode() != 0x00) {
+		ERROR_LOG(QString("CRITICAL: Wrong grain - expected 0x00, got 0x%1")
+			.arg(grain->opcode(), 2, 16, QChar('0')));
+		return false;
+	}
+
+	INFO_LOG(QString("-- Grain lookup test passed: %1").arg(grain->mnemonic()));
+	phase.logDetail("Grain lookup verification: PASSED");
+
+	// ====================================================================
+	// 5. Initialize Decode Caches
+	// ====================================================================
+	INFO_LOG("Initializing decode caches...");
+	auto& pcCache = pcDecodeCache();
+	auto& paCache = paDecodeCache();
+	phase.logDetail("PC and PA decode caches initialized");
+
+	InitializationVerifier::markInitialized("InstructionSystem");
+	return true;
+}
 
 // ReSharper disable once CppMemberFunctionMayBeStatic
 AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase10_DeviceInfrastructure() {
@@ -892,19 +938,24 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase5_FirmwareLoading()
 	// Load SRM ROM image (prepare only -- decompression is Phase 14b)
 	// ========================================================================
 
+	// Populate srmCfg here so loadPA is available for descriptor analysis
+	// and registry seeding. Phase 14b re-reads the same values (idempotent).
+	{
+		const QSettings qset(m_configSettings.getConfigFilePath(), QSettings::IniFormat);
+		srmCfg = SrmLoaderConfig::fromSettings(qset);
+	}
+
 	// Check for explicit file path first
-	QString srmRomFile = config.podData.rom.srmRomFile;
+	QString srmRomFile = config.podData.rom.srmRomFilename;
 
 	if (!srmRomFile.isEmpty()) {
 		// File path specified -- load from disk
 		phase.logDetail(QString("Loading SRM ROM from file: %1").arg(srmRomFile));
 
-		if (!m_srmRomLoader.loadFromFile(srmRomFile)) {
+		if (!m_srmRomLoader.loadFromFile(srmRomFile, srmCfg.loadPA)) {
 			ERROR_LOG(QString("Failed to load SRM ROM: %1").arg(srmRomFile));
 			return false;
 		}
-		
-
 
 		phase.logConfig("ROM Source", srmRomFile);
 	}
@@ -912,14 +963,28 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase5_FirmwareLoading()
 		// Use embedded ROM
 		phase.logDetail("Using embedded ES45 V6.2 SRM ROM");
 
-
-		if (!m_srmRomLoader.useEmbedded()) {
+		if (!m_srmRomLoader.useEmbedded(srmCfg.loadPA)) {
 			ERROR_LOG("Failed to load embedded SRM ROM");
 			return false;
 		}
 
 		phase.logConfig("ROM Source", "Embedded ES45 V6.2");
 	}
+
+	// Seed region registry from descriptor (Firmware + DecompressedFW + PALcode + HWRPB)
+	m_regionRegistry.seedFromDescriptor(
+		m_srmRomLoader.descriptor(),
+		srmCfg.loadPA);
+
+	// Validation gate -- confirm no PA overlaps before proceeding
+	{
+		QString regError;
+		if (!m_regionRegistry.validate(&regError)) {
+			ERROR_LOG("PA region overlap in firmware regions -- halting: " + regError);
+			return false;
+		}
+	}
+	m_regionRegistry.logAll();
 
 	phase.logConfig("ROM Size", QString("%1 KB").arg(m_srmRomLoader.romSize() / 1024));
 	phase.logConfig("Header Skip", QString("0x%1").arg(m_srmRomLoader.headerSkip(), 0, 16));
@@ -932,7 +997,7 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase5_FirmwareLoading()
 	// but we prepare a minimal one for early PAL code)
 	// ========================================================================
 
-	
+
 
 	InitializationVerifier::markInitialized("Firmware");
 	EventLog::flush();
@@ -1067,20 +1132,33 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase13_ConsoleEnvironment() co
 }
 
 
-
-
 // ============================================================================
-// PHASE 14: CPU Bring-Up and SRM Decompression
+// PHASE 14: CPU Bring-Up and SRM Firmware Load
 //
 // Three-stage boot:
 //   14a: Create CPU0 (object exists, thread NOT started)
-//   14b: Decompress SRM firmware using CPU0.runOneInstruction()
-//        -- Synchronous, runs on initialization thread
-//        -- Exercises full pipeline: IBox, decode, cache, execute, retire
-//        -- ~50-100M instructions: ALU, branch, HW_LD, HW_ST, HW_MFPR,
-//           HW_MTPR, HW_REI, CALL_PAL (CSERVE, WRFEN, SWPCTX, LDQP)
-//        -- On completion: PC=0x8001, PAL_BASE=0x600000
-//        -- Firmware resident at PA 0x0 (2 MB)
+//   14b: Load SRM firmware -- bifurcated path:
+//
+//        SNAPSHOT PATH (SrmSnapshot=true, .axpsnap exists and is valid):
+//          loadSnapshot() restores guest memory + full CPU state directly.
+//          No instruction execution. Completes in <1 second.
+//          Snapshot: <bindir>/snapshot/ES40_V6_2.axpsnap
+//          On stale/invalid snapshot: auto-deletes, falls through to decompress.
+//
+//        DECOMPRESS PATH (no snapshot, or snapshot rejected):
+//          decompress() runs the self-decompressing Alpha PALcode binary.
+//          Synchronous, runs on initialization thread via singleStep lambda.
+//          Exercises full pipeline: IBox, decode, cache, execute, retire.
+//          ~5.7M instructions: ALU, branch, HW_LD, HW_ST, HW_MFPR,
+//          HW_MTPR, HW_REI, CALL_PAL (CSERVE, WRFEN, SWPCTX, LDQP)
+//          ~16 min debug build / ~30 sec release build (full trace I/O).
+//          On completion: saves .axpsnap if SrmSnapshot=true.
+//
+//        Both paths deliver identical CPU state on exit:
+//          PC       = 0x5C0  (boot handoff, PAL mode)
+//          PAL_BASE = 0x900000
+//          Firmware resident at PA 0x0 (4 MB)
+//
 //   14c: Start CPU0 execution thread (boot SRM console)
 //
 // ============================================================================
@@ -1091,9 +1169,9 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 
 	INFO_LOG("=== PHASE 14: CPU Bring-Up and SRM Decompression ===");
 
-	// ====================================================================
+	// ========================================================================
 	// 14a: Create CPU0
-	// ====================================================================
+	// ========================================================================
 
 	INFO_LOG("--- Phase 14a: Creating CPU instances ---");
 
@@ -1109,23 +1187,13 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 
 	cpu0->reset();
 	cpu0->setIPL(31);
-
 	INFO_LOG("CPU0 created and reset (thread not started)");
 
-	// ====================================================================
-	// 14b: Decompress SRM firmware
-	//
-	// The ROM image contains a self-decompressing Alpha PALcode binary.
-	// We copy it into guest RAM at PA 0x900000, point CPU0 at it, and
-	// single-step through the full pipeline until decompression completes
-	// (PC drops below 0x200000).
-	//
-	// This is the first real exercise of the entire instruction pipeline.
-	// ====================================================================
+	// ========================================================================
+	// 14b: SRM Firmware -- snapshot or decompress
+	// ========================================================================
 
-	INFO_LOG("--- Phase 14b: SRM Firmware Decompression ---");
-	const QString settings = m_configSettings.getConfigFilePath();
-	SrmLoaderConfig srmCfg = SrmLoaderConfig::fromSettings(QSettings(m_configSettings.getConfigFilePath()));
+	INFO_LOG("--- Phase 14b: SRM Firmware Load ---");
 
 	if (!m_srmRomLoader.isLoaded()) {
 		ERROR_LOG("SRM ROM not loaded -- Phase 5 failed?");
@@ -1133,82 +1201,296 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 		return false;
 	}
 
-	INFO_LOG(QString("Phase 14: SRM load PA=0x%1  startPC=0x%2  mirrorPA=0x%3")
-		.arg(srmCfg.loadPA, 0, 16)
-		.arg(srmCfg.startPC, 0, 16)
-		.arg(srmCfg.mirrorPA, 0, 16));
+	// Read configuration (srmCfg already populated in Phase 5 -- re-read for snapshot flag only)
+	const QSettings qset(m_configSettings.getConfigFilePath(), QSettings::IniFormat);
+	const bool snapshotEnabled = qset.value("ROM/SrmSnapshot", false).toBool();
 
+	auto& config = global_EmulatorSettings();
 	auto& guestMem = global_GuestMemory();
 
-	SrmRomLoadResult result = m_srmRomLoader.decompress(
-		srmCfg,                                         // new first argument
-		// writeToPhysical
-		[&guestMem](quint64 pa, const quint8* data, size_t len) {
-			guestMem.writePA(pa, data, static_cast<qsizetype>(len));
-		},
-		// singleStep
-		[cpu0]() -> quint64 {
-			cpu0->runOneInstruction();
-			return cpu0->getPC();
-		},
-		// setPC
-		[cpu0](quint64 pc) {
-			cpu0->setPC(pc);
-		},
-		// setPalBase
-		[cpu0](quint64 pb) {
-			cpu0->setPAL_BASE(pb);
-		},
-		// getPalBase
-		[cpu0]() -> quint64 {
-			return cpu0->getPAL_BASE();
-		},
-		// progress
-		[](int percent) {
-			if (percent % 10 == 0)
-				INFO_LOG(QString("  Decompression: %1%%").arg(percent));
-		}
-	);
+	const auto& desc = m_srmRomLoader.descriptor();
+	INFO_LOG(QString("Phase 14: loadPA=0x%1  startPC=0x%2  palBase=0x%3  donePC=0x%4  source=%5")
+		.arg(srmCfg.loadPA, 0, 16)
+		.arg(desc.startPC(srmCfg.loadPA), 0, 16)
+		.arg(desc.palBase, 0, 16)
+		.arg(desc.donePC(), 0, 16)
+		.arg(desc.sourceDescription));
 
-	quint64 checkWord;
-	guestMem.read64(0x0, checkWord);  // or wherever your reset address is
+	INFO_LOG(QString("Phase 14: SrmSnapshot=%1").arg(snapshotEnabled ? "true" : "false"));
+
+	// ----------------------------------------------------------------
+	// Shared lambdas (used by both snapshot and decompress paths)
+	// ----------------------------------------------------------------
+
+	// Memory write -- guest PA <- host data
+	auto writeToPhysical = [&guestMem](quint64 pa, const quint8* data, size_t len) {
+		guestMem.writePA(pa, data, static_cast<qsizetype>(len));
+		};
+
+	// Memory read -- host buffer <- guest PA  (snapshot save only)
+	auto readFromPhysical = [&guestMem](quint64 pa, quint8* buf, size_t len) {
+		guestMem.readPA(pa, buf, static_cast<qsizetype>(len));
+		};
+
+	// Single-step CPU0 and return current PC
+	auto singleStep = [cpu0]() -> quint64 {
+		cpu0->runOneInstruction();
+		return cpu0->getPC();
+		};
+
+	// PC and PAL_BASE setters/getters
+	auto setPC = [cpu0](quint64 pc) { cpu0->setPC(pc); };
+	auto setPalBase = [cpu0](quint64 pb) { cpu0->setPAL_BASE(pb); };
+	SrmRomLoader::GetU64Fn getPalBase = [cpu0]() -> quint64 {
+		return cpu0->getPAL_BASE();
+		};
+
+	// Progress reporter
+	SrmRomLoader::ProgressFn progress = [](int percent) {
+		if (percent % 10 == 0)
+			INFO_LOG(QString("  Decompression: %1%").arg(percent));
+		};
+
+	// Integer registers -- capture/restore 32 x quint64
+	// r[31] is architecturally zero but we save/restore all 32 for symmetry
+	auto getIntRegs = [](quint64 regs[32]) {
+		const auto& src = globalCPUState().intRegs(static_cast<CPUIdType>(0));
+		std::memcpy(regs, src.r, 32 * sizeof(quint64));
+		};
+	auto setIntRegs = [](const quint64 regs[32]) {
+		auto& dst = globalCPUState().intRegs(static_cast<CPUIdType>(0));
+		std::memcpy(dst.r, regs, 32 * sizeof(quint64));
+		dst.r[31] = 0;  // R31 is hardwired zero -- enforce after memcpy
+		};
+
+	// Floating-point registers -- f[0..30] packed in regs[0..30], fpcr in regs[31]
+	auto getFpRegs = [](quint64 regs[32]) {
+		const auto& src = globalCPUState().floatRegs(static_cast<CPUIdType>(0));
+		std::memcpy(regs, src.f, 31 * sizeof(quint64));
+		regs[31] = src.fpcr;
+		};
+	auto setFpRegs = [](const quint64 regs[32]) {
+		auto& dst = globalCPUState().floatRegs(static_cast<CPUIdType>(0));
+		std::memcpy(dst.f, regs, 31 * sizeof(quint64));
+		dst.fpcr = regs[31];
+		};
+
+
+
+	// IPR capture -- named PalIPR fields + pal_temp[32]
+	// NB: pal_base is also in SrmRomLoadResult.finalPalBase (set via setPalBase),
+	//     but we save it here too for completeness.
+	auto getIPRs = []() -> std::vector<SrmRomLoader::IprPair> {
+		std::vector<SrmRomLoader::IprPair> v;
+		v.reserve(16 + 32);
+		const auto& x = globalCPUState().palIPR(static_cast<CPUIdType>(0));
+		v.push_back({ SnapIPR::vptb,     x.vptb });
+		v.push_back({ SnapIPR::pal_base, x.pal_base });
+		v.push_back({ SnapIPR::scbb,     x.scbb });
+		v.push_back({ SnapIPR::pcbb,     x.pcbb });
+		v.push_back({ SnapIPR::prbr,     x.prbr });
+		v.push_back({ SnapIPR::virbnd,   x.virbnd });
+		v.push_back({ SnapIPR::sysptbr,  x.sysptbr });
+		v.push_back({ SnapIPR::mces,     x.mces });
+		v.push_back({ SnapIPR::i_ctl,    x.i_ctl });
+		v.push_back({ SnapIPR::m_ctl,    x.m_ctl });
+		v.push_back({ SnapIPR::dc_ctl,   x.dc_ctl });
+		v.push_back({ SnapIPR::va_ctl,   x.va_ctl });
+		v.push_back({ SnapIPR::exc_sum,  x.exc_sum });
+		v.push_back({ SnapIPR::exc_mask, x.exc_mask });
+		v.push_back({ SnapIPR::mm_stat,  x.mm_stat });
+		for (int n = 0; n < 32; ++n)
+			v.push_back({ static_cast<quint32>(SnapIPR::pal_temp_base + n), x.pal_temp[n] });
+		return v;
+		};
+
+	// IPR restore -- symmetric with getIPRs above
+	auto setIPRs = [](const std::vector<SrmRomLoader::IprPair>& pairs) {
+		auto& x = globalCPUState().palIPR(static_cast<CPUIdType>(0));
+		for (const auto& [id, val] : pairs) {
+			switch (id) {
+			case SnapIPR::vptb:     x.vptb = val; break;
+			case SnapIPR::pal_base: x.pal_base = val; break;
+			case SnapIPR::scbb:     x.scbb = val; break;
+			case SnapIPR::pcbb:     x.pcbb = val; break;
+			case SnapIPR::prbr:     x.prbr = val; break;
+			case SnapIPR::virbnd:   x.virbnd = val; break;
+			case SnapIPR::sysptbr:  x.sysptbr = val; break;
+			case SnapIPR::mces:     x.mces = val; break;
+			case SnapIPR::i_ctl:    x.i_ctl = val; break;
+			case SnapIPR::m_ctl:    x.m_ctl = val; break;
+			case SnapIPR::dc_ctl:   x.dc_ctl = val; break;
+			case SnapIPR::va_ctl:   x.va_ctl = val; break;
+			case SnapIPR::exc_sum:  x.exc_sum = val; break;
+			case SnapIPR::exc_mask: x.exc_mask = val; break;
+			case SnapIPR::mm_stat:  x.mm_stat = val; break;
+			default:
+				if (id >= SnapIPR::pal_temp_base &&
+					id < SnapIPR::pal_temp_base + 32)
+					x.pal_temp[id - SnapIPR::pal_temp_base] = val;
+				break;
+			}
+		}
+		};
+
+
+	// ----------------------------------------------------------------
+	// Snapshot path
+	// ----------------------------------------------------------------
+
+	const QString snapshotPath = resolveSnapshotPath(config.podData.rom.srmRomFilename);
+
+	// ----------------------------------------------------------------
+	// Bifurcated boot path
+	// ----------------------------------------------------------------
+
+	SrmRomLoadResult result;
+	bool usedSnapshot = false;
+
+	if (snapshotEnabled && QFile::exists(snapshotPath)) {
+		INFO_LOG(QString("Phase 14b: snapshot found -- attempting load from '%1'").arg(snapshotPath));
+
+		result = m_srmRomLoader.loadSnapshot(
+			snapshotPath,
+			writeToPhysical,
+			setPC,
+			setPalBase,
+			setIntRegs,
+			setFpRegs,
+			setIPRs
+		);
+
+		if (result.success) {
+			usedSnapshot = true;
+			INFO_LOG(QString("Phase 14b: snapshot loaded in %1 ms  (PC=0x%2  PAL_BASE=0x%3)")
+				.arg(result.elapsedMs, 0, 'f', 1)
+				.arg(result.cleanPC(), 8, 16, QChar('0'))
+				.arg(result.palBase(), 8, 16, QChar('0')));
+		}
+		else {
+			WARN_LOG(QString("Phase 14b: snapshot rejected -- %1").arg(result.errorMessage));
+			WARN_LOG("Phase 14b: deleting stale snapshot and falling back to decompress");
+			QFile::remove(snapshotPath);
+		}
+	}
+
+
+	if (!usedSnapshot) {
+		INFO_LOG("Phase 14b: running SRM decompressor...");
+
+		result = m_srmRomLoader.decompress(
+			srmCfg,           // 1  SrmLoaderConfig
+			writeToPhysical,  // 2  WritePhysicalFn
+			singleStep,       // 3  SingleStepFn
+			setPC,            // 4  SetU64Fn  -- sets PC
+			setPalBase,       // 5  SetU64Fn  -- sets PAL_BASE
+			getPalBase,       // 6  GetU64Fn  -- reads PAL_BASE
+			progress          // 7  ProgressFn
+		);
+
+
+#ifdef AXP_EXEC_TRACE
+		// HWRPB signature validation
+		quint64 hwrpbSig = 0;
+		quint64 hwrpbPhysBase = 0;
+		guestMem.read64(0x2000, hwrpbSig);
+		guestMem.read64(0x2008, hwrpbPhysBase);
+		qDebug() << QString("  signature  : 0x%1  (%2)")
+			.arg(hwrpbSig, 16, 16, QChar('0'))
+			.arg(hwrpbSig == 0x0000000042707248ULL ? "VALID (HrpB)" : "UNEXPECTED");
+		qDebug() << QString("  phys_base  : 0x%1")
+			.arg(hwrpbPhysBase, 0, 16);
+#endif
+		if (result.success && snapshotEnabled) {
+			INFO_LOG(QString("Phase 14b: saving snapshot to '%1'...").arg(snapshotPath));
+
+			// Region list driven by GuestPhysicalRegionRegistry (includeInSnapshot=true).
+			// Includes: DecompressedFW (0x0, 4MB) + Firmware stub (0x900000) +
+			//           PALcode (0x600000) + HWRPB (0x2000).
+			// RAM excluded by default (large -- opt-in via spec §10.3).
+			const auto regions = m_regionRegistry.snapshotRegions();
+
+			const bool saved = m_srmRomLoader.saveSnapshot(
+				snapshotPath,
+				result,
+				regions,
+				readFromPhysical,
+				getIntRegs,
+				getFpRegs,
+				getIPRs
+			);
+
+			if (saved)
+				INFO_LOG(QString("Phase 14b: snapshot saved to '%1'").arg(snapshotPath));
+			else
+				WARN_LOG("Phase 14b: snapshot save failed (non-fatal -- will re-decompress next run)");
+		}
+	}
+
+	// ----------------------------------------------------------------
+	// HWRPB post-decompress verification
+	// ----------------------------------------------------------------
+	{
+		quint64 hwrpbPA = 0x2000;
+		quint64 sysType = 0, sysVar = 0, sysRev = 0;
+		quint64 nProc = 0, memOffset = 0, ctbOffset = 0;
+		guestMem.read64(hwrpbPA + 0x18, sysType);
+		guestMem.read64(hwrpbPA + 0x20, sysVar);
+		guestMem.read64(hwrpbPA + 0x28, sysRev);
+		guestMem.read64(hwrpbPA + 0xA0, nProc);
+		guestMem.read64(hwrpbPA + 0xB0, memOffset);
+		guestMem.read64(hwrpbPA + 0xC0, ctbOffset);
+		INFO_LOG("HWRPB post-decompress:");
+		INFO_LOG(QString("  sys_type   : 0x%1").arg(sysType, 0, 16));
+		INFO_LOG(QString("  sys_var    : 0x%1").arg(sysVar, 0, 16));
+		INFO_LOG(QString("  sys_rev    : 0x%1").arg(sysRev, 0, 16));
+		INFO_LOG(QString("  nproc      : %1").arg(nProc));
+		INFO_LOG(QString("  mem_offset : 0x%1").arg(memOffset, 0, 16));
+		INFO_LOG(QString("  ctb_offset : 0x%1").arg(ctbOffset, 0, 16));
+	}
+
+	// ----------------------------------------------------------------
+	// Verify result
+	// ----------------------------------------------------------------
+
+	quint64 checkWord = 0;
+	guestMem.read64(0x0, checkWord);
 	qDebug() << "ROM word at reset vector:" << Qt::hex << checkWord;
+
 	if (!result.success) {
-		ERROR_LOG(QString("SRM firmware decompression FAILED: %1").arg(result.errorMessage));
+		ERROR_LOG(QString("SRM firmware load FAILED: %1").arg(result.errorMessage));
 		markFailure();
 		return false;
 	}
 
-	INFO_LOG("--- SRM Decompression Complete ---");
-	INFO_LOG(QString("  Cycles:   %1").arg(result.cyclesExecuted));
-	INFO_LOG(QString("  Time:     %1 ms").arg(result.elapsedMs, 0, 'f', 1));
-	INFO_LOG(QString("  PC:       0x%1 (PALmode=%2)")
+	INFO_LOG(QString("--- SRM Load Complete [%1] ---")
+		.arg(result.fromSnapshot ? "snapshot" : "decompress"));
+	INFO_LOG(QString("  Cycles:    %1").arg(result.cyclesExecuted));
+	INFO_LOG(QString("  Time:      %1 ms").arg(result.elapsedMs, 0, 'f', 1));
+	INFO_LOG(QString("  PC:        0x%1 (PALmode=%2)")
 		.arg(result.cleanPC(), 8, 16, QChar('0'))
 		.arg(result.isPalMode() ? "yes" : "no"));
-	INFO_LOG(QString("  PAL_BASE: 0x%1")
+	INFO_LOG(QString("  PAL_BASE:  0x%1")
 		.arg(result.palBase(), 8, 16, QChar('0')));
+	INFO_LOG(QString("  Snapshot:  %1")
+		.arg(result.fromSnapshot ? result.snapshotPath : "n/a"));
 
-	// Validate expected results
-	if (result.cleanPC() != 0x8000) {
+	if (result.cleanPC() != 0x8000)
 		WARN_LOG(QString("Unexpected boot PC: 0x%1 (expected 0x8000)")
 			.arg(result.cleanPC(), 8, 16, QChar('0')));
-	}
-	if (result.palBase() != 0x600000) {
+	if (result.palBase() != 0x600000)
 		WARN_LOG(QString("Unexpected PAL_BASE: 0x%1 (expected 0x600000)")
 			.arg(result.palBase(), 8, 16, QChar('0')));
-	}
 
-	// ====================================================================
-	// Verify decompressed firmware is present at PA 0x0
-	// ====================================================================
+	// ========================================================================
+	// Verify decompressed firmware is present
+	// ========================================================================
 
 	INFO_LOG("=== SRM FIRMWARE VERIFICATION ===");
-
 	for (int i = 0; i < 4; ++i) {
-		quint32 instr;
+		quint32 instr = 0;
 		quint64 addr = result.cleanPC() + (i * 4);
 		MEM_STATUS status = guestMem.read32(addr, instr);
-
 		quint8 opcode = (instr >> 26) & 0x3F;
 		INFO_LOG(QString("  PA 0x%1: 0x%2 (opc=0x%3) status=%4")
 			.arg(addr, 8, 16, QChar('0'))
@@ -1217,21 +1499,15 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 			.arg(static_cast<int>(status)));
 	}
 
-	// ====================================================================
+	// ========================================================================
 	// 14c: Start CPU0 execution thread
-	//
-	// CPU0 state is exactly where the decompressor left it:
-	//   PC       = 0x8001 (PAL mode, firmware entry)
-	//   PAL_BASE = 0x600000
-	// Just start the thread and let it run.
-	// ====================================================================
+	// ========================================================================
 
 	INFO_LOG("--- Phase 14c: Starting CPU0 execution ---");
 	INFO_LOG(QString("  Boot PC:       0x%1").arg(cpu0->getPC(), 16, 16, QChar('0')));
 	INFO_LOG(QString("  Boot PAL_BASE: 0x%1").arg(cpu0->getPAL_BASE(), 16, 16, QChar('0')));
 
 	cpu0->executeLoop();
-
 	INFO_LOG("CPU0: Execution thread started");
 
 	markSuccess();
@@ -1318,7 +1594,7 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase15_FinalVerification() {
 		}
 		INFO_LOG("-- Subsystems: All bound");
 	}
-	
+
 
 	INFO_LOG("=== ALL VERIFICATIONS PASSED ===");
 
@@ -1392,7 +1668,7 @@ AXP_HOT AXP_FLATTEN void EmulatR_init::shutdown()  noexcept {
 
 	{
 		InitPhaseLogger phase("Shutdown - Memory Subsystems");
-			m_coordinator->shutdown();
+		m_coordinator->shutdown();
 	}
 
 	{
@@ -1424,8 +1700,8 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializeSystem() noexcept {
 	return initialize();
 }
 
-EmulatR_init::EmulatR_init(SubsystemCoordinator* coordinator) 
-: m_consoleManager(&global_ConsoleManager()), m_coordinator(coordinator)
+EmulatR_init::EmulatR_init(SubsystemCoordinator* coordinator)
+	: m_consoleManager(&global_ConsoleManager()), m_coordinator(coordinator)
 {
 }
 
@@ -1463,7 +1739,7 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::validateConfiguration() noexcept {
 
 	if (m_memorySizeGB < 1) {
 		ERROR_LOG(QString("Invalid memory size: %1 GB").arg(m_memorySizeGB));
-		m_memorySizeGB    = 4;
+		m_memorySizeGB = 4;
 		m_memorySizeBytes = 4ULL * GB;
 		WARN_LOG("Memory size adjusted to 4 GB");
 	}

@@ -2,7 +2,7 @@
 // cpuCore_core.h - enum class Redirect_Reason : int {
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -18,7 +18,6 @@
 
 #include <QtGlobal>
 
-#include "AlphaPipeline.h"
 #include "RedirectReason.h"
 // enum class Redirect_Reason : int {
 //     None,

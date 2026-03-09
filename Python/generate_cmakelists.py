@@ -71,15 +71,18 @@ LINKER_FLAGS = {
 
 # Preprocessor definitions
 DEFINITIONS = [
-    "EXECTRACE_ENABLED",
+    "# EXECTRACE_ENABLED",
     "QT_DEPRECATED_WARNINGS",
     "QT_DISABLE_DEPRECATED_BEFORE=0x060000",
-    "AXP_DEBUG_PIPELINE",
-    "AXP_DEBUG_DECODE",
-    "AXP_DEBUG_FETCH",
-    "AXP_INSTRUMENTATION_TRACE",
+    "# AXP_DEBUG_PIPELINE",
+    "# AXP_DEBUG_DECODE",
+    "# AXP_DEBUG_FETCH",
+    "# AXP_INSTRUMENTATION_TRACE",
     "AXP_EXEC_TRACE",
     "WIN32_LEAN_AND_MEAN"  
+    #    EXECTRACE_ENABLED
+    QT_DEPRECATED_WARNINGS
+    QT_DISABLE_DEPRECATED_BEFORE=0x060000
 ]
 
 # Specific files to deploy to output directory during build
@@ -341,7 +344,10 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 # Deploy Firmware Files (glob pattern match)
 #   - Copy all firmware/*_64.exe into <target>/bin/firmware
 # ============================================================================
-file(GLOB CONFIGURE_DEPENDS FIRMWARE_64_FILES
+#file(GLOB CONFIGURE_DEPENDS FIRMWARE_64_FILES
+#    "${PROJECT_SOURCE_DIR}/firmware/*_64.exe"
+#)
+file(GLOB FIRMWARE_64_FILES CONFIGURE_DEPENDS
     "${PROJECT_SOURCE_DIR}/firmware/*_64.exe"
 )
 

@@ -353,6 +353,7 @@ public:
 	// --------------------------------------------------------------------
 	AXP_HOT AXP_ALWAYS_INLINE void executeCvtql(PipelineSlot& slot, const FPVariant& variant) noexcept
 	{
+		Q_UNUSED(variant);
 		const qint64 srcB = static_cast<qint64>(slot.readFpReg(slot.di.rb));
 		const qint32 result = static_cast<qint32>(srcB);  // Truncate to 32-bit
 
@@ -868,10 +869,12 @@ public:
 
 	auto clearDirty(quint8 reg) -> void
 	{
+		Q_UNUSED(reg);
 		m_fpRegisterDirty = 0;
 	}
 
 	auto executeADDF_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -880,6 +883,7 @@ public:
 	}
 
 	auto executeADDF_IS(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -888,6 +892,7 @@ public:
 	}
 
 	auto executeADDG_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -896,6 +901,7 @@ public:
 	}
 
 	auto executeADDG_IS(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -904,6 +910,7 @@ public:
 	}
 
 	auto executeCMOVNE(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -912,6 +919,7 @@ public:
 	}
 
 	auto executeCMPBGE(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -920,6 +928,7 @@ public:
 	}
 
 	auto executeCMPEQ(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -927,6 +936,7 @@ public:
 		}
 	}
 	auto executeCMPGEQ_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -934,6 +944,7 @@ public:
 		}
 	}
 	auto executeCMPGLE_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -942,6 +953,7 @@ public:
 	}
 
 	auto executeCMPLE(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -950,6 +962,7 @@ public:
 	}
 
 	auto executeCMPLT( PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -958,6 +971,7 @@ public:
 	}
 
 	auto executeCVTBQ_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -966,6 +980,7 @@ public:
 	}
 
 	auto executeCVTBQ_SVC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -974,6 +989,7 @@ public:
 	}
 
 	auto executeCVTDG(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -982,6 +998,7 @@ public:
 	}
 
 	auto executeCVTDG_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -990,6 +1007,7 @@ public:
 	}
 
 	auto executeCVTDG_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -998,6 +1016,7 @@ public:
 	}
 
 	auto executeCVTDG_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1006,6 +1025,7 @@ public:
 	}
 
 	auto executeCVTDG_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1014,6 +1034,7 @@ public:
 	}
 
 	auto executeCVTDG_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1022,6 +1043,7 @@ public:
 	}
 
 	auto executeCVTDG_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1030,6 +1052,7 @@ public:
 	}
 
 	auto executeCVTGD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1038,6 +1061,7 @@ public:
 	}
 
 	auto executeCVTGD_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1046,6 +1070,7 @@ public:
 	}
 
 	auto executeCVTGD_IS( PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1053,6 +1078,7 @@ public:
 		}
 	}
 	auto executeCVTGD_SC( PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1060,6 +1086,7 @@ public:
 		}
 	}
 	auto executeCVTGD_SU( PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1067,6 +1094,7 @@ public:
 		}
 	}
 	auto executeCVTGD_SUC( PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1074,6 +1102,7 @@ public:
 		}
 	}
 	auto executeCVTGD_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1081,6 +1110,7 @@ public:
 		}
 	}
 	auto executeCVTGD_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1088,6 +1118,7 @@ public:
 		}
 	}
 	auto executeCVTGF(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1095,6 +1126,7 @@ public:
 		}
 	}
 	auto executeCVTGF_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1102,6 +1134,7 @@ public:
 		}
 	}
 	auto executeCVTGF_IS(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1109,6 +1142,7 @@ public:
 		}
 	}
 	auto executeMULF_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1116,6 +1150,7 @@ public:
 		}
 	}
 	auto executeMULF_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1123,6 +1158,7 @@ public:
 		}
 	}
 	auto executeMULF_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1130,6 +1166,7 @@ public:
 		}
 	}
 	auto executeMULF_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1137,6 +1174,7 @@ public:
 		}
 	}
 	auto executeMULF_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1144,6 +1182,7 @@ public:
 		}
 	}
 	auto executeMULF_IS(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1151,6 +1190,7 @@ public:
 		}
 	}
 	auto executeMULF_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1158,6 +1198,7 @@ public:
 		}
 	}
 	auto executeDIVT_UM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1165,6 +1206,7 @@ public:
 		}
 	}
 	auto executeDIVT_UD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1172,6 +1214,7 @@ public:
 		}
 	}
 	auto executeDIVT_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1179,6 +1222,7 @@ public:
 		}
 	}
 	auto executeDIVT_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1186,6 +1230,7 @@ public:
 		}
 	}
 	auto executeDIVT_SUM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1193,6 +1238,7 @@ public:
 		}
 	}
 	auto executeDIVT_SUIM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1200,6 +1246,7 @@ public:
 		}
 	}
 	auto executeDIVT_SUID(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1207,6 +1254,7 @@ public:
 		}
 	}
 	auto executeDIVT_SUIC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1214,6 +1262,7 @@ public:
 		}
 	}
 	auto executeDIVT_SUI(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1221,6 +1270,7 @@ public:
 		}
 	}
 	auto executeDIVT_SUD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1228,6 +1278,7 @@ public:
 		}
 	}
 	auto executeDIVT_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1235,6 +1286,7 @@ public:
 		}
 	}
 	auto executeDIVT_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1242,6 +1294,7 @@ public:
 		}
 	}
 	auto executeDIVT_M(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1249,6 +1302,7 @@ public:
 		}
 	}
 	auto executeDIVT_D(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1256,6 +1310,7 @@ public:
 		}
 	}
 	auto executeDIVS_UM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1263,6 +1318,7 @@ public:
 		}
 	}
 	auto executeDIVS_UD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1270,6 +1326,7 @@ public:
 		}
 	}
 	auto executeDIVS_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1277,6 +1334,7 @@ public:
 		}
 	}
 	auto executeDIVS_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1284,6 +1342,7 @@ public:
 		}
 	}
 	auto executeDIVS_SUM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1291,6 +1350,7 @@ public:
 		}
 	}
 	auto executeDIVS_SUIM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1298,6 +1358,7 @@ public:
 		}
 	}
 	auto executeDIVS_SUID(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1305,6 +1366,7 @@ public:
 		}
 	}
 	auto executeDIVS_SUIC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1312,6 +1374,7 @@ public:
 		}
 	}
 	auto executeDIVS_SUI(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1319,6 +1382,7 @@ public:
 		}
 	}
 	auto executeDIVS_SUD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1326,6 +1390,7 @@ public:
 		}
 	}
 	auto executeDIVS_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1333,6 +1398,7 @@ public:
 		}
 	}
 	auto executeDIVS_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1340,6 +1406,7 @@ public:
 		}
 	}
 	auto executeDIVS_M(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1347,6 +1414,7 @@ public:
 		}
 	}
 	auto executeDIVS_D(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1354,6 +1422,7 @@ public:
 		}
 	}
 	auto executeDIVG_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1361,6 +1430,7 @@ public:
 		}
 	}
 	auto executeDIVG_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1368,6 +1438,7 @@ public:
 		}
 	}
 	auto executeDIVG_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1375,6 +1446,7 @@ public:
 		}
 	}
 	auto executeDIVG_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1382,6 +1454,7 @@ public:
 		}
 	}
 	auto executeDIVG_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1389,6 +1462,7 @@ public:
 		}
 	}
 	auto executeDIVG_IS(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1396,6 +1470,7 @@ public:
 		}
 	}
 	auto executeDIVG_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1403,6 +1478,7 @@ public:
 		}
 	}
 	auto executeDIVF_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1410,6 +1486,7 @@ public:
 		}
 	}
 	auto executeDIVF_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1417,6 +1494,7 @@ public:
 		}
 	}
 	auto executeDIVF_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1424,6 +1502,7 @@ public:
 		}
 	}
 	auto executeDIVF_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1431,6 +1510,7 @@ public:
 		}
 	}
 	auto executeDIVF_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1438,6 +1518,7 @@ public:
 		}
 	}
 	auto executeDIVF_IS(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1445,6 +1526,7 @@ public:
 		}
 	}
 	auto executeDIVF_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1452,6 +1534,7 @@ public:
 		}
 	}
 	auto executeCVTTS_UD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1459,6 +1542,7 @@ public:
 		}
 	}
 	auto executeCVTQT_SUI(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1466,6 +1550,7 @@ public:
 		}
 	}
 	auto executeCVTQG_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1473,6 +1558,7 @@ public:
 		}
 	}
 	auto executeCVTQG(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1480,6 +1566,7 @@ public:
 		}
 	}
 	auto executeCVTQF_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1487,6 +1574,7 @@ public:
 		}
 	}
 	auto executeCVTQF(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1494,6 +1582,7 @@ public:
 		}
 	}
 	auto executeCVTGQ_V(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1501,6 +1590,7 @@ public:
 		}
 	}
 	auto executeCVTGQ_SVC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1508,6 +1598,7 @@ public:
 		}
 	}
 	auto executeCVTGQ_SV(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1515,6 +1606,7 @@ public:
 		}
 	}
 	auto executeCVTGQ_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1522,6 +1614,7 @@ public:
 		}
 	}
 	auto executeCVTGQ_NC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1529,6 +1622,7 @@ public:
 		}
 	}
 	auto executeCVTGQ_IS(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1536,6 +1630,7 @@ public:
 		}
 	}
 	auto executeCVTGQ_IC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1543,6 +1638,7 @@ public:
 		}
 	}
 	auto executeCVTGF_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1550,6 +1646,7 @@ public:
 		}
 	}
 	auto executeCVTGQ(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1557,6 +1654,7 @@ public:
 		}
 	}
 	auto executeCVTGF_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1564,6 +1662,7 @@ public:
 		}
 	}
 	auto executeCVTGF_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1572,6 +1671,7 @@ public:
 	}
 
 	auto executeSUBS_SUM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1579,6 +1679,7 @@ public:
 		}
 	}
 	auto executeCVTDG_IS(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1586,6 +1687,7 @@ public:
 		}
 	}
 	auto executeADDF_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1593,6 +1695,7 @@ public:
 		}
 	}
 	auto executeCMPGEQ_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1600,6 +1703,7 @@ public:
 		}
 	}
 	auto executeCMPGLE_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1607,6 +1711,7 @@ public:
 		}
 	}
 	auto executeCMPGLT_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1614,6 +1719,7 @@ public:
 		}
 	}
 	auto executeCVTDG_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1621,6 +1727,7 @@ public:
 		}
 	}
 	auto executeCVTDG_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1628,6 +1735,7 @@ public:
 		}
 	}
 	auto executeCVTGD_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1635,6 +1743,7 @@ public:
 		}
 	}
 	auto executeCVTGD_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1642,6 +1751,7 @@ public:
 		}
 	}
 	auto executeCVTGF_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1649,6 +1759,7 @@ public:
 		}
 	}
 	auto executeCVTGF_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1656,6 +1767,7 @@ public:
 		}
 	}
 	auto executeCVTGF_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1663,6 +1775,7 @@ public:
 		}
 	}
 	auto executeCVTGF_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1670,6 +1783,7 @@ public:
 		}
 	}
 	auto executeCVTGQ_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1677,6 +1791,7 @@ public:
 		}
 	}
 	auto executeCVTGQ_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1684,6 +1799,7 @@ public:
 		}
 	}
 	auto executeCVTQF_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1691,6 +1807,7 @@ public:
 		}
 	}
 	auto executeCVTQG_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1698,6 +1815,7 @@ public:
 		}
 	}
 	auto executeDIVF_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1705,6 +1823,7 @@ public:
 		}
 	}
 	auto executeDIVF_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1712,6 +1831,7 @@ public:
 		}
 	}
 	auto executeDIVG_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1719,6 +1839,7 @@ public:
 		}
 	}
 	auto executeDIVG_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1726,6 +1847,7 @@ public:
 		}
 	}
 	auto executeMULF_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1733,6 +1855,7 @@ public:
 		}
 	}
 	auto executeMULF_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1740,6 +1863,7 @@ public:
 		}
 	}
 	auto executeMULG_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1747,6 +1871,7 @@ public:
 		}
 	}
 	auto executeMULG_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1754,6 +1879,7 @@ public:
 		}
 	}
 	auto executeMULG_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1761,6 +1887,7 @@ public:
 		}
 	}
 	auto executeMULG_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1768,6 +1895,7 @@ public:
 		}
 	}
 	auto executeMULG_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1775,6 +1903,7 @@ public:
 		}
 	}
 	auto executeMULG_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1782,6 +1911,7 @@ public:
 		}
 	}
 	auto executeMULG_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1789,6 +1919,7 @@ public:
 		}
 	}
 	auto executeMULS_M(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1796,6 +1927,7 @@ public:
 		}
 	}
 	auto executeMULS_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1803,6 +1935,7 @@ public:
 		}
 	}
 	auto executeMULS_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1810,6 +1943,7 @@ public:
 		}
 	}
 	auto executeMULS_SUD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1817,6 +1951,7 @@ public:
 		}
 	}
 	auto executeMULS_SUI(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1824,6 +1959,7 @@ public:
 		}
 	}
 	auto executeMULS_SUIC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1831,6 +1967,7 @@ public:
 		}
 	}
 	auto executeMULS_SUID(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1838,6 +1975,7 @@ public:
 		}
 	}
 	auto executeMULS_SUIM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1845,6 +1983,7 @@ public:
 		}
 	}
 	auto executeMULS_SUM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1852,6 +1991,7 @@ public:
 		}
 	}
 	auto executeMULS_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1859,6 +1999,7 @@ public:
 		}
 	}
 	auto executeMULS_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1866,6 +2007,7 @@ public:
 		}
 	}
 	auto executeMULS_UD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1873,6 +2015,7 @@ public:
 		}
 	}
 	auto executeMULS_UM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1880,6 +2023,7 @@ public:
 		}
 	}
 	auto executeADDG_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1887,6 +2031,7 @@ public:
 		}
 	}
 	auto executeMULT_D(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1894,6 +2039,7 @@ public:
 		}
 	}
 	auto executeMULT_M(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1901,6 +2047,7 @@ public:
 		}
 	}
 	auto executeMULT_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1908,6 +2055,7 @@ public:
 		}
 	}
 	auto executeMULT_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1915,6 +2063,7 @@ public:
 		}
 	}
 	auto executeMULT_SUD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1922,6 +2071,7 @@ public:
 		}
 	}
 	auto executeMULT_SUI(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1929,6 +2079,7 @@ public:
 		}
 	}
 	auto executeMULT_SUIC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1936,6 +2087,7 @@ public:
 		}
 	}
 	auto executeMULT_SUID(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1943,6 +2095,7 @@ public:
 		}
 	}
 	auto executeMULT_SUIM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1950,6 +2103,7 @@ public:
 		}
 	}
 	auto executeMULT_SUM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1957,6 +2111,7 @@ public:
 		}
 	}
 	auto executeMULT_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1964,6 +2119,7 @@ public:
 		}
 	}
 	auto executeMULT_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1971,6 +2127,7 @@ public:
 		}
 	}
 	auto executeMULT_UD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1978,6 +2135,7 @@ public:
 		}
 	}
 	auto executeMULT_UM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1985,6 +2143,7 @@ public:
 		}
 	}
 	auto executeSQRTF_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1992,6 +2151,7 @@ public:
 		}
 	}
 	auto executeSQRTF_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -1999,6 +2159,7 @@ public:
 		}
 	}
 	auto executeSQRTF_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2006,6 +2167,7 @@ public:
 		}
 	}
 	auto executeSQRTF_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2013,6 +2175,7 @@ public:
 		}
 	}
 	auto executeSQRTF_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2020,6 +2183,7 @@ public:
 		}
 	}
 	auto executeSQRTF_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2027,6 +2191,7 @@ public:
 		}
 	}
 	auto executeSQRTG_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2034,6 +2199,7 @@ public:
 		}
 	}
 	auto executeSQRTG_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2041,6 +2207,7 @@ public:
 		}
 	}
 	auto executeSQRTG_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2048,6 +2215,7 @@ public:
 		}
 	}
 	auto executeSQRTG_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2055,6 +2223,7 @@ public:
 		}
 	}
 	auto executeSQRTG_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2062,6 +2231,7 @@ public:
 		}
 	}
 	auto executeSQRTG_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2069,6 +2239,7 @@ public:
 		}
 	}
 	auto executeSQRTS_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2076,6 +2247,7 @@ public:
 		}
 	}
 	auto executeSQRTS_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2083,6 +2255,7 @@ public:
 		}
 	}
 	auto executeSQRTS_SUD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2090,6 +2263,7 @@ public:
 		}
 	}
 	auto executeSQRTS_SUI(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2097,6 +2271,7 @@ public:
 		}
 	}
 	auto executeSQRTS_SUIC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2104,6 +2279,7 @@ public:
 		}
 	}
 	auto executeSQRTS_SUID(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2111,6 +2287,7 @@ public:
 		}
 	}
 	auto executeSQRTS_SUIM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2118,6 +2295,7 @@ public:
 		}
 	}
 	auto executeSQRTS_SUM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2125,6 +2303,7 @@ public:
 		}
 	}
 	auto executeSQRTS_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2132,6 +2311,7 @@ public:
 		}
 	}
 	auto executeSQRTS_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2139,6 +2319,7 @@ public:
 		}
 	}
 	auto executeSQRTS_UD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2146,6 +2327,7 @@ public:
 		}
 	}
 	auto executeSQRTS_UM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2153,6 +2335,7 @@ public:
 		}
 	}
 	auto executeSQRTT_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2160,6 +2343,7 @@ public:
 		}
 	}
 	auto executeSQRTT_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2167,6 +2351,7 @@ public:
 		}
 	}
 	auto executeSQRTT_SUD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2174,6 +2359,7 @@ public:
 		}
 	}
 	auto executeSQRTT_SUI(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2181,6 +2367,7 @@ public:
 		}
 	}
 	auto executeSQRTT_SUIC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2188,6 +2375,7 @@ public:
 		}
 	}
 	auto executeSQRTT_SUID(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2195,6 +2383,7 @@ public:
 		}
 	}
 	auto executeSQRTT_SUIM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2202,6 +2391,7 @@ public:
 		}
 	}
 	auto executeSQRTT_SUM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2209,6 +2399,7 @@ public:
 		}
 	}
 	auto executeSQRTT_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2216,6 +2407,7 @@ public:
 		}
 	}
 	auto executeSQRTT_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2223,6 +2415,7 @@ public:
 		}
 	}
 	auto executeSQRTT_UD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2230,6 +2423,7 @@ public:
 		}
 	}
 	auto executeSQRTT_UM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2237,6 +2431,7 @@ public:
 		}
 	}
 	auto executeSUBF_C(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2244,6 +2439,7 @@ public:
 		}
 	}
 	auto executeSUBF_S(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2251,6 +2447,7 @@ public:
 		}
 	}
 	auto executeSUBF_SC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2258,6 +2455,7 @@ public:
 		}
 	}
 	auto executeSUBF_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2265,6 +2463,7 @@ public:
 		}
 	}
 	auto executeSUBT_UM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2272,6 +2471,7 @@ public:
 		}
 	}
 	auto executeSUBT_UD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2279,6 +2479,7 @@ public:
 		}
 	}
 	auto executeSUBT_UC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2286,6 +2487,7 @@ public:
 		}
 	}
 	auto executeSUBT_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2293,6 +2495,7 @@ public:
 		}
 	}
 	auto executeSUBT_SUM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2300,6 +2503,7 @@ public:
 		}
 	}
 	auto executeSUBT_SUIM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2307,6 +2511,7 @@ public:
 		}
 	}
 	auto executeSUBT_SUID(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2314,6 +2519,7 @@ public:
 		}
 	}
 	auto executeSUBT_SUIC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2321,6 +2527,7 @@ public:
 		}
 	}
 	auto executeSUBT_SUI(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2328,6 +2535,7 @@ public:
 		}
 	}
 	auto executeSUBT_SUD(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2335,6 +2543,7 @@ public:
 		}
 	}
 	auto executeSUBT_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2342,6 +2551,7 @@ public:
 		}
 	}
 	auto executeSUBT_SU(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2349,6 +2559,7 @@ public:
 		}
 	}
 	auto executeSUBT_M(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2356,6 +2567,7 @@ public:
 		}
 	}
 	auto executeSUBT_D(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2363,6 +2575,7 @@ public:
 		}
 	}
 	auto executeSUBS_UM(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2371,6 +2584,7 @@ public:
 	}
 
 	auto executeSUBG_SU(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2378,6 +2592,7 @@ public:
 		}
 	}
 	auto executeSUBG_SC(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2385,6 +2600,7 @@ public:
 		}
 	}
 	auto executeSUBG_SUC(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2392,6 +2608,7 @@ public:
 		}
 	}
 	auto executeSUBG_U(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2399,6 +2616,7 @@ public:
 		}
 	}
 	auto executeSUBG_UC(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2406,6 +2624,7 @@ public:
 		}
 	}
 	auto executeSUBL(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2413,6 +2632,7 @@ public:
 		}
 	}
 	auto executeSUBL_V(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2420,6 +2640,7 @@ public:
 		}
 	}
 	auto executeSUBQ(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2427,6 +2648,7 @@ public:
 		}
 	}
 	auto executeSUBQ_V(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2434,6 +2656,7 @@ public:
 		}
 	}
 	auto executeSUBS_M(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2441,6 +2664,7 @@ public:
 		}
 	}
 	auto executeSUBS_SU(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2448,6 +2672,7 @@ public:
 		}
 	}
 	auto executeSUBS_SUC(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2455,6 +2680,7 @@ public:
 		}
 	}
 	auto executeSUBS_SUD(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2462,6 +2688,7 @@ public:
 		}
 	}
 	auto executeSUBS_SUI(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2469,6 +2696,7 @@ public:
 		}
 	}
 	auto executeSUBS_SUIC(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2476,6 +2704,7 @@ public:
 		}
 	}
 	auto executeSUBS_SUID(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2483,6 +2712,7 @@ public:
 		}
 	}
 	auto executeSUBS_SUIM(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2490,6 +2720,7 @@ public:
 		}
 	}
 	auto executeSUBS_U(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2497,6 +2728,7 @@ public:
 		}
 	}
 	auto executeSUBS_UC(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2504,6 +2736,7 @@ public:
 		}
 	}
 	auto executeSUBS_UD(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2511,6 +2744,7 @@ public:
 		}
 	}
 	auto executeSUBF_SUC(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2518,6 +2752,7 @@ public:
 		}
 	}
 	auto executeSUBF_U(PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2525,6 +2760,7 @@ public:
 		}
 	}
 	auto executeSUBF_UC(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2532,6 +2768,7 @@ public:
 		}
 	}
 	auto executeSUBG_C(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));
@@ -2539,6 +2776,7 @@ public:
 		}
 	}
 	auto executeSUBG_S(const PipelineSlot& slot) -> void {
+		Q_UNUSED(slot);
 		static bool warned = false;
 		if (!warned) {
 			ERROR_LOG(QString("UNIMPLEMENTED: %1").arg(Q_FUNC_INFO));

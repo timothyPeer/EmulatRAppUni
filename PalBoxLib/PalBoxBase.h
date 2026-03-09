@@ -42,6 +42,10 @@
 #include "palLib_EV6/Pal_Service.h"
 #include "memoryLib/global_GuestMemory.h"
 #include "pteLib/ev6Translation_struct.h"
+#include "CBoxLib/CBoxBase.h"
+#include "MBoxLib_EV6/MBoxBase.h"
+#include "EBoxLib/EBoxBase.h"
+#include "FBoxLib/FBoxBase.h"
 
 class PalService;
 // Forward declarations
@@ -75,9 +79,9 @@ class PalBox final
     CPUIdType                   m_cpuId;
     std::unique_ptr<PalService> m_palService;
 
-    quint64 m_entryVector{0};
-    quint64 m_faultPC{0};
-    bool    m_shadowRegsActive{false};
+    quint64 m_entryVector{ 0 };
+    quint64 m_faultPC{ 0 };
+    bool    m_shadowRegsActive{ false };
 
     // IRQ Controllers
     IRQPendingState* m_pending;
@@ -86,11 +90,11 @@ class PalBox final
 
     PalEntryReason m_entryReason;
 
-    GuestMemory*                  m_guestMemory{nullptr};
-    FaultDispatcher*              m_faultDispatcher{nullptr};
-    QScopedPointer<Ev6Translator> m_ev6Translator{nullptr};
- 
-    CPUStateView*                 m_iprGlobalMaster{nullptr};
+    GuestMemory* m_guestMemory{ nullptr };
+    FaultDispatcher* m_faultDispatcher{ nullptr };
+    QScopedPointer<Ev6Translator> m_ev6Translator{ nullptr };
+
+    CPUStateView* m_iprGlobalMaster{ nullptr };
     // IPRStorage_IntRegs*   m_intReg{nullptr};
     // IPRStorage_FloatRegs* m_fpReg{nullptr};
 
@@ -117,8 +121,8 @@ public:
         if (br.hasFault())
         {
             slot.faultPending = true;
-            slot.trapCode     = br.faultClass;
-            slot.faultVA      = br.faultingVA;
+            slot.trapCode = br.faultClass;
+            slot.faultVA = br.faultingVA;
         }
     }
 
@@ -152,9 +156,9 @@ public:
 
 #if AXP_INSTRUMENTATION_TRACE
         EXECTRACE_PAL_DISPATCH(m_cpuId,                      //  INSERT
-                               palFunction,
-                               slot.di.pc,
-                               palFunctionName(palFunction));
+            palFunction,
+            slot.di.pc,
+            palFunctionName(palFunction));
 #endif
 
         m_palService->execute(
@@ -745,6 +749,7 @@ public:
     }
     void executeRTI(PipelineSlot& slot, PalResult& result)
     {
+        Q_UNUSED(slot);
         // Read saved PC from exc_addr
         result.newPC = m_iprGlobalMaster->h->exc_addr;
         result.pcModified = true;
@@ -934,11 +939,13 @@ public:
 
     /*AXP_HOT AXP_ALWAYS_INLINE auto executeOPC01(PipelineSlot& slot) -> void
     {
+        Q_UNUSED(slot);
         m_palService->executeSWASTEN(slot, slot.palResult);
     }
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeOPC02(PipelineSlot& slot) -> void
     {
+        Q_UNUSED(slot);
         static bool warned = false;
         if (!warned)
         {
@@ -1032,6 +1039,7 @@ public:
     }
     AXP_HOT AXP_ALWAYS_INLINE auto executeOPC01(PipelineSlot& slot) -> void
     {
+        Q_UNUSED(slot);
         static bool warned = false;
         if (!warned)
         {
@@ -1042,6 +1050,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeOPC02(PipelineSlot& slot) -> void
     {
+        Q_UNUSED(slot);
         static bool warned = false;
         if (!warned)
         {
@@ -1052,6 +1061,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeOPC03(PipelineSlot& slot) -> void
     {
+        Q_UNUSED(slot);
         static bool warned = false;
         if (!warned)
         {
@@ -1062,6 +1072,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeOPC04(PipelineSlot& slot) -> void
     {
+        Q_UNUSED(slot);
         static bool warned = false;
         if (!warned)
         {
@@ -1072,6 +1083,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeOPC05(PipelineSlot& slot) -> void
     {
+        Q_UNUSED(slot);
         static bool warned = false;
         if (!warned)
         {
@@ -1082,6 +1094,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeOPC06(PipelineSlot& slot) -> void
     {
+        Q_UNUSED(slot);
         static bool warned = false;
         if (!warned)
         {
@@ -1092,6 +1105,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeOPC07(PipelineSlot& slot) -> void
     {
+        Q_UNUSED(slot);
         static bool warned = false;
         if (!warned)
         {
@@ -1100,8 +1114,8 @@ public:
         }
     }
 
-    
-    AXP_HOT AXP_ALWAYS_INLINE auto executeHW_LD (PipelineSlot& slot) -> BoxResult
+
+    AXP_HOT AXP_ALWAYS_INLINE auto executeHW_LD(PipelineSlot& slot) -> BoxResult
     {
         applyBoxResult(slot, executePAL1F(slot));
 
@@ -1114,7 +1128,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeHW_ST(PipelineSlot& slot) -> BoxResult
     {
-        
+
         // Opcode 0x1B = HW_ST on EV5 SRM firmware
         applyBoxResult(slot, executePAL1B(slot));
         if (slot.faultPending) {                      // only commit on clean execution
@@ -1124,7 +1138,7 @@ public:
         return BoxResult().advance();
     }
 
-    
+
     AXP_HOT AXP_ALWAYS_INLINE auto executeHW_REI(PipelineSlot& slot) -> BoxResult
     {
         // HW_RET / HW_REI - Return from PALmode (opcode 0x1E)
@@ -1222,9 +1236,9 @@ public:
     }
 
     // Prevent copying
-    PalBox(const PalBox&)                    = delete;
-    auto operator=(const PalBox&) -> PalBox& = delete;
-    ~PalBox()                                = default;
+    PalBox(const PalBox&) = delete;
+    auto operator=(const PalBox&) -> PalBox & = delete;
+    ~PalBox() = default;
 
     /**
      * @brief Unified PAL entry point for all entry reasons
@@ -1243,7 +1257,7 @@ public:
         // 1. Record metadata
         m_entryReason = reason;
         m_entryVector = vectorOrSelector;
-        m_faultPC     = faultPC;
+        m_faultPC = faultPC;
 
         // 2. Save context (UNIFIED - same for all entry types)
         m_iprGlobalMaster->saveContext();
@@ -1252,7 +1266,7 @@ public:
         quint64 entryPC;
         if (reason == PalEntryReason::CALL_PAL_INSTRUCTION)
         {
-            entryPC = m_iprGlobalMaster->computeCallPalEntry( vectorOrSelector);
+            entryPC = m_iprGlobalMaster->computeCallPalEntry(vectorOrSelector);
         }
         else
         {
@@ -1269,7 +1283,7 @@ public:
         // setCM_Active(m_cpuId, CM_KERNEL);
         //setPC_Active(m_cpuId, entryPC | 0x1ULL);
         m_iprGlobalMaster->h->advancePC(entryPC);             // fast path // updates the PC
-        m_iprGlobalMaster->h->setIPL_Unsynced( 7);
+        m_iprGlobalMaster->h->setIPL_Unsynced(7);
         m_iprGlobalMaster->h->setCM(CM_KERNEL);    // fast path // updates the PS and shadow CM
 
 
@@ -1292,8 +1306,8 @@ public:
     AXP_HOT AXP_ALWAYS_INLINE auto handleException(const BoxResult& result) const noexcept -> void
     {
         TrapCode_Class faultClass = result.getFaultClass();
-        quint64        faultVA    = result.getFaultVA();
-        quint64        faultPC    = result.getFaultPC();
+        quint64        faultVA = result.getFaultVA();
+        quint64        faultPC = result.getFaultPC();
 
         DEBUG_LOG(QString("PalBox CPU %1: Handling exception class=%2 VA=0x%3 PC=0x%4")
             .arg(m_cpuId)
@@ -1419,27 +1433,29 @@ public:
         {
             ERROR_LOG(QString("PalBox CPU %1: HW_LD outside PAL mode").arg(m_cpuId));
             return BoxResult()
-                   .setTrapCodeFaultClass(TrapCode_Class::ILLEGAL_INSTRUCTION)
-                   .flushPipeline();
+                .setTrapCodeFaultClass(TrapCode_Class::ILLEGAL_INSTRUCTION)
+                .flushPipeline();
         }
 
         const quint32 raw = slot.di.rawBits();
         const quint8  ra = (raw >> 21) & 0x1F;
         const quint8  rb = (raw >> 16) & 0x1F;
-        // bit 15 = HW_LD/HW_ST selector — already consumed by executePAL1F dispatcher
+        // bit 15 = HW_LD/HW_ST selector -- already consumed by executePAL1F dispatcher
         const bool    phys = (raw >> 14) & 1;   // bit 14 = physical access
         const bool    alt = (raw >> 13) & 1;   // bit 13 = alternate mode
-        const bool    wchk = (raw >> 12) & 1;   // bit 12 = write check
-       // const bool    quad = (raw >> 11) & 1;   // bit 11 = quadword (1) / longword (0)
-        // Sign-extend 11-bit displacement — bits 10:0
+        Q_UNUSED(alt);
+        const bool    wchk = (raw >> 12) & 1;  // bit 12 = write check
+        Q_UNUSED(wchk);
+        // const bool    quad = (raw >> 11) & 1;   // bit 11 = quadword (1) / longword (0)
+         // Sign-extend 11-bit displacement -- bits 10:0
         const qint64 disp = signExtend<12>(static_cast<quint64>(raw) & 0x7FF);
 
 
         // Compute effective address: EA = Rb + SEXT(disp)
         const quint64 rbVal = (rb == 31) ? 0ULL : slot.readIntReg(rb);
-        const quint64 ea    = rbVal + static_cast<quint64>(disp);
+        const quint64 ea = rbVal + static_cast<quint64>(disp);
 
-        quint64 value  = 0;
+        quint64 value = 0;
         auto    status = MEM_STATUS::Ok;
 
         if (phys)
@@ -1450,64 +1466,66 @@ public:
             {
                 status = m_guestMemory->read64(ea, value);          // Fast Path
             }
-           /* else
-            {
-                quint32 tmp = 0;
-                status      = m_guestMemory->read32(ea, tmp);                //Fast Path
-                // Longword loads are sign-extended to 64 bits (EV6 spec)
-                value = static_cast<quint64>(static_cast<qint32>(tmp));
-            }
-            */
+            /* else
+             {
+                 quint32 tmp = 0;
+                 status      = m_guestMemory->read32(ea, tmp);                //Fast Path
+                 // Longword loads are sign-extended to 64 bits (EV6 spec)
+                 value = static_cast<quint64>(static_cast<qint32>(tmp));
+             }
+             */
         }
         else
         {
             // Virtual mode: translate through DTB
-            quint64  pa  = 0;
+            quint64  pa = 0;
             AlphaPTE pte = {};
-            auto     cm  = static_cast<Mode_Privilege>(m_iprGlobalMaster->h->cm);
+            auto     cm = static_cast<Mode_Privilege>(m_iprGlobalMaster->h->cm);
 
 
             // invoke PAL mode fast-path.
-            TranslationResult tResult = m_ev6Translator->translateVA_Data(ea, m_iprGlobalMaster->h->getPC(), false, pa );
+            TranslationResult tResult = m_ev6Translator->translateVA_Data(ea, m_iprGlobalMaster->h->getPC(), false, pa);
 
-     /*       TranslationResult tResult = m_ev6Translator->ev6TranslateFullVA(
-                ea,
-                wchk ? AccessKind::WRITE : AccessKind::READ,
-                cm, pa, pte); */
+            /*       TranslationResult tResult = m_ev6Translator->ev6TranslateFullVA(
+                       ea,
+                       wchk ? AccessKind::WRITE : AccessKind::READ,
+                       cm, pa, pte); */
 
             if (tResult != TranslationResult::Success)
             {
                 DEBUG_LOG(QString("PalBox CPU %1: HW_LD virtual xlate failed EA=0x%2")
                     .arg(m_cpuId).arg(ea, 16, 16, QChar('0')));
                 return BoxResult()
-                       .setTrapCodeFaultClass(TrapCode_Class::DTB_MISS)
-                       .setFaultVA(ea)
-                       .flushPipeline();
+                    .setTrapCodeFaultClass(TrapCode_Class::DTB_MISS)
+                    .setFaultVA(ea)
+                    .flushPipeline();
             }
 
             //auto& guestMem = global_GuestMemory();
             //if (quad)
 
             quint64 value10; quint64 value00; quint64 value18; quint64 value08; quint64 value20; quint32 valuePa;
+            Q_UNUSED(value10); Q_UNUSED(value00); Q_UNUSED(value18);
+            Q_UNUSED(value08); Q_UNUSED(value20); Q_UNUSED(valuePa); Q_UNUSED(cm);
 
-                status = m_guestMemory->read64(pa, value);      // Fast Path
+            status = m_guestMemory->read64(pa, value);      // Fast Path
 #if AXP_INSTRUMENTATION_TRACE
-                quint64 dbg0, dbg8, dbg10, dbg18, dbg20;
-                m_guestMemory->read64(0x900000, dbg0);
-                m_guestMemory->read64(0x900008, dbg8);
-                m_guestMemory->read64(0x900010, dbg10);
-                m_guestMemory->read64(0x900018, dbg18);
-                m_guestMemory->read64(0x900020, dbg20);
-                qDebug().noquote()
-                    << QString("[HW_LD::MEMCHECK] "
-                        "900000:%1 900008:%2 900010:%3 "
-                        "900018:%4 900020:%5 read64(pa):%6")
-                    .arg(dbg0, 16, 16, QChar('0'))
-                    .arg(dbg8, 16, 16, QChar('0'))
-                    .arg(dbg10, 16, 16, QChar('0'))
-                    .arg(dbg18, 16, 16, QChar('0'))
-                    .arg(dbg20, 16, 16, QChar('0'))
-                    .arg(pa, 16, 16, QChar('0'));
+            quint64 dbg0, dbg8, dbg10, dbg18, dbg20;
+            m_guestMemory->read64(0x900000, dbg0);
+            m_guestMemory->read64(0x900008, dbg8);
+            m_guestMemory->read64(0x900010, dbg10);
+            m_guestMemory->read64(0x900018, dbg18);
+            m_guestMemory->read64(0x900020, dbg20);
+            qDebug().noquote()
+                << QString("[HW_LD::MEMCHECK] "
+                    "900000:%1 900008:%2 900010:%3 "
+                    "900018:%4 900020:%5 read64(pa):%6")
+                .arg(dbg0, 16, 16, QChar('0'))
+                .arg(dbg8, 16, 16, QChar('0'))
+                .arg(dbg10, 16, 16, QChar('0'))
+                .arg(dbg18, 16, 16, QChar('0'))
+                .arg(dbg20, 16, 16, QChar('0'))
+                .arg(pa, 16, 16, QChar('0'));
 #endif
         }
 
@@ -1516,8 +1534,8 @@ public:
             ERROR_LOG(QString("PalBox CPU %1: HW_LD memory error EA=0x%2")
                 .arg(m_cpuId).arg(ea, 16, 16, QChar('0')));
             return BoxResult()
-                   .setTrapCodeFaultClass(TrapCode_Class::MACHINE_CHECK)
-                   .flushPipeline();
+                .setTrapCodeFaultClass(TrapCode_Class::MACHINE_CHECK)
+                .flushPipeline();
         }
 
         // Write result to destination register
@@ -1526,7 +1544,7 @@ public:
 
         // Also set slot result fields for writeback stage
         slot.ra_value = value;
- 
+
 
         DEBUG_LOG(QString("PalBox CPU %1: HW_LDQ %3 EA=0x%4 -> R%5=0x%6")
             .arg(m_cpuId)
@@ -1557,24 +1575,26 @@ public:
         {
             ERROR_LOG(QString("PalBox CPU %1: HW_ST outside PAL mode").arg(m_cpuId));
             return BoxResult()
-                   .setTrapCodeFaultClass(TrapCode_Class::ILLEGAL_INSTRUCTION)
-                   .flushPipeline();
+                .setTrapCodeFaultClass(TrapCode_Class::ILLEGAL_INSTRUCTION)
+                .flushPipeline();
         }
 
         const quint32 raw = slot.di.rawBits();
         const quint8  ra = (raw >> 21) & 0x1F;
         const quint8  rb = (raw >> 16) & 0x1F;
-        // bit 15 = HW_LD/HW_ST selector — already consumed by executePAL1F dispatcher
+        // bit 15 = HW_LD/HW_ST selector -- already consumed by executePAL1F dispatcher
         const bool    phys = (raw >> 14) & 1;   // bit 14 = physical access
         const bool    alt = (raw >> 13) & 1;   // bit 13 = alternate mode
-        const bool    wchk = (raw >> 12) & 1;   // bit 12 = write check
+        Q_UNUSED(alt);
+        const bool    wchk = (raw >> 12) & 1;  // bit 12 = write check
+        Q_UNUSED(wchk);
         //const bool    quad = (raw >> 11) & 1;   // bit 11 = quadword (1) / longword (0)
-        // Sign-extend 11-bit displacement — bits 10:0
+        // Sign-extend 11-bit displacement -- bits 10:0
         const qint64 disp = signExtend<12>(static_cast<quint64>(raw) & 0x7FF);
 
         // Compute effective address
         const quint64 rbVal = (rb == 31) ? 0ULL : slot.readIntReg(rb);
-        const quint64 ea    = rbVal + static_cast<quint64>(disp);
+        const quint64 ea = rbVal + static_cast<quint64>(disp);
 
         // Value to store
         const quint64 raVal = (ra == 31) ? 0ULL : slot.readIntReg(ra);
@@ -1588,35 +1608,37 @@ public:
             // Physical mode: bypass TLB
             //auto& guestMem = global_GuestMemory();
             //if (quad)
-                status = m_guestMemory->write64(ea, raVal);                 // Fast Path
+            status = m_guestMemory->write64(ea, raVal);                 // Fast Path
             //else
             //    status = m_guestMemory->write32(ea, static_cast<quint32>(raVal));   // Fast Path
         }
         else
         {
             // Virtual mode: translate through DTB
-            quint64  pa  = 0;
+            quint64  pa = 0;
             AlphaPTE pte = {};
-            auto     cm  = static_cast<Mode_Privilege>(m_iprGlobalMaster->h->getCM());
+            Q_UNUSED(pte);
+            auto     cm = static_cast<Mode_Privilege>(m_iprGlobalMaster->h->getCM());
+            Q_UNUSED(cm);
 
-  //       We should not perform a full PT walk - the DTB has not be initialized while in SRM boot
-  //          TranslationResult tResult = m_ev6Translator->ev6TranslateFullVA(
-  //              ea, AccessKind::WRITE, cm, pa, pte);
-             // invoke PAL mode fast-path.
+            //       We should not perform a full PT walk - the DTB has not be initialized while in SRM boot
+            //          TranslationResult tResult = m_ev6Translator->ev6TranslateFullVA(
+            //              ea, AccessKind::WRITE, cm, pa, pte);
+                       // invoke PAL mode fast-path.
             TranslationResult tResult = m_ev6Translator->translateVA_Data(ea, m_iprGlobalMaster->h->getPC(), true, pa);
             if (tResult != TranslationResult::Success)
             {
                 DEBUG_LOG(QString("PalBox CPU %1: HW_ST virtual xlate failed EA=0x%2")
                     .arg(m_cpuId).arg(ea, 16, 16, QChar('0')));
                 return BoxResult()
-                       .setTrapCodeFaultClass(TrapCode_Class::DTB_MISS)
-                       .setFaultVA(ea)
-                       .flushPipeline();
+                    .setTrapCodeFaultClass(TrapCode_Class::DTB_MISS)
+                    .setFaultVA(ea)
+                    .flushPipeline();
             }
 
             //auto& guestMem = global_GuestMemory();
             //if (quad)
-                status = m_guestMemory->write64(pa, raVal);                             // Fast Path
+            status = m_guestMemory->write64(pa, raVal);                             // Fast Path
             //else
             //    status = m_guestMemory->write32(pa, static_cast<quint32>(raVal));             // Fast Path
         }
@@ -1626,8 +1648,8 @@ public:
             ERROR_LOG(QString("PalBox CPU %1: HW_ST memory error EA=0x%2")
                 .arg(m_cpuId).arg(ea, 16, 16, QChar('0')));
             return BoxResult()
-                   .setTrapCodeFaultClass(TrapCode_Class::MACHINE_CHECK)
-                   .flushPipeline();
+                .setTrapCodeFaultClass(TrapCode_Class::MACHINE_CHECK)
+                .flushPipeline();
         }
 
 
@@ -1704,6 +1726,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto handleDTB_Miss(quint64 faultVA, quint64 faultPC) const noexcept -> void
     {
+        Q_UNUSED(faultPC);
         // Use ev6TranslateFullVA - it does EVERYTHING:
         // 1. Walks page table
         // 2. Fills TLB automatically
@@ -1732,10 +1755,10 @@ public:
                 .arg(pte.raw, 16, 16, QChar('0')));
 
             qDebug() << QString("PalBox CPU %1: DTB filled VA=0x%2 -> PA=0x%3 PTE=0x%4")
-                        .arg(m_cpuId)
-                        .arg(faultVA, 16, 16, QChar('0'))
-                        .arg(pa, 16, 16, QChar('0'))
-                        .arg(pte.raw, 16, 16, QChar('0'));
+                .arg(m_cpuId)
+                .arg(faultVA, 16, 16, QChar('0'))
+                .arg(pa, 16, 16, QChar('0'))
+                .arg(pte.raw, 16, 16, QChar('0'));
         }
         else
         {
@@ -1746,13 +1769,14 @@ public:
 
             // Create appropriate fault event
             auto         faultType = MemoryFaultType::PAGE_NOT_PRESENT;
-            PendingEvent ev        = makeDTBFaultEvent(m_cpuId, faultVA, false, faultType);
+            PendingEvent ev = makeDTBFaultEvent(m_cpuId, faultVA, false, faultType);
             m_faultDispatcher->setPendingEvent(ev);                                                 // Fast Path
         }
     }
 
     AXP_HOT AXP_ALWAYS_INLINE auto handleITB_Miss(quint64 faultVA, quint64 faultPC) const noexcept -> void
     {
+        Q_UNUSED(faultPC);
         DEBUG_LOG(QString("PalBox CPU %1: ITB_MISS VA=0x%2")
             .arg(m_cpuId)
             .arg(faultVA, 16, 16, QChar('0')));
@@ -1790,6 +1814,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto handleDFault(quint64 faultVA, quint64 faultPC) const noexcept -> void
     {
+        Q_UNUSED(faultPC);
         // Data faults are permission violations PAL cannot resolve
         // Examples: Access Control Violation, Fault On Read/Write/Execute
 
@@ -1805,6 +1830,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto handleIFault(quint64 faultVA, quint64 faultPC) const noexcept -> void
     {
+        Q_UNUSED(faultPC);
         // Instruction fetch permission violation
 
         DEBUG_LOG(QString("PalBox CPU %1: IFAULT VA=0x%2 - escalating to OS")
@@ -1817,6 +1843,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto handleUnaligned(quint64 faultVA, quint64 faultPC) const noexcept -> void
     {
+        Q_UNUSED(faultPC);
         // Unaligned memory access
         // OS can either:
         //   - Emulate the access (slow but correct)
@@ -1832,6 +1859,8 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto handleArithmetic(quint64 faultPC, quint64 excSum) const noexcept -> void
     {
+        Q_UNUSED(excSum);
+        Q_UNUSED(faultPC);
         DEBUG_LOG(QString("PalBox CPU %1: ARITHMETIC TRAP - vectoring to OS")
             .arg(m_cpuId));
 
@@ -1842,18 +1871,20 @@ public:
 
         // 2. Get OS entry point from SCBB
         //quint64 scbb = globalIPRHotExt(m_cpuId).scbb;
-        quint64 scbb    = m_iprGlobalMaster->x->scbb;                                    // Fast Path
+        quint64 scbb = m_iprGlobalMaster->x->scbb;                                    // Fast Path
         quint64 osEntry = scbb + (0x00 * 16);  // Arithmetic trap vector
 
         // 3. Transfer control to OS
         //setPC_Active(m_cpuId, osEntry);  // No PC[0] - exit PAL mode
         //setCM_Active(m_cpuId, CM_KERNEL);
-        m_iprGlobalMaster->h->advancePC( osEntry);                                                      // Fast Path
+        m_iprGlobalMaster->h->advancePC(osEntry);                                                      // Fast Path
         m_iprGlobalMaster->h->setCM(CM_KERNEL);                                     // Fast Path
 
         DEBUG_LOG(QString("PalBox CPU %1: Transferred to OS @ 0x%2")
             .arg(m_cpuId)
             .arg(osEntry, 16, 16, QChar('0')));
+        Q_UNUSED(ksp);
+        
     }
 
 
@@ -1867,21 +1898,21 @@ public:
      * @return Reference to PalBox instance for specified CPU
      */
 
-    // AXP_HOT AXP_FLATTEN static auto instance(CPUIdType cpuId) noexcept -> PalBox&
-    // {
-    //     static PalBox s_instance(cpuId);
-    //     return s_instance;
-    // }
+     // AXP_HOT AXP_FLATTEN static auto instance(CPUIdType cpuId) noexcept -> PalBox&
+     // {
+     //     static PalBox s_instance(cpuId);
+     //     return s_instance;
+     // }
 
     AXP_HOT inline PalBox(CPUIdType cpuId, IRQPendingState* pendingState, InterruptRouter* interruptRouter) noexcept
-    : m_cpuId(cpuId)
-      , m_palService(std::make_unique<PalService>(cpuId, pendingState,interruptRouter))
-      , m_entryVector(0), m_faultPC(0)
-      , m_pending(pendingState)
-      , m_router{(interruptRouter)}
-      , m_entryReason(PalEntryReason::CALL_PAL_INSTRUCTION)
-    , m_guestMemory(&global_GuestMemory())
-    , m_faultDispatcher(&globalFaultDispatcher(cpuId))
+        : m_cpuId(cpuId)
+        , m_palService(std::make_unique<PalService>(cpuId, pendingState, interruptRouter))
+        , m_entryVector(0), m_faultPC(0)
+        , m_pending(pendingState)
+        , m_router{ (interruptRouter) }
+        , m_entryReason(PalEntryReason::CALL_PAL_INSTRUCTION)
+        , m_guestMemory(&global_GuestMemory())
+        , m_faultDispatcher(&globalFaultDispatcher(cpuId))
         , m_iprGlobalMaster(getCPUStateView(cpuId))
     {
         DEBUG_LOG(QString("PalBox: Initialized for CPU %1").arg(cpuId));
@@ -1911,7 +1942,7 @@ public:
         // 2. PC update
         if (pr.pcModified)
         {
-            m_iprGlobalMaster->h->advancePC( pr.newPC);
+            m_iprGlobalMaster->h->advancePC(pr.newPC);
         }
 
         // 3. Side-effect flags -> pipeline signals
@@ -1931,7 +1962,7 @@ public:
                     //     m_iprGlobalMaster->h->sisr &=
                     //         ~static_cast<quint16>(1u << claimed.ipl);
                     // }
-                    m_palService->deliverInterrupt( claimed);
+                    m_palService->deliverInterrupt(claimed);
                 }
             }
         }
@@ -1962,7 +1993,7 @@ public:
         if (pr.has(PipelineEffect::kFlushPendingIPRWrites))
             slot.m_cBox->commitStagedIPRWrites();
 
-        // 4. Fault routing — suppress writeback if PAL didn't return
+        // 4. Fault routing -- suppress writeback if PAL didn't return
         if (!pr.doesReturn)
             slot.needsWriteback = false;
 
@@ -1978,6 +2009,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto execute(PipelineSlot& slot, PalResult& palResult) noexcept -> BoxResult
     {
+        Q_UNUSED(palResult);
         switch (const quint8 opcode = extractOpcode(slot.di.rawBits()))
         {
         case 0x00:  // CALL_PAL
@@ -2003,8 +2035,8 @@ public:
                 .arg(opcode, 2, 16, QChar('0')));
 
             return BoxResult()
-                   .setTrapCodeFaultClass(TrapCode_Class::ILLEGAL_INSTRUCTION)
-                   .flushPipeline();
+                .setTrapCodeFaultClass(TrapCode_Class::ILLEGAL_INSTRUCTION)
+                .flushPipeline();
         }
     }
 
@@ -2057,8 +2089,8 @@ public:
         const quint16 iprIndex = getFunctionCode(slot.di);
         const quint8 rb = slot.di.rb;       // source register
         const quint64 value = m_iprGlobalMaster->readInt(rb);
-
 #if AXP_INSTRUMENTATION_TRACE
+ 
         quint64 result;
         m_palService->readIPR(static_cast<HW_IPR>(iprIndex), result);
         EXECTRACE_IPR_WRITE(m_cpuId, iprIndex, value, result);
@@ -2066,12 +2098,14 @@ public:
 
         m_palService->writeIPR(static_cast<HW_IPR>(iprIndex), slot);
 
+        Q_UNUSED(value);
         return BoxResult().advance();
     }
 
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeRETSYS_OSF(PipelineSlot& slot, PalResult& result) noexcept -> void
     {
+        Q_UNUSED(result);
         // RETSYS is essentially REI for system calls
         // Restores user context from snapshot
         executeREI(slot);
@@ -2124,10 +2158,10 @@ public:
         // ============================================================
         if (pr.pcModified)
         {
-            m_iprGlobalMaster->h->advancePC( pr.newPC);
+            m_iprGlobalMaster->h->advancePC(pr.newPC);
             br.pcModified = true;
         }
-        if (pr.hasRequestPipelineFlush() )
+        if (pr.hasRequestPipelineFlush())
             br.flushPipeline();
         if (pr.hasDrainWriteBuffers())
             br.drainWriteBuffers();
@@ -2139,6 +2173,6 @@ public:
         return br;
     }
 
-    
+
 };
 #endif // PALBOXBASE_H

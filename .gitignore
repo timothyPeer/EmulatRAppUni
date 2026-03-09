@@ -130,3 +130,6 @@ Desktop.ini
 # H&M
 # ---------------------------------------------------------------------------
 *.hmskin
+
+#snapshot files. 
+out/build/debug/snapshot/*.axpsnap

@@ -123,7 +123,7 @@ enum class ProbeResult : quint8;
 // Only events listed in Table 21264-Alpha Datasheet.pdf, sec. 5-8 use named PAL vectors;
 // all CALL_PAL functions use calculated entry addresses.
 // ============================================================================
-class alignas(16) PalService final
+class alignas(64) PalService final
 {
 
     FaultDispatcher* m_faultDispatcher;
@@ -193,6 +193,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE void updateAstEligibility(quint32 cpuId) noexcept
 	{
+		Q_UNUSED(cpuId)
 		const quint8 asten = static_cast<quint8>(m_iprGlobalMaster->h->aster & 0x0Fu);
 		const quint8 astsr = static_cast<quint8>(m_iprGlobalMaster->h->astsr & 0x0Fu);
 		const quint8 cm    = static_cast<quint8>(m_iprGlobalMaster->h->cm & 0x03u);
@@ -280,6 +281,9 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE  void executePalCall(quint8 palFunction, quint64 r16, quint64 r17) noexcept
 	{
+		Q_UNUSED(palFunction)
+		Q_UNUSED(r16)
+		Q_UNUSED(r17)
 		const quint64 r16q64 = m_iprGlobalMaster->readInt(16);
 		const quint64 r17q64 = m_iprGlobalMaster->readInt(17);
 
@@ -458,6 +462,7 @@ public:
 		CPUIdType cpuId,
 		QString& outString) const noexcept
 	{
+		Q_UNUSED(cpuId)
 		QByteArray buffer;
 
 		for (quint64 i = 0; i < maxLength; i++) {
@@ -478,6 +483,7 @@ public:
 	inline MEM_STATUS writeVirtualQword(quint64 va, quint64 value,
 		CPUIdType cpuId) const noexcept
 	{
+		Q_UNUSED(cpuId)
 		PAType pa_out;
 		AlphaPTE outpte{};
 		TranslationResult tr = m_ev6Translation->ev6TranslateFastVA(va, AccessKind::WRITE,	static_cast<Mode_Privilege>(m_iprGlobalMaster->h->cm),
@@ -495,6 +501,7 @@ public:
 	inline MEM_STATUS readVirtualQword(quint64 va, quint64& value,
 		CPUIdType cpuId) const noexcept
 	{
+		Q_UNUSED(cpuId)
 		quint64 pa;
 		AlphaPTE pte{};
 
@@ -514,6 +521,7 @@ public:
 	inline MEM_STATUS writeVirtualLongword(quint64 va, quint32 value,
 		CPUIdType cpuId) const noexcept
 	{
+		Q_UNUSED(cpuId)
 		quint64 pa;
 		AlphaPTE pte{};
 
@@ -532,6 +540,7 @@ public:
 	}
 	inline MEM_STATUS readVirtualLongword(quint64 va, quint32& value, CPUIdType cpuId) const noexcept
 	{
+		Q_UNUSED(cpuId)
 		quint64 pa;
 		AlphaPTE pte{};
 
@@ -786,6 +795,8 @@ public:
 	 */
 	AXP_HOT AXP_ALWAYS_INLINE  bool shouldBlockInterrupt(IPLType interruptIPL, bool isCritical) const noexcept
 	{
+		Q_UNUSED(interruptIPL)
+		Q_UNUSED(isCritical)
 		// In PAL mode, block all non-critical interrupts
 		return true;
 	}
@@ -810,6 +821,7 @@ public:
 	// ------------------------------------------------------------------------
 	AXP_HOT AXP_ALWAYS_INLINE void swapPalBase(PipelineSlot& slot, quint64 newPalBase) noexcept
 	{
+		Q_UNUSED(slot)
 		// ASA: PALcode replacement is required; PAL_BASE participates in vectoring.
 		m_iprGlobalMaster->x->pal_base = newPalBase;
 	}
@@ -962,20 +974,24 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_ASN(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->asn);
 	}
 
 	AXP_HOT AXP_ALWAYS_INLINE void serviceRD_PS(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->ps);
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void serviceWR_PS(PipelineSlot& slot, quint64 ps) noexcept
 	{
+		Q_UNUSED(slot)
 		// PAL semantics: read processor status
 		m_iprGlobalMaster->h->ps = ps;
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_FEN(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->fen);
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMTPR_FEN(PipelineSlot& slot, PalResult& result) noexcept
@@ -1017,6 +1033,7 @@ public:
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_IPL(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		quint64 currentIPL = m_iprGlobalMaster->h->getIPL();
 		result = PalResult::Return(PalReturnReg::R0, currentIPL);
 	}
@@ -1034,6 +1051,7 @@ public:
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_MCES(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->x->mces);
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMTPR_MCES(PipelineSlot& slot, PalResult& result) noexcept
@@ -1051,10 +1069,12 @@ public:
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_PCBB(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->x->pcbb);
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_PRBR(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->x->prbr);
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMTPR_PRBR(PipelineSlot& slot, PalResult& result) noexcept
@@ -1067,6 +1087,7 @@ public:
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_PTBR(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->ptbr);
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMTPR_PTBR(PipelineSlot& slot, PalResult& result) noexcept
@@ -1084,6 +1105,7 @@ public:
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_SCBB(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->x->scbb);
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeMTPR_SCBB(PipelineSlot& slot, PalResult& result) noexcept
@@ -1146,6 +1168,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE  void executeMFPR_VPTB(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->x->vptb);
 	}
 
@@ -1185,6 +1208,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE  void executeMFPR_DATFX(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->datfx);
 	}
 
@@ -1427,6 +1451,7 @@ public:
 
 	AXP_ALWAYS_INLINE void executeSWPCTX(PipelineSlot& slot, PalResult& result)
 	{
+		Q_UNUSED(slot)
 		const quint64 r16 = m_iprGlobalMaster->readInt(16);
 		// R16 = new PCBB (Process Control Block Base) physical address
 		m_iprGlobalMaster->x->pcbb = r16;
@@ -1981,6 +2006,7 @@ public:
 			if (m_ev6Translation->translateVA_Data( prevEntry, slot.di.pc,  true, prevPA) == TranslationResult::Success) {
 				quint32 zero = 0;
 		MEM_STATUS memStat =		m_guestMemory->writePA(prevPA, &zero, sizeof(quint32));
+			Q_UNUSED(memStat)
 			}
 		}
 
@@ -2104,6 +2130,7 @@ public:
 			if (m_ev6Translation->translateVA_Data( prevEntry, slot.di.pc,  true, prevPA) == TranslationResult::Success) {
 				quint64 zero = 0;
 			MEM_STATUS memStat0 =	m_guestMemory->writePA(prevPA, &zero, sizeof(quint64));
+			Q_UNUSED(memStat0)
 			}
 		}
 
@@ -2236,6 +2263,8 @@ public:
 		quint32 zero = 0;
 		MEM_STATUS stat0 =	m_guestMemory->writePA(entryPA, &zero, sizeof(quint32));      // flink = 0
 		MEM_STATUS stat1 =  m_guestMemory->writePA(entryPA + 4, &zero, sizeof(quint32));  // blink = 0
+		Q_UNUSED(stat0)
+		Q_UNUSED(stat1)
 
 		// Return success
 		writeIntReg(slot, 1, entryAddr);  // R1 = removed entry address
@@ -2327,6 +2356,8 @@ public:
 		quint64 zero = 0;
 		MEM_STATUS stat0 = m_guestMemory->writePA(entryPA, &zero, sizeof(quint64));      // flink = 0
 		MEM_STATUS stat1 = m_guestMemory->writePA(entryPA + 8, &zero, sizeof(quint64));  // blink = 0
+		Q_UNUSED(stat0)
+		Q_UNUSED(stat1)
 
 		// Return success
 		writeIntReg(slot, 1, entryAddr);  // R1 = removed entry address
@@ -2379,6 +2410,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE void executeCLRFEN(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		// Clear FEN bit in HWPCB
 		m_iprGlobalMaster->h->fen = 0;
 		result.hasReturnValue = false;
@@ -2587,6 +2619,7 @@ public:
 	// ============================================================================
 	AXP_HOT AXP_ALWAYS_INLINE  void executeMFPR_ESP(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->esp);
 	}
 
@@ -2613,6 +2646,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_SSP(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->ssp);
 	}
 
@@ -2639,6 +2673,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE void executeMFPR_USP(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->usp);
 	}
 
@@ -3197,6 +3232,7 @@ public:
 	 */
 	AXP_HOT AXP_ALWAYS_INLINE  void executeRDVAL_OSF(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->unq);
 	}
 
@@ -3337,6 +3373,7 @@ public:
 	 */
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDPS_OSF(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->ps);
 	}
 
@@ -3420,6 +3457,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDUSP_OSF(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->usp);
 	}
 
@@ -3472,6 +3510,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE void writeIntReg(PipelineSlot& slot, quint8 index, quint64 argValue) const noexcept
 	{
+		Q_UNUSED(slot);
 		m_iprGlobalMaster->i->write(index, argValue);
 	}
 
@@ -3482,11 +3521,13 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE quint64 readIntReg(PipelineSlot& slot, quint8 index) const noexcept
 	{
+		Q_UNUSED(slot);
 		return m_iprGlobalMaster->i->read(index);
 	}
 	
 	AXP_HOT AXP_ALWAYS_INLINE void executeHALT(PipelineSlot& slot, PalResult& result) const noexcept
 	{
+		Q_UNUSED(slot);
 		// HALT is non-returning (until external restart) but we need to complete sideeffects.
 		result.doesReturn = true;
 
@@ -4160,6 +4201,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE   void executeREAD_UNQ(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->unq);
 
 	}
@@ -4417,6 +4459,8 @@ public:
 	}
 	AXP_HOT AXP_ALWAYS_INLINE void executeReset(PipelineSlot& slot, PalResult& result) noexcept {
 
+		Q_UNUSED(slot)
+		Q_UNUSED(result)
 		// System Initialization
 		m_iprGlobalMaster->h->setIPL_Unsynced( 31);
 	}
@@ -4938,30 +4982,35 @@ public:
 	// Returns full PS in R0 (same as RDPS but different PAL function code)
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDPSR(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->ps);
 	}
 
 	// [IMPL] RDMCES - Read Machine Check Error Summary
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDMCES(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->x->mces);
 	}
 
 	// [IMPL] RDPCBB - Read Process Control Block Base (physical address)
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDPCBB(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->x->pcbb);
 	}
 
 	// [IMPL] RDPER - Read Performance Enable Register
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDPER(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->x->perfmon);
 	}
 
 	// [IMPL] RDIRQL - Read current Interrupt Request Level (NT terminology for IPL)
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDIRQL(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0,
 			static_cast<quint64>(m_iprGlobalMaster->h->getIPL()));
 	}
@@ -4969,12 +5018,14 @@ public:
 	// [IMPL] RDKSP - Read Kernel Stack Pointer
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDKSP(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->ksp);
 	}
 
 	// [IMPL] RDCOUNTERS - Read Performance Counters
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDCOUNTERS(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		// Return combined counter value (EV6: CC register)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->r->cc);
 	}
@@ -4983,6 +5034,7 @@ public:
 	// NT stores TEB pointer in the unique value field
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDTEB(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->unq);
 	}
 
@@ -4990,6 +5042,7 @@ public:
 	// NT uses the unique value as thread self pointer
 	AXP_HOT AXP_ALWAYS_INLINE void executeRDTHREAD(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->unq);
 	}
 
@@ -4997,6 +5050,7 @@ public:
 	// Same backing store as RDTHREAD/RDTEB
 	AXP_HOT AXP_ALWAYS_INLINE void executeTHIS(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		result = PalResult::Return(PalReturnReg::R0, m_iprGlobalMaster->h->unq);
 	}
 
@@ -5043,6 +5097,7 @@ public:
 	// R16 bit 0: 0=disable FP, 1=enable FP
 	AXP_HOT AXP_ALWAYS_INLINE void executeWRFEN(PipelineSlot& slot, PalResult& result)
 	{
+		Q_UNUSED(slot)
 		const quint64 r16 = m_iprGlobalMaster->readInt(16);
 		m_iprGlobalMaster->h->fen = (r16 & 1);  // Enable/disable FP
 		result.status = PalStatus::Success;
@@ -5065,6 +5120,7 @@ public:
 	// Raises IPL to 31 (blocks all interrupts), returns old IPL in R0
 	AXP_HOT AXP_ALWAYS_INLINE void executeDI(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		const quint8 oldIPL = m_iprGlobalMaster->getIPL();
 		m_iprGlobalMaster->h->setIPL_Unsynced( 31);
 
@@ -5242,6 +5298,7 @@ public:
 	// Restores user-mode context saved by CALLSYS
 	AXP_HOT AXP_ALWAYS_INLINE void executeRETSYS(PipelineSlot& slot, PalResult& result) noexcept
 	{
+		Q_UNUSED(slot)
 		// Restore PC from EXC_ADDR
 		const quint64 returnPC = m_iprGlobalMaster->h->exc_addr;
 
@@ -5332,6 +5389,7 @@ public:
 
 	AXP_HOT AXP_ALWAYS_INLINE void executeRTI(PipelineSlot& slot, PalResult& result)
 	{
+		Q_UNUSED(slot)
 		// Read saved PC from exc_addr
 		result.newPC = m_iprGlobalMaster->h->exc_addr;
 		result.pcModified = true;
@@ -5676,6 +5734,7 @@ AXP_HOT AXP_ALWAYS_INLINE    void buildDTBMissDoubleArgs(PalArgumentPack& pack,
 	CPUIdType cpuId,
 	const PendingEvent& ev) noexcept
 {
+	Q_UNUSED(cpuId)
 	pack.a0 = ev.faultVA;            // Original faulting VA
 	pack.a1 = ev.dtbFaultVA;         // VA that faulted during PTE fetch
 	pack.a2 = static_cast<quint64>(m_iprGlobalMaster->h->asn);			 // Current ASN
@@ -5770,6 +5829,7 @@ static AXP_HOT AXP_ALWAYS_INLINE   void buildArithArgs(PalArgumentPack& pack, CP
 
 static AXP_HOT AXP_ALWAYS_INLINE    void buildFENArgs(PalArgumentPack& pack, CPUIdType cpuId, const PendingEvent& ev) noexcept
 {
+	Q_UNUSED(cpuId)
 	pack.a0 = ev.opcode;  // Faulting FP instruction
 	pack.a1 = 0;  // Reserved
 	pack.a2 = 0;  // Reserved
@@ -5784,6 +5844,7 @@ static AXP_HOT AXP_ALWAYS_INLINE    void buildFENArgs(PalArgumentPack& pack, CPU
 
 static AXP_HOT AXP_ALWAYS_INLINE   void buildOPCDECArgs(PalArgumentPack& pack, CPUIdType cpuId, const PendingEvent& ev) noexcept
 {
+	Q_UNUSED(cpuId)
 	pack.a0 = ev.opcode;  // Illegal instruction
 	pack.a1 = 0;  // Reserved
 	pack.a2 = 0;  // Reserved
@@ -5798,6 +5859,7 @@ static AXP_HOT AXP_ALWAYS_INLINE   void buildOPCDECArgs(PalArgumentPack& pack, C
 
 static AXP_HOT AXP_ALWAYS_INLINE   void buildMCHKArgs(PalArgumentPack& pack, CPUIdType cpuId, const PendingEvent& ev) noexcept
 {
+	Q_UNUSED(cpuId)
 	pack.a0 = ev.mchkCode;   // Machine check code
 	pack.a1 = ev.mchkAddr;   // Physical address (if applicable)
 	pack.a2 = 0;  // Reserved
@@ -5912,6 +5974,7 @@ inline PalResult pal_PUTC_handler(PalArgumentPack& args, CPUIdType cpuId)
  */
 inline PalResult pal_PUTS_handler(PalArgumentPack& args, CPUIdType cpuId)
 {
+	Q_UNUSED(cpuId)
 	quint64 addr = args.a0;
 	quint64 len = args.a1;
 
@@ -5993,6 +6056,8 @@ inline PalResult pal_GETC_handler(PalArgumentPack& args, CPUIdType cpuId)
  */
 inline PalResult pal_PUTS_EXT_handler(PalArgumentPack& args, CPUIdType cpuId)
 {
+	Q_UNUSED(cpuId);
+
 	quint64 addr = args.a0;
 	quint64 len = args.a1;
 	int opaIndex = static_cast<int>(args.a2);
@@ -6051,6 +6116,7 @@ AXP_HOT AXP_ALWAYS_INLINE quint64 packSISR_toMFPR(quint16 sisr) noexcept
  */
 inline PalResult pal_GETC_EXT_handler(PalArgumentPack& args, CPUIdType cpuId)
 {
+	Q_UNUSED(cpuId);
 	int opaIndex = static_cast<int>(args.a0);
 
 	// Read from specified OPA device
@@ -6081,6 +6147,7 @@ inline PalResult pal_GETC_EXT_handler(PalArgumentPack& args, CPUIdType cpuId)
  */
 AXP_HOT AXP_ALWAYS_INLINE PalResult pal_PUTS_BULK_handler(PalArgumentPack& args, CPUIdType cpuId)
 {
+	Q_UNUSED(cpuId);
 	quint64 addr = args.a0;
 	quint64 len = args.a1;
 

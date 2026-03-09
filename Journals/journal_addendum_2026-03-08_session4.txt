@@ -1,0 +1,104 @@
+
+=== Journal Entry 2026-03-08 Session 4 ===
+
+SUMMARY: TC-SNAP-001 PASSED. Full snapshot lifecycle working end-to-end.
+Decompress once (~14 min debug build), save .axpsnap, reload in 66ms.
+
+--- BUGS FIXED ---
+
+1. SrmRomLoader.cpp -- push_back aggregate initializer mismatch (C2665)
+   Root cause: GuestRegionSource enum field missing from positional initializer.
+   Both push_back calls in populateDescriptor() rewritten with explicit field
+   order: basePA, size, type, source, description, populated, readOnly,
+   includeInSnapshot, hwrpbVisible.
+
+2. SrmRomLoader.cpp -- saveSnapshot() checksum = FNV-1a seed value
+   Root cause: QDataStream destructor closed QFile before footer checksum
+   block ran. file.read() returned empty QByteArray, checksum computed over
+   zero bytes = 0xCBF29CE484222325 (seed).
+   Fix: ds.setDevice(nullptr) to detach/flush QDataStream, close file,
+   reopen read-only, readAll(), compute checksum, reopen append, write
+   8-byte footer. File handle never goes out of scope mid-write.
+
+3. GuestPhysicalRegionRegistry.cpp -- addRam() includeInSnapshot = true
+   Root cause: 32GB RAM region flagged for snapshot inclusion.
+   snapshotRegions() returned 4 entries including 34GB RAM -- would have
+   produced a ~42GB .axpsnap file.
+   Fix: addRam() sets includeInSnapshot = false. RAM opt-in deferred per
+   spec §10.3 (SrmSnapshotIncludeRam flag, backlog).
+
+--- VERIFIED VALUES (ES40_V6_2.EXE) ---
+
+populateDescriptor():
+  finalPC      = 0x5C0      (LDA disp16 at stub+0x2D8)
+  jsrOffset    = 0x2DC      (JSR R31,(R0) at stub+0x2DC)
+  palBase      = 0x600000   (stub+0x10)
+  startPC      = 0x900001   (loadPA + sigOffset + 1)
+  donePC       = 0x600      (finalPC + 0x40)
+  kCopyLoopPA  = 0x9003EC
+  kCopyExitPA  = 0x900408
+
+decompress():
+  cyclesExecuted = 5,767,331
+  elapsedMs      = ~895,000 ms (~14.9 min, debug build)
+  finalPC        = 0x5C0    ✓
+  finalPalBase   = 0x600000 ✓
+
+saveSnapshot():
+  regions        = 3  (DecompressedFW + PALcode + Firmware, RAM excluded)
+  totalBytes     = 9,091,072 bytes
+  fileSize       = 9,092,264 bytes
+  romHash        = 0x9689831940DA2165
+  checksum       = 0xEF23EC3A5607179F  (valid FNV-1a)
+
+loadSnapshot():
+  elapsedMs      = 66.0 ms   (12,800x speedup vs decompress)
+  bytesRestored  = 9,091,072 ✓
+  PC             = 0x5C0     ✓
+  PAL_BASE       = 0x600000  ✓
+  ROM hash       = validated ✓
+  checksum       = validated ✓
+
+--- GuestPhysicalRegionRegistry state at validate() ---
+
+  [0]  PA 0x000000    size 0x400000   DecompressedFW   FirmwareBinary
+  [1]  PA 0x600000    size 0x200000   PALcode          FirmwareBinary
+  [2]  PA 0x900000    size 0x2AB800   Firmware         FirmwareBinary
+  [3]  PA 0x80000000  size 0x800000000  RAM            MemoryMapConfig
+
+validate() = true (no overlaps in firmware regions)
+
+--- KNOWN ISSUES / BACKLOG ---
+
+- RAM split required: 32GB RAM [0x80000000, 0x880000000) overlaps MMIO
+  [0xF0000000, 0x100000000). addRam() must register two sub-ranges:
+    RAM low:  0x80000000 .. 0xF0000000  (1.75 GB)
+    RAM high: 0x100000000 .. end        (remainder)
+  MMIO then registers cleanly. Deferred -- not blocking Phase 14c.
+
+- HWRPB PA 0x2000 falls inside DecompressedFW [0x0, 0x400000).
+  Overlap detection correctly rejected it as a top-level registry entry.
+  HWRPB is a sub-region of DecompressedFW -- defer to HWRPB analysis session.
+
+- HWRPB signature (0x42707248 "HrpB") not present at 0x2000 at decompressor
+  exit. Expected -- HWRPB written by SRM console init from PC=0x5C0,
+  not during decompression.
+
+- Phase 14c (CPU0 execution thread start / SRM console boot) -- not yet done.
+
+--- FILES CHANGED THIS SESSION ---
+
+  SrmRomLoader.cpp        -- push_back fix + saveSnapshot rewrite
+  GuestPhysicalRegionRegistry.cpp -- addRam includeInSnapshot=false
+
+--- GIT CHECKIN SCOPE ---
+
+  memoryLib/SrmRomLoader.cpp
+  memoryLib/SrmRomLoader.h
+  memoryLib/GuestPhysicalRegion.h
+  memoryLib/GuestPhysicalRegionRegistry.h
+  memoryLib/GuestPhysicalRegionRegistry.cpp
+  EmulatR_init.cpp
+  EmulatR_init.h
+  snapshot/ES40_V6_2.axpsnap  -- ADD to .gitignore (large binary, 8.7MB)
+

@@ -31,7 +31,7 @@
 #include <QVariant>
 #include <QVector>
 #include <QtGlobal>
-#include "../memoryLib/memory_core.h"
+#include "memoryLib/memory_core.h"
 
 
 
@@ -227,24 +227,28 @@ struct FloatingPointConfig {
 };
 
 // ============================================================================
-// Physical Memory Address Space CONFIGURATION 
+// Physical Memory Address Space CONFIGURATION -  MemoryMap section describes where to put ROM
 // ============================================================================
 
 struct MemoryMapConfig {
-    // HWRPB - Hardware Restart Parameter Block
-    quint64 hwrpbBase{ 0x2000 };
-    quint64 hwrpbSize{ 0x4000 };  // 16 KB
+    // SRM Firmware -- decompressor stub load address
+    // All other SRM boot parameters (initialPC, donePC, mirrorPA, size)
+    // are derived automatically from the firmware binary at load time.
+    quint64 srmBase{ 0x900000 };        // PA where decompressor stub loads
 
-    // PAL - Privileged Architecture Library
-    quint64 palBase{ 0x0 };
-    quint64 palSize{ 0x10000 };  // 64 KB
+    // HWRPB - Hardware Restart Parameter Block
+    // Base is Alpha AXP architecture constant (always 0x2000) -- not configurable.
+    // Size reserved for future HWRPB region analysis.
+    quint64 hwrpbBase{ 0x2000 };        // architecture constant -- do not change
+    quint64 hwrpbSize{ 0x4000 };        // 16 KB -- pending HWRPB analysis
+
     // RAM - Main system memory
     quint64 ramBase{ 0x80000000 };
     // ramSize computed from System.memorySizeGB
 
     // MMIO - Memory-mapped I/O (device registers)
     quint64 mmioBase{ 0xF0000000 };
-    quint64 mmioSize{ 0x10000000 };  // 256 MB
+    quint64 mmioSize{ 0x10000000 };     // 256 MB
 
     // PCI Memory - PCI device BARs
     quint64 pciMemBase{ 0x200000000 };
@@ -252,20 +256,14 @@ struct MemoryMapConfig {
 };
 
 // ============================================================================
-// ROM CONFIGURATION
+// ROM CONFIGURATION - ROM section describes what to load
 // ============================================================================
 
 struct RomConfig {
-    // TODO
-    QString hostProcessorModuleFirmwareFile;
-    QString pciBusModuleFirmWare;
-    QString systemModuleFirmwareFile;
-    QString intelHexLoaderFile;
-    /// <summary>
-    /// / SRM Production QSetting Properties
-    /// </summary>
-    QString srmRomFile;
-    QString srmIncRomFile{ "ES45" };
+    QString  srmRomFilename;    // path to firmware .EXE -- user specified
+    bool     srmSnapshot;       // enable snapshot save/load
+    QString  srmSnapshotDir;    // optional override, defaults to <bindir>/snapshot/
+    int      srmMaxSteps;       // safety valve -- default 200000000
 };
 
 // ============================================================================

@@ -67,7 +67,7 @@ struct FetchResult;
 // ============================================================================
 // AlphaCPU - CPU Orchestrator
 // ============================================================================
-class alignas(8) AlphaCPU final : public QObject
+class alignas(64) AlphaCPU final : public QObject
 {
     Q_OBJECT
 
@@ -463,7 +463,7 @@ public:
         }
 
       
-        // Now the check becomes meaningful — only fires for genuine unexpected flushes
+        // Now the check becomes meaningful -- only fires for genuine unexpected flushes
         if (boxResult.needsPipelineFlush() && !fetchResult.virtualAddress == 0)
         {
             qDebug() << "UNEXPECTED flush at PC:" << Qt::hex << fetchResult.virtualAddress;

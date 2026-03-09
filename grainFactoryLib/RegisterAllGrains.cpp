@@ -631,8 +631,6 @@
 #include "grainFactoryLib/grains/generated/PAL/STQP_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/SWASTEN_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/SWPCTX_InstructionGrain.h"
-#include "grainFactoryLib/grains/generated/PAL/SWPCTX_InstructionGrain.h"
-#include "grainFactoryLib/grains/generated/PAL/SWPIPL_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/SWPIPL_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/SWPPROCESS_InstructionGrain.h"
 #include "grainFactoryLib/grains/generated/PAL/TBI_InstructionGrain.h"

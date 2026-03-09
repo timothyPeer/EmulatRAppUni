@@ -36,10 +36,11 @@
 #include <QtGlobal>
 #include <type_traits>
 
-#ifndef _MSC_VER
+#ifdef _MSC_VER
 #include <intrin.h>
 #endif
 
+#include "coreLib/Axp_Attributes_core.h"
 // ============================================================================
 // Bit Manipulation Utilities
 // ============================================================================

@@ -257,12 +257,9 @@ struct EmulatorSettingsInline
     inline void loadRom(QSettings& ini)
     {
         ini.beginGroup("ROM");
-        podData.rom.srmIncRomFile = ini.value("SrmRomVariant", "ES45").toString();
-        podData.rom.srmRomFile = ini.value("SrmRomFile", "").toString();
-        podData.rom.hostProcessorModuleFirmwareFile = ini.value("HostProcessorModuleFirmwareFile", "").toString();
-        podData.rom.pciBusModuleFirmWare = ini.value("PCIBusModuleFirmWare", "").toString();
-        podData.rom.systemModuleFirmwareFile = ini.value("SystemModuleFirmwareFile", "").toString();
-        podData.rom.intelHexLoaderFile = ini.value("IntelHexLoaderFile", "").toString();
+        podData.rom.srmRomFilename = ini.value("SrmRomFilename", "").toString();
+        podData.rom.srmSnapshot = ini.value("SrmSnapshot", "true").toBool();
+        podData.rom.srmSnapshotDir = ini.value("SrmSnapshotDir", "snapshot/").toString();
         ini.endGroup();
     }
 
@@ -275,11 +272,9 @@ struct EmulatorSettingsInline
     inline void loadMemoryMap(QSettings& ini)
     {
         ini.beginGroup("MemoryMap");
-
-        podData.memoryMap.hwrpbBase = ini.value("HwrpbBase", "0x2000").toString().toULongLong(nullptr, 16);
         podData.memoryMap.hwrpbSize = ini.value("HwrpbSize", "0x4000").toString().toULongLong(nullptr, 16);
         podData.memoryMap.ramBase = ini.value("RamBase", "0x80000000").toString().toULongLong(nullptr, 16);
-
+        podData.memoryMap.srmBase = ini.value("SrmBase", "0x900000").toString().toULongLong(nullptr, 16);
         podData.memoryMap.mmioBase = ini.value("MmioBase", "0xF0000000").toString().toULongLong(nullptr, 16);
         podData.memoryMap.mmioSize = ini.value("MmioSize", "0x10000000").toString().toULongLong(nullptr, 16);
 
