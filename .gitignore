@@ -132,4 +132,4 @@ Desktop.ini
 *.hmskin
 
 #snapshot files. 
-out/build/debug/snapshot/*.axpsnap
+out/build/debug/snapshot/*.axpsnapout/build/debug/snapshot/
