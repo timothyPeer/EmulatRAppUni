@@ -16,88 +16,15 @@
 #ifndef FETCHRESULT_H
 #define FETCHRESULT_H
 #include <QtGlobal>
-#include "../grainFactoryLib/DecodedInstruction.h"
-#include "../grainFactoryLib/iGrain-KeyIdenties.h"
-#include "../coreLib/Axp_Attributes_core.h"
 
+#include "coreLib/Axp_Attributes_core.h"
+#include "grainFactoryLib/iGrain-KeyIdenties.h"
 #include "faultLib/fault_core.h"
 #include "types_core.h"
-
+#include "machineLib/PipelineSlot.h"
 enum class MEM_STATUS;
 
 
-
-// ============================================================================
-// Pipeline Step Result
-// ============================================================================
-
-enum class PipelineAction : quint8 {
-	ADVANCED = 0,       // Ring advanced normally
-	STALLED,            // Ring frozen (box stalled)
-	FAULT,              // Fault detected - enter PAL
-	MISPREDICTION,      // Branch misprediction - flush
-	PAL_CALL,           // CALL_PAL - enter PAL mode
-	HALT                // HW_HALT - stop CPU
-};
-
-// ============================================================================
-// Pipeline Step Result
-// ============================================================================
-struct PipelineStepResult {
-	PipelineAction action = PipelineAction::ADVANCED;
-
-	// For FAULT:
-	TrapCode_Class trapCode;
-	quint64 faultVA;
-	quint64 faultPC;
-
-	// For PAL_CALL:
-	quint32 palFunction;     // PAL function code (0-255)
-	quint64 callPC;         // PC of CALL_PAL instruction
-	quint64 palVector;      // Computed PAL entry vector
-
-	// For MISPREDICTION:
-	quint64 redirectPC;     // Correct target address
-
-	// Helper constructors
-	static PipelineStepResult Advanced() {
-		return PipelineStepResult{ .action = PipelineAction::ADVANCED, .trapCode = TrapCode_Class::NONE, .faultVA = 0,
-			.faultPC = 0, .palFunction = 0, .callPC = 0, .palVector = 0, .redirectPC = 0 };
-	}
-
-	static PipelineStepResult Stalled() {
-		return PipelineStepResult{ .action = PipelineAction::STALLED };
-	}
-	AXP_HOT AXP_ALWAYS_INLINE bool isCallPalReturn() const noexcept
-	{
-		return callPC > 0;
-	}
-
-	static PipelineStepResult Fault(TrapCode_Class tc, quint64 va, quint64 pc) {
-		PipelineStepResult r;
-		r.action = PipelineAction::FAULT;
-		r.trapCode = tc;
-		r.faultVA = va;
-		r.faultPC = pc;
-		return r;
-	}
-
-	static PipelineStepResult PalCall(quint8 func, quint64 pc) {
-		PipelineStepResult r;
-		r.action = PipelineAction::PAL_CALL;
-		r.palFunction = func;
-		r.callPC = pc;
-		return r;
-	}
-
-	static PipelineStepResult Mispredict(quint64 target) {
-		PipelineStepResult r;
-		r.action = PipelineAction::MISPREDICTION;
-		r.redirectPC = target;
-		return r;
-	}
-
-};
 
 
 
@@ -115,7 +42,8 @@ struct FetchResult {
     PcKey              pcKey{};
     PaKey              paKey{};
     PipelineStepResult pipelineStepResult{};
-
+	// IBox Adjacent path support only
+	PipelineSlot	   slot;				// carry fault state on fetch failure ( we need this for IBox - Adjacent execution path cannot return to exception dispatch in run loop.
 	
     MEM_STATUS                fetchStatus;
 };

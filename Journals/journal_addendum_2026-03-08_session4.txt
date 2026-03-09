@@ -1,4 +1,3 @@
-
 === Journal Entry 2026-03-08 Session 4 ===
 
 SUMMARY: TC-SNAP-001 PASSED. Full snapshot lifecycle working end-to-end.
@@ -102,3 +101,37 @@ validate() = true (no overlaps in firmware regions)
   EmulatR_init.h
   snapshot/ES40_V6_2.axpsnap  -- ADD to .gitignore (large binary, 8.7MB)
 
+
+--- TEST MATRIX RESULTS ---
+
+TC-SNAP-001  decompress → save → load (ES40_V6_2.EXE)
+  cyclesExecuted = 5,767,331
+  saveSnapshot   = 9,092,264 bytes
+  romHash        = 0x9689831940DA2165
+  checksum       = 0xEF23EC3A5607179F
+  loadSnapshot   = 66ms
+  PASS ✓
+
+TC-SNAP-002  stale snapshot rejection + fresh decompress (es40_v7_2.exe)
+  ES40_V6_2.axpsnap present -- romHash mismatch detected immediately
+  snapshot deleted, decompress ran, new es40_v7_2.axpsnap saved
+  cyclesExecuted = 5,767,343  (+12 vs V6_2 -- normal variant difference)
+  Firmware region = 0x2B0E00 (22KB larger than V6_2)
+  romHash        = 0x6166A73D089FB80E
+  checksum       = 0xB5E4CC3CC3020A20
+  PASS ✓
+
+TC-SNAP-003  snapshot reload (es40_v7_2.axpsnap)
+  fromSnapshot   = true
+  finalPC        = 0x5C0     ✓
+  finalPalBase   = 0x600000  ✓
+  cyclesExecuted = 5,767,343 preserved ✓
+  PASS ✓
+
+TC-SNAP-004  single byte corruption → hash mismatch (ES40_V6_2.EXE)
+  byte 0x0280 changed 0x47 → 0x44
+  loadSnapshot() hash comparison failed as expected
+  snapshot deleted, decompress re-ran, new snapshot saved
+  PASS ✓
+
+All four test cases performed exactly as designed.

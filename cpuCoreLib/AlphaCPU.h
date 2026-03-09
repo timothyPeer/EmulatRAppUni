@@ -119,7 +119,7 @@ class alignas(64) AlphaCPU final : public QObject
     // Pending Events
     PendingEvent_cpuLocal m_pendingEvent;
 
- 
+
     // Subsystem References (Injected)
     // HWPCBBank* m_hwpcbBank{ nullptr };
     // HWPCB* m_hwpcb{ nullptr };
@@ -277,6 +277,32 @@ public:
         return m_halted.load(std::memory_order_acquire);
     }
 
+    /**
+     * @brief Set CPU halted state.
+     * Called by SRM secondary CPU startup to pre-halt CPUs 1-N before
+     * executeLoop() begins, and to wake them via IPI/START_CPU.
+     */
+    AXP_HOT AXP_ALWAYS_INLINE  void setHalted(bool state) noexcept {
+        m_halted.store(state, std::memory_order_release);
+        if (!state) {
+            INFO_LOG(QString("CPU %1: Halt released -- waking").arg(m_cpuId));
+#ifdef AXP_EXEC_TRACE
+            // Inspect CPU state at the moment of release -- before first instruction
+            const quint64 pc = getPC();
+            const quint64 palBase = getPAL_BASE();
+            const bool    palMode = isInPalMode();
+            const quint8  ipl = m_iprGlobalMaster->h->getIPL();
+            const quint8  cm = m_iprGlobalMaster->h->cm;
+            INFO_LOG(QString("  [EXEC_TRACE] CPU %1 state at halt release:").arg(m_cpuId));
+            INFO_LOG(QString("    PC        = 0x%1").arg(pc,      16, 16, QChar('0')));
+            INFO_LOG(QString("    PAL_BASE  = 0x%1").arg(palBase, 16, 16, QChar('0')));
+            INFO_LOG(QString("    PAL mode  = %1").arg(palMode ? "yes" : "no"));
+            INFO_LOG(QString("    IPL       = %1").arg(ipl));
+            INFO_LOG(QString("    CM        = 0x%1").arg(cm, 2, 16, QChar('0')));
+#endif
+        }
+    }
+
     AXP_HOT AXP_ALWAYS_INLINE  bool isInPalMode() const noexcept {
         return m_pBox.data()->isInPalMode();
     }
@@ -332,22 +358,24 @@ public:
     // ========================================================================
 
     AXP_HOT AXP_ALWAYS_INLINE  void runOneInstruction() noexcept {
-     
+
         // 1. Check for external events (interrupts)
         if (m_pending->hasDeliverable(m_iprGlobalMaster->h->getIPL())) {
             handleInterrupt();
             return;
         }
 
+
         // 2. Fetch and decode
         //FetchResult fetchResult;
        //m_iBox->fetchAndDecode(fetchResult);
-        FetchResult fetchResult = m_iBox->fetchNext(); 
+        FetchResult fetchResult{};
+        fetchResult = m_iBox->fetchNext();
 
         // 3. Supply to pipeline
-        BoxResult boxResult =  m_alphaPipeline->tick(fetchResult);
+        BoxResult boxResult = m_alphaPipeline->tick(fetchResult);
 
-        
+
         // 4. Handle BoxResult flags
         // Note:  Pipeline payloads to register occurs only during stage_WB 
         // defer routing to PAL until after stage_WB - Only handle faults if they reached retirement (dispatched from WB)
@@ -356,13 +384,13 @@ public:
             m_alphaPipeline->flush("flush::Box-faultWasDispatched");       // flush the pipeline
 
             quint64 vector = getFaultVector(boxResult.getFaultClass());
-            BoxResult bx =   m_pBox->enterPal(getFaultReason(boxResult.getFaultClass()), vector, boxResult.getFaultPC()  );
-          
+            BoxResult bx = m_pBox->enterPal(getFaultReason(boxResult.getFaultClass()), vector, boxResult.getFaultPC());
+
             if (boxResult.needsWriteDrain())
                 m_cBox->drainWriteBuffers();
 
             if (boxResult.needsMemoryBarrier())
-                m_cBox->issueMemoryBarrier(MemoryBarrierKind::PAL, m_cpuId+1);
+                m_cBox->issueMemoryBarrier(MemoryBarrierKind::PAL, m_cpuId + 1);
 
             if (boxResult.needsHalted())
                 haltCPU();
@@ -397,7 +425,7 @@ public:
             ## Order of Operations for DTB_MISS:
             ```
             1. LDQ executes at PC 0x2000800C
-               
+
             2. Calculate VA = 0x20008110
                v
             3. TLB lookup -> MISS
@@ -439,7 +467,7 @@ public:
                 quint8 palFunc = boxResult.palFunction;  // Need to add this field to BoxResult
                 quint64 callPC = boxResult.faultingPC;   // Need to repurpose or add field
 
-                
+
                 BoxResult palResult = m_pBox->enterPal(
                     PalEntryReason::CALL_PAL_INSTRUCTION, palFunc, callPC + 4);
 
@@ -462,7 +490,7 @@ public:
             return;
         }
 
-      
+
         // Now the check becomes meaningful -- only fires for genuine unexpected flushes
         if (boxResult.needsPipelineFlush() && !fetchResult.virtualAddress == 0)
         {
@@ -488,7 +516,7 @@ public:
 
         // Enter PAL mode at fault vector
         m_iprGlobalMaster->h->advancePC(faultVector);
-        m_iprGlobalMaster->h->setIPL_Unsynced( 7);
+        m_iprGlobalMaster->h->setIPL_Unsynced(7);
         m_iprGlobalMaster->h->setCM(CM_KERNEL);
 
         // Flush pipeline
@@ -505,7 +533,7 @@ public:
         // 2. Compute entry PC based on reason
         quint64 entryPC;
         if (reason == PalEntryReason::CALL_PAL_INSTRUCTION) {
-            entryPC = m_iprGlobalMaster->computeCallPalEntry( static_cast<quint8>(vector));
+            entryPC = m_iprGlobalMaster->computeCallPalEntry(static_cast<quint8>(vector));
         }
         else {
             entryPC = vector;
@@ -514,13 +542,13 @@ public:
         m_iprGlobalMaster->h->exc_addr = faultPC;
 
         // Enter PAL mode at fault vector
-        m_iprGlobalMaster->h->advancePC( entryPC);
-        m_iprGlobalMaster->h->setIPL_Unsynced( 7);
+        m_iprGlobalMaster->h->advancePC(entryPC);
+        m_iprGlobalMaster->h->setIPL_Unsynced(7);
         m_iprGlobalMaster->h->setCM(CM_KERNEL);
 
         // 5. Activate PAL shadow registers if needed
         if (reason == PalEntryReason::CALL_PAL_INSTRUCTION) {
-            m_iprGlobalMaster->setShadowEnabled( true);
+            m_iprGlobalMaster->setShadowEnabled(true);
         }
 
         // 6. Flush pipeline
@@ -582,20 +610,20 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE void setPC(quint64 pc) const noexcept
     {
-        m_iprGlobalMaster->h->advancePC( pc);
+        m_iprGlobalMaster->h->advancePC(pc);
     }
 
     AXP_HOT AXP_ALWAYS_INLINE void setCMMode(Mode_Privilege mode) const noexcept
     {
-        m_iprGlobalMaster->h->cm =  static_cast<quint8>(mode);
+        m_iprGlobalMaster->h->cm = static_cast<quint8>(mode);
     }
     AXP_HOT AXP_ALWAYS_INLINE void setPalMode(bool bSetPal, bool reset = false) const noexcept
     {
         m_pBox->palService()->setPalMode(bSetPal, reset);
     }
-    AXP_HOT AXP_ALWAYS_INLINE void setIPL(IPLType ipl ) const noexcept
+    AXP_HOT AXP_ALWAYS_INLINE void setIPL(IPLType ipl) const noexcept
     {
-        m_iprGlobalMaster->h->setIPL_Unsynced( ipl);
+        m_iprGlobalMaster->h->setIPL_Unsynced(ipl);
     }
 
     // ========================================================================
@@ -655,7 +683,7 @@ public:
 
         switch (reason) {
         case RedirectReason::PALEntry:
-            vectorPC = m_iprGlobalMaster->computeCallPalEntry( static_cast<quint8>(metadata1));
+            vectorPC = m_iprGlobalMaster->computeCallPalEntry(static_cast<quint8>(metadata1));
             enterPalMode(PalEntryReason::CALL_PAL_INSTRUCTION, vectorPC, m_iprGlobalMaster->h->getPC());
             break;
 
@@ -705,7 +733,7 @@ public:
         return m_pending->hasDeliverable(m_iprGlobalMaster->h->getIPL());
     }
 
-    
+
 
     AXP_HOT AXP_ALWAYS_INLINE  bool hasPendingTrap() const noexcept {
        return m_faultDispatcher->hasPendingTrap();
@@ -727,7 +755,7 @@ public:
                 ~static_cast<quint16>(1u << claimed.ipl);
         }
 
-        m_pBox->palService()->deliverInterrupt( claimed);
+        m_pBox->palService()->deliverInterrupt(claimed);
     }
 
     // ========================================================================
@@ -743,103 +771,103 @@ public:
  * @brief Handle TLB shootdown IPI on receiving CPU
  * Called when IPI interrupt is processed
  */
-    // ReSharper disable once CppMemberFunctionMayBeStatic
-    AXP_ALWAYS_INLINE  void handleTLBShootdownIPI(CPUIdType cpuId, quint64 ipiData) const noexcept
-    {
-        IPICommand cmd = decodeIPICommand(ipiData);
-        ASNType asn_g = m_iprGlobalMaster->h->asn; // getASN_Active(cpuId);
-        switch (cmd) {
-        case IPICommand::TLB_INVALIDATE_VA_ITB:
-        {
-            // Decode VA from IPI data
-            quint64 va = decodeIPIVA(ipiData);
+ // ReSharper disable once CppMemberFunctionMayBeStatic
+ AXP_ALWAYS_INLINE  void handleTLBShootdownIPI(CPUIdType cpuId, quint64 ipiData) const noexcept
+ {
+     IPICommand cmd = decodeIPICommand(ipiData);
+     ASNType asn_g = m_iprGlobalMaster->h->asn; // getASN_Active(cpuId);
+     switch (cmd) {
+     case IPICommand::TLB_INVALIDATE_VA_ITB:
+     {
+         // Decode VA from IPI data
+         quint64 va = decodeIPIVA(ipiData);
 
-            // Get current ASN (or invalidate for all ASNs)
-         
-
-            // Invalidate local ITB entry
-            m_tlb->invalidateTLBEntry(cpuId, Realm::I, va, asn_g);
-
-            DEBUG_LOG(QString("CPU %1: Processed ITB shootdown for VA=0x%2")
-                .arg(cpuId)
-                .arg(va, 16, 16, QChar('0')));
-            break;
-        }
-
-        case IPICommand::TLB_INVALIDATE_VA_DTB:
-        {
-            quint64 va = decodeIPIVA(ipiData);
-   
-            m_tlb->invalidateTLBEntry(cpuId, Realm::D, va, asn_g);
-            break;
-        }
-
-        case IPICommand::TLB_INVALIDATE_ASN:
-        {
-            // Decode ASN from IPI data
-            const ASNType asn = decodeIPIASN(ipiData);
-
-            // Invalidate all TLB entries for this ASN
-            m_tlb->invalidateTLBsByASN(cpuId, asn);
-
-            DEBUG_LOG(QString("CPU %1: Processed TLB shootdown for ASN=%2")
-                .arg(cpuId)
-                .arg(asn));
-            break;
-        }
-
-        case IPICommand::TLB_INVALIDATE_ALL:
-        {
-            // Invalidate entire TLB
-            m_tlb->invalidateAllTLBs(cpuId);
-
-            DEBUG_LOG(QString("CPU %1: Processed full TLB flush").arg(cpuId));
-            break;
-        }
-
-        default:
-            WARN_LOG(QString("CPU %1: Unknown TLB shootdown command %2")
-                .arg(cpuId)
-                .arg(static_cast<int>(cmd)));
-            break;
-        }
-    }
+         // Get current ASN (or invalidate for all ASNs)
 
 
-    AXP_HOT AXP_ALWAYS_INLINE  void handleCacheCoherency(quint32 p1, quint32 p2, quint64 p3) const noexcept {
-        // TODO: Implement cache coherency
-        DEBUG_LOG(QString("CPU%1: Cache coherency IPI").arg(m_cpuId));
-    }
+         // Invalidate local ITB entry
+         m_tlb->invalidateTLBEntry(cpuId, Realm::I, va, asn_g);
 
-    AXP_HOT AXP_ALWAYS_INLINE  void handleBarrierSync(quint32 barrierIdHigh, quint32 barrierIdLow, quint64 flags) const noexcept {
-        const quint64 barrierId = (static_cast<quint64>(barrierIdHigh) << 32) | barrierIdLow;
-        // TODO: Implement barrier sync
-        DEBUG_LOG(QString("CPU%1: Barrier sync barrier=%2")
-            .arg(m_cpuId)
-            .arg(barrierId));
-    }
+         DEBUG_LOG(QString("CPU %1: Processed ITB shootdown for VA=0x%2")
+             .arg(cpuId)
+             .arg(va, 16, 16, QChar('0')));
+         break;
+     }
+
+     case IPICommand::TLB_INVALIDATE_VA_DTB:
+     {
+         quint64 va = decodeIPIVA(ipiData);
+
+         m_tlb->invalidateTLBEntry(cpuId, Realm::D, va, asn_g);
+         break;
+     }
+
+     case IPICommand::TLB_INVALIDATE_ASN:
+     {
+         // Decode ASN from IPI data
+         const ASNType asn = decodeIPIASN(ipiData);
+
+         // Invalidate all TLB entries for this ASN
+         m_tlb->invalidateTLBsByASN(cpuId, asn);
+
+         DEBUG_LOG(QString("CPU %1: Processed TLB shootdown for ASN=%2")
+             .arg(cpuId)
+             .arg(asn));
+         break;
+     }
+
+     case IPICommand::TLB_INVALIDATE_ALL:
+     {
+         // Invalidate entire TLB
+         m_tlb->invalidateAllTLBs(cpuId);
+
+         DEBUG_LOG(QString("CPU %1: Processed full TLB flush").arg(cpuId));
+         break;
+     }
+
+     default:
+         WARN_LOG(QString("CPU %1: Unknown TLB shootdown command %2")
+             .arg(cpuId)
+             .arg(static_cast<int>(cmd)));
+         break;
+     }
+ }
+
+
+ AXP_HOT AXP_ALWAYS_INLINE  void handleCacheCoherency(quint32 p1, quint32 p2, quint64 p3) const noexcept {
+     // TODO: Implement cache coherency
+     DEBUG_LOG(QString("CPU%1: Cache coherency IPI").arg(m_cpuId));
+ }
+
+ AXP_HOT AXP_ALWAYS_INLINE  void handleBarrierSync(quint32 barrierIdHigh, quint32 barrierIdLow, quint64 flags) const noexcept {
+     const quint64 barrierId = (static_cast<quint64>(barrierIdHigh) << 32) | barrierIdLow;
+     // TODO: Implement barrier sync
+     DEBUG_LOG(QString("CPU%1: Barrier sync barrier=%2")
+         .arg(m_cpuId)
+         .arg(barrierId));
+ }
 
 
 
-    // ========================================================================
-    // Wake-up Checks (Inline)
-    // ========================================================================
-    AXP_HOT AXP_ALWAYS_INLINE bool checkForWakeupInterrupts() const noexcept
-    {
-        return m_pending->pendingLevelsMask.load(std::memory_order_acquire) != 0;
-    }
+ // ========================================================================
+ // Wake-up Checks (Inline)
+ // ========================================================================
+ AXP_HOT AXP_ALWAYS_INLINE bool checkForWakeupInterrupts() const noexcept
+ {
+     return m_pending->pendingLevelsMask.load(std::memory_order_acquire) != 0;
+ }
 
 
-    // ====================================================================
-    // Error Handling
-    // ====================================================================
+ // ====================================================================
+ // Error Handling
+ // ====================================================================
 
-    /**
-     * @brief Report error condition
-     * @param reason Error description
-     * @param severity Severity level
-     */
-    void reportError(const QString& reason, ErrorSeverity severity) noexcept;
+ /**
+  * @brief Report error condition
+  * @param reason Error description
+  * @param severity Severity level
+  */
+ void reportError(const QString& reason, ErrorSeverity severity) noexcept;
 
 public slots:
     /**
@@ -937,7 +965,6 @@ private:
     // Halt stubs (TODO)
     void haltCPU() noexcept { /* TODO */ }
     void setHaltCode(quint8 code) noexcept { /* TODO */ }
-    void setHalted(bool state) noexcept { /* TODO */ }
     void notifyHalt() noexcept { /* TODO */ }
     void haltUntilSRMExit() noexcept { /* TODO */ }
 

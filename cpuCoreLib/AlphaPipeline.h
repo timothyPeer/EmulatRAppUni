@@ -247,7 +247,6 @@
 #include "PalBoxLib/PalBoxBase.h"
 #include "MBoxLib_EV6/MBoxBase.h"
 #include "coreLib/BoxRequest.h"
-#include "coreLib/FetchResult.h"
 #include "configLib/global_EmulatorSettings.h"
 #include "coreLib/ExecTrace.h"
 #include "coreLib/EXECTRACE_Macros.h"
@@ -290,6 +289,7 @@ static quint64 m_r31Counters[6];
 // Debug output interval — set to 1 during bringup, increase later
 // ============================================================================
 static constexpr quint64 kLogFlushInterval = 1;   // flush every N cycles
+
 
 
 // ============================================================================
@@ -799,6 +799,15 @@ public:
      */
     AXP_HOT AXP_FLATTEN auto tick(FetchResult& fetchResult) noexcept -> BoxResult
     {
+        // IBox->FetchResult will extract and decode instruction grains. 
+        // If there was an exception, we need to trap it here before moving forward.
+        // the AlphaCPU runloop will dispatch the exception vectors and enter pal directly.
+        if (fetchResult.slot.faultPending) {
+            return BoxResult().faultDispatched();
+        }
+        // ==================================================================================
+        // There were no IBox faults... continue. 
+       
         // Supply fetch result to pipeline
         supplyFetchResult(fetchResult);
 
@@ -818,11 +827,6 @@ public:
         {
             debugPipelineSummary();
         }
-
-        if (m_cycleCount == 158) {
-            qDebug() << "breakpoint";
-       } 
-
         m_cycleCount++;
 
         return result;

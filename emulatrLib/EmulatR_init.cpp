@@ -675,6 +675,7 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase4_MemorySystem()
 
 	phase.logDetail("GuestPhysicalRegionRegistry: RAM/MMIO/PCI entries registered");
 
+	InitializationVerifier::markInitialized("MemorySystem");
 	return true;
 }
 
@@ -1475,8 +1476,8 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 	INFO_LOG(QString("  Snapshot:  %1")
 		.arg(result.fromSnapshot ? result.snapshotPath : "n/a"));
 
-	if (result.cleanPC() != 0x8000)
-		WARN_LOG(QString("Unexpected boot PC: 0x%1 (expected 0x8000)")
+	if (result.cleanPC() != 0x5C0)
+		WARN_LOG(QString("Unexpected boot PC: 0x%1 (expected 0x5c0)")
 			.arg(result.cleanPC(), 8, 16, QChar('0')));
 	if (result.palBase() != 0x600000)
 		WARN_LOG(QString("Unexpected PAL_BASE: 0x%1 (expected 0x600000)")
@@ -1500,16 +1501,31 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase14_CPUBringUp()
 	}
 
 	// ========================================================================
-	// 14c: Start CPU0 execution thread
+	// 14c: Start CPU execution threads
 	// ========================================================================
 
-	INFO_LOG("--- Phase 14c: Starting CPU0 execution ---");
+	INFO_LOG("--- Phase 14c: Starting CPU execution threads ---");
 	INFO_LOG(QString("  Boot PC:       0x%1").arg(cpu0->getPC(), 16, 16, QChar('0')));
 	INFO_LOG(QString("  Boot PAL_BASE: 0x%1").arg(cpu0->getPAL_BASE(), 16, 16, QChar('0')));
 
-	cpu0->executeLoop();
-	INFO_LOG("CPU0: Execution thread started");
+	// CPU0 -- boot processor, starts HALTED.
+	// Phase 15 FinalVerification releases it after all subsystems are verified.
+	// This keeps the debugger on a single thread through the full init sequence.
+	global_ExecutionCoordinator().startCPU(0, true);
 
+	// CPU1-N -- secondary processors, start in halted state.
+	// SRM console will populate their HWRPB slots and release them
+	// via setHalted(false) during secondary CPU bootstrap (b -fl0,0).
+	const quint16 cpuCount = global_ExecutionCoordinator().getCPUCount();
+	for (quint16 i = 1; i < cpuCount; ++i) {
+		global_ExecutionCoordinator().startCPU(i, true);
+	}
+
+	INFO_LOG(QString("Phase 14c: %1 CPU thread(s) started (1 active, %2 halted)")
+		.arg(cpuCount)
+		.arg(cpuCount - 1));
+
+	InitializationVerifier::markInitialized("SMPIntegration");
 	markSuccess();
 	return true;
 }
@@ -1545,7 +1561,7 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase15_FinalVerification() {
 
 	phase.logDetail("All critical subsystems verified");
 
-	InitializationVerifier::markInitialized("FinalVerification");
+
 
 	if (!beginInitialization("FinalVerification")) return false;
 
@@ -1598,6 +1614,20 @@ AXP_HOT AXP_FLATTEN bool EmulatR_init::initializePhase15_FinalVerification() {
 
 	INFO_LOG("=== ALL VERIFICATIONS PASSED ===");
 
+	// ================================================================
+	// Release CPU0 -- all systems verified, safe to begin SRM boot
+	// ================================================================
+	{
+		AlphaCPU* bootCPU = global_ExecutionCoordinator().getAlphaBootProcessor();
+		if (!bootCPU) {
+			ERROR_LOG("Phase 15: CRITICAL -- CPU0 not found, cannot release");
+			return false;
+		}
+		INFO_LOG(QString("Phase 15: Releasing CPU0 -- SRM console boot begins at PC=0x%1")
+			.arg(bootCPU->getPC(), 8, 16, QChar('0')));
+		bootCPU->setHalted(false);
+		INFO_LOG("Phase 15: CPU0 released");
+	}
 	markSuccess();
 	return true;
 

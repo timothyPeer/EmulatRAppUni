@@ -217,6 +217,58 @@ public:
     static void acknowledgeMemoryBarrier(CPUIdType cpuId) noexcept;
     static bool isMemoryBarrierInProgress() noexcept;
 
+    // ====================================================================
+    // Per-CPU Thread Start
+    // ====================================================================
+
+    /**
+     * @brief Start a single CPU's execution thread.
+     *
+     * CPU0 (boot processor): startHalted = false -- enters hot path immediately.
+     * CPU1-N (secondaries):  startHalted = true  -- spins in halt loop until
+     *                        SRM console releases via setHalted(false).
+     *
+     * Must be called AFTER initializeCPUs() and after PC/PAL_BASE are set.
+     */
+    void startCPU(CPUIdType cpuId, bool startHalted = false)
+    {
+        if (!isValidCPU(cpuId)) {
+            WARN_LOG(QString("ExecutionCoordinator::startCPU -- invalid CPU %1").arg(cpuId));
+            return;
+        }
+        if (!m_workers[cpuId].alphaCPU) {
+            WARN_LOG(QString("ExecutionCoordinator::startCPU -- CPU %1 has no AlphaCPU").arg(cpuId));
+            return;
+        }
+        if (!m_workers[cpuId].thread) {
+            WARN_LOG(QString("ExecutionCoordinator::startCPU -- CPU %1 has no thread").arg(cpuId));
+            return;
+        }
+
+        AlphaCPU* cpu = static_cast<AlphaCPU*>(m_workers[cpuId].alphaCPU.get());
+        QThread* thr = m_workers[cpuId].thread.get();
+
+        // Pre-set halted state BEFORE moveToThread so executeLoop()
+        // sees the correct state on first iteration
+        if (startHalted) {
+            cpu->setHalted(true);
+            INFO_LOG(QString("ExecutionCoordinator: CPU %1 will start in halted state").arg(cpuId));
+        }
+
+        // Wire CPU to its dedicated thread
+        cpu->moveToThread(thr);
+
+        // executeLoop() is the thread entry point
+        // Thread self-quits via QThread::currentThread()->quit() when loop ends
+        connect(thr, &QThread::started, cpu, &AlphaCPU::executeLoop);
+
+        thr->start();
+
+        INFO_LOG(QString("ExecutionCoordinator: CPU %1 thread started (halted=%2)")
+            .arg(cpuId)
+            .arg(startHalted ? "yes" : "no"));
+    }
+
     // Initialize CPUs
 
     AXP_HOT AXP_ALWAYS_INLINE void initializeCPUs() noexcept

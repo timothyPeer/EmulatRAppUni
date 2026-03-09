@@ -13,7 +13,9 @@
 // Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
 // ============================================================================
 
-#pragma once
+#ifndef IGRAIN_KEYIDENTITIES_H
+#define IGRAIN_KEYIDENTITIES_H
+
 #include <QtGlobal>
 
 // ============================================================================
@@ -46,7 +48,7 @@ struct PcKey {
 		return PcKey{ va >> 2 };  // 4-byte aligned
 	}
 	bool isValid() const noexcept {
-		return pc != 0;  // Or whatever makes sense for your key encoding
+		return true;  // pc=0 is valid (reset vector)
 	}
 };
 
@@ -80,6 +82,8 @@ struct PaKey {
 		return PaKey{ pa >> 2 };  // 4-byte aligned
 	}
 	bool isValid() const noexcept {
-		return paIndex != 0;  // Or whatever makes sense for your key encoding
+		return true;  // pa=0 is valid (reset/exception vector region)
 	}
 };
+
+#endif

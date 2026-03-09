@@ -216,7 +216,7 @@ public:
     // ====================================================================
 
     explicit IBox(CPUIdType cpuId, ExecutionCoordinator* coordinator,
-        FaultDispatcher* faultSink,  GuestMemory* memory) noexcept
+        FaultDispatcher* faultSink, GuestMemory* memory) noexcept
         : m_executionCoordinator(coordinator)
         , m_cpuId(cpuId)
         , m_faultSink(faultSink)
@@ -251,7 +251,13 @@ public:
 
         if (!fetchAndDecode(fr)) {
             m_stats.translationFaults++;
-            return fr;      
+            return fr;
+        }
+
+        // fetchAndDecode returned true but slot carries an illegal instruction fault
+        if (fr.slot.faultPending) {
+            m_stats.illegalInstructions++;
+            return fr;   // slot.faultPending=true -- tick() will dispatch
         }
 
         m_stats.fetchCount++;
@@ -266,7 +272,7 @@ public:
 
     AXP_HOT AXP_FLATTEN bool fetchAndDecode(FetchResult& fr) noexcept {
         const quint64 pc = m_iprGlobalMaster->h->getPC();
-        
+
         fr.virtualAddress = pc;
         fr.physicalAddress = 0;
 
@@ -297,13 +303,16 @@ public:
             PendingEvent ev = makeIllegalInstruction(TrapCode_Class::ILLEGAL_INSTRUCTION, pc);
             m_faultSink->setPendingEvent(ev);
 
-#ifdef AXP_DEBUG
+#ifdef AXP_EXEC_TRACE
             DEBUG_LOG(QString("CPU %1: Decode failed for PC=0x%2 instr=0x%3 - no grain found")
                 .arg(m_cpuId)
                 .arg(pc, 16, 16, QChar('0'))
                 .arg(getRaw(fr.di), 8, 16, QChar('0')));
 #endif
-
+            fr.slot.trapCode = TrapCode_Class::ILLEGAL_INSTRUCTION;
+            fr.slot.faultPending = true;
+            fr.slot.faultVA = pc;
+            fr.slot.valid = true;
             return false;
         }
 
@@ -366,6 +375,7 @@ public:
         quint64 cacheMisses = 0;
         quint64 translationFaults = 0;
         quint64 memoryFaults = 0;
+        quint64 illegalInstructions = 0;
     };
 
     const FetchStats& getStats() const noexcept { return m_stats; }
@@ -384,7 +394,7 @@ private:
     // ====================================================================
 
     AXP_HOT AXP_FLATTEN bool tryFetchFromCache(FetchResult& fr) noexcept {
-  //      quint64 pc = globalHWPCBController(m_cpuId).pc;
+        //      quint64 pc = globalHWPCBController(m_cpuId).pc;
 
         PcKey pcKey = PcKey::fromVA(fr.virtualAddress);
         if (DecodedInstruction* cached = m_pcCache.lookup(pcKey)) {
@@ -432,7 +442,7 @@ private:
         }
     }
 
-   AXP_HOT AXP_ALWAYS_INLINE const DecodedInstruction* fetchAndDecode(quint64 pc, quint64 pa)
+    AXP_HOT AXP_ALWAYS_INLINE const DecodedInstruction* fetchAndDecode(FetchResult& fr, quint64 pc, quint64 pa)
     {
         // ========================================================================
         // STEP 1: Try PC cache (virtual address lookup)
@@ -463,7 +473,7 @@ private:
         // STEP 3: Cache miss - fetch from memory
         // =====================================================================
 
- 
+
         quint32 rawBits = 0;
         MEM_STATUS status = m_guestMemory->read32(pa, rawBits);
 
@@ -486,6 +496,12 @@ private:
             ERROR_LOG(QString("Unknown instruction: 0x%1 at PC 0x%2")
                 .arg(rawBits, 8, 16, QChar('0'))
                 .arg(pc, 16, 16, QChar('0')));
+
+            fr.slot.trapCode = TrapCode_Class::ILLEGAL_INSTRUCTION;
+            fr.slot.faultPending = true;
+            fr.slot.faultVA = pc;
+            fr.slot.valid = true;
+
             return nullptr;
         }
 
@@ -496,7 +512,7 @@ private:
         DecodedInstruction di;
         di.grain = grain;  //  Point to registry singleton
         //di.pc = pc;
-        di.pc = pc & ~1ULL; 
+        di.pc = pc & ~1ULL;
         setRaw(di, rawBits);  // SET IT BEFORE decodeInstruction!
 
         InstructionGrain* grain2 = GrainResolver::instance().ResolveGrain(rawBits);
@@ -506,11 +522,15 @@ private:
                 .arg((rawBits >> 26) & 0x3F, 2, 16, QChar('0'))
                 .arg(pc, 16, 16, QChar('0')));
 
+            fr.slot.trapCode = TrapCode_Class::ILLEGAL_INSTRUCTION;
+            fr.slot.faultPending = true;
+            fr.slot.faultVA = pc;
+            fr.slot.valid = true;
+
             // Return nullptr or create illegal instruction grain
             return nullptr;
         }
-        if (grain2->opcode() == 0x19)
-            qDebug() << "break";
+
 
         // Set raw bits in the grain (this is where you crashed!)
         ///grain->setRawBits(rawBits);  //  Safe now - grain is not null -- immutable.
@@ -523,7 +543,7 @@ private:
         FetchResult fetchResult;
         fetchResult.m_cpuId = m_cpuId;
         fetchResult.virtualAddress = pc & ~1ULL;    // Store VA before fetch - // Strip PAL mode bit
-        
+
         //const quint64 pc = fetchResult.virtualAddress & ~1ULL;  
         fetchResult.physicalAddress = 0;     // Will be filled by fetchFromMemory
         decodeInstruction(di, fetchResult);  // Populates ra, rb, rc, semantics
@@ -554,28 +574,28 @@ private:
         fr.isCallPal = false;
         fr.palFunction = 0;
 
-       // qDebug() << "FetchFromMemory:: " << m_iprGlobalMaster->h->pc;
+        // qDebug() << "FetchFromMemory:: " << m_iprGlobalMaster->h->pc;
 
         const quint64 pc = fr.virtualAddress;  // Virtual address
 
-       
-       // qDebug() << "FetchFromMemory - from fr.virtualAddress:: " << m_iprGlobalMaster->h->pc;
 
-        // ========================================================================
-        // STEP 1: Translate PC to Physical Address
-        // ========================================================================
+        // qDebug() << "FetchFromMemory - from fr.virtualAddress:: " << m_iprGlobalMaster->h->pc;
+
+         // ========================================================================
+         // STEP 1: Translate PC to Physical Address
+         // ========================================================================
         quint64 va = 0;
         quint64 pa = 0;
         const quint64 fetchPC = pc & ~1ULL;  // strip PAL bit for address use
-      //  const MEM_STATUS translateStatus = m_mmu->translateInstructionFetch(pc, pa, fr.m_cpuId);
-        //const TranslationResult translateResult = m_ev6Translator->translateVA_Instruction(          pc,             // Virtual address (PC)        pa              // Output: physical address
-        //);
+        //  const MEM_STATUS translateStatus = m_mmu->translateInstructionFetch(pc, pa, fr.m_cpuId);
+          //const TranslationResult translateResult = m_ev6Translator->translateVA_Instruction(          pc,             // Virtual address (PC)        pa              // Output: physical address
+          //);
 
-        // Record to trace BEFORE execution
-       // qDebug() << "FetchFromMemory - from translateVA_Instruction:: " << m_iprGlobalMaster->h->pc;
+          // Record to trace BEFORE execution
+         // qDebug() << "FetchFromMemory - from translateVA_Instruction:: " << m_iprGlobalMaster->h->pc;
 
-        // Convert TranslationResult to MEM_STATUS
-       // const MEM_STATUS translateStatus = convertTranslationResultToMemStatus(translateResult);
+          // Convert TranslationResult to MEM_STATUS
+         // const MEM_STATUS translateStatus = convertTranslationResultToMemStatus(translateResult);
 
         if (m_iprGlobalMaster->h->inPalMode())
         {
@@ -584,7 +604,7 @@ private:
         }
         else
         {
-            const TranslationResult translateResult = m_ev6Translator->translateVA_Instruction( fetchPC, pa);
+            const TranslationResult translateResult = m_ev6Translator->translateVA_Instruction(fetchPC, pa);
             const MEM_STATUS translateStatus = convertTranslationResultToMemStatus(translateResult);
             if (translateStatus != MEM_STATUS::Ok) {
                 fr.fetchStatus = translateStatus;
@@ -634,13 +654,13 @@ private:
             // PA CACHE HIT - Promote to PC cache for future hits
             fr.di = *cachedDI;
             fr.di.pc = pc;  // Update PC (may differ from cached)
-            fr.di.setPhysicalAddress( pa);
+            fr.di.setPhysicalAddress(pa);
             fr.valid = true;
 
             // Promote to PC cache
             qDebug() << cachedDI->getMneumonic() << "*** Inserted into pcDecodeCache PC:  0x" << Qt::hex << cachedDI->pc;
             pcDecodeCache().insert(pcKey, fr.di);
-           
+
 #ifdef AXP_DEBUG
             TRACE_LOG(QString("PA cache HIT: PA=0x%1 (promoted to PC cache)")
                 .arg(pa, 16, 16, QChar('0')));
@@ -710,18 +730,12 @@ private:
 
         if (!grain) {
             // ILLEGAL INSTRUCTION - Not registered in grain registry
+            // Route through pipeline slot so tick() dispatches through
+            // PAL exception handler via faultDispatched() path.
             fr.fetchStatus = MEM_STATUS::IllegalInstruction;
 
             const quint8 opcode = (rawBits >> 26) & 0x3F;
-#ifdef AXP_DEBUG
-            if (opcode == 26)
-            {
-                qDebug() << " break here"; // JMP instruction
-            }
-#endif
             const quint16 func = GrainResolver::extractFunctionCode(rawBits, opcode);
-
-            
 
             ERROR_LOG(QString("ILLEGAL INSTRUCTION: PC=0x%1 PA=0x%2 raw=0x%3 opcode=0x%4 func=0x%5")
                 .arg(pc, 16, 16, QChar('0'))
@@ -730,7 +744,13 @@ private:
                 .arg(opcode, 2, 16, QChar('0'))
                 .arg(func, 4, 16, QChar('0')));
 
-            return false;
+            // Populate slot -- tick() checks fetchResult.slot.faultPending
+            fr.slot.trapCode = TrapCode_Class::ILLEGAL_INSTRUCTION;
+            fr.slot.faultPending = true;
+            fr.slot.faultVA = pc;
+            fr.slot.valid = true;
+            fr.valid = false;  // no valid instruction decoded
+            return true;                   // return true -- slot carries the fault
         }
         // Record to trace BEFORE execution
 
@@ -738,7 +758,7 @@ private:
         // ========================================================================
         // STEP 6: Build DecodedInstruction
         // ========================================================================
-    
+
         fr.di.pc = pc & ~1ULL;         // instructions always see clean PC
         DecodedInstruction& di = fr.di;
 
@@ -766,7 +786,7 @@ private:
 
         decodeInstruction(di, fr);  // Populates ra, rb, rc, semantics, etc.
 
-       
+
 
         if (!fr.valid) {
             // Decode failed (shouldn't happen if grain is valid, but defensive)
@@ -776,8 +796,8 @@ private:
             return false;
         }
 
-      
-       
+
+
 
         // ========================================================================
         // Success!
@@ -795,7 +815,7 @@ private:
         // STEP 8: Cache the DecodedInstruction (BY VALUE)
         // ========================================================================
         // Insert into PA cache (survives context switches)
-      
+
         // ================================================================
         // Guard: Only cache valid fetch results with valid keys
         // ================================================================
@@ -871,7 +891,7 @@ private:
 
     CPUStateView  m_cpuView;                            // value member
     CPUStateView* m_iprGlobalMaster{ &m_cpuView };
-   
+
 };
 
 #endif // IBOX_BASE_H

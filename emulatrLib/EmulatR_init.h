@@ -147,7 +147,7 @@ public:
             case InitStatus::Initialized: status = "OK"; initialized++; break;
             case InitStatus::Failed: status = "FAILED"; break;
             }
-            report += QString("  %-25s: %1\n").arg(it.key()).arg(status);
+            report += QString("  %1: %2\n").arg(it.key(), -25).arg(status);
         }
 
         report += QString("\nInitialization Order:\n");

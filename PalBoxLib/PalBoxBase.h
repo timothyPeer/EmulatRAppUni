@@ -1579,6 +1579,9 @@ public:
                 .flushPipeline();
         }
 
+
+
+
         const quint32 raw = slot.di.rawBits();
         const quint8  ra = (raw >> 21) & 0x1F;
         const quint8  rb = (raw >> 16) & 0x1F;
@@ -1599,10 +1602,18 @@ public:
         // Value to store
         const quint64 raVal = (ra == 31) ? 0ULL : slot.readIntReg(ra);
 
+#ifdef AXP_EXEC_TRACE
+        INFO_LOG(QString("  [HW_ST] PA=0x%1  Ra=R%2  val=0x%3")
+            .arg(ea, 16, 16, QChar('0'))
+            .arg(ra)
+            .arg(raVal, 16, 16, QChar('0')));
+#endif
+
         auto status = MEM_STATUS::Ok;
 #ifdef AXP_DEBUG
         qDebug() << QString("raw pointer: %1").arg(raw, 16, 16, QChar('0'));
 #endif
+
         if (phys)
         {
             // Physical mode: bypass TLB
@@ -2089,13 +2100,11 @@ public:
         const quint16 iprIndex = getFunctionCode(slot.di);
         const quint8 rb = slot.di.rb;       // source register
         const quint64 value = m_iprGlobalMaster->readInt(rb);
-#if AXP_INSTRUMENTATION_TRACE
- 
-        quint64 result;
-        m_palService->readIPR(static_cast<HW_IPR>(iprIndex), result);
-        EXECTRACE_IPR_WRITE(m_cpuId, iprIndex, value, result);
+#ifdef AXP_EXEC_TRACE
+        INFO_LOG(QString("  [HW_MTPR] IPR=0x%1  val=0x%2")
+            .arg(iprIndex, 4, 16, QChar('0'))
+            .arg(value, 16, 16, QChar('0')));
 #endif
-
         m_palService->writeIPR(static_cast<HW_IPR>(iprIndex), slot);
 
         Q_UNUSED(value);
