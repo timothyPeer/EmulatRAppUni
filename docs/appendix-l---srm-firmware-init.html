@@ -6,7 +6,7 @@
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="generator" content="Help &amp; Manual" />
-   <meta name="keywords" content="advancePC,CALL_PAL,CM_KERNEL,commitPalResult,computeCallPalEntry,computeExceptionVector,CPUStateView,cyclesExecuted,enterPal,enterPalCore,enterPalMode,exc_addr,ExceptionClass_EV6,ExecutionCoordinator,exitPalMode,finalPC,FNV-1a,HALT,HW_REI,HW_RET,HWRPB,IBoxBase,ILLEGAL_INSTRUCTION,inPalMode,isInPalMode,kHalt,kResetEntry,mapTrapToPalVector,MCHK,OPCDEC,PAL_BASE,PAL_core_inl,PalBox,PalBoxBase,PalEntryReason,PalResult,PalService,PalVectorId_EV6,PipelineEffect,resetPalMode,RESTART,RETSYS,romHash,RTI,runOneInstruction,saveContext,shadowRegsActive,snapshot,SRM,SWPPAL,TRAPB,TrapCode_Class" />
+   <meta name="keywords" content="advancePC,CALL_PAL,CM_KERNEL,commitPalResult,computeCallPalEntry,computeExceptionVector,CPUStateView,cyclesExecuted,enterPal,enterPalCore,enterPalMode,exc_addr,ExceptionClass_EV6,ExecutionCoordinator,exitPalMode,finalPC,FNV-1a,HALT,HW_REI,HW_RET,HWRPB,IBoxBase,ILLEGAL_INSTRUCTION,inPalMode,isInPalMode,kHalt,kResetEntry,mapTrapToPalVector,MCHK,OPCDEC,PAL_BASE,PAL_core_inl,PalBox,PalBoxBase,PalEntryReason,PalResult,PalService,PalVectorId_EV6,PipelineEffect,resetPalMode,RESTART,RETSYS,romHash,RTI,runOneInstruction,saveContext,shadowRegsActive,snapshot,SRM,SrmRomLoader,SWPPAL,TRAPB,TrapCode_Class" />
    <meta name="description" content="This section describes the SRM firmware initialization sequence, the PAL exception dispatch architecture, and the vector computation contracts that govern all PAL mode..." />
    <link type="text/css" href="default.css" rel="stylesheet" />
    <link type="text/css" href="custom.css" rel="stylesheet" />
@@ -144,21 +144,20 @@
 <p class="p_CodeExample"><span class="f_CodeExample">finalPalBase&nbsp;=&nbsp;0x0000000000600000</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">cyclesExecuted&nbsp;=&nbsp;5,767,331</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">romHash&nbsp;=&nbsp;0x9689831940DA2165&nbsp;(FNV-1a&nbsp;over&nbsp;payload)</span></p>
-<p class="p_CodeExample"><span class="f_CodeExample">checksum&nbsp;=&nbsp;0xEF23EC3A5607179F&nbsp;(FNV-1a&nbsp;over&nbsp;snapshot&nbsp;file)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">snapshotChecksum&nbsp;=&nbsp;0xEF23EC3A5607179F&nbsp;(FNV-1a&nbsp;over&nbsp;snapshot&nbsp;file)</span></p>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.1 Snapshot System</span></h2>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The full decompression phase takes approximately 14 minutes in a debug build. The snapshot system captures complete machine state at boot handoff and reloads it in approximately 66 milliseconds, eliminating the decompression penalty on every subsequent boot.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The snapshot file format (.axpsnap) uses the following layout:</p>
-<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The snapshot file format (.axpsnap) uses the following layout. Field order is the serialization order in <span class="f_CodeExample">SrmRomLoader::saveSnapshot()</span> and must be read in exactly the same order by <span class="f_CodeExample">SrmRomLoader::loadSnapshot()</span>:</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;HEADER&nbsp;|</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;magic&nbsp;quint64&nbsp;0x415850534E415001&nbsp;&quot;AXPSNAPv1&quot;&nbsp;|</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;version&nbsp;quint32&nbsp;1&nbsp;|</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;romHash&nbsp;quint64&nbsp;FNV-1a&nbsp;hash&nbsp;of&nbsp;ROM&nbsp;payload&nbsp;|</span></p>
-<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;emulatorBuild&nbsp;quint64&nbsp;Build&nbsp;ID&nbsp;(__DATE__+__TIME__&nbsp;hash)&nbsp;|</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;finalPC&nbsp;quint64&nbsp;Boot&nbsp;handoff&nbsp;PC&nbsp;(PAL&nbsp;bit&nbsp;included)&nbsp;|</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;finalPalBase&nbsp;quint64&nbsp;PAL_BASE&nbsp;at&nbsp;handoff&nbsp;|</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;cyclesExecuted&nbsp;quint64&nbsp;Total&nbsp;decompressor&nbsp;cycles&nbsp;|</span></p>
@@ -182,6 +181,8 @@
 <p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;checksum&nbsp;quint64&nbsp;FNV-1a&nbsp;over&nbsp;all&nbsp;preceding&nbsp;bytes&nbsp;|</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
 <p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold; color: #ff0000;">Format note.</span> The header contains exactly seven fields: magic, version, romHash, finalPC, finalPalBase, cyclesExecuted, elapsedMs. There is no <span class="f_CodeExample">emulatorBuild</span> field in the current implementation. <span class="f_CodeExample">saveSnapshot()</span> and <span class="f_CodeExample">loadSnapshot()</span> must remain in strict field-count parity. Any addition of an <span class="f_CodeExample">emulatorBuild</span> field requires a version bump (<span class="f_CodeExample">kSnapshotVersion</span>) and rejection of all v1 snapshots at load time.</p>
+<p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">On every reload the ROM payload hash is recomputed and compared against the stored <span class="f_CodeExample">romHash</span>. A mismatch rejects the snapshot unconditionally, deletes the stale file, and reruns decompression. The emulator is fully self-healing -- no manual snapshot management is ever required.</p>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
@@ -194,7 +195,23 @@
 <p class="p_CodeExample"><span class="f_CodeExample">PalService&nbsp;owns:&nbsp;CALL_PAL&nbsp;instruction&nbsp;bodies&nbsp;(CALLSYS,&nbsp;BPT,&nbsp;SWPPAL,&nbsp;...)</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">CPUStateView:&nbsp;all&nbsp;PAL&nbsp;mode&nbsp;mutation&nbsp;accessors&nbsp;(single&nbsp;source&nbsp;of&nbsp;truth)</span></p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">PAL mode truth.</span> PAL mode is defined as <span class="f_CodeExample">h-&gt;pc &amp; 1</span>. No software cache of PAL mode state is maintained. All callers read PAL mode state via <span class="f_CodeExample">m_iprGlobalMaster-&gt;isInPalMode()</span>, which delegates directly to <span class="f_CodeExample">h-&gt;inPalMode()</span>.</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:solid 4px #ff0000; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#FFFF00; padding:0; border:solid 2px #ff0000;" scope="col"><p class="p_Normal"><span style="font-family: Arial,Helvetica,sans-serif; font-weight: bold; color: #cc0000;">⚠ ARCHITECTURAL INVARIANT -- PAL MODE TRUTH</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid 2px #ff0000;"><p class="p_Normal"><span style="font-size: 13px; font-family: 'Courier New',Courier,monospace; font-weight: bold;">PAL mode is defined as h-&gt;pc &amp; 1.</span></p>
+<p class="p_Normal">No software cache of PAL mode state is maintained anywhere in the system. All callers read PAL mode state exclusively via <span class="f_CodeExample">m_iprGlobalMaster-&gt;isInPalMode()</span>, which delegates directly to <span class="f_CodeExample">h-&gt;inPalMode()</span>, which returns <span class="f_CodeExample">h-&gt;pc &amp; 1</span>.</p>
+<p class="p_Normal">Any code that tests, sets, or clears PAL mode by any mechanism other than reading or writing PC bit 0 through the CPUStateView accessors is architecturally incorrect and must be removed. This invariant is the foundation of snapshot integrity, exception dispatch correctness, and pipeline flush semantics.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.3 CPUStateView PAL Mode Accessors</span></h2>
@@ -224,7 +241,7 @@
 <tr>
 <td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">enterPalMode(entryPC)</p>
 </td>
-<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Set new PC and assert PAL bit</p>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Set new PC and assert PAL bit atomically</p>
 </td>
 <td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">enterPalCore() only</p>
 </td>
@@ -250,14 +267,14 @@
 </td>
 <td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Set or clear PAL bit on current PC</p>
 </td>
-<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Legacy / to be retired</p>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-style: italic; color: #cc0000;">Legacy -- to be retired</span></p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Critical distinction.</span> <span class="f_CodeExample">enterPalMode(entryPC)</span> sets the destination PC and the PAL bit atomically. <span class="f_CodeExample">advancePC()</span> preserves the current PAL bit and must never be used for PAL entry -- it would fail to assert PAL mode when entering from a non-PAL context.</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Critical distinction.</span> <span class="f_CodeExample">enterPalMode(entryPC)</span> sets the destination PC and the PAL bit atomically. <span class="f_CodeExample">advancePC()</span> preserves the current PAL bit and must never be used for PAL entry -- it would fail to assert PAL mode when entering from a non-PAL context. This was the root cause of one of the three exception dispatch bugs corrected prior to J.4.14.</p>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.4 Vector Computation</span></h2>
@@ -289,7 +306,7 @@
 <p class="p_CodeExample"><span class="f_CodeExample">1.&nbsp;Guard:&nbsp;entryPC&nbsp;==&nbsp;0&nbsp;or&nbsp;sentinel&nbsp;value&nbsp;-&gt;&nbsp;escalate&nbsp;to&nbsp;MCHK</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">2.&nbsp;saveContext()&nbsp;--&nbsp;snapshot&nbsp;before&nbsp;any&nbsp;state&nbsp;change</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">3.&nbsp;exc_addr&nbsp;=&nbsp;faultPC&nbsp;--&nbsp;save&nbsp;return&nbsp;/&nbsp;retry&nbsp;address</span></p>
-<p class="p_CodeExample"><span class="f_CodeExample">4.&nbsp;enterPalMode(entryPC)&nbsp;--&nbsp;set&nbsp;PC&nbsp;and&nbsp;assert&nbsp;PAL&nbsp;bit</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">4.&nbsp;enterPalMode(entryPC)&nbsp;--&nbsp;set&nbsp;PC&nbsp;and&nbsp;assert&nbsp;PAL&nbsp;bit&nbsp;atomically</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">5.&nbsp;setIPL_Unsynced(7)&nbsp;--&nbsp;mask&nbsp;all&nbsp;interrupts</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">6.&nbsp;setCM(CM_KERNEL)&nbsp;--&nbsp;force&nbsp;kernel&nbsp;mode</span></p>
 <p class="p_CodeExample"><span class="f_CodeExample">7.&nbsp;shadowRegsActive&nbsp;=&nbsp;true&nbsp;--&nbsp;activate&nbsp;PAL&nbsp;shadow&nbsp;registers</span></p>
@@ -350,7 +367,7 @@
 </table>
 </div>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">HW_REI uses Rb, not exc_addr.</span> The EV6 HW_RET instruction reads the return address from the Rb register field of the instruction encoding. exc_addr holds the fault PC for fault retry. SRM uses HW_REI as a general-purpose PC manipulation instruction during initialization, so exc_addr=0 at early HW_REI instructions is expected and correct.</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">HW_REI uses Rb, not exc_addr.</span> The EV6 HW_RET instruction reads the return address from the Rb register field of the instruction encoding. exc_addr holds the fault PC for fault retry. SRM uses HW_REI as a general-purpose PC manipulation instruction during initialization, so exc_addr=0 at early HW_REI instructions is expected and correct. See J.4.12 sequence 63.</p>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.7 commitPalResult() PC Dispatch</span></h2>
@@ -363,6 +380,8 @@
 <p class="p_CodeExample"><span class="f_CodeExample">&nbsp;else:&nbsp;exitPalMode(pr.newPC)&nbsp;--&nbsp;normal&nbsp;return:&nbsp;clear&nbsp;PAL&nbsp;bit</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The kResetEntry flag is set by <span class="f_CodeExample">executeRESTART()</span>. The restart vector is computed via <span class="f_CodeExample">computeExceptionVector(PalVectorId_EV6::RESET)</span>. The raw pal_base value must not be used as a PC directly -- its low 15 bits are non-zero and the PAL mode bit is absent.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Prior bug note.</span> An earlier version of this function called <span class="f_CodeExample">exitPalMode()</span> unconditionally for all pcModified cases. This caused incorrect PAL bit behavior on RESTART and HALT paths. The three-way dispatch above is the corrected form.</p>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.8 CALL_PAL Grain Dispatch Chain</span></h2>
@@ -399,6 +418,8 @@
 <p class="p_CodeExample"><span class="f_CodeExample">&nbsp;return&nbsp;BoxResult().flushPipeline()</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">IBox fault routing.</span> When IBox fetches an instruction with no matching grain (grain == nullptr), it populates the pipeline slot fault fields directly: trapCode=ILLEGAL_INSTRUCTION, faultPending=true, faultVA=pc. The FetchStats.illegalInstructions counter is incremented. This fault then flows through the normal BoxResult dispatch path above.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Prior bug note.</span> An earlier version routed through <span class="f_CodeExample">enterPALVector()</span> which used the static PalVectorTable instead of <span class="f_CodeExample">computeExceptionVector()</span>. This produced incorrect entry PCs for any exception whose vector offset differed between the static table and the architectural formula. The dispatch chain above is the corrected form.</p>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.10 mapTrapToPalVector</span></h2>
@@ -509,7 +530,8 @@
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.12 SRM Execution Trace Reference</span></h2>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Regression anchors from the DEC ASM reference trace (tracescpu_trace.lst) for SRM console initialization. All addresses are in the decompressed firmware image at PA 0x0.</p>
+<p class="p_Normal">Regression anchors from the DEC ASM reference trace:</p>
+<p class="p_Normal"> (tracescpu_trace.lst <a href="https://github.com/timothyPeer/EmulatRAppUni/blob/main/Trace%20Output/tracescpu_trace_ASM.zip" target="_blank" class="weblink">https://github.com/timothyPeer/EmulatRAppUni/blob/main/Trace%20Output/tracescpu_trace_ASM.zip</a> ) for SRM console initialization. All addresses are in the decompressed firmware image at PA 0x0.</p>
 <p class="p_Normal">&nbsp;</p>
 <div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
 <thead>
@@ -532,7 +554,7 @@
 </td>
 <td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_REI</p>
 </td>
-<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- R26 = 0x6E0 (BSR return continues)</p>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- R26 = 0x6E0 (BSR return continues). exc_addr=0 is expected and correct here.</p>
 </td>
 </tr>
 <tr>
@@ -582,14 +604,14 @@
 </td>
 <td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_REI</p>
 </td>
-<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- Rb = 0x000 (BR spin loop, intentional)</p>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- Rb = 0x000 (BR spin loop, intentional -- not a runaway)</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">exc_addr=0 at sequence 63 is expected and correct. SRM uses HW_REI as a general-purpose control transfer instruction during initialization. The exc_addr field is not architecturally relevant until the first real exception entry occurs.</p>
+<p class="p_Normal">exc_addr=0 at sequence 63 is expected and correct. SRM uses HW_REI as a general-purpose control transfer instruction during initialization. The exc_addr field is not architecturally relevant until the first real exception entry occurs. See J.4.6 for HW_REI return address semantics.</p>
 <p class="p_Normal">&nbsp;</p>
 <hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
 <h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.13 CPU Thread Gate (Phase 14c / Phase 15)</span></h2>
@@ -609,13 +631,21 @@
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">mapTrapToPalVector audit.</span> The TrapCode_Class-to-PalVectorId_EV6 mapping in Pal_core_inl.h has not been audited against the EV6 vector table. This must be verified before TRAPB testing proceeds.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">TRAPB / ILLEGAL_INSTRUCTION vector verification.</span> Three bugs in the exception dispatch path have been corrected (enterPALVector() used PalVectorTable instead of computeExceptionVector(); enterPalCore() called advancePC() instead of enterPalMode(); commitPalResult() called exitPalMode() unconditionally). The corrected path must be verified by running to TRAPB and confirming entry PC = <span class="f_CodeExample">(PAL_BASE &amp; ~0x7FFF) | 0x0480 | 0x1</span>.</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">TRAPB / ILLEGAL_INSTRUCTION vector verification.</span> Three bugs in the exception dispatch path have been corrected: (1) <span class="f_CodeExample">enterPALVector()</span> used PalVectorTable instead of <span class="f_CodeExample">computeExceptionVector()</span>; (2) <span class="f_CodeExample">enterPalCore()</span> called <span class="f_CodeExample">advancePC()</span> instead of <span class="f_CodeExample">enterPalMode()</span>; (3) <span class="f_CodeExample">commitPalResult()</span> called <span class="f_CodeExample">exitPalMode()</span> unconditionally. The corrected path must be verified by running to TRAPB and confirming entry PC = <span class="f_CodeExample">(PAL_BASE &amp; ~0x7FFF) | 0x0480 | 0x1</span>.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">HWRPB construction.</span> The HWRPB signature (0x42707248 &quot;HrpB&quot;) is constructed by SRM console code executing from PC=0x5C0, not by the decompressor. The sys_type field, PALcode size fields, and MDP entries at PA=0x2000 have not yet been verified against expected values.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Secondary CPU startup.</span> SRM issues b -fl0,0 to start secondary CPUs via IPI handler. setHalted(false) via IPI has not been tested in the SMP configuration.</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Secondary CPU startup.</span> SRM issues b -fl0,0 to start secondary CPUs via IPI handler. <span class="f_CodeExample">setHalted(false)</span> via IPI has not been tested in the SMP configuration.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="j_3.html" class="topiclink">J.3 - SRM-D Snapshot Mechanics</a> &nbsp; (configuration, file format, initialization flow); <a href="appendix-j---srm-firmware-topi.html" class="topiclink">J.1 - ROM Loader: Descriptor Derivation and Snapshot Validation</a> ; <a href="chapter-14---execution-domains.html" class="topiclink">Chapter 14 – Execution Domains (“Boxes”)</a> ;PalBoxBase.h; Pal_Service.h; PAL_core.h; PAL_core_inl.h; global_RegisterMaster_hot.h;Alpha Architecture Handbook Section 4.11 (PAL Mode);Alpha Architecture Handbook Section 6.5 (CALL_PAL);Alpha 21264/EV6 Hardware Reference Manual.</span></p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Firmware deployment glob (CMakeLists.txt).</span> The <span class="f_CodeExample">file(GLOB ...)</span> call for deploying <span class="f_CodeExample">*_64.exe</span> firmware files has argument order reversed (<span class="f_CodeExample">CONFIGURE_DEPENDS</span> and the variable name are swapped). As written, <span class="f_CodeExample">FIRMWARE_64_FILES</span> is never populated and firmware files are silently not deployed to the build output directory. Users who do not pre-stage firmware files in the expected path will encounter a missing-file error at runtime rather than a build-time diagnostic. The correct form is:</p>
+<p class="p_CodeExample"><span class="f_CodeExample">file(GLOB&nbsp;FIRMWARE_64_FILES&nbsp;CONFIGURE_DEPENDS</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&quot;${PROJECT_SOURCE_DIR}/firmware/*_64.exe&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Snapshot format versioning.</span> The current <span class="f_CodeExample">kSnapshotVersion = 1</span> header contains seven fields. Any future addition (e.g., a planned <span class="f_CodeExample">emulatorBuild</span> field) requires incrementing <span class="f_CodeExample">kSnapshotVersion</span> and adding explicit rejection of v1 snapshots in <span class="f_CodeExample">loadSnapshot()</span>. The save and load field counts must remain in strict parity at all times.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also:<a href="j_3.html" class="topiclink">J.3 - SRM-D Snapshot Mechanics</a> (configuration, file format, initialization flow);<a href="appendix-j---srm-firmware-topi.html" class="topiclink">J.1 - ROM Loader: Descriptor Derivation and Snapshot Validation</a>;<a href="chapter-14---execution-domains.html" class="topiclink">Chapter 14 - Execution Domains (&quot;Boxes&quot;)</a>;PalBoxBase.h; Pal_Service.h; PAL_core.h; PAL_core_inl.h; global_RegisterMaster_hot.h;SrmRomLoader.cpp; SrmRomLoader.h;Alpha Architecture Handbook Section 4.11 (PAL Mode);Alpha Architecture Handbook Section 6.5 (CALL_PAL);Alpha 21264/EV6 Hardware Reference Manual.</span></p>
 
 <!--ZOOMSTOP-->
 </div></div>
