@@ -1,12 +1,54 @@
 // ============================================================================
-// global_RegisterMaster_hot.h - Check if integer overflow trap is enabled
+// global_RegisterMaster_hot.h - CPUStateView: per-CPU hot-path register state
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
 // AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
+//
+// Description:
+//   CPUStateView is the SINGLE SOURCE OF TRUTH for all per-CPU hot-path
+//   register state and architectural mode queries/mutations on the Alpha
+//   AXP EV6 processor.
+//
+//   Consolidates and replaces:
+//     global_ARCHRegs.h       (IntRegs, FloatRegs, PalShadow)
+//     HWPCB_core.h            (Process Control Block)
+//     IPRStorage_Hot64.h      (Run-loop IPRs, deduplicated)
+//     IPRStorage_HotExt.h     (PAL/exception IPRs, deduplicated)
+//
+//   Sub-structures (accessed via bound CPUStateView):
+//     ->i   IntRegs          r[32]
+//     ->f   FloatRegs        f[31], fpcr
+//     ->p   PalShadow        bank0[27], bank1[23], enabled
+//     ->h   HWPCB            pc, ps, cm, ipl, asn, sp[], exc_addr, ptbr, va_fault, aster, astsr
+//     ->r   RunLoop          cc, cc_ctl, pccState, intrFlag, pal_personality
+//     ->x   PalIPR           pal_base, scbb, pcbb, vptb, prbr, virbnd, sysptbr, mces, whami,
+//                            i_ctl, m_ctl, dc_ctl, va_ctl, exc_sum, exc_mask, mm_stat,
+//                            TLB staging, pal_temp[32], write buffer, perfmon
+//     ->o   OSF              vptptr, ent_int/arith/mm/fault/una/sys, wrkgp
+//
+//   PAL Mode (single source of truth):
+//     isInPalMode()            read:   h->pc & 1
+//     setPalMode(bool)         write:  enable/disable PAL bit on current PC
+//     enterPalMode(entryPC)    write:  set new PC and assert PAL bit
+//     exitPalMode(returnPC)    write:  set new PC and clear PAL bit
+//     resetPalMode()           write:  PC = 0x8001  (CPU cold reset only)
+//
+//   Vector Computation (single source of truth):
+//     computeExceptionVector(PalVectorId_EV6)  -> PAL_BASE | vecId  | 0x1
+//     computeCallPalEntry(func)                -> PAL_BASE | offset | 0x1
+//
+//   Mode Queries:
+//     isInPalMode()     h->pc & 1
+//     isKernelMode()    h->cm == 0
+//     isPhysicalMode()  va_ctl bit 1 clear
+//     isKseg(va)        va >= 0xFFFFFC0000000000
+//
+//   Concurrency: one writer per cpuId (CPU run-loop thread).
+//   Not included: IPRStorage_CBox.h (IRQ latches, IPI, SIRR -- different writer)
 //
 // Commercial use prohibited without separate license.
 // Contact: peert@envysys.com | https://envysys.com
@@ -50,19 +92,8 @@
 // Concurrency: one writer per cpuId (CPU run-loop thread).
 // ============================================================================
 
-/*
- m_iprGlobalMaster->i->   IntRegs      r[32]
-m_iprGlobalMaster->f->   FloatRegs    f[31], fpcr
-m_iprGlobalMaster->p->   PalShadow    bank0[27], bank1[23], enabled
-m_iprGlobalMaster->h->   HWPCB        pc, ps, cm, ipl, asn, sp[], exc_addr, ptbr, va_fault, aster, astsr...
-m_iprGlobalMaster->r->   RunLoop      cc, cc_ctl, pccState, intrFlag, pal_personality
-m_iprGlobalMaster->x->   PalIPR       pal_base, scbb, pcbb, vptb, prbr, virbnd, sysptbr, mces, whami,
-                                       i_ctl, m_ctl, dc_ctl, va_ctl, exc_sum, exc_mask, mm_stat,
-                                       TLB staging, pal_temp[32], write buffer, perfmon
-m_iprGlobalMaster->o->   OSF          vptptr, ent_int/arith/mm/fault/una/sys, wrkgp
 
- *
- */
+
 
 #include <QtGlobal>
 #include <QString>
@@ -189,7 +220,7 @@ struct alignas(64) IPRStorage_IntRegs final
         {
             qDebug().noquote()
                 << QString("[REG::WRITE::INT] CPU=0 PC=not available R31: DISCARDED (hardwired zero)");
-             
+
             return;   // do not call write() — R31 is architecturally immutable
         }
 #endif
@@ -476,7 +507,7 @@ public:
     // Program Counter (PC) Register — Usage Considerations
     // ============================================================================
     // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-    // Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+    // Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
     // Licensed under eNVy Systems Non-Commercial License v1.1
     //
     // Project Architect: Timothy Peer
@@ -1019,7 +1050,7 @@ struct alignas(64) IPRStorage_PalIPR
 
     // ── Accessors ──
 
-   
+
     AXP_HOT AXP_ALWAYS_INLINE quint64 getPalTemp(int idx) const noexcept
     {
         return (idx >= 0 && idx < 32) ? pal_temp[idx] : 0;
@@ -1340,7 +1371,7 @@ public:
         m_palShadow[idx(id)].enabled = e;
     }
 
-   
+
 
     // ================================================================
     // Context Save / Restore — ALL snapshottable state
@@ -1499,33 +1530,84 @@ struct CPUStateView final
     AXP_HOT AXP_ALWAYS_INLINE quint64* floatRaw() noexcept { return f->raw(); }
     AXP_HOT AXP_ALWAYS_INLINE const quint64* floatRaw() const noexcept { return f->raw(); }
 
-    // ============================================================================
-    AXP_HOT AXP_ALWAYS_INLINE bool isInPalMode() const noexcept {
-        return (h->inPalMode());
-    }
-    // Set or clear PC[0] while preserving all other bits.
-    // DEPRECATED — use enterPalMode() / exitPalMode() directly
-    // Retained during refactor transition only — remove when all sites migrated
-    AXP_HOT AXP_ALWAYS_INLINE quint64 setPalMode( bool enable) noexcept
+    // ========================================================================
+    // PAL Mode -- single source of truth for all mode queries and mutations.
+    // All callers (PalBox, PalService, AlphaCPU) use these accessors.
+    // No code outside this class reads or writes h->pc bit 0 directly.
+    // ========================================================================
+
+    // Query: PAL mode active iff PC bit 0 is set.
+    AXP_HOT AXP_ALWAYS_INLINE bool isInPalMode() const noexcept
     {
-        if (enable) {
-            return (h->getPC());   // set bit0
-        }
-        return (h->getPC());      // clear bit0
+        return h->inPalMode();
     }
 
-    // Before attempting TLB lookup
-    AXP_HOT AXP_ALWAYS_INLINE bool isPhysicalMode() const noexcept {
-        const quint64 vaCtl = x->va_ctl;
-        return (vaCtl & 0x2) == 0;  // Bit 1 = VA_MODE
+    // setPalMode(enable) -- single function of truth for PAL mode mutation.
+    //
+    //   enable=true  : assert   PC bit 0 on current PC (PAL mode entry).
+    //   enable=false : clear    PC bit 0 on current PC (PAL mode exit).
+    //
+    // Use when the target PC is already set (e.g. PalService::exitPAL()).
+    // When dispatching to a specific entry address, use the two-argument
+    // forms below which set the PC and the PAL bit in one operation.
+    AXP_HOT AXP_ALWAYS_INLINE void setPalMode(bool enable) noexcept
+    {
+        if (enable)
+            h->enterPalMode(h->getPC());
+        else
+            h->exitPalMode(h->getPC());
     }
 
+    // enterPalMode(entryPC) -- set PC and assert PAL bit in one operation.
+    // Use for exception entry and CALL_PAL dispatch where the target PC
+    // differs from the current PC. Caller must have called saveContext()
+    // and written exc_addr before this.
+    AXP_HOT AXP_ALWAYS_INLINE void enterPalMode(quint64 entryPC) noexcept
+    {
+        h->enterPalMode(entryPC);
+    }
 
-    static AXP_HOT AXP_ALWAYS_INLINE bool isKseg(quint64 va) noexcept {
+    // exitPalMode(returnPC) -- set PC and clear PAL bit in one operation.
+    // Use for HW_REI and PAL return paths where the return address (Rb)
+    // differs from the current PC. IPL restored separately from saved PS.
+    AXP_HOT AXP_ALWAYS_INLINE void exitPalMode(quint64 returnPC) noexcept
+    {
+        h->exitPalMode(returnPC);
+    }
+
+    // resetPalMode() -- CPU cold reset only. PC = 0x8001 (PAL bit set).
+    // NOT an exception entry -- no saveContext(), no exc_addr, no IPL change.
+    AXP_HOT AXP_ALWAYS_INLINE void resetPalMode() noexcept
+    {
+        h->restorePC(0x0000000000008001ULL);
+    }
+
+    // ========================================================================
+    // Mode Queries
+    // ========================================================================
+
+    // Kernel mode: CM == 0.
+    AXP_HOT AXP_ALWAYS_INLINE bool isKernelMode() const noexcept
+    {
+        return (h->getCM() == 0);
+    }
+
+    // Physical mode: VA_CTL bit 1 clear -- no virtual address translation.
+    // Check before attempting TLB lookup.
+    AXP_HOT AXP_ALWAYS_INLINE bool isPhysicalMode() const noexcept
+    {
+        return (x->va_ctl & 0x2) == 0;
+    }
+
+    // Kernel virtual address segment: VA >= 0xFFFFFC0000000000.
+    static AXP_HOT AXP_ALWAYS_INLINE bool isKseg(quint64 va) noexcept
+    {
         return va >= 0xFFFFFC0000000000ULL;
     }
 
-    static AXP_HOT AXP_ALWAYS_INLINE bool isPhysicalSegment(quint64 va) noexcept {
+    // 32-bit physical segment: VA < 4GB -- used for firmware/PAL access.
+    static AXP_HOT AXP_ALWAYS_INLINE bool isPhysicalSegment(quint64 va) noexcept
+    {
         return va < 0x100000000ULL;
     }
 
@@ -1566,9 +1648,19 @@ struct CPUStateView final
     }
 
 
-  
 
-    AXP_HOT AXP_ALWAYS_INLINE auto computeExceptionVector( PalVectorId_EV6 PVectorId) const noexcept -> quint64
+
+    // ========================================================================
+    // Vector Computation -- single source of truth.
+    // All PAL entry addresses are computed here. No caller computes
+    // PAL entry addresses independently.
+    // ========================================================================
+
+    // Exception / fault vector.
+    //   entryPC = (PAL_BASE & ~0x7FFF) | (vecId & 0x7FFE) | 0x1
+    //   PC bit 0 set (PAL mode), low 15 bits encode the vector offset.
+    //   Used by: enterPal(TrapCode_Class) via mapTrapToPalVector().
+    AXP_HOT AXP_ALWAYS_INLINE auto computeExceptionVector(PalVectorId_EV6 PVectorId) const noexcept -> quint64
     {
         const quint64 palBase = x->pal_base;
         quint16       vectorId = static_cast<quint16>(PVectorId);
@@ -1578,11 +1670,16 @@ struct CPUStateView final
         return pc;
     }
 
+    // CALL_PAL instruction entry vector.
+    //   Illegal func (0x40-0x7F, > 0xBF) -> OPCDEC vector.
+    //   entryPC = (PAL_BASE & ~0x7FFF) | bit13 | (func[7] << 12) | (func[5:0] << 6) | 0x1
+    //   PC bit 0 set (PAL mode).
+    //   Used by: enterPal(PalEntryReason::CALL_PAL_INSTRUCTION, func, faultPC).
     AXP_HOT AXP_ALWAYS_INLINE auto computeCallPalEntry(const quint32 func) const noexcept -> quint64
     {
         if (isIllegalCallPal(func))
         {
-            return computeExceptionVector(PalVectorId_EV6::OPCDEC);
+            return computeExceptionVector(PalVectorId_EV6::RESET);
         }
         const quint64 palBase = x->pal_base;
         quint64       pc = palBase & ~0x7FFFULL;

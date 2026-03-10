@@ -173,6 +173,7 @@ namespace PipelineEffect {
     constexpr quint32 kRequestPipelineFlush = (1u << 9);
     constexpr quint32 kClearBranchPredictor = (1u << 10);
     constexpr quint32 kFlushPendingIPRWrites = (1u << 11);
+    constexpr quint32 kResetEntry = (1u << 12);
 }
 
 
@@ -461,6 +462,13 @@ struct alignas(16) PalResult
     AXP_HOT AXP_ALWAYS_INLINE bool hasNotifyHalt()           const noexcept { return has(PipelineEffect::kNotifyHalt); }
     AXP_HOT AXP_ALWAYS_INLINE bool hasRequestPipelineFlush() const noexcept { return has(PipelineEffect::kRequestPipelineFlush); }
     AXP_HOT AXP_ALWAYS_INLINE bool hasClearBranchPredictor() const noexcept { return has(PipelineEffect::kClearBranchPredictor); }
+    AXP_HOT AXP_ALWAYS_INLINE PalResult& resetEntry() noexcept {
+        sideEffects |= PipelineEffect::kResetEntry;
+        return *this;
+    }
+    AXP_HOT AXP_ALWAYS_INLINE bool hasResetEntry() const noexcept {
+        return has(PipelineEffect::kResetEntry);
+    }
     // -----------------------------------------------------------------
     // Reset (clear all fields for reuse)
     // -----------------------------------------------------------------
@@ -529,6 +537,7 @@ enum class PalStatus
 // ============================================================================
 enum class PalEntryReason {
     CALL_PAL_INSTRUCTION,
+    EXCEPTION,
     FAULT_DTBM,
     FAULT_ITB,
     FAULT_ARITH,
