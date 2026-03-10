@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Appendix &gt; Appendix J - SRM Firmware Topic Hive &gt; J.5 - SRM-D Full Cycle Execution</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="boot,bootPC,cleanPC,cyclesExecuted,decompress,ES40,EV6,finalPalBase,finalPC,fromSnapshot,loadFromFile,loadSnapshot,PAL_BASE,palBase,ProgressFn,QDataStream,romHash,runloop,saveSnapshot,SingleStepFn,snapshot,SRM-D,SrmRomLoadResult,startPC" />
+   <meta name="description" content="This section covers the complete boot cycle from firmware image selection through the start of the main emulation run-loop pump. The scope is limited to the loading and..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        min-height: 60px; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        background: #2C5D88;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 158px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "j_5.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J.5 - SRM-D Full Cycle Execution</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:middle">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?j_5.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; Appendix J - SRM Firmware Topic Hive&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J.5 - SRM-D Full Cycle Execution</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="appendix-l---srm-firmware-init.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="appendix-k---cputrace-.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">This section covers the complete boot cycle from firmware image selection through the start of the main emulation run-loop pump. The scope is limited to the loading and pump-start sequence -- ongoing SRM console execution and PAL dispatch are covered in Appendix J.4.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.5.1 Boot Cycle Overview</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">PHASE&nbsp;13&nbsp;--&nbsp;ROM&nbsp;Selection:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_srmRomLoader.loadFromFile(srmRomFile)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;findDecompressor()&nbsp;scans&nbsp;first&nbsp;4KB&nbsp;for&nbsp;12-byte&nbsp;signature</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Signature&nbsp;at&nbsp;offset&nbsp;0x0&nbsp;(ES40/ES45/DS10/DS20/GS320)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;OR&nbsp;at&nbsp;offset&nbsp;0x240&nbsp;(cl67srmrom.exe,&nbsp;clsrmrom.exe)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;m_payloadData,&nbsp;m_payloadSize,&nbsp;m_headerSkip&nbsp;set</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;isLoaded()&nbsp;==&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PHASE&nbsp;14&nbsp;--&nbsp;Firmware&nbsp;Load&nbsp;(bifurcated):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[FAST&nbsp;PATH&nbsp;--&nbsp;snapshot&nbsp;exists&nbsp;and&nbsp;validates]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;loadSnapshot(path,&nbsp;writeToPhysical,&nbsp;setPC,&nbsp;setPalBase,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;setIntRegs,&nbsp;setFpRegs,&nbsp;setIPRs)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Validate&nbsp;magic,&nbsp;version,&nbsp;romHash,&nbsp;buildId,&nbsp;checksum</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Write&nbsp;regionCount&nbsp;memory&nbsp;regions&nbsp;to&nbsp;guest&nbsp;physical&nbsp;RAM</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Restore&nbsp;R0-R31,&nbsp;F0-F31,&nbsp;all&nbsp;IPRs</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;setPC(finalPC)&nbsp;finalPC&nbsp;=&nbsp;0x5C0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;setPalBase(finalPalBase)&nbsp;palBase&nbsp;=&nbsp;0x900000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;result.fromSnapshot&nbsp;=&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Elapsed:&nbsp;&lt;&nbsp;500&nbsp;ms&nbsp;(dominated&nbsp;by&nbsp;memory&nbsp;write&nbsp;throughput)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;[SLOW&nbsp;PATH&nbsp;--&nbsp;first&nbsp;run&nbsp;or&nbsp;stale&nbsp;snapshot]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;decompress(cfg,&nbsp;writeToPhysical,&nbsp;singleStep,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;setPC,&nbsp;setPalBase,&nbsp;getPalBase,&nbsp;progress)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;writeToPhysical(0x0,&nbsp;payload,&nbsp;size)&nbsp;mirror&nbsp;write</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;writeToPhysical(0x900000,&nbsp;payload,&nbsp;size)&nbsp;decompressor&nbsp;home</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;setPC(0x900001)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;setPalBase(0x900000)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Single-step&nbsp;loop:&nbsp;5,767,331&nbsp;iterations</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Phase&nbsp;1:&nbsp;Init&nbsp;(158&nbsp;steps,&nbsp;~31&nbsp;ms)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Phase&nbsp;2:&nbsp;Copy&nbsp;loop&nbsp;(524,288&nbsp;iterations,&nbsp;~16&nbsp;min&nbsp;debug)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Phase&nbsp;3:&nbsp;Decompressor&nbsp;(variable&nbsp;steps,&nbsp;~3&nbsp;min&nbsp;debug)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;PC&nbsp;drops&nbsp;below&nbsp;0x200000&nbsp;-&gt;&nbsp;goto&nbsp;done:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;result.finalPC&nbsp;=&nbsp;0x5C0,&nbsp;result.success&nbsp;=&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;saveSnapshot(path,&nbsp;result,&nbsp;regions,</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;readFromPhysical,&nbsp;getIntRegs,&nbsp;getFpRegs,&nbsp;getIPRs)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PHASE&nbsp;15&nbsp;--&nbsp;CPU&nbsp;State&nbsp;Validation:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;ASSERT&nbsp;result.success&nbsp;==&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;ASSERT&nbsp;result.cleanPC()&nbsp;==&nbsp;0x5C0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;ASSERT&nbsp;result.finalPalBase&nbsp;==&nbsp;0x900000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Log&nbsp;&quot;[Phase&nbsp;15]&nbsp;SRM&nbsp;firmware&nbsp;resident&nbsp;--&nbsp;boot&nbsp;PC=0x5C0&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PHASE&nbsp;16&nbsp;--&nbsp;Pipeline&nbsp;Initialization:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;AlphaPipeline::reset()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;AlphaPipeline::setPC(result.bootPC())</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;AlphaPipeline::setPalBase(result.finalPalBase)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;Decode&nbsp;cache&nbsp;warm&nbsp;(PA&nbsp;cache&nbsp;pre-populated&nbsp;from&nbsp;decompressor&nbsp;run)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PHASE&nbsp;17&nbsp;--&nbsp;Run-Loop&nbsp;Pump&nbsp;Start:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_runLoopTimer-&gt;start(0)&nbsp;Qt&nbsp;zero-interval&nbsp;timer</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;QCoreApplication::exec()&nbsp;enters&nbsp;event&nbsp;loop</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Timer&nbsp;fires:&nbsp;AlphaPipeline::tick()&nbsp;each&nbsp;event&nbsp;loop&nbsp;iteration</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Pipeline&nbsp;executes&nbsp;SRM&nbsp;firmware&nbsp;from&nbsp;PC=0x5C0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Console&nbsp;firmware&nbsp;initialization&nbsp;begins</span></p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.5.2 Run-Loop Pump</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The run-loop pump is a zero-interval <span class="f_CodeExample">QTimer</span> driving <span class="f_CodeExample">AlphaPipeline::tick()</span> from the Qt event loop. A zero-interval timer fires as fast as the event loop allows, yielding to the OS scheduler between ticks so Qt events (UI updates, input, signals) are processed while executing pipeline cycles at the maximum rate the host allows.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Why a timer rather than a dedicated thread?</span> The single-threaded event-driven model avoids mutex contention on pipeline state from the main thread, simplifies debugger integration (breakpoints and single-step are just timer suspension), and allows the emulator UI to remain responsive. A dedicated execution thread would require locking on every UI interaction with pipeline state. The event loop model trades raw throughput for maintainability and debuggability during the current development phase.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Execution rate.</span> Debug build with full CpuTrace I/O: approximately 5,772 instructions per second. Release build without trace: several hundred thousand instructions per second. The snapshot eliminates the 16-minute initialization penalty entirely in both configurations -- the slow path runs exactly once per ROM revision per emulator build.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.5.3 PC at Run-Loop Start</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The pipeline is primed with <span class="f_CodeExample">bootPC() = 0x5C0</span> before the run-loop pump starts. This is the entry point of the decompressed SRM firmware at PA 0x0. The PAL mode bit is clear (<span class="f_CodeExample">0x5C0 &amp; 1 == 0</span>) -- the firmware enters in normal mode. The first instruction executed is at guest physical address 0x5C0.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL_BASE is set to 0x900000 -- the decompressor image home. Until the decompressed SRM firmware performs its own PAL_BASE relocation (part of the SRM console initialization sequence), PAL calls dispatch into the code at 0x900000.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.5.4 Snapshot Load Timing (Fast Path)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On the snapshot fast path, the entire Phase 14 load sequence -- writing 6.7 MB of memory regions, restoring 32 integer registers, 32 FP registers, and all IPRs, and validating the footer checksum -- completes in under 500 milliseconds on typical SSD storage. The dominant cost is sequential physical memory write throughput, not the checksum validation or register restore.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Path</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Phase 14 Time (debug)</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Phase 14 Time (release)</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Slow (decompress)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">~16 minutes 39 seconds</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">~10 seconds (estimated)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Fast (snapshot)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">&lt; 500 ms</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">&lt; 200 ms</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The snapshot is a one-time investment. After the first successful decompression run, every subsequent boot -- including debug builds with full trace I/O -- pays only the fast path cost.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="j_2-.html" class="topiclink">J.2 - SRM-D Configuration and Initialization</a>; <a href="j_3.html" class="topiclink">J.3 - SRM-D Snapshot Mechanics</a>; <a href="appendix-l---srm-firmware-init.html" class="topiclink">J.4 - SRM Firmware Initialization and PAL Exception Dispatch</a>; <a href="appendixg-instructiongrainmechanics.html" class="topiclink">Appendix G - Instruction Grain Mechanics</a> .h; memoryLib/SrmRomLoader.cpp;coreLib/cpuTrace.h (hh:mm:ss.mmm elapsed time);Chapter 13 -- AlphaPipeline Implementation (run-loop pump and pipeline tick);grainFactoryLib/GrainResolver.h (decode cache warm after decompressor run).</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
+
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
+  $(document).ready(function(){
+    $(window).on('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
+      }
+	normHeaders();
+    });
+    
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
+	 $(window).resize(); //trigger event for initially small displays
+  });
+ 
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?j_5.html" target="_top">'+baseurl+'index.html?j_5.html</a></p>');
+
+</script>
+</body>
+</html>

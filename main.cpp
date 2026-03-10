@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 	
 
 #ifdef AXP_EXEC_TRACE
-	CpuTrace::initialize("traces\cpu_trace.lst", "traces\cpu_trace.log");
+	CpuTrace::initialize("traces/cpu_trace.lst", "traces/cpu_trace.log");
 	CpuTrace::setTraceMask(CpuTrace::TRACE_ALL);
 #endif
 

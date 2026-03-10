@@ -2,18 +2,62 @@
 // PalBoxBase.h - PAL Box (Header-Only Implementation)
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
-// 
+//
 // Project Architect: Timothy Peer
 // AI Code Generation: Claude (Anthropic) / ChatGPT (OpenAI)
-// 
-// Description:
-//   PAL (Privileged Architecture Library) execution unit for Alpha processor.
-//   Handles CALL_PAL instructions, HW_MFPR/HW_MTPR register access, PAL mode
-//   entry/exit, shadow register management, and system service dispatch.
-//   Header-only implementation with all methods inline.
 //
+// Description:
+//   PalBox is the single point of authority for all PAL mode entry, exit,
+//   and architectural state transitions on the Alpha AXP EV6 processor.
+//
+//   Responsibilities:
+//     - CALL_PAL instruction dispatch (via PalService)
+//     - HW_MFPR / HW_MTPR internal processor register access
+//     - PAL shadow register bank activation / deactivation
+//     - PAL mode entry: enterPal() / enterPalCore()  [SINGLE SOURCE OF TRUTH]
+//     - PAL mode exit:  executeREI() (HW_RET opcode 0x1E, PC <- Rb)
+//     - Exception and fault vectoring via computeExceptionVector()
+//     - CALL_PAL vector computation via computeCallPalEntry()
+//     - AST (Asynchronous System Trap) handling
+//     - Privilege level enforcement
+//     - Machine check escalation for unmapped vectors
+//
+//   PAL Entry Contract (enforced by enterPalCore):
+//     1. saveContext()           -- snapshot before any state change
+//     2. exc_addr = faultPC      -- save return/retry address
+//     3. enterPalMode(entryPC)   -- set PC and assert PC bit 0 (PAL mode)
+//     4. setIPL_Unsynced(7)      -- mask all interrupts
+//     5. setCM(CM_KERNEL)        -- force kernel mode
+//     6. shadowRegsActive = true -- activate PAL shadow register bank
+//
+//   PAL Exit Contract (enforced by executeREI):
+//     - PC <- Rb  (EV6 HW_RET semantic, not exc_addr)
+//     - shadowRegsActive = false
+//     - Pipeline flush
+//
+//   PAL Mode Truth:
+//     - h->inPalMode() == (h->pc & 1) is the SINGLE architectural source.
+//     - No software cache of PAL mode state is maintained in PalBox.
+//     - isInPalMode() delegates directly to h->inPalMode().
+//
+//   Vector Computation (single source, no PalVectorTable lookup):
+//     - computeExceptionVector(PalVectorId_EV6) -> PAL_BASE | vecId | 0x1
+//     - computeCallPalEntry(func)               -> PAL_BASE | CALL_PAL offset | 0x1
+//
+//   Removed (superseded):
+//     - enterPALVector()  -- duplicated enterPalCore(); deleted.
+//     - AlphaCPU::enterPalMode() overloads -- redundant; deleted.
+//     - m_cachedInPalMode in PalService -- diverges from PC[0]; deleted.
+//
+//   References:
+//     Alpha Architecture Handbook (ASA)
+//       PAL Mode Entry:    Section 4.11, Page 4-46
+//       CALL_PAL overview: Section 6.5,  Page 6-14
+//       HW_RET (REI):      Section 4.11
+//
+// Header-only implementation -- all methods inline.
 // Commercial use prohibited without separate license.
 // Contact: peert@envysys.com | https://envysys.com
 // Documentation: https://timothypeer.github.io/ASA-EMulatR-Project/
@@ -49,7 +93,7 @@
 
 class PalService;
 // Forward declarations
-class PipelineSlot;
+struct PipelineSlot;
 struct BoxResult;
 struct PalResult;
 
@@ -58,21 +102,30 @@ struct PalResult;
 // ============================================================================
 
 /**
- * @brief PAL execution unit for Alpha processor
+ * @brief PalBox -- PAL execution unit for Alpha AXP EV6.
  *
- * Responsibilities:
- * - CALL_PAL instruction execution
- * - HW_MFPR/HW_MTPR processor register access
- * - PAL shadow register bank management
- * - AST (Asynchronous System Trap) handling
- * - Privilege level enforcement
- * - System service dispatch
- * - Context save/restore for PAL mode transitions
+ * PalBox owns ALL PAL mode entry/exit and vector dispatch.
+ * PalService owns CALL_PAL instruction semantic implementations only.
+ *
+ * Entry points (public):
+ *   enterPal(TrapCode_Class, faultPC)                 -- fault/exception entry
+ *   enterPal(PalEntryReason, vectorOrSelector, faultPC) -- CALL_PAL entry
+ *   executeBPT(slot)                                  -- CALL_PAL BPT grain
+ *   executeREI(slot) / executeHW_REI(slot)            -- HW_RET: PC <- Rb
+ *   executeRTI(slot)                                  -- RTI: PC <- exc_addr
+ *   executeRETSYS(slot) / executeRFE(slot)            -- return from syscall
+ *   handleException(BoxResult)                        -- fault dispatch shim
+ *
+ * Private:
+ *   enterPalCore(reason, entryPC, faultPC)            -- single implementation
+ *
+ * PAL mode truth:  h->inPalMode() == (h->pc & 1)
+ * Vector truth:    computeExceptionVector() / computeCallPalEntry()
  *
  * Design:
- * - Singleton per CPU (Meyers singleton pattern)
- * - Header-only implementation (all methods inline)
- * - Owns PalService instance via std::unique_ptr
+ *   - One instance per CPU (owned by AlphaCPU)
+ *   - Header-only / all methods inline
+ *   - Owns PalService via std::unique_ptr
  */
 class PalBox final
 {
@@ -138,10 +191,16 @@ public:
         commitPalResult(slot);                    // Commit Pal Results
     }
 
-    AXP_HOT AXP_ALWAYS_INLINE auto executeBPT(PipelineSlot& slot) -> void
+    AXP_HOT AXP_ALWAYS_INLINE auto executeBPT(PipelineSlot& slot) noexcept -> void
     {
-        m_palService->executeBPT(slot, slot.palResult);
-        commitPalResult(slot);                    // Commit Pal Results
+        // Enter PAL mode via BPT vector -- owns the dispatch
+        const quint64 faultPC = slot.di.pc;
+        enterPal(TrapCode_Class::BREAKPOINT, faultPC);
+
+        // Delegate OSF/1 BPT semantics to PalService
+        PalResult result{};
+        m_palService->execute(PalCallPalFunction_enum::BPT, slot, result);
+        commitPalResult(slot, result);
     }
 
     AXP_HOT AXP_ALWAYS_INLINE auto executeBUGCHK(PipelineSlot& slot) -> void
@@ -1240,65 +1299,105 @@ public:
     auto operator=(const PalBox&) -> PalBox & = delete;
     ~PalBox() = default;
 
-    /**
-     * @brief Unified PAL entry point for all entry reasons
-     *
-     * Handles both CALL_PAL instructions and fault/interrupt entries.
-     * Saves complete CPU context, computes entry PC, activates shadow
-     * registers, and enters PAL mode.
-     *
-     * @param reason Why we're entering PAL mode
-     * @param vectorOrSelector PAL function code or exception vector
-     * @param faultPC PC to save (return address or fault PC)
-     * @return BoxResult with pipeline flush request
-     */
+    // ====================================================================
+    // enterPal() -- SINGLE SOURCE OF TRUTH for all PAL entry.
+    //
+    // Two overloads; both delegate to enterPalCore().
+    // No caller outside PalBox computes PAL entry addresses.
+    //
+    // Overload A -- Fault / exception entry.
+    //   Caller provides TrapCode_Class. Vector computed internally
+    //   via mapTrapToPalVector() -> computeExceptionVector().
+    //   Used by: runOneInstruction() fault dispatch.
+    //   faultPC: address of faulting instruction (HW_REI retries it).
+    //
+    // Overload B -- CALL_PAL instruction entry.
+    //   Caller provides PalEntryReason + function index or vector id.
+    //   Routes through computeCallPalEntry() for CALL_PAL_INSTRUCTION,
+    //   or computeExceptionVector() for explicit vector dispatch.
+    //   faultPC: pc+4 (return address after CALL_PAL instruction).
+    // ====================================================================
+
+    // Overload A -- fault/exception entry
+    AXP_HOT inline auto enterPal(TrapCode_Class trapCode, quint64 faultPC) noexcept -> BoxResult
+    {
+        const PalVectorId_EV6 vecId = mapTrapToPalVector(trapCode);
+        const quint64         entryPC = m_iprGlobalMaster->computeExceptionVector(vecId);
+        return enterPalCore(PalEntryReason::EXCEPTION, entryPC, faultPC);
+    }
+
+    // Overload B -- CALL_PAL instruction / explicit vector entry
     AXP_HOT inline auto enterPal(PalEntryReason reason, quint64 vectorOrSelector, quint64 faultPC) noexcept -> BoxResult
     {
-        // 1. Record metadata
-        m_entryReason = reason;
-        m_entryVector = vectorOrSelector;
-        m_faultPC = faultPC;
-
-        // 2. Save context (UNIFIED - same for all entry types)
-        m_iprGlobalMaster->saveContext();
-
-        // 3. Compute entry PC
         quint64 entryPC;
         if (reason == PalEntryReason::CALL_PAL_INSTRUCTION)
-        {
             entryPC = m_iprGlobalMaster->computeCallPalEntry(vectorOrSelector);
-        }
         else
-        {
-            entryPC = vectorOrSelector;  // Direct vector for faults
+            entryPC = m_iprGlobalMaster->computeExceptionVector(
+                static_cast<PalVectorId_EV6>(vectorOrSelector));
+        return enterPalCore(reason, entryPC, faultPC);
+    }
+
+private:
+    // ====================================================================
+    // enterPalCore() -- single shared implementation.
+    // NOT called directly. All entry flows route through enterPal().
+    // ====================================================================
+    AXP_HOT inline auto enterPalCore(PalEntryReason reason, quint64 entryPC, quint64 faultPC) noexcept -> BoxResult
+    {
+        // ====================================================================
+        // Guard: entryPC=0 or sentinel means vector not mapped.
+        // Escalate to MachineCheck rather than fetching from garbage address.
+        // ====================================================================
+        if (entryPC == 0 || entryPC == 0xDEADBEEFDEADBEEFULL) {
+            CRITICAL_LOG(QString("CPU%1: Invalid PAL entry PC 0x%2 -- escalating to MCHK")
+                .arg(m_cpuId)
+                .arg(entryPC, 16, 16, QChar('0')));
+            PendingEvent mchk{};
+            mchk.kind = PendingEventKind::MachineCheck;
+            mchk.exceptionClass = ExceptionClass_EV6::MachineCheck;
+            mchk.faultPC = faultPC;
+            m_faultDispatcher->setPendingEvent(mchk);
+            return BoxResult().flushPipeline();
         }
 
-        // 4. Set exception address
-        m_iprGlobalMaster->h->exc_addr = faultPC;     // fast path update the exception address in the IPR64EXT
-        //setEXC_ADDR_Active(m_cpuId, faultPC);
-        // For CALL_PAL: faultPC is pc+4 (return address)
-        // For faults: faultPC is faulting instruction (retry address)
+        // 1. Record metadata
+        m_entryReason = reason;
+        m_entryVector = entryPC;
+        m_faultPC = faultPC;
 
-        // 5. Enter PAL mode (CENTRALIZED - only place PC[0] set)
-        // setCM_Active(m_cpuId, CM_KERNEL);
-        //setPC_Active(m_cpuId, entryPC | 0x1ULL);
-        m_iprGlobalMaster->h->advancePC(entryPC);             // fast path // updates the PC
+        // 2. Save full context snapshot (int regs, float regs, HWPCB).
+        //    Must occur before ANY architectural state is modified.
+        m_iprGlobalMaster->saveContext();
+
+        // 3. Save faulting/return PC to exc_addr (live -- not in snapshot).
+        //    CALL_PAL: faultPC = pc+4 (return address after instruction)
+        //    Fault:    faultPC = faulting instruction PC (HW_REI retries it)
+        m_iprGlobalMaster->h->exc_addr = faultPC;
+
+        // 4. Enter PAL mode -- sets PC and asserts PC bit 0 unconditionally.
+        //    enterPalMode() is the ONLY correct call here.
+        //    advancePC() preserves the current PAL bit and MUST NOT be used --
+        //    it would fail to set PAL mode when entering from non-PAL context.
+        m_iprGlobalMaster->enterPalMode(entryPC);
+
+        // 5. Set PAL execution state (IPL=7 masks all interrupts, CM=KERNEL)
         m_iprGlobalMaster->h->setIPL_Unsynced(7);
-        m_iprGlobalMaster->h->setCM(CM_KERNEL);    // fast path // updates the PS and shadow CM
+        m_iprGlobalMaster->h->setCM(CM_KERNEL);
 
-
-        // 6. Activate shadow registers
+        // 6. Activate PAL shadow registers
         m_shadowRegsActive = true;
 
-        DEBUG_LOG(QString("PalBox CPU %1: Entered PAL mode reason=%2 vector=0x%3 PC=0x%4")
+        DEBUG_LOG(QString("PalBox CPU %1: Entered PAL mode reason=%2 entryPC=0x%3 exc_addr=0x%4")
             .arg(m_cpuId)
             .arg(static_cast<int>(reason))
-            .arg(vectorOrSelector, 16, 16, QChar('0'))
-            .arg(entryPC, 16, 16, QChar('0')));
+            .arg(entryPC, 16, 16, QChar('0'))
+            .arg(faultPC, 16, 16, QChar('0')));
 
-        // 7. Return flush request
         return BoxResult().flushPipeline();
     }
+
+public:
 
 
     // exception handlers
@@ -1696,6 +1795,9 @@ public:
      */
     AXP_HOT AXP_ALWAYS_INLINE auto executeREI(PipelineSlot& slot) noexcept -> BoxResult
     {
+        if (slot.cycle == 63)
+            qDebug() << "HW_REI";
+
         // Validate in PAL mode
         if (!(m_iprGlobalMaster->isInPalMode()))
         {
@@ -1726,8 +1828,10 @@ public:
             .arg(targetPC, 16, 16, QChar('0')));
 
         // Exit PAL mode, set new PC
-        m_iprGlobalMaster->h->advancePC(targetPC);
-
+        // This is the HW_REI exit path ? it exits PAL mode. 
+        // advancePC() preserves PC bit 0, so PAL mode would remain set after REI. 
+        // m_iprGlobalMaster->h->advancePC(targetPC);
+        m_iprGlobalMaster->exitPalMode(targetPC);
         // Deactivate shadow registers
         m_shadowRegsActive = false;
 
@@ -1888,14 +1992,15 @@ public:
         // 3. Transfer control to OS
         //setPC_Active(m_cpuId, osEntry);  // No PC[0] - exit PAL mode
         //setCM_Active(m_cpuId, CM_KERNEL);
-        m_iprGlobalMaster->h->advancePC(osEntry);                                                      // Fast Path
+        //m_iprGlobalMaster->h->advancePC(osEntry);     
+        m_iprGlobalMaster->exitPalMode(osEntry); // Fast Path
         m_iprGlobalMaster->h->setCM(CM_KERNEL);                                     // Fast Path
 
         DEBUG_LOG(QString("PalBox CPU %1: Transferred to OS @ 0x%2")
             .arg(m_cpuId)
             .arg(osEntry, 16, 16, QChar('0')));
         Q_UNUSED(ksp);
-        
+
     }
 
 
@@ -1906,6 +2011,8 @@ public:
     /**
      * @brief Convenience global accessor for PalBox singleton
      * @param cpuId CPU identifier
+     * @param pendingState
+     * @param interruptRouter
      * @return Reference to PalBox instance for specified CPU
      */
 
@@ -1950,10 +2057,95 @@ public:
                 m_iprGlobalMaster->writeInt(reg, pr.returnValue);
         }
 
-        // 2. PC update
-        if (pr.pcModified)
+        if (pr.pcModified) {
+            if (pr.has(PipelineEffect::kHalt))
+                m_iprGlobalMaster->h->advancePC(pr.newPC);  // HALT: preserve PAL mode
+            else if (pr.has(PipelineEffect::kResetEntry))
+                m_iprGlobalMaster->enterPalMode(pr.newPC);  // PAL re-entry: set PAL bit
+            else
+                m_iprGlobalMaster->exitPalMode(pr.newPC);   // normal return: clear PAL bit
+        }
+
+        // 3. Side-effect flags -> pipeline signals
+        // Pipeline flush (combines several triggers)
+        if (pr.has(PipelineEffect::kRequestPipelineFlush |
+            PipelineEffect::kDrainWriteBuffers))
+            slot.flushPipeline = true;
+
+        if (pr.has(PipelineEffect::kFlushPendingTraps)) {
+            const quint8 currentIPL = m_iprGlobalMaster->h->getIPL();
+            if (m_pending->hasDeliverable(currentIPL)) {
+                ClaimedInterrupt claimed = m_pending->claimNext(currentIPL);
+                if (claimed.valid) {
+                    // If software interrupt, clear IPR.SISR bit
+                    m_palService->clearSisrIfSoftware(claimed);
+                    // if (IrqSource::isSoftwareSource(claimed.source)) {
+                    //     m_iprGlobalMaster->h->sisr &=
+                    //         ~static_cast<quint16>(1u << claimed.ipl);
+                    // }
+                    m_palService->deliverInterrupt(claimed);
+                }
+            }
+        }
+
+        if (pr.has(PipelineEffect::kMemoryBarrier))
+            slot.m_cBox->RequestMemoryBarrier(slot, MemoryBarrierKind::PAL);
+
+        if (pr.has(PipelineEffect::kNotifyHalt))
+            slot.halted = true;
+
+        // --- The missing handlers ---
+
+        if (pr.has(PipelineEffect::kTLBModified))
+            slot.m_mBox->invalidateCachedTranslations();
+
+        if (pr.has(PipelineEffect::kIPLChanged))
+            slot.m_cBox->reevaluatePendingInterrupts();
+
+        if (pr.has(PipelineEffect::kContextSwitched))
+            slot.m_cBox->reloadProcessContext();
+
+        if (pr.has(PipelineEffect::kPCBBChanged))
+            slot.m_cBox->updatePCBBPointer();
+
+        if (pr.has(PipelineEffect::kClearBranchPredictor))
+            slot.m_cBox->flushBranchPredictor();
+
+        if (pr.has(PipelineEffect::kFlushPendingIPRWrites))
+            slot.m_cBox->commitStagedIPRWrites();
+
+        // 4. Fault routing -- suppress writeback if PAL didn't return
+        if (!pr.doesReturn)
+            slot.needsWriteback = false;
+
+#if AXP_INSTRUMENTATION_TRACE
+        EXECTRACE_PAL_COMMIT(m_cpuId,
+            pr.hasReturnValue ? static_cast<quint8>(pr.returnReg) : quint8(31),
+            pr.hasReturnValue ? pr.returnValue : 0,
+            pr.pcModified,
+            pr.pcModified ? pr.newPC : 0,
+            slot.flushPipeline);
+#endif
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE void commitPalResult(PipelineSlot& slot, PalResult& pr)  noexcept
+    {
+        // 1. GPR writeback
+        if (pr.hasReturnValue && pr.returnReg != PalReturnReg::NONE)
         {
-            m_iprGlobalMaster->h->advancePC(pr.newPC);
+            const quint8 reg = static_cast<quint8>(pr.returnReg);
+            if (reg != 31)
+                m_iprGlobalMaster->writeInt(reg, pr.returnValue);
+        }
+
+        // 2. PC update
+        if (pr.pcModified) {
+            if (pr.has(PipelineEffect::kHalt))
+                m_iprGlobalMaster->h->advancePC(pr.newPC);  // HALT: preserve PAL mode
+            else if (pr.has(PipelineEffect::kResetEntry))
+                m_iprGlobalMaster->enterPalMode(pr.newPC);  // PAL re-entry: set PAL bit
+            else
+                m_iprGlobalMaster->exitPalMode(pr.newPC);   // normal return: clear PAL bit
         }
 
         // 3. Side-effect flags -> pipeline signals
@@ -2053,7 +2245,7 @@ public:
 
     AXP_HOT AXP_ALWAYS_INLINE auto isInPalMode() const noexcept -> bool
     {
-        return m_palService && m_palService->isInPalMode();
+        return m_iprGlobalMaster->isInPalMode();
     }
 
     AXP_ALWAYS_INLINE auto palService() const noexcept -> PalService*
@@ -2167,7 +2359,13 @@ public:
         // ============================================================
         if (pr.pcModified)
         {
-            m_iprGlobalMaster->h->advancePC(pr.newPC);
+            if (pr.has(PipelineEffect::kHalt))
+                m_iprGlobalMaster->h->advancePC(pr.newPC);  // HALT: preserve PAL mode
+            else if (pr.has(PipelineEffect::kResetEntry))
+                m_iprGlobalMaster->enterPalMode(pr.newPC);  // PAL re-entry: set PAL bit
+            else
+                m_iprGlobalMaster->exitPalMode(pr.newPC);   // normal return: clear PAL bit
+
             br.pcModified = true;
         }
         if (pr.hasRequestPipelineFlush())

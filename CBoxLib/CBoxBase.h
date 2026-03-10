@@ -634,7 +634,7 @@ public:
 
         // Flush and redirect if needed
         if (mispredicted) {
-            // advancePC preserves current PAL mode bit — misprediction is a
+            // advancePC preserves current PAL mode bit -- misprediction is a
             // control flow correction, not a mode transition
             m_iprGlobalMaster->h->advancePC(targetPC);
             slot.flushPipeline = true;

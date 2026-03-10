@@ -1,0 +1,687 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Appendix &gt; Appendix J - SRM Firmware Topic Hive &gt; J.4 - SRM Firmware Initialization and PAL Exception Dispatch</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="advancePC,CALL_PAL,CM_KERNEL,commitPalResult,computeCallPalEntry,computeExceptionVector,CPUStateView,cyclesExecuted,enterPal,enterPalCore,enterPalMode,exc_addr,ExceptionClass_EV6,ExecutionCoordinator,exitPalMode,finalPC,FNV-1a,HALT,HW_REI,HW_RET,HWRPB,IBoxBase,ILLEGAL_INSTRUCTION,inPalMode,isInPalMode,kHalt,kResetEntry,mapTrapToPalVector,MCHK,OPCDEC,PAL_BASE,PAL_core_inl,PalBox,PalBoxBase,PalEntryReason,PalResult,PalService,PalVectorId_EV6,PipelineEffect,resetPalMode,RESTART,RETSYS,romHash,RTI,runOneInstruction,saveContext,shadowRegsActive,snapshot,SRM,SWPPAL,TRAPB,TrapCode_Class" />
+   <meta name="description" content="This section describes the SRM firmware initialization sequence, the PAL exception dispatch architecture, and the vector computation contracts that govern all PAL mode..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        min-height: 60px; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        background: #2C5D88;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 158px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "appendix-l---srm-firmware-init.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J.4 - SRM Firmware Initialization and PAL Exception Dispatch</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:middle">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?appendix-l---srm-firmware-init.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; Appendix J - SRM Firmware Topic Hive&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J.4 - SRM Firmware Initialization and PAL Exception Dispatch</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="j_3.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="j_5.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">This section describes the SRM firmware initialization sequence, the PAL exception dispatch architecture, and the vector computation contracts that govern all PAL mode transitions.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4 SRM Boot Overview</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The SRM firmware image (ES40_V6_2.EXE) is a compressed binary that self-decompresses into RAM before transferring control to the console. Boot proceeds in two phases.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Decompression phase.</span> The ROM is loaded into guest memory at its physical base. CPU0 begins execution at PC=0x5C0 in PAL mode. The decompressor runs for approximately 5,767,331 cycles, expands the firmware image into RAM, then transfers control to the console at the boot handoff PC with PAL_BASE set to 0x600000.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Console phase.</span> The SRM console executes from the decompressed image, constructs the HWRPB at PA=0x2000, initializes per-CPU state, and provides the boot environment for the OS loader.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Verified boot handoff values for ES40_V6_2.EXE:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">finalPC&nbsp;=&nbsp;0x00000000000005C0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">finalPalBase&nbsp;=&nbsp;0x0000000000600000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">cyclesExecuted&nbsp;=&nbsp;5,767,331</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">romHash&nbsp;=&nbsp;0x9689831940DA2165&nbsp;(FNV-1a&nbsp;over&nbsp;payload)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">checksum&nbsp;=&nbsp;0xEF23EC3A5607179F&nbsp;(FNV-1a&nbsp;over&nbsp;snapshot&nbsp;file)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.1 Snapshot System</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The full decompression phase takes approximately 14 minutes in a debug build. The snapshot system captures complete machine state at boot handoff and reloads it in approximately 66 milliseconds, eliminating the decompression penalty on every subsequent boot.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The snapshot file format (.axpsnap) uses the following layout:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;HEADER&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;magic&nbsp;quint64&nbsp;0x415850534E415001&nbsp;&quot;AXPSNAPv1&quot;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;version&nbsp;quint32&nbsp;1&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;romHash&nbsp;quint64&nbsp;FNV-1a&nbsp;hash&nbsp;of&nbsp;ROM&nbsp;payload&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;emulatorBuild&nbsp;quint64&nbsp;Build&nbsp;ID&nbsp;(__DATE__+__TIME__&nbsp;hash)&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;finalPC&nbsp;quint64&nbsp;Boot&nbsp;handoff&nbsp;PC&nbsp;(PAL&nbsp;bit&nbsp;included)&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;finalPalBase&nbsp;quint64&nbsp;PAL_BASE&nbsp;at&nbsp;handoff&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;cyclesExecuted&nbsp;quint64&nbsp;Total&nbsp;decompressor&nbsp;cycles&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;elapsedMs&nbsp;double&nbsp;Wall-clock&nbsp;decompression&nbsp;time&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;MEMORY&nbsp;REGIONS&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;regionCount&nbsp;quint32&nbsp;Number&nbsp;of&nbsp;regions&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;[&nbsp;basePA&nbsp;quint64,&nbsp;size&nbsp;quint64,&nbsp;data&nbsp;raw&nbsp;bytes&nbsp;]&nbsp;x&nbsp;N&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;INTEGER&nbsp;REGISTERS&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;intRegs[32]&nbsp;quint64&nbsp;R0-R31&nbsp;at&nbsp;boot&nbsp;handoff&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;FLOATING-POINT&nbsp;REGISTERS&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;fpRegs[32]&nbsp;quint64&nbsp;F0-F31&nbsp;at&nbsp;boot&nbsp;handoff&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;IPRs&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;iprCount&nbsp;quint32&nbsp;Count&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;[&nbsp;id&nbsp;quint32,&nbsp;value&nbsp;quint64&nbsp;]&nbsp;x&nbsp;N&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;FOOTER&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;checksum&nbsp;quint64&nbsp;FNV-1a&nbsp;over&nbsp;all&nbsp;preceding&nbsp;bytes&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On every reload the ROM payload hash is recomputed and compared against the stored <span class="f_CodeExample">romHash</span>. A mismatch rejects the snapshot unconditionally, deletes the stale file, and reruns decompression. The emulator is fully self-healing -- no manual snapshot management is ever required.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.2 PAL Mode Architecture</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PAL mode is signaled by PC bit 0 being set. All PAL mode entry, exit, and vector computation is owned exclusively by PalBox (<span class="f_CodeExample">PalBoxBase.h</span>). PalService (<span class="f_CodeExample">Pal_Service.h</span>) contains only CALL_PAL instruction semantic bodies.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">PalBox&nbsp;owns:&nbsp;PAL&nbsp;mode&nbsp;entry,&nbsp;exit,&nbsp;vector&nbsp;dispatch,&nbsp;enterPal(),</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;enterPalCore(),&nbsp;executeREI(),&nbsp;shadow&nbsp;register&nbsp;management</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">PalService&nbsp;owns:&nbsp;CALL_PAL&nbsp;instruction&nbsp;bodies&nbsp;(CALLSYS,&nbsp;BPT,&nbsp;SWPPAL,&nbsp;...)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">CPUStateView:&nbsp;all&nbsp;PAL&nbsp;mode&nbsp;mutation&nbsp;accessors&nbsp;(single&nbsp;source&nbsp;of&nbsp;truth)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">PAL mode truth.</span> PAL mode is defined as <span class="f_CodeExample">h-&gt;pc &amp; 1</span>. No software cache of PAL mode state is maintained. All callers read PAL mode state via <span class="f_CodeExample">m_iprGlobalMaster-&gt;isInPalMode()</span>, which delegates directly to <span class="f_CodeExample">h-&gt;inPalMode()</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.3 CPUStateView PAL Mode Accessors</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All PAL mode mutations go through CPUStateView (<span class="f_CodeExample">global_RegisterMaster_hot.h</span>). No caller reads or writes PC bit 0 directly.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Function</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Effect</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Call Sites</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">isInPalMode()</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Read h-&gt;pc &amp; 1</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">All PAL mode guards</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">enterPalMode(entryPC)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Set new PC and assert PAL bit</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">enterPalCore() only</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">exitPalMode(returnPC)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Set new PC and clear PAL bit</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">executeREI(), commitPalResult()</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">resetPalMode()</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC = 0x8001 (cold reset only)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">CPU cold reset path only</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">setPalMode(bool)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Set or clear PAL bit on current PC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Legacy / to be retired</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Critical distinction.</span> <span class="f_CodeExample">enterPalMode(entryPC)</span> sets the destination PC and the PAL bit atomically. <span class="f_CodeExample">advancePC()</span> preserves the current PAL bit and must never be used for PAL entry -- it would fail to assert PAL mode when entering from a non-PAL context.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.4 Vector Computation</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All PAL entry addresses are computed by CPUStateView. No caller computes PAL entry addresses independently. Two functions cover all cases.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">computeExceptionVector(PalVectorId_EV6)</span> -- Fault and exception entry:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">entryPC&nbsp;=&nbsp;(PAL_BASE&nbsp;&amp;&nbsp;~0x7FFF)&nbsp;|&nbsp;(vecId&nbsp;&amp;&nbsp;0x7FFE)&nbsp;|&nbsp;0x1</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">computeCallPalEntry(quint32 func)</span> -- CALL_PAL dispatch. Illegal function codes (0x40--0x7F, &gt;0xBF) redirect to the OPCDEC vector. Encoding for legal functions:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">entryPC&nbsp;=&nbsp;(PAL_BASE&nbsp;&amp;&nbsp;~0x7FFF)&nbsp;|&nbsp;(1&nbsp;&lt;&lt;&nbsp;13)&nbsp;|&nbsp;(func[7]&nbsp;&lt;&lt;&nbsp;12)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;|&nbsp;(func[5:0]&nbsp;&lt;&lt;&nbsp;6)&nbsp;|&nbsp;0x1</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Bit 13 distinguishes CALL_PAL entries from exception vectors. PC bit 0 is always set on entry.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.5 PAL Entry Contract</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All PAL entry flows converge at <span class="f_CodeExample">PalBox::enterPalCore()</span>. Two public overloads exist.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">enterPal(TrapCode_Class, faultPC)</span> -- Overload A. Maps TrapCode_Class to PalVectorId_EV6 via <span class="f_CodeExample">mapTrapToPalVector()</span>, then calls <span class="f_CodeExample">computeExceptionVector()</span>. faultPC is the address of the faulting instruction (HW_REI retries it).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">enterPal(PalEntryReason, vectorOrSelector, faultPC)</span> -- Overload B. Routes through <span class="f_CodeExample">computeCallPalEntry()</span> for CALL_PAL_INSTRUCTION reason, or <span class="f_CodeExample">computeExceptionVector()</span> for explicit vector dispatch. faultPC is pc+4 (return address after the CALL_PAL instruction).</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">enterPalCore() executes the following steps in order -- no step may be reordered:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">1.&nbsp;Guard:&nbsp;entryPC&nbsp;==&nbsp;0&nbsp;or&nbsp;sentinel&nbsp;value&nbsp;-&gt;&nbsp;escalate&nbsp;to&nbsp;MCHK</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">2.&nbsp;saveContext()&nbsp;--&nbsp;snapshot&nbsp;before&nbsp;any&nbsp;state&nbsp;change</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">3.&nbsp;exc_addr&nbsp;=&nbsp;faultPC&nbsp;--&nbsp;save&nbsp;return&nbsp;/&nbsp;retry&nbsp;address</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">4.&nbsp;enterPalMode(entryPC)&nbsp;--&nbsp;set&nbsp;PC&nbsp;and&nbsp;assert&nbsp;PAL&nbsp;bit</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">5.&nbsp;setIPL_Unsynced(7)&nbsp;--&nbsp;mask&nbsp;all&nbsp;interrupts</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">6.&nbsp;setCM(CM_KERNEL)&nbsp;--&nbsp;force&nbsp;kernel&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">7.&nbsp;shadowRegsActive&nbsp;=&nbsp;true&nbsp;--&nbsp;activate&nbsp;PAL&nbsp;shadow&nbsp;registers</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">8.&nbsp;return&nbsp;BoxResult().flushPipeline()</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">saveContext() must be called before any architectural state is modified.</span> This is the invariant that makes snapshot and recovery reliable.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.6 PAL Exit Contract</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Three exit mechanisms exist, each with distinct return address semantics.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Instruction</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Return Address Source</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">PAL Bit After</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Notes</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_REI (HW_RET)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Rb register (PC &lt;- Rb)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Cleared</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">EV6 opcode 0x1E. NOT exc_addr.</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">RETSYS / RTI / RFE</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">exc_addr</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Cleared</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">CALL_PAL return path</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HALT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Current PC (stays in place)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Preserved</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">kHalt flag in PalResult.sideEffects</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">HW_REI uses Rb, not exc_addr.</span> The EV6 HW_RET instruction reads the return address from the Rb register field of the instruction encoding. exc_addr holds the fault PC for fault retry. SRM uses HW_REI as a general-purpose PC manipulation instruction during initialization, so exc_addr=0 at early HW_REI instructions is expected and correct.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.7 commitPalResult() PC Dispatch</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">After a CALL_PAL handler returns a PalResult, <span class="f_CodeExample">commitPalResult()</span> applies the PC change via the following three-way dispatch on PipelineEffect flags:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">if&nbsp;pr.pcModified:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;if&nbsp;pr.has(kHalt):&nbsp;advancePC(pr.newPC)&nbsp;--&nbsp;HALT:&nbsp;preserve&nbsp;PAL&nbsp;mode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;elif&nbsp;pr.has(kResetEntry):&nbsp;enterPalMode(pr.newPC)&nbsp;--&nbsp;re-entry:&nbsp;assert&nbsp;PAL&nbsp;bit</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;else:&nbsp;exitPalMode(pr.newPC)&nbsp;--&nbsp;normal&nbsp;return:&nbsp;clear&nbsp;PAL&nbsp;bit</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The kResetEntry flag is set by <span class="f_CodeExample">executeRESTART()</span>. The restart vector is computed via <span class="f_CodeExample">computeExceptionVector(PalVectorId_EV6::RESET)</span>. The raw pal_base value must not be used as a PC directly -- its low 15 bits are non-zero and the PAL mode bit is absent.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.8 CALL_PAL Grain Dispatch Chain</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">IBox&nbsp;fetch:&nbsp;decode&nbsp;CALL_PAL&nbsp;instruction</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;grain-&gt;execute(slot)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;slot.m_palBox-&gt;executeXXX(slot)&nbsp;--&nbsp;PalBox&nbsp;grain&nbsp;entry</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;enterPal(PalEntryReason,&nbsp;func,&nbsp;faultPC)&nbsp;--&nbsp;PAL&nbsp;mode&nbsp;entry</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;computeCallPalEntry(func)&nbsp;--&nbsp;vector&nbsp;address</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;enterPalCore(reason,&nbsp;entryPC,&nbsp;faultPC)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;saveContext()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;exc_addr&nbsp;=&nbsp;faultPC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;enterPalMode(entryPC)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;setIPL(7),&nbsp;setCM(KERNEL),&nbsp;shadowRegsActive&nbsp;=&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_palService-&gt;execute(fn,&nbsp;slot,&nbsp;result)&nbsp;--&nbsp;OSF/1&nbsp;semantics</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;commitPalResult(slot,&nbsp;result)&nbsp;--&nbsp;apply&nbsp;side&nbsp;effects</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">PalService never computes vectors, sets PAL mode, or writes exc_addr. By the time PalService::execute() is called, PAL mode is already active and architectural state is saved.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.9 Exception Dispatch Chain</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">grain-&gt;execute(slot)&nbsp;detects&nbsp;fault</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;BoxResult&nbsp;returned:&nbsp;trapCode,&nbsp;faultPending=true,&nbsp;faultPC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;runOneInstruction()&nbsp;checks&nbsp;BoxResult</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;m_pBox-&gt;enterPal(trapCode,&nbsp;faultPC)&nbsp;--&nbsp;Overload&nbsp;A</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;mapTrapToPalVector(trapCode)&nbsp;--&nbsp;TrapCode&nbsp;-&gt;&nbsp;PalVectorId_EV6</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;computeExceptionVector(vecId)&nbsp;--&nbsp;PalVectorId_EV6&nbsp;-&gt;&nbsp;entry&nbsp;PC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;enterPalCore(EXCEPTION,&nbsp;entryPC,&nbsp;faultPC)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;saveContext()</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;exc_addr&nbsp;=&nbsp;faultPC&nbsp;--&nbsp;retry&nbsp;address&nbsp;for&nbsp;HW_REI</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;enterPalMode(entryPC)&nbsp;--&nbsp;PC&nbsp;set,&nbsp;PAL&nbsp;bit&nbsp;asserted</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;setIPL(7),&nbsp;setCM(KERNEL),&nbsp;shadowRegsActive&nbsp;=&nbsp;true</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;return&nbsp;BoxResult().flushPipeline()</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">IBox fault routing.</span> When IBox fetches an instruction with no matching grain (grain == nullptr), it populates the pipeline slot fault fields directly: trapCode=ILLEGAL_INSTRUCTION, faultPending=true, faultVA=pc. The FetchStats.illegalInstructions counter is incremented. This fault then flows through the normal BoxResult dispatch path above.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.10 mapTrapToPalVector</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">mapTrapToPalVector()</span> in <span class="f_CodeExample">Pal_core_inl.h</span> is the mapping table between TrapCode_Class values and PalVectorId_EV6 offsets. An incorrect entry here causes a wrong vector address regardless of the dispatch mechanism's correctness. The table must agree with the EV6 PAL vector table. Key entries for SRM testing:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">TrapCode_Class</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">PalVectorId_EV6</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Vector Offset</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ILLEGAL_INSTRUCTION</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">OPCDEC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x0480</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ARITHMETIC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">ARITH</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x0500</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">MEMORY_FAULT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">MM_FAULT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x0300 (ITB) / 0x0400 (DTB)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BREAKPOINT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">BPT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x0080 (CALL_PAL 0x80)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">UNALIGNED</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">UNA</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x0600</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PRIVILEGED</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">OPCDEC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x0480</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">MACHINE_CHECK</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">MCHK</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x0660</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">INTERRUPT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">INTERRUPT</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x0680</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">With PAL_BASE=0x600000 and OPCDEC offset 0x0480, the ILLEGAL_INSTRUCTION entry PC is <span class="f_CodeExample">(0x600000 &amp; ~0x7FFF) | 0x0480 | 0x1 = 0x600481</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.11 SWPPAL Architectural Contract</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SWPPAL (CALL_PAL 0x83) transfers control to the current PALcode, which then performs the switch to a new PALcode image. The CPU performs only three operations. PALcode performs all remaining work.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">CPU responsibilities (PalService::executeSWPPAL):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">1.&nbsp;Validate&nbsp;privilege&nbsp;(kernel&nbsp;mode&nbsp;required,&nbsp;ASA&nbsp;Section&nbsp;6.5)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">2.&nbsp;enterPal(CALL_PAL_INSTRUCTION,&nbsp;SWPPAL,&nbsp;faultPC)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">3.&nbsp;Dispatch&nbsp;to&nbsp;SWPPAL&nbsp;vector&nbsp;(R16-R21&nbsp;preserved&nbsp;for&nbsp;PALcode)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">PALcode responsibilities (not emulated at CPU level):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">1.&nbsp;Validate&nbsp;R16&nbsp;(PAL&nbsp;variant&nbsp;0-255&nbsp;or&nbsp;physical&nbsp;base&nbsp;address)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">2.&nbsp;Locate&nbsp;PALcode&nbsp;image</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">3.&nbsp;Flush&nbsp;icache,&nbsp;invalidate&nbsp;TBs</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">4.&nbsp;Transfer&nbsp;control&nbsp;to&nbsp;new&nbsp;PALcode</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">5.&nbsp;R0&nbsp;=&nbsp;0&nbsp;success&nbsp;/&nbsp;1&nbsp;unknown&nbsp;variant&nbsp;/&nbsp;2&nbsp;not&nbsp;loaded</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The emulator does not compute variant offsets or perform the PALcode switch. Reference: ASA Section 6.5.6, pages 6-21 to 6-22.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.12 SRM Execution Trace Reference</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Regression anchors from the DEC ASM reference trace (tracescpu_trace.lst) for SRM console initialization. All addresses are in the decompressed firmware image at PA 0x0.</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Seq</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">PC</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Instruction</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Expected Behavior</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">63</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x6DC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_REI</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- R26 = 0x6E0 (BSR return continues)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">70</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x6EC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_REI</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- Rb = 0x5C8 (HALT sentinel)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">147</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x6DC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_REI</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- R26 = 0x6E0 (second pass)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">154</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x6EC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_REI</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- Rb = 0x6F0 (HALT sentinel)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">210</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x808</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_REI</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- Rb = 0x78C</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">218</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x79C</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">HW_REI</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PC &lt;- Rb = 0x000 (BR spin loop, intentional)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">exc_addr=0 at sequence 63 is expected and correct. SRM uses HW_REI as a general-purpose control transfer instruction during initialization. The exc_addr field is not architecturally relevant until the first real exception entry occurs.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.13 CPU Thread Gate (Phase 14c / Phase 15)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">CPU0 starts halted. <span class="f_CodeExample">ExecutionCoordinator::startCPU()</span> releases it after the snapshot is loaded and all memory regions are mapped, preventing speculative execution before architectural state is fully initialized.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Phase&nbsp;14c:&nbsp;ROM&nbsp;loaded,&nbsp;memory&nbsp;regions&nbsp;registered,&nbsp;FNV-1a&nbsp;hash&nbsp;verified</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Phase&nbsp;15:&nbsp;ExecutionCoordinator::startCPU()&nbsp;called</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;CPU0&nbsp;halt&nbsp;latch&nbsp;released</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;executeLoop()&nbsp;flushes&nbsp;stale&nbsp;pipeline&nbsp;state</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;CPU0&nbsp;begins&nbsp;executing&nbsp;from&nbsp;finalPC&nbsp;=&nbsp;0x5C0</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The halt wakeup in <span class="f_CodeExample">executeLoop()</span> flushes the pipeline before the first fetch, preventing stale slot state from the snapshot reload from being interpreted as live instructions.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.4.14 Known Issues and Pending Verification</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">mapTrapToPalVector audit.</span> The TrapCode_Class-to-PalVectorId_EV6 mapping in Pal_core_inl.h has not been audited against the EV6 vector table. This must be verified before TRAPB testing proceeds.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">TRAPB / ILLEGAL_INSTRUCTION vector verification.</span> Three bugs in the exception dispatch path have been corrected (enterPALVector() used PalVectorTable instead of computeExceptionVector(); enterPalCore() called advancePC() instead of enterPalMode(); commitPalResult() called exitPalMode() unconditionally). The corrected path must be verified by running to TRAPB and confirming entry PC = <span class="f_CodeExample">(PAL_BASE &amp; ~0x7FFF) | 0x0480 | 0x1</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">HWRPB construction.</span> The HWRPB signature (0x42707248 &quot;HrpB&quot;) is constructed by SRM console code executing from PC=0x5C0, not by the decompressor. The sys_type field, PALcode size fields, and MDP entries at PA=0x2000 have not yet been verified against expected values.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Secondary CPU startup.</span> SRM issues b -fl0,0 to start secondary CPUs via IPI handler. setHalted(false) via IPI has not been tested in the SMP configuration.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="j_3.html" class="topiclink">J.3 - SRM-D Snapshot Mechanics</a> &nbsp; (configuration, file format, initialization flow); <a href="appendix-j---srm-firmware-topi.html" class="topiclink">J.1 - ROM Loader: Descriptor Derivation and Snapshot Validation</a> ; <a href="chapter-14---execution-domains.html" class="topiclink">Chapter 14 – Execution Domains (“Boxes”)</a> ;PalBoxBase.h; Pal_Service.h; PAL_core.h; PAL_core_inl.h; global_RegisterMaster_hot.h;Alpha Architecture Handbook Section 4.11 (PAL Mode);Alpha Architecture Handbook Section 6.5 (CALL_PAL);Alpha 21264/EV6 Hardware Reference Manual.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
+
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
+  $(document).ready(function(){
+    $(window).on('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
+      }
+	normHeaders();
+    });
+    
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
+	 $(window).resize(); //trigger event for initially small displays
+  });
+ 
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?appendix-l---srm-firmware-init.html" target="_top">'+baseurl+'index.html?appendix-l---srm-firmware-init.html</a></p>');
+
+</script>
+</body>
+</html>

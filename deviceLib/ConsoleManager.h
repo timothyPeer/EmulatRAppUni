@@ -52,7 +52,7 @@
 // Forward declarations
 class OPAConsoleDevice;
 class SRMConsoleDevice;
-class PipelineSlot;
+struct PipelineSlot;
 
 // ============================================================================
 // ConsoleManager

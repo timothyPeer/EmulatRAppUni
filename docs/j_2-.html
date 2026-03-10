@@ -1,0 +1,408 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Appendix &gt; Appendix J - SRM Firmware Topic Hive &gt; J.2 - SRM-D Configuration and Initialization</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="bifurcate,boot,bootPC,cleanPC,copyLoop,copyLoopMs,copyLoopSteps,cyclesExecuted,decompress,decompressor,donePC,elapsedMs,finalPalBase,finalPC,fromSnapshot,headerSkip,initSteps,isLoaded,kCopyExitPC,kCopyLoopPC,loadFromFile,loadPA,loadSnapshot,maxSteps,mirrorPA,PAL_BASE,palBase,postCopySteps,QSettings,saveSnapshot,snapshotPath,SrmBase,SRM-D,SrmDonePC,SrmInitialPC,SrmLoaderConfig,SrmMaxSteps,SrmMirrorPA,SrmRomLoader,SrmRomLoadResult,SrmSnapshot,SrmSnapshotDir,startPC,success,USE_EMBEDDED_SRM,useEmbedded" />
+   <meta name="description" content="This section covers all SRM-D configuration parameters, the loader config struct and its validation invariants, the snapshot directory and filename conventions, and the full..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        min-height: 60px; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        background: #2C5D88;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 158px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "j_2-.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J.2 - SRM-D Configuration and Initialization</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:middle">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?j_2-.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; Appendix J - SRM Firmware Topic Hive&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J.2 - SRM-D Configuration and Initialization</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="appendix-j---srm-firmware-topi.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="j_3.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">This section covers all SRM-D configuration parameters, the loader config struct and its validation invariants, the snapshot directory and filename conventions, and the full initialization flow from Phase 14 boot bifurcation through copy loop exit.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.2.1 INI Settings</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All SRM-D parameters are sourced from the <span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">ASA-EMulatR.ini</span> file at startup. Two sections govern snapshot behavior: <span class="f_CodeExample">[MemoryMap]</span> controls the decompressor load addresses and <span class="f_CodeExample">[ROM]</span> controls snapshot enable, location, and validation policy.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">[MemoryMap]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SrmBase&nbsp;=&nbsp;0x900000&nbsp;;&nbsp;PA&nbsp;where&nbsp;decompressor&nbsp;is&nbsp;loaded</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SrmInitialPC&nbsp;=&nbsp;0x900001&nbsp;;&nbsp;CPU&nbsp;start&nbsp;PC&nbsp;(SrmBase&nbsp;|&nbsp;PAL&nbsp;mode&nbsp;bit)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SrmDonePC&nbsp;=&nbsp;0x200000&nbsp;;&nbsp;PC&nbsp;below&nbsp;this&nbsp;=&nbsp;decompression&nbsp;complete</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SrmMirrorPA&nbsp;=&nbsp;0x000000&nbsp;;&nbsp;PA&nbsp;mirrored&nbsp;for&nbsp;copy-loop&nbsp;source</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SrmMaxSteps&nbsp;=&nbsp;200000000&nbsp;;&nbsp;Safety&nbsp;step&nbsp;limit&nbsp;(abort&nbsp;on&nbsp;stall)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">[ROM]</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SrmRomFile&nbsp;=&nbsp;ES40_V6_2.EXE&nbsp;;&nbsp;Path&nbsp;to&nbsp;SRM&nbsp;EXE&nbsp;image</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SrmSnapshot&nbsp;=&nbsp;true&nbsp;;&nbsp;false&nbsp;or&nbsp;absent&nbsp;=&nbsp;disabled</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SrmSnapshotDir&nbsp;=&nbsp;;&nbsp;Optional&nbsp;override&nbsp;(see&nbsp;J.2.3)</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">SrmSnapshot</span> is the master enable gate. It defaults to <span class="f_CodeExample">false</span> when absent -- no snapshot behavior is activated on a fresh installation. Setting it to <span class="f_CodeExample">true</span> enables the full bifurcated boot path described in Section J.2.4.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Critical note on SrmBase / SrmInitialPC.</span> These values are path-dependent. For self-decompressing <span class="f_CodeExample">.EXE</span> images (Load Path A), <span class="f_CodeExample">SrmBase=0x900000</span> and <span class="f_CodeExample">SrmInitialPC=0x900001</span>. For pre-decompressed flat <span class="f_CodeExample">.bin</span> images (Load Path B -- QEMU export), <span class="f_CodeExample">SrmBase=0x0</span> and <span class="f_CodeExample">SrmInitialPC=0x8001</span>. Using the wrong combination will corrupt the copy loop source or produce an invalid PAL mode entry.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.2.2 SrmLoaderConfig</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">SrmLoaderConfig</span> carries all resolved INI values into <span class="f_CodeExample">decompress()</span>, eliminating all hardcoded load addresses from the loader. It is populated by <span class="f_CodeExample">SrmLoaderConfig::fromSettings(QSettings&amp;)</span> and validated by <span class="f_CodeExample">isValid()</span> before decompression begins.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">struct&nbsp;SrmLoaderConfig&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;loadPA&nbsp;=&nbsp;0x900000;&nbsp;//&nbsp;PA&nbsp;where&nbsp;decompressor&nbsp;is&nbsp;placed</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;startPC&nbsp;=&nbsp;0x900001;&nbsp;//&nbsp;loadPA&nbsp;|&nbsp;PAL&nbsp;mode&nbsp;bit</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;palBase&nbsp;=&nbsp;0x900000;&nbsp;//&nbsp;PAL_BASE&nbsp;initial&nbsp;value</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;donePC&nbsp;=&nbsp;0x200000;&nbsp;//&nbsp;PC&nbsp;below&nbsp;here&nbsp;=&nbsp;done</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;mirrorPA&nbsp;=&nbsp;0x000000;&nbsp;//&nbsp;Copy-loop&nbsp;source&nbsp;mirror</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;int&nbsp;maxSteps&nbsp;=&nbsp;200000000;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">isValid()</span> enforces two invariants before any decompression occurs:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">1. <span class="f_CodeExample">startPC == (loadPA | 1ULL)</span> -- the PAL mode bit must be set in the start PC. A mismatch causes the CPU to enter the decompressor in normal mode, producing an immediate illegal instruction fault.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">2. <span class="f_CodeExample">loadPA != mirrorPA</span> -- the decompressor load address and the copy-loop mirror address must not alias the same physical page. Aliasing causes the copy loop to read from the same memory it is writing to, producing corrupted output.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.2.3 Snapshot Directory and Filename</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">When <span class="f_CodeExample">SrmSnapshot=true</span> and <span class="f_CodeExample">SrmSnapshotDir</span> is absent or empty, the snapshot directory resolves to:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&lt;applicationDirPath&gt;/snapshot/</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">where <span class="f_CodeExample">applicationDirPath</span> is <span class="f_CodeExample">QCoreApplication::applicationDirPath()</span>. This places snapshots in a dedicated subdirectory alongside the binary, clearly separated from ROM images and build artifacts. The directory is created automatically on first run.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The snapshot filename is constructed from the ROM stem and a truncated ROM hash:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">&lt;romStem&gt;_&lt;hash8&gt;.axpsnap</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Loading <span class="f_CodeExample">ES40_V6_2.EXE</span> produces, for example:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">D:\EmulatR\EmulatRAppUni\bin\debug\snapshot\ES40_V6_2_9689831940DA2165.axpsnap</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The hash component guarantees that different ROM revisions produce different snapshot filenames with no collision. The <span class="f_CodeExample">SrmSnapshotDir</span> override allows the snapshot directory to be placed on a separate drive or shared across build configurations.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.2.4 Phase 14 Boot Bifurcation</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">SRM firmware loading occurs in Phase 14 of the emulator initialization sequence in <span class="f_CodeExample">Emulatr_Init.cpp</span>. Phase 14 selects between the snapshot fast path and the decompressor slow path based on snapshot availability and validity.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Phase&nbsp;14&nbsp;--&nbsp;SRM&nbsp;Firmware&nbsp;Load:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">IF&nbsp;SrmSnapshot=false&nbsp;OR&nbsp;SrmSnapshotDir&nbsp;not&nbsp;resolvable:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;SLOW&nbsp;PATH:&nbsp;decompress()&nbsp;only,&nbsp;no&nbsp;snapshot&nbsp;save</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">IF&nbsp;SrmSnapshot=true:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;snapshotPath&nbsp;=&nbsp;resolveSnapshotPath(romStem,&nbsp;romHash)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IF&nbsp;snapshotPath&nbsp;exists&nbsp;on&nbsp;disk:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;result&nbsp;=&nbsp;m_srmRomLoader.loadSnapshot(snapshotPath,&nbsp;...)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IF&nbsp;result.success:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;FAST&nbsp;PATH:&nbsp;snapshot&nbsp;loaded,&nbsp;boot&nbsp;handoff&nbsp;at&nbsp;result.finalPC</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;ELSE&nbsp;(validation&nbsp;failed):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Log&nbsp;specific&nbsp;failure&nbsp;reason</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Delete&nbsp;stale&nbsp;snapshot&nbsp;file</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Fall&nbsp;through&nbsp;to&nbsp;SLOW&nbsp;PATH</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IF&nbsp;snapshotPath&nbsp;does&nbsp;not&nbsp;exist&nbsp;(first&nbsp;run):</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;SLOW&nbsp;PATH&nbsp;(no&nbsp;snapshot&nbsp;yet)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">SLOW&nbsp;PATH:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;SrmLoaderConfig&nbsp;cfg&nbsp;=&nbsp;SrmLoaderConfig::fromSettings(m_settings)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;result&nbsp;=&nbsp;m_srmRomLoader.decompress(cfg,&nbsp;...)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;IF&nbsp;result.success&nbsp;AND&nbsp;SrmSnapshot=true:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;saveSnapshot(snapshotPath,&nbsp;result,&nbsp;regions,&nbsp;...)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;-&gt;&nbsp;Log&nbsp;&quot;Snapshot&nbsp;saved&nbsp;to&nbsp;&lt;path&gt;&quot;</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The bifurcation point is clean and unconditional. Either path produces an identical <span class="f_CodeExample">SrmRomLoadResult</span> with <span class="f_CodeExample">success=true</span>, <span class="f_CodeExample">finalPC</span>, and <span class="f_CodeExample">finalPalBase</span> populated. Phase 15 and later do not need to know which path was taken.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.2.5 SrmRomLoadResult</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">SrmRomLoadResult</span> is the output contract of both the decompressor and the snapshot loader. All downstream consumers use only this struct and are fully decoupled from the load mechanism.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">struct&nbsp;SrmRomLoadResult&nbsp;{</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;bool&nbsp;success&nbsp;=&nbsp;false;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;finalPC&nbsp;=&nbsp;0;&nbsp;//&nbsp;Boot&nbsp;handoff&nbsp;PC&nbsp;(with&nbsp;PAL&nbsp;bit)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;finalPalBase&nbsp;=&nbsp;0;&nbsp;//&nbsp;PAL_BASE&nbsp;at&nbsp;handoff</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;cyclesExecuted&nbsp;=&nbsp;0;&nbsp;//&nbsp;Decompressor&nbsp;cycle&nbsp;count</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;double&nbsp;elapsedMs&nbsp;=&nbsp;0.0;&nbsp;//&nbsp;Wall-clock&nbsp;time&nbsp;(ms)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;size_t&nbsp;headerSkip&nbsp;=&nbsp;0;&nbsp;//&nbsp;ROM&nbsp;header&nbsp;bytes&nbsp;skipped</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;Phase&nbsp;timing&nbsp;(decompressor&nbsp;path&nbsp;only&nbsp;--&nbsp;zero&nbsp;on&nbsp;snapshot&nbsp;load)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;initSteps&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;copyLoopSteps&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;postCopySteps&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;double&nbsp;copyLoopMs&nbsp;=&nbsp;0.0;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;//&nbsp;Snapshot&nbsp;metadata</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;bool&nbsp;fromSnapshot&nbsp;=&nbsp;false;&nbsp;//&nbsp;true&nbsp;=&nbsp;loaded&nbsp;from&nbsp;.axpsnap</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;QString&nbsp;snapshotPath;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;QString&nbsp;errorMessage;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;bootPC()&nbsp;const&nbsp;{&nbsp;return&nbsp;finalPC;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;quint64&nbsp;cleanPC()&nbsp;const&nbsp;{&nbsp;return&nbsp;finalPC&nbsp;&amp;&nbsp;~1ULL;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;bool&nbsp;isPalMode()&nbsp;const&nbsp;{&nbsp;return&nbsp;(finalPC&nbsp;&amp;&nbsp;1ULL)&nbsp;!=&nbsp;0;&nbsp;}</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">};</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Verified values from first clean ES40 decompressor run (2026-03-06):</span></p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Field</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Value</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Notes</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">finalPC</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x00000000000005C0</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Boot entry in decompressed firmware at PA 0x0</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">finalPalBase</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x0000000000900000</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PALcode base = decompressor load address</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">cyclesExecuted</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">5,767,331</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Total instructions executed by decompressor</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">elapsedMs</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">999,224 ms (16 min 39 sec)</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Debug build with full trace I/O</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">initSteps</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">158</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Setup before copy loop entry at 0x9002AC</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">postCopySteps</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">5,767,165</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Copy loop + actual decompressor (see J.2.7)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.2.6 Decompressor Phase Tracking</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span class="f_CodeExample">decompress()</span> divides execution into three internal phases tracked against milestone PCs.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Phase 1 -- Init</span> (158 steps). Decompressor startup from <span class="f_CodeExample">startPC=0x900001</span>. CPU probe sequence: BSR to 0x900060, layer detection via LDA/ZAPNOT/LDAH/BEQ cascade, outer loop counter initialization via SRL/SUBQ/SLL at 0x9002E0. Enters copy loop at <span class="f_CodeExample">kCopyLoopPC=0x9002AC</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Phase 2 -- Copy Loop.</span> The inner copy loop at 0x9002AC--0x9002C8 copies the ROM payload from PA 0x0 (mirror) into PA 0x900000 (decompressor home), 8 bytes per iteration, 524,288 total quadword iterations. The BNE at 0x9002C8 falls through when R1 reaches zero. Exit detected at <span class="f_CodeExample">kCopyExitPC=0x9002CC</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Phase 3 -- Post-Copy / Decompressor</span> (5,767,165 steps). After copy loop exit the BLT at 0x9002D0 falls through (R4 positive), R30 is saved, R0 is loaded with <span class="f_CodeExample">R26+0x5C0 = 0x5C0</span>, and the JSR at 0x9002DC jumps to the actual decompressor engine at PA 0x5C0. Completes when PC drops below <span class="f_CodeExample">donePC=0x200000</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Note on copyLoopSteps reporting.</span> The current implementation detects <span class="f_CodeExample">kCopyExitPC</span> against the fetch-stage PC rather than the commit-stage PC. The BNE at 0x9002C8 causes a speculative fetch advance to 0x9002CC before branch resolution redirects to 0x9002AC, causing the copy loop phase to report 8 steps (one iteration) rather than the actual ~5.7M steps. This is a cosmetic reporting inaccuracy only -- execution is correct. It will be corrected when phase tracking is refactored to compare against the writeback-stage committed PC.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.2.7 Copy Loop Verified Exit Sequence</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Committed instructions at copy loop exit, verified from the 4.19 million line trace captured 2026-03-06:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">Instr&nbsp;05767318&nbsp;0x9002B8&nbsp;SUBQ&nbsp;R1,#0x08,R1&nbsp;R1&nbsp;=&nbsp;0x0000000000000000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Instr&nbsp;05767322&nbsp;0x9002C8&nbsp;BNE&nbsp;R1,0x9002AC&nbsp;not&nbsp;taken&nbsp;(R1==0)&nbsp;--&nbsp;fall&nbsp;through</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Instr&nbsp;05767323&nbsp;0x9002CC&nbsp;HW_ST&nbsp;R0,0x0(R26)&nbsp;last&nbsp;quadword&nbsp;stored</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Instr&nbsp;05767324&nbsp;0x9002D0&nbsp;BLT&nbsp;R4,0x9002E0&nbsp;not&nbsp;taken&nbsp;(R4=0x4000...&nbsp;positive)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Instr&nbsp;05767325&nbsp;0x9002D4&nbsp;BIS&nbsp;R31,R0,R30&nbsp;R30&nbsp;=&nbsp;0x0000000000400000</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Instr&nbsp;05767326&nbsp;0x9002D8&nbsp;LDA&nbsp;R0,0x5C0(R26)&nbsp;R0&nbsp;=&nbsp;0x00000000000005C0</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">Instr&nbsp;05767327&nbsp;0x9002DC&nbsp;JSR&nbsp;R31,(R0)&nbsp;-&gt;&nbsp;0x00000000000005C0&nbsp;BOOT&nbsp;HANDOFF</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">R26=0x0 confirms the decompressed firmware landed at PA 0x0. R0=0x5C0 is the boot entry point. R30=0x400000 is the end-of-firmware marker preserved for the decompressor engine. The JSR at instruction 05767327 is the precise capture point for the snapshot save.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="j_3.html" class="topiclink">J.3 - SRM-D Snapshot Mechanics</a>; <a href="j_3.html" class="topiclink">J.3 - SRM-D Snapshot Mechanics</a> (file format, integrity fields, validation failure handling); <a href="j_5.html" class="topiclink">J.5 - SRM-D Full Cycle Execution</a> ;memoryLib/SrmRomLoader.h; memoryLib/SrmRomLoader.cpp;ASA-EMulatR.ini [MemoryMap] and [ROM] sections.</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
+
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
+  $(document).ready(function(){
+    $(window).on('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
+      }
+	normHeaders();
+    });
+    
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
+	 $(window).resize(); //trigger event for initially small displays
+  });
+ 
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?j_2-.html" target="_top">'+baseurl+'index.html?j_2-.html</a></p>');
+
+</script>
+</body>
+</html>

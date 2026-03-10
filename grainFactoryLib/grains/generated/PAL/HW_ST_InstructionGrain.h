@@ -132,6 +132,7 @@ private:
 // Auto-registration
 // ============================================================================
 
+// ReSharper disable once CppUnnamedNamespaceInHeaderFile
 namespace {
     static GrainAutoRegistrar<HW_ST_InstructionGrain> s_hw_st_registrar(
         0x1B, 0x0000

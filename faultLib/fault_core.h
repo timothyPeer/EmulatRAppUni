@@ -107,6 +107,7 @@ enum class FaultType_PTE {
 enum class TrapCode_Class : quint8 {
 	NONE,
 	ARITHMETIC_TRAP,
+	BREAKPOINT,
 	DTB_MISS,
 	DTB_FAULT,
 	DTB_ACCESS_VIOLATION,

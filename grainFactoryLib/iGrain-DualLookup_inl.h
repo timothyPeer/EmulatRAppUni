@@ -99,7 +99,7 @@ static AXP_HOT AXP_ALWAYS_INLINE void decodeBranchDisp(DecodedInstruction& di) n
 AXP_HOT AXP_ALWAYS_INLINE void setSemanticFlags(DecodedInstruction& di, InstrSemantics flags) noexcept
 {
     // Preserve upper 32 bits (raw instruction), write full 64-bit semantics flags
-   // Do NOT narrow-cast flags to quint32 — InstrSemantics is a quint64 enum
+   // Do NOT narrow-cast flags to quint32 -- InstrSemantics is a quint64 enum
     di.semantics = (di.semantics & 0xFFFFFFFF00000000ULL)
     | (static_cast<quint64>(flags) & 0x00000000FFFFFFFFULL);
 }
@@ -164,7 +164,7 @@ static AXP_HOT AXP_ALWAYS_INLINE void decodeInstruction(DecodedInstruction& di, 
         (opcode >= 0x20 && opcode <= 0x2F)) {
         formatSem = static_cast<InstrSemantics>(formatSem | S_MemFmt);
 
-        // LDA (0x08) and LDAH (0x09) — address compute, always write Ra
+        // LDA (0x08) and LDAH (0x09) -- address compute, always write Ra
         if (opcode == 0x08 || opcode == 0x09) {
             formatSem = static_cast<InstrSemantics>(formatSem | S_Load);
         }

@@ -680,15 +680,17 @@ private:
         quint32 rawBits = 0;
         const MEM_STATUS fetchStatus = m_guestMemory->readInst32(pa, rawBits);
 
-#ifdef AXP_DEBUG
-        if (pc == 0x9000C8)
+
+
+#ifdef AXP_EXEC_TRACE
+        if (pa < 0x5C0)
         {
-            qDebug() << "HIT: FetchFromMemory at PC=0x9000C8";  // breakpoint here
+            qDebug() << QString("LOW PA FETCH: PC=0x%1 PA=0x%2 raw=0x%3")
+                .arg(pc, 16, 16, QChar('0'))
+                .arg(pa, 16, 16, QChar('0'))
+                .arg(rawBits, 8, 16, QChar('0'));
         }
 
-        qDebug() << QString("Fetched from PA 0x%1: 0x%2")
-            .arg(pa, 16, 16, QChar('0'))
-            .arg(rawBits, 8, 16, QChar('0'));
 #endif
 
         if (fetchStatus != MEM_STATUS::Ok) {

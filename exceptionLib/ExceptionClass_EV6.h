@@ -2,7 +2,7 @@
 // ExceptionClass_EV6.h - ----------------------------------------------------------------------------
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -15,7 +15,7 @@
 
 #ifndef EXCEPTIONCLASS_EV6_H
 #define EXCEPTIONCLASS_EV6_H
-#include "../coreLib/Axp_Attributes_core.h"
+#include "coreLib/Axp_Attributes_core.h"
 #include <QtGlobal>
 
 // ----------------------------------------------------------------------------
@@ -47,6 +47,7 @@ enum class ExceptionClass_EV6 : quint8
     Unalign,
     Dfault,
     DtbAcv,       // DTB Access Violation
+    Privileged,
     Dtb_miss_double_4,
     Dtb_miss_single,
     Dtb_miss_native,

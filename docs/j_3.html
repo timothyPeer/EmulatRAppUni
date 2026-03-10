@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ASA-EMulatR Reference Guide &gt; Introduction &gt; Appendix &gt; Appendix J - SRM Firmware Topic Hive &gt; J.3 - SRM-D Snapshot Mechanics</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="axpsnap,checksum,cyclesExecuted,deterministic,elapsedMs,emulatorBuildId,finalPalBase,finalPC,FNV,GetFpRegsFn,GetIntRegsFn,GetIprsFn,IPR,IprPair,kSnapshotMagic,kSnapshotVersion,loadSnapshot,PAL_BASE,palBase,payloadSize,QDataStream,ReadPhysicalFn,romHash,saveSnapshot,SetFpRegsFn,SetIntRegsFn,SetIprsFn,snapshot,SRM-D,SrmRomLoader,SrmSnapshotMemRegion,WritePhysicalFn" />
+   <meta name="description" content="This section is the authoritative reference for the SRM-D snapshot file format, memory region capture policy, integrity field semantics, and validation failure handling. All..." />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+   <link type="text/css" href="custom.css" rel="stylesheet" />
+
+   <style TYPE="text/css" media="screen"> 
+      html, body { margin:0; 
+        padding:0; 
+        background: #ffffff; 
+      } 
+      div#printheader { display: none; }
+      #idheader { 
+        width:100%; 
+        min-height: 60px; 
+        padding: 0; 
+        margin: 0;
+        position: fixed;
+        top: 0;
+        background: #2C5D88;
+        z-index: 2;
+      } 
+      /* The "min-height" for "#idheader table" ensures that the (blue) header of the topic
+         has at least the same height as the header of the navigation panel left of it */
+      #idheader table { min-height: 59px;}             
+      #idheader h1 span { color: #FFF }     
+      #idnav {
+        text-align: right;
+        width: 158px;
+        vertical-align: middle;        
+      } 
+      #idnav a { text-decoration: none }
+      #idnav span {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+        background:url('hm_webhelp_buttons_grey.png') top left no-repeat;
+      } 
+      #idnav a span {
+        background-image:url('hm_webhelp_buttons_white.png');
+      } 
+      #idnav a span:hover {
+        background-image:url('hm_webhelp_buttons_orange.png');
+      } 
+      #idnav span.hmbtnprev { background-position: 0 -32px }
+      #idnav span.hmbtnnext { background-position: -24px -32px }
+      #idnav span.hmbtntop  { background-position: -48px -32px }
+      #idnav span.hmbtntoggle  { width: 20px; background-position: -70px -32px }
+      #idnav span.hmbtnprint  { background-position: -88px -32px }
+
+      #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+      #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+      #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+      #callout-table a {text-decoration: none; color: blue;}
+      #callout-table a:visited {text-decoration: none; color: blue;}
+      #overview-table a {text-decoration: none; color: black;}
+      #overview-table a:visited {text-decoration: none; color: black;}
+      #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}       
+      p.help-url { margin: 20px 0 5px 0; text-align: center; }
+	  p.help-url a:link { font-size: 50%; text-decoration: none; color: black; }
+	  p.help-url a:visited { color: black; }
+	  p.help-url a:hover { font-size: 95%; text-decoration: underline; }
+      #switchtoggles { text-align: right; padding: 0 2px 0 0; font-size: 90%; } 
+      .sync-toc { color: #FFF; font-size: 8pt; font-weight: bold; display: none; }
+      .sync-toc a { color: #FFF; text-decoration: none; font-weight: bold;}
+      .sync-toc a:visited { color: #FFF; }
+      .sync-toc a:hover { text-decoration: underline; }
+	  a#printbuttonlink { cursor: pointer; }
+      a.hmanchor { display: inline-block; margin-top: -4em; padding-top: 4em; }  
+   </style>
+   <style TYPE="text/css" media="print">
+      div#idheader, img.dropdown-toggle-icon, p.help-url { display:none } 
+   </style>
+   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "j_3.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+
+
+<div id="printheader"><h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J.3 - SRM-D Snapshot Mechanics</span></h1>
+</div>
+<div id="idheader">
+<div id="idheaderbg">
+<table style="width:100%;border:none;margin:0px;" cellspacing="0" cellpadding="0"> 
+  <tr>
+    <td class="topichead" style="text-align:left; vertical-align:middle">
+      <p class="sync-toc">&lt;&lt; <a rel="nofollow" href="index.html?j_3.html" target="_top">Click to Display Table of Contents</a> &gt;&gt;</p>
+      <p class="crumbs"><b>Navigation:</b>&nbsp;
+      
+      <a href="license-_-attributions.html">ASA-EMulatR Reference Guide</a> &gt; <a href="introduction.html">Introduction</a> &gt; <a href="appendix---trait-examples.html">Appendix</a> &gt; Appendix J - SRM Firmware Topic Hive&nbsp;&gt;</p>
+   
+      <h1 class="p_Heading1" style="page-break-after: avoid;"><span class="f_Heading1">Appendix J.3 - SRM-D Snapshot Mechanics</span></h1>
+
+    </td>
+    <td class="topichead" id="idnav">
+      
+      <a href="j_2-.html" title="Previous Topic"><span class="hmbtnprev"></span></a>
+      <a href="appendix---trait-examples.html" title="Parent Chapter"><span class="hmbtntop"></span></a>
+      <a href="appendix-l---srm-firmware-init.html" title="Next Topic"><span class="hmbtnnext"></span></a>
+      <a id="printbuttonlink" onclick=";$('div#idcontent').css('margin-top', '1em');printTopic();$('#idcontent').css('margin-top', $('#idheader').height());" title="Print"><span class="hmbtnprint"></span></a>
+    </td>
+  </tr>  
+</table>
+</div>
+</div>  
+
+<div id="idcontent"><div id="innerdiv">
+<!-- Ask Internet Explorer 6.users to update their obsolete and dangerous browser --> 
+<!--[if lt IE 7]><div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;'><a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." /></a></div><![endif]-->
+
+<!--ZOOMRESTART-->
+<p class="p_Normal">This section is the authoritative reference for the SRM-D snapshot file format, memory region capture policy, integrity field semantics, and validation failure handling. All information here applies equally to <span class="f_CodeExample">saveSnapshot()</span> and <span class="f_CodeExample">loadSnapshot()</span>.</p>
+<p class="p_Normal">&nbsp;</p>
+<hr style="height:1px; color:#000000; border-width:0; background-color:#000000;" /><p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.3.1 File Format (.axpsnap)</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The snapshot file is a binary stream written by <span class="f_CodeExample">QDataStream</span> in little-endian byte order. It is self-describing and self-validating: the header contains all information needed to verify snapshot compatibility with the current ROM and emulator build before any state is restored. The format is versioned to support forward evolution.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;HEADER&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;magic&nbsp;quint64&nbsp;0x415850534E415001&nbsp;&quot;AXPSNAPv1&quot;&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;version&nbsp;quint32&nbsp;1&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;romHash&nbsp;quint64&nbsp;FNV-1a&nbsp;hash&nbsp;of&nbsp;ROM&nbsp;payload&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;emulatorBuild&nbsp;quint64&nbsp;Build&nbsp;ID&nbsp;(__DATE__+__TIME__&nbsp;hash)&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;finalPC&nbsp;quint64&nbsp;Boot&nbsp;handoff&nbsp;PC&nbsp;(with&nbsp;PAL&nbsp;bit)&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;finalPalBase&nbsp;quint64&nbsp;PAL_BASE&nbsp;at&nbsp;handoff&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;cyclesExecuted&nbsp;quint64&nbsp;Total&nbsp;decompressor&nbsp;cycles&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;elapsedMs&nbsp;double&nbsp;Wall-clock&nbsp;decompression&nbsp;time&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;MEMORY&nbsp;REGIONS&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;regionCount&nbsp;quint32&nbsp;Number&nbsp;of&nbsp;regions&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;[&nbsp;per&nbsp;region:&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;basePA&nbsp;quint64&nbsp;Physical&nbsp;base&nbsp;address&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;size&nbsp;quint64&nbsp;Region&nbsp;byte&nbsp;count&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;data&nbsp;raw&nbsp;bytes&nbsp;Region&nbsp;content&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;]&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;INTEGER&nbsp;REGISTERS&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;intRegs[32]&nbsp;quint64&nbsp;R0-R31&nbsp;at&nbsp;boot&nbsp;handoff&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;FLOATING-POINT&nbsp;REGISTERS&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;fpRegs[32]&nbsp;quint64&nbsp;F0-F31&nbsp;at&nbsp;boot&nbsp;handoff&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;IPRs&nbsp;(Internal&nbsp;Processor&nbsp;Registers)&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;iprCount&nbsp;quint32&nbsp;Number&nbsp;of&nbsp;IPR&nbsp;entries&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;[&nbsp;per&nbsp;IPR:&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;id&nbsp;quint32&nbsp;IPR&nbsp;identifier&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;value&nbsp;quint64&nbsp;IPR&nbsp;value&nbsp;at&nbsp;handoff&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;]&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;FOOTER&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">|&nbsp;checksum&nbsp;quint64&nbsp;FNV-1a&nbsp;over&nbsp;all&nbsp;preceding&nbsp;bytes&nbsp;|</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">+-------------------------------------------------------------+</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">All multi-byte integers are in little-endian order. The <span class="f_CodeExample">QDataStream</span> version is fixed at <span class="f_CodeExample">Qt_6_0</span> and is not stored in the file -- it is an implicit contract of the format version field. If the Qt serialization format changes in a future release, the snapshot version field must be incremented.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.3.2 Memory Regions</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The snapshot captures all physical memory regions live at boot handoff. For the ES40 V6.2 decompressor path, two regions are saved:</p>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Region</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">PA Range</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Size</span></p>
+</th>
+<th style="vertical-align:top; background-color:#00FFFF; padding:0; border:solid thin #000000;" scope="col"><p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Content</span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Firmware</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x000000 -- 0x3FFFFF</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">4.0 MB</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">Decompressed SRM firmware (copy loop destination)</p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">PALcode space</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">0x900000 -- 0xBAB7FF</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">2.7 MB</p>
+</td>
+<td style="vertical-align:top; padding:0; border:solid thin #000000;"><p class="p_Normal">EXE decompressor image (PAL_BASE home)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Total uncompressed snapshot size is approximately <span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">6.7 MB</span>. The snapshot is stored uncompressed. Deterministic execution correctness takes precedence over disk space savings -- a compressed format would introduce a decompression step with potential platform-specific behavior differences.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The full 4 MB firmware region is saved regardless of how much was actually written by the copy loop. This enforces address-space determinism: every execution loading from a given snapshot sees identical physical memory at every address, including bytes zero-initialized before the copy loop ran.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.3.3 ROM Hash and Emulator Build ID</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Two independent integrity fields provide deterministic execution guarantees.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">ROM Hash</span> -- a 64-bit FNV-1a hash of the ROM payload bytes (excluding any file header before the decompressor signature). Detects any change to the ROM binary: different firmware version, bit flip, or wrong image. Computed at save time. At load time the current ROM payload hash is recomputed and compared. A mismatch is a hard fail triggering automatic rebuild.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><span style="font-size: 13px; font-family: Arial,Helvetica,sans-serif; font-weight: bold;">Emulator Build ID</span> -- a 64-bit hash derived from the compiler's <span class="f_CodeExample">__DATE__</span> and <span class="f_CodeExample">__TIME__</span> macros, or a CMake-injected version string. Detects any rebuild of the emulator binary. If IPR layout, register file structure, or PALbox state changes between builds, a snapshot from the old build is incompatible. The build ID catches this before any incorrect state is restored.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">Both fields are checked on every snapshot load. Either mismatch is a hard fail -- the snapshot is deleted and the full decompression path runs.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.3.4 Footer Checksum</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The footer contains a 64-bit FNV-1a checksum computed over all bytes from offset 0 through the last byte of the IPR section. Appended as the final 8 bytes of the file. On load the file is read to the footer position, the checksum recomputed, and compared to the stored value. A mismatch indicates corruption or truncation -- the snapshot is deleted and decompression reruns.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">FNV-1a was selected for simplicity, speed, and absence of external dependencies. It is not a cryptographic hash -- its purpose is corruption detection, not tamper resistance.</p>
+<p class="p_Normal">&nbsp;</p>
+<h2 class="p_Heading2" style="page-break-after: avoid;"><span class="f_Heading2">J.3.5 Validation Failure Handling</span></h2>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">On any snapshot validation failure the following sequence executes unconditionally:</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_CodeExample"><span class="f_CodeExample">1.&nbsp;Log&nbsp;the&nbsp;specific&nbsp;failure&nbsp;with&nbsp;WARN_LOG:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&quot;Snapshot&nbsp;magic&nbsp;mismatch&nbsp;--&nbsp;not&nbsp;an&nbsp;.axpsnap&nbsp;file&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&quot;Snapshot&nbsp;version&nbsp;mismatch&nbsp;(file=N,&nbsp;expected=M)&nbsp;--&nbsp;rebuild&nbsp;required&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&quot;Snapshot&nbsp;ROM&nbsp;hash&nbsp;mismatch&nbsp;--&nbsp;ROM&nbsp;image&nbsp;has&nbsp;changed&nbsp;--&nbsp;rebuilding&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&quot;Snapshot&nbsp;build&nbsp;ID&nbsp;mismatch&nbsp;--&nbsp;emulator&nbsp;rebuilt&nbsp;--&nbsp;rebuilding&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&quot;Snapshot&nbsp;checksum&nbsp;mismatch&nbsp;--&nbsp;file&nbsp;corrupt&nbsp;or&nbsp;truncated&nbsp;--&nbsp;rebuilding&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">2.&nbsp;Delete&nbsp;the&nbsp;stale/corrupt&nbsp;snapshot&nbsp;file&nbsp;(QFile::remove)</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">3.&nbsp;Log&nbsp;rebuild&nbsp;notice:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&quot;[INFO]&nbsp;Running&nbsp;full&nbsp;SRM&nbsp;decompression&nbsp;--&nbsp;this&nbsp;will&nbsp;take&nbsp;approximately</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;16&nbsp;minutes&nbsp;in&nbsp;a&nbsp;debug&nbsp;build&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&quot;[INFO]&nbsp;Snapshot&nbsp;will&nbsp;be&nbsp;saved&nbsp;to&nbsp;&lt;path&gt;&nbsp;on&nbsp;completion&quot;</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">4.&nbsp;Execute&nbsp;decompress()&nbsp;--&nbsp;full&nbsp;pipeline&nbsp;traversal</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">5.&nbsp;On&nbsp;success:&nbsp;saveSnapshot()&nbsp;--&nbsp;write&nbsp;fresh&nbsp;snapshot</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">6.&nbsp;Log&nbsp;completion:</span></p>
+<p class="p_CodeExample"><span class="f_CodeExample">&nbsp;&quot;[INFO]&nbsp;Snapshot&nbsp;rebuilt&nbsp;from&nbsp;ES40_V6_2.EXE&nbsp;--&nbsp;saved&nbsp;to&nbsp;&lt;path&gt;&quot;</span></p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal">The user is never required to manually delete, regenerate, or manage snapshot files. The system is fully self-healing. The only required action is patience on the rebuild run -- approximately 16 minutes in a debug build with full trace I/O, under 10 seconds in a release build.</p>
+<p class="p_Normal">&nbsp;</p>
+<p class="p_SeeAlso" style="page-break-after: avoid;"><span class="f_SeeAlso">See Also: <a href="j_2-.html" class="topiclink">J.2 - SRM-D Configuration and Initialization</a> ; <a href="j_5.html" class="topiclink">J.5 - SRM-D Full Cycle Execution</a> ; <a href="appendix-j---srm-firmware-topi.html" class="topiclink">J.1 - ROM Loader: Descriptor Derivation and Snapshot Validation</a> (TC-SNAP-001 through TC-SNAP-004 test results);memoryLib/SrmRomLoader.h; memoryLib/SrmRomLoader.cpp;memoryLib/GuestPhysicalRegionRegistry.cpp (includeInSnapshot flag).</span></p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript">
+
+  function printTopic() {
+    if (document.queryCommandSupported('print')) { document.execCommand('print', false, null); }
+    else { window.print(); }
+  }
+
+
+
+function normHeaders() {
+ var topicHeadHeight =  $("#idheaderbg > table").first().height() + 1,
+	 $topicHeaderBox = $("#idheader"),
+	 $topicContentBox = $("#idcontent"),
+	 $navHeader = $("#navbar", parent.document),			 
+	$navBox = $("div#hmnavframe", parent.document),
+	 navHeaderHeight = $navHeader.height();
+ if (topicHeadHeight != navHeaderHeight) {
+	 $navHeader.css("height",topicHeadHeight + "px");
+	 $navBox.css("top", topicHeadHeight + "px");
+	 $topicHeaderBox.css("height", topicHeadHeight + "px");
+		if ($topicHeaderBox.css("position") == "fixed"){
+			$topicContentBox.css("margin-top", topicHeadHeight + "px");
+			}
+		}
+    }
+			 
+  $(document).ready(function(){
+    $(window).on('resize', function() {
+      var y = $('#idheader').height(); 
+      $('#idcontent').css('margin-top', y);
+      var par = window.parent;
+      if ($( par ).width() <= $( window ).width()+20) {
+        $('#idheader').css('position', 'relative');
+        $('#idcontent').css('margin-top', 0);
+        $('#idbacktotop').css('display', 'block');
+        $('.hmanchor').css('margin-top', -20);
+	$('.hmanchor').css('padding-top', 20);
+      }
+      else {
+        $('#idheader').css('position', 'fixed');
+        $('#idcontent').css('margin-top', $('#idheader').height());
+        $('#idbacktotop').css('display', 'none');
+        $('.hmanchor').css('margin-top', -y-20);
+		$('.hmanchor').css('padding-top', y+20);
+		$("div#hmsplitter", parent.document).css('width', '3px');
+      }
+	normHeaders();
+    });
+    
+    //Hide Print button on touch devices
+    if (hmBrowser.nonDeskTouch) {
+      $("a#printbuttonlink").hide();
+      $("#idnav").css({"width": "125px", "padding-left": "0", "padding-right": "2px"});
+    }
+	 $(window).resize(); //trigger event for initially small displays
+  });
+ 
+
+if ((!parent.hmNavigationFrame) && (parent.location) && (parent.location.href)) { $('.sync-toc').show();$('p.crumbs').hide();}
+var baseurl = document.URL.substring(0,document.URL.lastIndexOf("/")+1); 
+$('#idcontent').append('<p class="help-url"><b>URL of this topic:<br /></b><a href="'+baseurl+'index.html' +
+'?j_3.html" target="_top">'+baseurl+'index.html?j_3.html</a></p>');
+
+</script>
+</body>
+</html>

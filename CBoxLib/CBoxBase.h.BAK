@@ -23,22 +23,24 @@
 
 #include <QtGlobal>
 #include "BranchPredictor.h"
-#include "../coreLib/WriteBufferEntry.h"
-#include "../coreLib/Axp_Attributes_core.h"
-#include "../coreLib/LoggingMacros.h"
-#include "../coreLib/MemoryBarrierKind_enum.h"
-#include "../coreLib/types_core.h"
-#include "../memoryLib/WriteBufferManager.h"
-#include "../memoryLib/global_GuestMemory.h"
-#include "../mmioLib/global_mmioManager.h"
+#include "coreLib/WriteBufferEntry.h"
+#include "coreLib/Axp_Attributes_core.h"
+#include "coreLib/LoggingMacros.h"
+#include "coreLib/MemoryBarrierKind_enum.h"
+#include "coreLib/types_core.h"
+#include "memoryLib/WriteBufferManager.h"
+#include "memoryLib/global_GuestMemory.h"
+#include "mmioLib/global_mmioManager.h"
 #include "coreLib/alpha_int_byteops_inl.h"
-#include "machineLib/PipeLineSlot.h"
+#include "machineLib/PipeLineSlot_inl.h"
+#include "memoryLib/GuestMemory.h"
 #include "memoryLib/global_MemoryBarrierCoordinator.h"
+#include "machineLib/PipeLineSlot.h"
 
 // Forward declarations
 class GuestMemory;
 class MMIOManager;
-struct PipelineSlot;
+//struct PipelineSlot;
 
 // NO INCLUDE of ExecutionCoordinator.h!
 
@@ -68,22 +70,41 @@ public:
         : m_branchPredictor()
           , m_cpuId(cpuId)
           , m_state(CBoxState::RUNNING)
-          , m_hwpcb(&globalHWPCBController(cpuId))
-          , m_guestMemory(&global_GuestMemory())
+            , m_guestMemory(&global_GuestMemory())
           , m_mmioManager(&global_MMIOManager())
           , m_writeBuffer(nullptr)
         , m_barrierCoordinator(&global_MemoryBarrierCoordinator())
+        , m_iprGlobalMaster(getCPUStateView(cpuId)) 
     {
         DEBUG_LOG(QString("CBox: Initialized for CPU %1").arg(cpuId));
+       
     }
 
     // Disable copy/move
-    CBox(const CBox&)                    = delete;
-    auto operator=(const CBox&) -> CBox& = delete;
+    CBox(const CBox&)                     = delete;
+    auto operator=(const CBox&) -> CBox&  = delete;
+    AXP_HOT AXP_ALWAYS_INLINE auto reevaluatePendingInterrupts() -> void
+    {
+        //TODO
+    }
 
-   
+    AXP_HOT AXP_ALWAYS_INLINE  auto reloadProcessContext() -> void {
+        //TODO
+    }
 
-    
+    AXP_HOT AXP_ALWAYS_INLINE auto updatePCBBPointer() -> void {
+        //TODO
+    }
+
+    AXP_HOT AXP_ALWAYS_INLINE auto commitStagedIPRWrites() -> void {
+        //TODO
+    }
+
+    auto flushBranchPredictor() -> void
+    {
+        m_branchPredictor.clear();
+    }
+
 
     CBox(CBox&&)                    = delete;
     auto operator=(CBox&&) -> CBox& = delete;
@@ -267,10 +288,10 @@ public:
         MemoryBarrierKind kind,
         quint16 activeCpuCount = 1) noexcept
     {
-        // Step 1: LOCAL ï¿½ drain this CPU's write buffer
+        // Step 1: LOCAL drain this CPU's write buffer
         drainWriteBuffers();
 
-        // Step 2: GLOBAL ï¿½ coordinate with other CPUs (only if SMP)
+        // Step 2: GLOBAL coordinate with other CPUs (only if SMP)
         if (activeCpuCount > 1 && kind == MemoryBarrierKind::PAL)
         {
             if (m_barrierCoordinator->initiateGlobalMemoryBarrier(m_cpuId, activeCpuCount))
@@ -594,7 +615,7 @@ public:
         {
             slot.payLoad = slot.di.pc + 4;
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            
         }
 
         
@@ -613,7 +634,9 @@ public:
 
         // Flush and redirect if needed
         if (mispredicted) {
-            m_hwpcb->pc = targetPC;  // Direct write is fine for hot path
+            // advancePC preserves current PAL mode bit — misprediction is a
+            // control flow correction, not a mode transition
+            m_iprGlobalMaster->h->advancePC(targetPC);
             slot.flushPipeline = true;
         }
 
@@ -672,7 +695,7 @@ public:
         {
             slot.payLoad        = returnAddr;
             slot.needsWriteback = true;
-            slot.writeRa        = true;
+            
             slot.branchTaken = true;       // BSR is always taken
             slot.branchTarget = targetPC;  // Actual target
         }
@@ -926,13 +949,13 @@ public:
         // RPCC format: RPCC Ra
         const quint8 ra = slot.di.ra;
 
-        auto& iprHot = globalIPRHot64(slot.cpuId);
-
+    
         // sysCC_now is your existing system cycle counter
-        const quint64 sysCC_now = iprHot.cc;
+        const quint64 sysCC_now = m_iprGlobalMaster->r->cc;
+        PccState64 pccState = m_iprGlobalMaster->r->pccState;
 
         // pccState is the new per-CPU PCC register state you add
-        quint64 pccValue = pccRead64(iprHot.pccState, sysCC_now);
+        quint64 pccValue = pccRead64(pccState, sysCC_now);
 
         slot.writeIntReg(ra, pccValue);
 
@@ -1078,7 +1101,7 @@ public:
         if (slot.di.ra != 31) {  // R31 writes are discarded
             slot.payLoad = returnAddr;
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            
 
             slot.branchTaken = true;
             slot.branchTarget = (rb_val & ~0x3ULL);
@@ -1142,7 +1165,7 @@ public:
         if (slot.di.ra != 31) {
             slot.payLoad = slot.di.pc + 4;
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            
 
 
             debugLog(QString("RET unusual: writing R%1 (not R31)")
@@ -1182,7 +1205,7 @@ public:
         if (slot.di.ra != 31) {
             slot.payLoad = returnAddr;
             slot.needsWriteback = true;
-            slot.writeRa = true;
+            
 
             debugLog(QString("JSR_COROUTINE will write R%1 <- 0x%2")
                 .arg(slot.di.ra)
@@ -1247,7 +1270,7 @@ private:
         if (mispredicted)
         {
             // Misprediction - flush pipeline and set correct PC
-            setPC_Active(m_cpuId, actualPC);
+            m_iprGlobalMaster->h->advancePC( actualPC);
             slot.flushPipeline = true;
             DEBUG_LOG(QString("CPU %1: %2 MISPREDICT PC=0x%3 pred=%4 actual=%5 -> PC=0x%6")
                 .arg(m_cpuId)
@@ -1309,7 +1332,8 @@ private:
     BranchPredictor m_branchPredictor;
     CPUIdType       m_cpuId;
     CBoxState       m_state;
-    HWPCB* m_hwpcb{ nullptr };  // Injected in the CTOR
+    CPUStateView    m_cpuView;                            // value member
+    CPUStateView*   m_iprGlobalMaster{ &m_cpuView };
     // Subsystem references (non-owning)
     GuestMemory*        m_guestMemory;
     MMIOManager*        m_mmioManager;

@@ -338,14 +338,18 @@ struct  PipelineSlot
 	// ====================================================================
 
 	PipelineSlot()
-	: palDecoded{}
-	, trapCode{}
-	, serializeType{}
-	, registerIndex{}
-	, m_faultDispatcher(&globalFaultDispatcher(cpuId))
-		, m_iprGlobalMaster(getCPUStateView(cpuId))
+		: palDecoded{}
+		  , trapCode{}
+		  , serializeType{}
+		  , registerIndex{}
+		  , m_faultDispatcher(&globalFaultDispatcher(cpuId))
+		  , m_iprGlobalMaster(getCPUStateView(cpuId)), nextPC{0}, predictedPC{0}, linkValue{0}, jumpTarget{0},
+		  branchTestValue{0},
+		  cycle{0},
+		  retireCycle{0},
+		  pcReason{},
+		  mispredict{false}
 	{
-
 	}
 
 

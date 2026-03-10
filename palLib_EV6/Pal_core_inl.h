@@ -2,7 +2,7 @@
 // Pal_core_inl.h - Get PAL function code from CALL_PAL instruction
 // ============================================================================
 // Project: ASA-EMulatR - Alpha AXP Architecture Emulator
-// Copyright (C) 2025 eNVy Systems, Inc. All rights reserved.
+// Copyright (C) 2025, 2026 eNVy Systems, Inc. All rights reserved.
 // Licensed under eNVy Systems Non-Commercial License v1.1
 //
 // Project Architect: Timothy Peer
@@ -20,7 +20,7 @@
 #include <QtGlobal>
 #include "PAL_core.h"
 #include "PalVectorId_inl.h"
-#include "../faultLib/fault_core.h"
+#include "faultLib/fault_core.h"
 #include "coreLib/BoxRequest.h"
 
 /**
@@ -71,119 +71,6 @@ AXP_HOT AXP_ALWAYS_INLINE   constexpr bool palReturnRegIsNone(const PalReturnReg
 {
 	return rr == PalReturnReg::NONE;
 }
-
-
-// ============================================================================
-// resolvePalEntryPC
-// ----------------------------------------------------------------------------
-// Single source of truth for PAL entry calculation (EV6).
-// Implements Table 5-8 named vectors AND calculated CALL_PAL entries.
-// ============================================================================
-
-AXP_HOT AXP_ALWAYS_INLINE quint64 resolvePalEntryPC(	CPUIdType cpuId,	const PendingEvent& ev) noexcept
-{
-	auto& iprs = globalIPRHotExt(cpuId);
-	const quint64 pal_base = iprs.pal_base;
-
-	// ------------------------------------------------------------------------
-	// Case 1: CALL_PAL (calculated entry)
-	// ------------------------------------------------------------------------
-	if (ev.exceptionClass == ExceptionClass_EV6::CallPal)
-	{
-		// Architectural rule:
-		//   PAL entry = PAL_BASE + (pal_function << 6)
-		return pal_base + (static_cast<quint64>(ev.palFunc) << 6);
-	}
-
-	// ------------------------------------------------------------------------
-	// Case 2: Hardware exception / interrupt (named vectors, Table 5-8)
-	// ------------------------------------------------------------------------
-	quint64 offset = 0;
-
-	switch (ev.exceptionClass)
-	{
-	case ExceptionClass_EV6::Dtb_miss_double_4: offset = 0x100; break;
-	case ExceptionClass_EV6::Fen:               offset = 0x200; break;
-	case ExceptionClass_EV6::Unalign:           offset = 0x280; break;
-	case ExceptionClass_EV6::Dtb_miss_single:   offset = 0x300; break;
-	case ExceptionClass_EV6::Dfault:            offset = 0x380; break;
-	case ExceptionClass_EV6::OpcDec:            offset = 0x400; break;
-	case ExceptionClass_EV6::ItbAcv:            offset = 0x480; break;
-	case ExceptionClass_EV6::MachineCheck:      offset = 0x500; break;
-	case ExceptionClass_EV6::ItbMiss:           offset = 0x580; break;
-	case ExceptionClass_EV6::Arithmetic:        offset = 0x600; break;
-	case ExceptionClass_EV6::Interrupt:         offset = 0x680; break;
-	case ExceptionClass_EV6::MT_FPCR:           offset = 0x700; break;
-	case ExceptionClass_EV6::Reset:             offset = 0x780; break;
-
-	default:
-		// Defensive: unknown exception maps to OPCDEC
-		offset = 0x400;
-		break;
-	}
-
-	return pal_base + offset;
-}
-
-
-// ------------------------------------------------------------------------
-   // resolveCallPalVector
-   //
-   //  Given a 7-bit CALL_PAL index (0..127), compute the corresponding
-   //  PAL vector ID for EV6:
-   //
-   //      offset = 0x2000 + index * 0x40
-   //
-   //  The enumeration PalVectorId_EV6 must contain entries whose values
-   //  match these offsets for indices 0..127 (CallPal_00..CallPal_7F).
-   //
-   // ------------------------------------------------------------------------
-static AXP_HOT AXP_ALWAYS_INLINE   PalVectorId_EV6 resolveCallPalVector(quint8 callPalIndex) noexcept
-{
-	// Clamp the index to the architectural range 0..127.
-	const quint8 idx = static_cast<quint8>(callPalIndex & 0x7F);
-
-	const quint16 offset =
-		static_cast<quint16>(0x2000u + static_cast<quint16>(idx) * 0x40u);
-
-	return static_cast<PalVectorId_EV6>(offset);
-}
-
-
-// ------------------------------------------------------------------------
-// extractCallPalIndexFromInstruction
-//
-//  Helper to derive the CALL_PAL index from a 32-bit Alpha instruction:
-//
-//    The EV6 HRM describes the CALL_PAL vector indexing using
-//    instruction bits <7,5..0> to form a 7-bit index.
-//
-//    Conceptually:
-//      index<6> = inst<7>
-//      index<5:0> = inst<5:0>
-//
-//  Parameters:
-//    instWord   - 32-bit Alpha instruction word for CALL_PAL.
-//
-//  Returns:
-//    7-bit index in the range 0..127 to be passed to resolveCallPalVector.
-//
-//  Reference:
-//    21264 HRM, Table 4-1 "PALcode Entry Points" (CALL_PAL description).
-// ------------------------------------------------------------------------
-static inline quint8 extractCallPalIndexFromInstruction(quint16 instWord) noexcept
-{
-	const quint8 low6 = static_cast<quint8>(instWord & 0x3Fu);
-	const quint8 bit7 = static_cast<quint8>((instWord >> 7) & 0x1u);
-	const quint8 index =
-		static_cast<quint8>((bit7 << 6) | low6);  // index<6> = inst<7>
-
-	return static_cast<quint8>(index & 0x7Fu);
-}
-
-// In your PAL service or HWPCB helper:
-
-
 
 /**
  * @brief Map TrapCode to PAL entry reason

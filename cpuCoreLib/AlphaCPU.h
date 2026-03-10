@@ -381,10 +381,10 @@ public:
         // defer routing to PAL until after stage_WB - Only handle faults if they reached retirement (dispatched from WB)
         if (boxResult.hasFault() && boxResult.faultWasDispatched()) {
 
-            m_alphaPipeline->flush("flush::Box-faultWasDispatched");       // flush the pipeline
+            m_alphaPipeline->flush("flush::Box-faultWasDispatched");
 
-            quint64 vector = getFaultVector(boxResult.getFaultClass());
-            BoxResult bx = m_pBox->enterPal(getFaultReason(boxResult.getFaultClass()), vector, boxResult.getFaultPC());
+            // enterPal() owns vector computation -- pass TrapCode_Class directly
+            BoxResult bx = m_pBox->enterPal(boxResult.getFaultClass(), boxResult.getFaultPC());
 
             if (boxResult.needsWriteDrain())
                 m_cBox->drainWriteBuffers();
@@ -395,98 +395,8 @@ public:
             if (boxResult.needsHalted())
                 haltCPU();
 
-            // ========================================================================
-            // CRITICAL: Don't call handleException() here!
-            // The next iteration of runOneInstruction() will fetch from the new PC
-            // and execute PAL code naturally through the normal pipeline
-            // ========================================================================
-            // 3c. Dispatch to specific handler
-  //          m_pBox->handleException(boxResult);
-
-            // ========================================================================
-            // SET PC TO PAL HANDLER ADDRESS
-            // ========================================================================
-            quint64 palBase = m_iprGlobalMaster->x->scbb;  // Or however you get PAL_BASE
-            quint64 palEntryPC = palBase + vector;
-            /*
-             ; DTB_MISS_SINGLE handler (at offset 0x0200)
-            MFPR    R16, EXC_ADDR       ; Get faulting VA
-            MFPR    R17, MM_STAT        ; Get fault status
-            SRL     R16, #13, R18       ; VA >> 13 = VPN
-            LDQ     R19, ptbr(R31)      ; Load page table base
-            ; ... walk page table ...
-            ; ... find PTE ...
-            MTPR    R20, DTB_PTE        ; Write TLB entry
-            HW_REI                      ; Return to faulting instruction
-            ```
-
-            This is **NOT** a CALL_PAL instruction. It's the actual exception handler code.
-
-            ## Order of Operations for DTB_MISS:
-            ```
-            1. LDQ executes at PC 0x2000800C
-
-            2. Calculate VA = 0x20008110
-               v
-            3. TLB lookup -> MISS
-               v
-            4. Hardware exception logic:
-               - Save faulting PC (0x2000800C) -> EXC_PC IPR
-               - Save faulting VA (0x20008110) -> EXC_ADDR IPR
-               - Calculate PAL entry: PAL_BASE + 0x0200 = 0x20008200
-               - Set PC <- 0x20008200 (with bit 0 = 1 for PAL mode)
-               - Set PAL mode flag
-               v
-            5. Next instruction fetch:
-               - Fetch from PC 0x20008200
-               - This fetches the FIRST instruction of the PAL handler
-               - Execute it (MFPR, LDQ, whatever it is)
-               v
-            6. Continue executing PAL handler instructions sequentially
-               v
-            7. PAL handler writes TLB entry via MTPR DTB_PTE
-               v
-            8. PAL handler executes HW_REI:
-               - Restore PC <- EXC_PC (back to 0x2000800C)
-               - Clear PAL mode
-               v
-            9. LDQ retries:
-               - TLB lookup -> HIT (entry was just loaded)
-               - Translation succeeds
-               - Load completes
-             */
-
-            if (boxResult.needsEnterPalmode()) {
-                m_alphaPipeline->flush("flush::needsEnterPalMode");
-
-                // stage_WB already computed palVector and palFunction in PipelineStepResult
-                // But those are lost because execute() returns BoxResult, not PipelineStepResult
-                // Need to route the PAL function code through BoxResult or handle differently
-
-                // Option A: Let PalBox::enterPal handle it (cleanest)
-                quint8 palFunc = boxResult.palFunction;  // Need to add this field to BoxResult
-                quint64 callPC = boxResult.faultingPC;   // Need to repurpose or add field
-
-
-                BoxResult palResult = m_pBox->enterPal(
-                    PalEntryReason::CALL_PAL_INSTRUCTION, palFunc, callPC + 4);
-
-                // Handle side-effects from enterPal
-                if (palResult.needsPipelineFlush())
-                    m_alphaPipeline->flush("flush::palResult.needsPipelineFlush()");
-                return;
-            }
-            qDebug() << "==========================================";
-            qDebug() << "+   JUMPING TO PAL HANDLER                +";
-            qDebug() << "==========================================+";
-            qDebug() << "Fault Class:" << static_cast<int>(boxResult.getFaultClass());
-            qDebug() << "Vector Offset:" << Qt::hex << vector;
-            qDebug() << "PAL Base:" << Qt::hex << palBase;
-            qDebug() << "PAL Entry PC:" << Qt::hex << palEntryPC;
-
-            m_iprGlobalMaster->h->advancePC(palEntryPC);  // Set PC with PAL mode bit (bit 0)
-            m_alphaPipeline->flush("flush::JMP to Pal Handler");
-
+            // enterPal() handled everything: saveContext(), exc_addr, entryPC, PAL mode.
+            // Next runOneInstruction() cycle fetches from the new PC naturally.
             return;
         }
 
@@ -558,25 +468,6 @@ public:
             .arg(entryPC, 16, 16, QChar('0')));
     }
 
-    AXP_HOT inline  BoxResult executeREI(PipelineSlot& slot) const noexcept {
-        // 1. Restore COMPLETE context (HWPCB + registers)
-        m_iprGlobalMaster->restoreContext();
-
-        // 2. Get return PC (now restored)
-        quint64 returnPC = m_iprGlobalMaster->h->getPC();
-
-#if AXP_INSTRUMENTATION_TRACE
-        EXECTRACE_PAL_EXIT(m_cpuId, returnPC, m_iprGlobalMaster->h->ipl, m_iprGlobalMaster->h->cm);
-#endif
-
-        // 3. Setup redirect
-        slot.reiTarget = returnPC;
-        slot.pcModified = true;
-
-        // 4. Flush pipeline
-        return BoxResult().flushPipeline();
-    }
-
     AXP_HOT AXP_ALWAYS_INLINE  void commitPalReturnValue(const PalResult& pr) const noexcept {
         if (!pr.doesReturn) return;
 
@@ -619,7 +510,7 @@ public:
     }
     AXP_HOT AXP_ALWAYS_INLINE void setPalMode(bool bSetPal, bool reset = false) const noexcept
     {
-        m_pBox->palService()->setPalMode(bSetPal, reset);
+        m_iprGlobalMaster->setPalMode(bSetPal);
     }
     AXP_HOT AXP_ALWAYS_INLINE void setIPL(IPLType ipl) const noexcept
     {
